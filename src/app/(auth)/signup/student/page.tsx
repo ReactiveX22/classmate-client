@@ -19,7 +19,9 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useForm } from '@tanstack/react-form';
+import { useSignup } from '@/hooks/useAuth';
 import Link from 'next/link';
+import { useState } from 'react';
 import { z } from 'zod';
 
 const studentSignupSchema = z.object({
@@ -30,6 +32,9 @@ const studentSignupSchema = z.object({
 });
 
 export default function StudentSignupPage() {
+  const signupMutation = useSignup();
+  const [errorMessage, setErrorMessage] = useState<string>('');
+
   const form = useForm({
     defaultValues: {
       fullName: '',
@@ -50,8 +55,18 @@ export default function StudentSignupPage() {
       },
     },
     onSubmit: async ({ value }) => {
-      console.log('Student Signup Submitted:', value);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setErrorMessage('');
+      try {
+        await signupMutation.mutateAsync({
+          name: value.fullName,
+          email: value.email,
+          password: value.password,
+        });
+      } catch (error) {
+        setErrorMessage(
+          error instanceof Error ? error.message : 'Signup failed'
+        );
+      }
     },
   });
 
@@ -190,6 +205,12 @@ export default function StudentSignupPage() {
               </form.Field>
             </FieldGroup>
 
+            {errorMessage && (
+              <div className='text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3'>
+                {errorMessage}
+              </div>
+            )}
+
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
@@ -197,9 +218,11 @@ export default function StudentSignupPage() {
                 <Button
                   type='submit'
                   className='w-full mt-4'
-                  disabled={!canSubmit}
+                  disabled={!canSubmit || signupMutation.isPending}
                 >
-                  {isSubmitting ? 'Creating Account...' : 'Create Account'}
+                  {signupMutation.isPending || isSubmitting
+                    ? 'Creating Account...'
+                    : 'Create Account'}
                 </Button>
               )}
             </form.Subscribe>

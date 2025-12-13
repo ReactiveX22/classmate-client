@@ -16,9 +16,11 @@ import {
   FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { useLogin } from '@/hooks/useAuth';
 import { IconSchool } from '@tabler/icons-react';
 import { useForm } from '@tanstack/react-form';
 import Link from 'next/link';
+import { useState } from 'react';
 import { z } from 'zod';
 
 const loginSchema = z.object({
@@ -27,6 +29,9 @@ const loginSchema = z.object({
 });
 
 export default function LoginPage() {
+  const loginMutation = useLogin();
+  const [errorMessage, setErrorMessage] = useState<string>('');
+
   const form = useForm({
     defaultValues: {
       email: '',
@@ -46,8 +51,17 @@ export default function LoginPage() {
       },
     },
     onSubmit: async ({ value }) => {
-      console.log('Login Submitted:', value);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setErrorMessage('');
+      try {
+        await loginMutation.mutateAsync({
+          email: value.email,
+          password: value.password,
+        });
+      } catch (error) {
+        setErrorMessage(
+          error instanceof Error ? error.message : 'Login failed'
+        );
+      }
     },
   });
 
@@ -130,6 +144,12 @@ export default function LoginPage() {
               </form.Field>
             </FieldGroup>
 
+            {errorMessage && (
+              <div className='text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3'>
+                {errorMessage}
+              </div>
+            )}
+
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
@@ -137,9 +157,11 @@ export default function LoginPage() {
                 <Button
                   type='submit'
                   className='w-full mt-4'
-                  disabled={!canSubmit}
+                  disabled={!canSubmit || loginMutation.isPending}
                 >
-                  {isSubmitting ? 'Signing in...' : 'Sign in'}
+                  {loginMutation.isPending || isSubmitting
+                    ? 'Signing in...'
+                    : 'Sign in'}
                 </Button>
               )}
             </form.Subscribe>
