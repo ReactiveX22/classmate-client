@@ -1,3 +1,4 @@
+import { Providers } from '@/lib/providers/QueryProvider';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
@@ -16,7 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en' className={inter.variable}>
-      <body className={'antialiased'}>{children}</body>
+      <body className={'antialiased'}>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
