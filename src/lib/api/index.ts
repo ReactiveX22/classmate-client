@@ -29,19 +29,7 @@ apiClient.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config;
 
-    // Handle 401 Unauthorized
-    if (error.response?.status === 401) {
-      // Redirect to login or refresh token
-      if (typeof window !== 'undefined') {
-        // Only redirect if not already on auth pages
-        const isAuthPage =
-          window.location.pathname.startsWith('/login') ||
-          window.location.pathname.startsWith('/signup');
-        if (!isAuthPage) {
-          window.location.href = '/login';
-        }
-      }
-    }
+    // hanlde errors
 
     return Promise.reject(error);
   }

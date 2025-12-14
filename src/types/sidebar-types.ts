@@ -1,10 +1,5 @@
 import { LucideIcon } from 'lucide-react';
-
-export type User = {
-  name: string;
-  email: string;
-  avatar: string;
-};
+import { User } from './auth';
 
 export type BaseNavItem = {
   title: string;

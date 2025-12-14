@@ -1,16 +1,17 @@
 'use client';
 
-import * as React from 'react';
-
+import Logo from '@/components/common/logo';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import Logo from '@/components/common/logo';
+import { useUser } from '@/hooks/useAuth';
 import Link from 'next/link';
 
 export function NavHeader() {
+  const { data: user } = useUser();
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -20,9 +21,13 @@ export function NavHeader() {
           render={
             <Link href='/dashboard'>
               <Logo />
-              <div className='grid flex-1 text-left text-sm leading-tight'>
-                <span className='truncate font-bold text-lg'>ClassMate</span>
-                <span className='truncate text-xs'>Student</span>
+              <div className='grid gap-1 flex-1 text-left text-sm'>
+                <span className='truncate font-bold text-lg leading-none'>
+                  ClassMate
+                </span>
+                <span className='truncate text-xs capitalize'>
+                  {user?.role}
+                </span>
               </div>
             </Link>
           }

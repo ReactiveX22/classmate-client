@@ -24,6 +24,7 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
   profile?: Profile;
+  organizationId: string;
 }
 
 export interface LoginCredentials {
@@ -54,4 +55,21 @@ export interface AuthError {
   message: string;
   code?: string;
   field?: string;
+}
+
+export interface Organization {
+  id: string;
+  name: string;
+  slug: string;
+  type: string;
+  address: string;
+  phone: string;
+  email: string;
+  website: string;
+  logo: string;
+}
+
+export enum UserStatus {
+  Active = 'active',
+  Pending = 'pending',
 }

@@ -1,5 +1,6 @@
-import { Providers } from '@/lib/providers/QueryProvider';
+import { Toaster } from '@/components/ui/sonner';
 import { AuthProvider } from '@/lib/providers/AuthProvider';
+import { Providers } from '@/lib/providers/QueryProvider';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
@@ -22,6 +23,7 @@ export default function RootLayout({
         <Providers>
           <AuthProvider>{children}</AuthProvider>
         </Providers>
+        <Toaster />
       </body>
     </html>
   );

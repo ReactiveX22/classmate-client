@@ -63,14 +63,13 @@ export function useSession() {
 }
 
 export function useUser() {
-  const { data: session } = useSession();
-
-  return useQuery({
-    queryKey: ['user', session?.user?.id],
-    queryFn: () => authService.getCurrentUser(),
-    enabled: !!session?.user,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-  });
+  const { data: session, isPending, error, refetch } = useSession();
+  return {
+    data: session?.user ?? null,
+    isLoading: isPending,
+    error,
+    refetch,
+  };
 }
 
 export function useIsAuthenticated() {
