@@ -17,6 +17,11 @@ export async function proxy(request: NextRequest) {
 
   const hasValidSession = !!sessionToken && sessionToken.length > 0;
 
+  // 1. If user is on pending verification page, allow access regardless of anything
+  if (pathname === '/pending-verification') {
+    return NextResponse.next();
+  }
+
   if (isProtectedRoute && !hasValidSession) {
     console.log('[Middleware] Blocking access to protected route:', pathname);
     const loginUrl = new URL('/login', request.url);

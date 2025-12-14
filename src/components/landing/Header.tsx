@@ -115,6 +115,7 @@ export default function Header({
               render={<Link href={auth.login.url}>{auth.login.title}</Link>}
               variant='outline'
               size='sm'
+              nativeButton={false}
             ></Button>
             <Button
               render={<Link href={auth.signup.url}>{auth.signup.title}</Link>}

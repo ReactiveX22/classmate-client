@@ -1,4 +1,8 @@
+'use client';
+
 import { StudentSidebar } from '@/components/dashboard/student-sidebar';
+import { TeacherSidebar } from '@/components/dashboard/teacher-sidebar';
+import { AdminSidebar } from '@/components/dashboard/admin-sidebar';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { Button } from '@/components/ui/button';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -6,16 +10,31 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { IconBell, IconSettings } from '@tabler/icons-react';
 import { ProfileDropdown } from '@/components/dashboard/profile-dropdown';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { useUser } from '@/hooks/useAuth';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { data: user } = useUser();
+
+  const getSidebar = () => {
+    switch (user?.role) {
+      case 'instructor':
+        return <TeacherSidebar />;
+      case 'admin':
+        return <AdminSidebar />;
+      case 'student':
+      default:
+        return <StudentSidebar />;
+    }
+  };
+
   return (
     <ProtectedRoute>
       <SidebarProvider>
-        <StudentSidebar />
+        {getSidebar()}
         <SidebarInset>
           <DashboardHeader title='Dashboard'>
             <Button variant='ghost' size='icon'>

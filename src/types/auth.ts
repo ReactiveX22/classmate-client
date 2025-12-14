@@ -1,16 +1,29 @@
+export interface Profile {
+  firstName: string;
+  lastName: string;
+  displayName: string;
+  phone?: string;
+  bio?: string;
+  // Teacher specific
+  title?: string;
+  joinDate?: string;
+  // Student specific
+  studentId?: string;
+}
+
 export interface User {
   id: string;
   name: string;
   email: string;
-  avatar?: string;
+  emailVerified: boolean;
+  image?: string;
+  role?: string; // 'student' | 'instructor' | 'admin'
+  banned: boolean;
+  banReason?: string;
+  banExpires?: Date | null;
   createdAt: Date;
   updatedAt: Date;
-}
-
-export interface Session {
-  user: User;
-  token: string;
-  expiresAt: Date;
+  profile?: Profile;
 }
 
 export interface LoginCredentials {
@@ -22,11 +35,19 @@ export interface SignupCredentials {
   name: string;
   email: string;
   password: string;
+  role?: string; // Optional if you want to allow picking role on signup, though usually backend handles default
 }
 
 export interface AuthResponse {
+  token: string;
+  redirect: boolean;
   user: User;
-  session: Session;
+}
+
+export interface Session {
+  user: User;
+  token: string;
+  expiresAt?: Date; // Optional as backend might not return it in this exact struct for standard JWT stateless flow, but good to keep if used locally
 }
 
 export interface AuthError {

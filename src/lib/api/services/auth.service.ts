@@ -49,10 +49,31 @@ export const authService = {
   async getCurrentUser(): Promise<User | null> {
     try {
       const response = await apiClient.get<{ user: User }>(
-        '/api/auth/get-session'
+        '/api/v1/auth/get-session'
       );
       return response.data.user;
     } catch (error) {
+      // Check for AUTH_ROLE_NOT_ASSIGNED error
+      const errorData = (error as any)?.response?.data;
+      console.log('Session fetch error:', {
+        status: (error as any)?.response?.status,
+        data: errorData,
+        message: (error as any)?.message,
+      });
+
+      if (
+        errorData?.errorCode === 'AUTH_ROLE_NOT_ASSIGNED' ||
+        errorData?.message === 'Role not assigned' ||
+        (error as any)?.message?.includes('Role not assigned')
+      ) {
+        if (
+          typeof window !== 'undefined' &&
+          !window.location.pathname.includes('/pending-verification')
+        ) {
+          window.location.href = '/pending-verification';
+        }
+      }
+
       console.error('Failed to get current user:', error);
       return null;
     }
