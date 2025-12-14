@@ -9,6 +9,7 @@ export interface Profile {
   joinDate?: string;
   // Student specific
   studentId?: string;
+  id: string;
 }
 
 export interface User {
