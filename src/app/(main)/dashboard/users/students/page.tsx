@@ -1,29 +1,42 @@
 'use client';
 
+import { DataTable } from '@/components/data-table/data-table';
+import { DataTableToolbar } from '@/components/data-table/data-table-toolbar';
 import { Button } from '@/components/ui/button';
-import { DataTable } from '@/components/ui/data-table';
+import { useDataTable } from '@/hooks/use-data-table';
 import { useStudents } from '@/hooks/use-students';
+import { getSortingStateParser } from '@/lib/parsers';
 import { IconUserPlus } from '@tabler/icons-react';
-import { useState } from 'react';
+import { parseAsInteger, useQueryState } from 'nuqs';
 import { columns } from './columns';
 
 export default function StudentsPage() {
-  const [pagination, setPagination] = useState({
-    pageIndex: 0, // TanStack table is 0-indexed
-    pageSize: 10,
-  });
+  const [page] = useQueryState('page', parseAsInteger.withDefault(1));
+  const [perPage] = useQueryState('perPage', parseAsInteger.withDefault(10));
+  const [sorting] = useQueryState(
+    'sort',
+    getSortingStateParser().withDefault([])
+  );
 
   const {
     data: response,
     isLoading,
     isError,
   } = useStudents({
-    page: pagination.pageIndex + 1, // API is 1-indexed
-    limit: pagination.pageSize,
+    page,
+    limit: perPage,
+    sortBy: sorting[0]?.id,
+    sortOrder: sorting[0]?.desc ? 'desc' : 'asc',
   });
 
   const students = response?.data || [];
-  const pageCount = response?.meta?.totalPages || 0;
+  const pageCount = response?.meta?.totalPages || 1;
+
+  const { table } = useDataTable({
+    data: students,
+    columns,
+    pageCount,
+  });
 
   return (
     <div className='flex flex-col gap-6 p-6'>
@@ -45,14 +58,9 @@ export default function StudentsPage() {
       ) : isError ? (
         <div className='text-red-500'>Error loading students.</div>
       ) : (
-        <DataTable
-          columns={columns}
-          data={students}
-          searchKey='name'
-          pageCount={pageCount}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-        />
+        <DataTable table={table}>
+          <DataTableToolbar table={table} />
+        </DataTable>
       )}
     </div>
   );

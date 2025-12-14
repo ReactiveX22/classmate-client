@@ -2,7 +2,10 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { authService } from '@/lib/api/services/auth.service';
-import { useSession as useBetterAuthSession } from '@/lib/auth-client';
+import {
+  useSession as useBetterAuthSession,
+  useSession,
+} from '@/lib/auth-client';
 import type { LoginCredentials, SignupCredentials } from '@/types/auth';
 import { useRouter } from 'next/navigation';
 
@@ -56,10 +59,6 @@ export function useLogout() {
       console.error('Logout failed:', error.message);
     },
   });
-}
-
-export function useSession() {
-  return useBetterAuthSession();
 }
 
 export function useUser() {

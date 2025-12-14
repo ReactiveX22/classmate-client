@@ -3,6 +3,7 @@ import { AuthProvider } from '@/lib/providers/AuthProvider';
 import { Providers } from '@/lib/providers/QueryProvider';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
@@ -20,9 +21,11 @@ export default function RootLayout({
   return (
     <html lang='en' className={inter.variable}>
       <body className={'antialiased'}>
-        <Providers>
-          <AuthProvider>{children}</AuthProvider>
-        </Providers>
+        <NuqsAdapter>
+          <Providers>
+            <AuthProvider>{children}</AuthProvider>
+          </Providers>
+        </NuqsAdapter>
         <Toaster />
       </body>
     </html>

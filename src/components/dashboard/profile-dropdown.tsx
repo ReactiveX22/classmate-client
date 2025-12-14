@@ -12,8 +12,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { useLogout } from '@/hooks/useAuth';
+import { useSession } from '@/lib/auth-client';
 import Link from 'next/link';
-import { useSession, useLogout } from '@/hooks/useAuth';
 
 export function ProfileDropdown() {
   const { data: session, isPending } = useSession();
@@ -57,7 +58,7 @@ export function ProfileDropdown() {
         render={
           <Button variant='ghost' className='relative h-8 w-8 rounded-full'>
             <Avatar className='h-8 w-8'>
-              <AvatarImage src={user.avatar || ''} alt={user.name || 'User'} />
+              <AvatarImage src={user.image || ''} alt={user.name || 'User'} />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
           </Button>

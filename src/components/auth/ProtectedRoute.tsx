@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession } from '@/hooks/useAuth';
+import { useSession } from '@/lib/auth-client';
 import { IconLoader } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';

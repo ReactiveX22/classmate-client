@@ -6,6 +6,10 @@ export const authClient = createAuthClient({
   basePath: '/api/v1/auth',
   user: {
     additionalFields: {
+      role: {
+        type: 'string',
+        input: false,
+      },
       status: {
         type: 'string',
         defaultValue: UserStatus.Pending,
@@ -28,3 +32,5 @@ export const authClient = createAuthClient({
 });
 
 export const { signIn, signUp, signOut, useSession } = authClient;
+
+export type Session = typeof authClient.$Infer.Session;
