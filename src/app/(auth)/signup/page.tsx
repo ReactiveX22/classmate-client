@@ -1,18 +1,76 @@
+'use client';
+
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Card,
+  CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import {
-  IconArrowRight,
-  IconBook,
-  IconSchool,
-  IconUser,
-} from '@tabler/icons-react';
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
+import { IconSchool } from '@tabler/icons-react';
+import { useForm } from '@tanstack/react-form';
+import { useSignup } from '@/hooks/useAuth';
 import Link from 'next/link';
+import { useState } from 'react';
+import { z } from 'zod';
 
-export default function SignupSelectionPage() {
+const signupSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  organizationName: z.string().min(2, 'Organization name is required'),
+});
+
+export default function SignupPage() {
+  const signupMutation = useSignup();
+  const [errorMessage, setErrorMessage] = useState<string>('');
+
+  const form = useForm({
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      organizationName: '',
+    },
+    validators: {
+      onChange: ({ value }) => {
+        const result = signupSchema.safeParse(value);
+        if (result.success) return undefined;
+        const errors: Record<string, string> = {};
+        result.error.issues.forEach((issue) => {
+          const path = issue.path.join('.');
+          errors[path] = issue.message;
+        });
+        return errors;
+      },
+    },
+    onSubmit: async ({ value }) => {
+      setErrorMessage('');
+      try {
+        await signupMutation.mutateAsync({
+          name: value.name,
+          email: value.email,
+          password: value.password,
+          organizationName: value.organizationName,
+        });
+      } catch (error) {
+        setErrorMessage(
+          error instanceof Error ? error.message : 'Signup failed'
+        );
+      }
+    },
+  });
+
   return (
     <div className='flex flex-col gap-6'>
       <Link
@@ -24,64 +82,157 @@ export default function SignupSelectionPage() {
         </div>
         <span>ClassMate</span>
       </Link>
-      <div className='text-center space-y-2'>
-        <h1 className='text-2xl font-bold tracking-tight'>Create an account</h1>
-        <p className='text-muted-foreground'>
-          Select your role to continue to the registration.
-        </p>
-      </div>
 
-      <div className='grid gap-4'>
-        <Link href='/signup/student'>
-          <Card className='relative overflow-hidden hover:border-primary/50 transition-colors cursor-pointer group'>
-            <CardHeader className='flex flex-row items-center gap-4 pb-4'>
-              <div className='w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center transition-colors'>
-                <IconUser size={24} />
+      <Card className='border-0 shadow-none bg-transparent'>
+        <CardHeader className='text-center space-y-1 pb-4'>
+          <CardTitle className='text-2xl'>Create your organization</CardTitle>
+          <CardDescription>
+            Sign up as an admin and create your organization.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+            className='space-y-4'
+          >
+            {errorMessage && (
+              <div className='p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md'>
+                {errorMessage}
               </div>
-              <div className='space-y-1 flex-1'>
-                <CardTitle className='text-lg'>Student</CardTitle>
-                <CardDescription>
-                  Access your courses, view grades, and submit assignments.
-                </CardDescription>
-              </div>
-              <IconArrowRight
-                className='text-primary opacity-0 -translate-x-2 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300'
-                size={20}
-              />
-            </CardHeader>
-          </Card>
-        </Link>
+            )}
+            <FieldGroup>
+              <form.Field name='name'>
+                {(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched &&
+                    field.state.meta.errors?.length > 0;
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel htmlFor={field.name}>Your Name</FieldLabel>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        placeholder='e.g. John Doe'
+                        aria-invalid={isInvalid}
+                      />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              </form.Field>
 
-        <Link href='/signup/teacher'>
-          <Card className='relative overflow-hidden hover:border-primary/50 transition-colors cursor-pointer group'>
-            <CardHeader className='flex flex-row items-center gap-4 pb-4'>
-              <div className='w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center transition-colors'>
-                <IconBook size={24} />
-              </div>
-              <div className='space-y-1 flex-1'>
-                <CardTitle className='text-lg'>Teacher</CardTitle>
-                <CardDescription>
-                  Manage courses, grade submissions, and track attendance.
-                </CardDescription>
-              </div>
-              <IconArrowRight
-                className='text-primary opacity-0 -translate-x-2 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300'
-                size={20}
-              />
-            </CardHeader>
-          </Card>
-        </Link>
-      </div>
+              <form.Field name='email'>
+                {(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched &&
+                    field.state.meta.errors?.length > 0;
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        type='email'
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        placeholder='admin@organization.com'
+                        aria-invalid={isInvalid}
+                      />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              </form.Field>
 
-      <div className='text-center text-sm text-muted-foreground mt-4'>
-        Already have an account?{' '}
-        <Link
-          href='/login'
-          className='font-medium text-primary underline-offset-4 hover:underline'
-        >
-          Sign in
-        </Link>
-      </div>
+              <form.Field name='password'>
+                {(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched &&
+                    field.state.meta.errors?.length > 0;
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        type='password'
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        placeholder='At least 8 characters'
+                        aria-invalid={isInvalid}
+                      />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              </form.Field>
+
+              <form.Field name='organizationName'>
+                {(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched &&
+                    field.state.meta.errors?.length > 0;
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel htmlFor={field.name}>
+                        Organization Name
+                      </FieldLabel>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        placeholder='e.g. Acme University'
+                        aria-invalid={isInvalid}
+                      />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              </form.Field>
+            </FieldGroup>
+
+            <Button
+              type='submit'
+              className='w-full'
+              disabled={signupMutation.isPending}
+            >
+              {signupMutation.isPending
+                ? 'Creating organization...'
+                : 'Create Organization'}
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className='flex flex-col gap-4 pt-0'>
+          <div className='text-center text-sm text-muted-foreground'>
+            Already have an account?{' '}
+            <Link
+              href='/login'
+              className='font-medium text-primary underline-offset-4 hover:underline'
+            >
+              Sign in
+            </Link>
+          </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }

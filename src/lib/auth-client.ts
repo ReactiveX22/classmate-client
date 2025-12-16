@@ -20,6 +20,11 @@ export const authClient = createAuthClient({
         input: false,
         defaultValue: null,
       },
+      organizationName: {
+        type: 'string',
+        input: true,
+        defaultValue: null,
+      },
     },
   },
   fetchOptions: {

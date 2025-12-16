@@ -23,6 +23,8 @@ export default function DashboardLayout({
     switch (user?.role) {
       case 'instructor':
         return <TeacherSidebar />;
+      case 'org-admin':
+        return <AdminSidebar />;
       case 'admin':
         return <AdminSidebar />;
       case 'student':

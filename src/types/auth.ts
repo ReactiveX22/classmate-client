@@ -37,7 +37,7 @@ export interface SignupCredentials {
   name: string;
   email: string;
   password: string;
-  role?: string; // Optional if you want to allow picking role on signup, though usually backend handles default
+  organizationName: string;
 }
 
 export interface AuthResponse {

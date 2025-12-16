@@ -25,7 +25,8 @@ export const authService = {
       email: credentials.email,
       password: credentials.password,
       name: credentials.name,
-    });
+      organizationName: credentials.organizationName,
+    } as Parameters<typeof authClient.signUp.email>[0]);
 
     if (response.error) {
       throw new Error(response.error.message || 'Signup failed');

@@ -6,7 +6,7 @@ import {
   useSession as useBetterAuthSession,
   useSession,
 } from '@/lib/auth-client';
-import type { LoginCredentials, SignupCredentials } from '@/types/auth';
+import type { LoginCredentials, SignupCredentials, User } from '@/types/auth';
 import { useRouter } from 'next/navigation';
 
 export function useLogin() {
@@ -64,7 +64,7 @@ export function useLogout() {
 export function useUser() {
   const { data: session, isPending, error, refetch } = useSession();
   return {
-    data: session?.user ?? null,
+    data: (session?.user as User) ?? null,
     isLoading: isPending,
     error,
     refetch,
