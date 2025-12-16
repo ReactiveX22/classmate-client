@@ -1,5 +1,5 @@
+import { Profile } from '@/types/auth';
 import apiClient from '../index';
-import { User, Profile } from '@/types/auth';
 
 export interface StudentData {
   student: any | null;
