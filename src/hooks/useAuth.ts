@@ -1,12 +1,9 @@
 'use client';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { authService } from '@/lib/api/services/auth.service';
-import {
-  useSession as useBetterAuthSession,
-  useSession,
-} from '@/lib/auth-client';
+import { useSession } from '@/lib/auth-client';
 import type { LoginCredentials, SignupCredentials, User } from '@/types/auth';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 export function useLogin() {
