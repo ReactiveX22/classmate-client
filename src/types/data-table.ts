@@ -40,11 +40,11 @@ export type FilterVariant = DataTableConfig['filterVariants'][number];
 export type JoinOperator = DataTableConfig['joinOperators'][number];
 
 export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, 'id'> {
-  id: Extract<keyof TData, string>;
+  id: string;
 }
 
 export interface ExtendedColumnFilter<TData> extends FilterItemSchema {
-  id: Extract<keyof TData, string>;
+  id: string;
 }
 
 export interface DataTableRowAction<TData> {

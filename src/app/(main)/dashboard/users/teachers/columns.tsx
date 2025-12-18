@@ -7,14 +7,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { TeacherData } from '@/lib/api/services/teacher.service';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
 import type { ColumnDef } from '@tanstack/react-table';
+import { format } from 'date-fns';
 import { MoreHorizontal } from 'lucide-react';
 
 export const teacherColumns: ColumnDef<TeacherData>[] = [
@@ -55,14 +54,39 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
     },
     cell: ({ row }) => {
       const name = row.original.user.name;
+
+      return <div className='font-medium'>{name}</div>;
+    },
+  },
+  {
+    accessorKey: 'user.email',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label='Email' />
+    ),
+    meta: {
+      label: 'Email',
+      placeholder: 'Filter by email...',
+      variant: 'text',
+    },
+    cell: ({ row }) => {
+      const email = row.original.user.email;
+      return <div className='truncate'>{email}</div>;
+    },
+  },
+  {
+    accessorKey: 'teacher.title',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label='Title' />
+    ),
+    meta: {
+      label: 'Title',
+      placeholder: 'Filter by title...',
+      variant: 'text',
+    },
+    cell: ({ row }) => {
       const title = row.original.teacher.title;
 
-      return (
-        <div className='flex flex-col'>
-          <span className='font-medium'>{name}</span>
-          <span className='text-xs text-muted-foreground'>{title}</span>
-        </div>
-      );
+      return <div>{title}</div>;
     },
   },
   {
@@ -89,7 +113,7 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
     enableSorting: true,
   },
   {
-    accessorKey: 'user.createdAt',
+    accessorKey: 'createdAt',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} label='Joined' />
     ),
@@ -98,12 +122,20 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
       variant: 'date',
     },
     cell: ({ row }) => {
-      return new Date(
-        row.original.teacher?.joinDate || row.original.user.createdAt
-      ).toLocaleDateString();
+      const dateValue =
+        row.original.teacher?.joinDate || row.original.user.createdAt;
+
+      if (!dateValue) return <span className='text-muted-foreground'>-</span>;
+
+      const date = new Date(dateValue);
+
+      return (
+        <span className='font-medium'>{format(date, 'MMM dd, yyyy')}</span>
+      );
     },
     enableSorting: true,
   },
+
   {
     id: 'actions',
     cell: ({ row }) => {
@@ -123,17 +155,15 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
             }
           ></DropdownMenuTrigger>
           <DropdownMenuContent align='end' className='w-40'>
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(student.user.id)}
-              >
-                Copy User ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>View details</DropdownMenuItem>
-              <DropdownMenuItem>Edit student</DropdownMenuItem>
-            </DropdownMenuGroup>
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(student.user.id)}
+            >
+              <IconEdit /> Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem variant='destructive'>
+              <IconTrash />
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

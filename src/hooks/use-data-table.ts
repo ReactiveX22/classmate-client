@@ -76,7 +76,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     history = 'replace',
     debounceMs = DEBOUNCE_MS,
     throttleMs = THROTTLE_MS,
-    clearOnDefault = false,
+    clearOnDefault = true,
     enableAdvancedFilter = false,
     scroll = false,
     shallow = true,
@@ -166,10 +166,13 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
   const onSortingChange = React.useCallback(
     (updaterOrValue: Updater<SortingState>) => {
       if (typeof updaterOrValue === 'function') {
-        const newSorting = updaterOrValue(sorting);
-        setSorting(newSorting as ExtendedColumnSort<TData>[]);
+        const nextSorting = updaterOrValue(
+          sorting
+        ) as ExtendedColumnSort<TData>[];
+        setSorting(nextSorting.length > 0 ? nextSorting : null);
       } else {
-        setSorting(updaterOrValue as ExtendedColumnSort<TData>[]);
+        const nextSorting = updaterOrValue as ExtendedColumnSort<TData>[];
+        setSorting(nextSorting.length > 0 ? nextSorting : null);
       }
     },
     [sorting, setSorting]

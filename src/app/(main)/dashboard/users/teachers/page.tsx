@@ -1,16 +1,22 @@
 'use client';
 
+import { DataTable } from '@/components/data-table/data-table';
+import { DataTableToolbar } from '@/components/data-table/data-table-toolbar';
 import { AddTeacherDialog } from '@/components/teachers/add-teacher-dialog';
 import { useDataTable } from '@/hooks/use-data-table';
 import { useTableQueryState } from '@/hooks/use-table-query';
 import { useTeachers } from '@/hooks/use-teachers';
+import { TeacherData } from '@/lib/api/services/teacher.service';
+import { ExtendedColumnSort } from '@/types/data-table';
 import { teacherColumns } from './columns';
-import { DataTable } from '@/components/data-table/data-table';
-import { DataTableToolbar } from '@/components/data-table/data-table-toolbar';
-import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
+
+const DEFAULT_SORTING: ExtendedColumnSort<TeacherData>[] = [
+  { id: 'createdAt', desc: true },
+];
 
 export default function TeachersPage() {
-  const { page, perPage, sorting } = useTableQueryState();
+  const { page, perPage, sorting } =
+    useTableQueryState<TeacherData>(DEFAULT_SORTING);
 
   const {
     data: response,
@@ -22,7 +28,6 @@ export default function TeachersPage() {
     sortBy: sorting[0]?.id,
     sortOrder: sorting[0]?.desc ? 'desc' : 'asc',
   });
-
   const students = response?.data || [];
   const pageCount = response?.meta?.totalPages || 1;
 
@@ -30,6 +35,10 @@ export default function TeachersPage() {
     data: students,
     columns: teacherColumns,
     pageCount,
+    initialState: {
+      sorting: DEFAULT_SORTING,
+    },
+    clearOnDefault: true,
   });
 
   return (
