@@ -1,9 +1,10 @@
-import { Profile } from '@/types/auth';
+import { UserProfile } from '@/types/user';
 import apiClient from '../index';
+import { PaginationMeta } from '@/types/pagination';
 
 export interface StudentData {
   student: any | null;
-  userProfile: Profile;
+  userProfile: UserProfile;
   user: {
     id: string;
     name: string;
@@ -15,14 +16,7 @@ export interface StudentData {
 
 export interface StudentsResponse {
   data: StudentData[];
-  meta: {
-    page: string;
-    limit: string;
-    totalItems: number;
-    totalPages: number;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-  };
+  meta: PaginationMeta;
 }
 
 export interface GetStudentsParams {

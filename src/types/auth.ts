@@ -1,33 +1,3 @@
-export interface Profile {
-  firstName: string;
-  lastName: string;
-  displayName: string;
-  phone?: string;
-  bio?: string;
-  // Teacher specific
-  title?: string;
-  joinDate?: string;
-  // Student specific
-  studentId?: string;
-  id: string;
-}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  emailVerified: boolean;
-  image?: string;
-  role?: string; // 'student' | 'instructor' | 'admin'
-  banned: boolean;
-  banReason?: string;
-  banExpires?: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
-  profile?: Profile;
-  organizationId: string;
-}
-
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -49,7 +19,23 @@ export interface AuthResponse {
 export interface Session {
   user: User;
   token: string;
-  expiresAt?: Date; // Optional as backend might not return it in this exact struct for standard JWT stateless flow, but good to keep if used locally
+  expiresAt?: Date;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean;
+  image?: string;
+  role?: Role;
+  status: UserStatus;
+  banned: boolean;
+  banReason?: string;
+  banExpires?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  organizationId: string;
 }
 
 export interface AuthError {
@@ -73,4 +59,12 @@ export interface Organization {
 export enum UserStatus {
   Active = 'active',
   Pending = 'pending',
+}
+
+export enum Role {
+  SuperAdmin = 'super-admin',
+  Admin = 'admin',
+  Instructor = 'instructor',
+  Student = 'student',
+  Staff = 'staff',
 }

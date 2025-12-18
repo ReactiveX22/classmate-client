@@ -13,11 +13,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import type { StudentData } from '@/lib/api/services/student.service';
+import { TeacherData } from '@/lib/api/services/teacher.service';
 import type { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 
-export const columns: ColumnDef<StudentData>[] = [
+export const teacherColumns: ColumnDef<TeacherData>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -41,6 +41,7 @@ export const columns: ColumnDef<StudentData>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+    size: 40,
   },
   {
     accessorKey: 'user.name',
@@ -54,27 +55,15 @@ export const columns: ColumnDef<StudentData>[] = [
     },
     cell: ({ row }) => {
       const name = row.original.user.name;
-      const studentId = row.original.student?.id;
+      const title = row.original.teacher.title;
+
       return (
         <div className='flex flex-col'>
           <span className='font-medium'>{name}</span>
-          <span className='text-xs text-muted-foreground'>{studentId}</span>
+          <span className='text-xs text-muted-foreground'>{title}</span>
         </div>
       );
     },
-    enableSorting: true, // Explicitly enable sorting
-  },
-  {
-    accessorKey: 'user.email',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} label='Email' />
-    ),
-    meta: {
-      label: 'Email',
-      placeholder: 'Filter by email...',
-      variant: 'text',
-    },
-    enableSorting: true,
   },
   {
     accessorKey: 'user.status',
@@ -109,7 +98,9 @@ export const columns: ColumnDef<StudentData>[] = [
       variant: 'date',
     },
     cell: ({ row }) => {
-      return new Date(row.original.user.createdAt).toLocaleDateString();
+      return new Date(
+        row.original.teacher?.joinDate || row.original.user.createdAt
+      ).toLocaleDateString();
     },
     enableSorting: true,
   },
@@ -147,5 +138,6 @@ export const columns: ColumnDef<StudentData>[] = [
         </DropdownMenu>
       );
     },
+    size: 40,
   },
 ];

@@ -1,42 +1,58 @@
 'use client';
 
 import { AddTeacherDialog } from '@/components/teachers/add-teacher-dialog';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { useDataTable } from '@/hooks/use-data-table';
+import { useTableQueryState } from '@/hooks/use-table-query';
+import { useTeachers } from '@/hooks/use-teachers';
+import { teacherColumns } from './columns';
+import { DataTable } from '@/components/data-table/data-table';
+import { DataTableToolbar } from '@/components/data-table/data-table-toolbar';
+import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
 
 export default function TeachersPage() {
+  const { page, perPage, sorting } = useTableQueryState();
+
+  const {
+    data: response,
+    isLoading,
+    isError,
+  } = useTeachers({
+    page,
+    limit: perPage,
+    sortBy: sorting[0]?.id,
+    sortOrder: sorting[0]?.desc ? 'desc' : 'asc',
+  });
+
+  const students = response?.data || [];
+  const pageCount = response?.meta?.totalPages || 1;
+
+  const { table } = useDataTable({
+    data: students,
+    columns: teacherColumns,
+    pageCount,
+  });
+
   return (
-    <div className='flex flex-col gap-6'>
+    <div className='flex flex-col gap-6 p-6'>
       <div className='flex items-center justify-between'>
         <div>
           <h1 className='text-3xl font-bold tracking-tight'>Teachers</h1>
           <p className='text-muted-foreground'>
-            Manage your school's teachers and instructors.
+            Manage your school&apos;s teachers and instructors.
           </p>
         </div>
         <AddTeacherDialog />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>All Teachers</CardTitle>
-          <CardDescription>
-            A list of all teachers in your organization.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className='flex h-[200px] items-center justify-center rounded-md border border-dashed'>
-            <p className='text-muted-foreground text-sm'>
-              Teacher list table will be implemented here.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : isError ? (
+        <div className='text-red-500'>Error loading teachers.</div>
+      ) : (
+        <DataTable table={table} className='w-fit'>
+          <DataTableToolbar table={table} />
+        </DataTable>
+      )}
     </div>
   );
 }
