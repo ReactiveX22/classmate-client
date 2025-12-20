@@ -3,6 +3,7 @@
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableToolbar } from '@/components/data-table/data-table-toolbar';
 import { AddTeacherDialog } from '@/components/teachers/add-teacher-dialog';
+import { TeachersTableActionBar } from '@/components/teachers/teachers-table-action-bar';
 import { useDataTable } from '@/hooks/use-data-table';
 import { useTableQueryState } from '@/hooks/use-table-query';
 import { useTeachers } from '@/hooks/use-teachers';
@@ -58,7 +59,11 @@ export default function TeachersPage() {
       ) : isError ? (
         <div className='text-red-500'>Error loading teachers.</div>
       ) : (
-        <DataTable table={table} className='w-fit'>
+        <DataTable
+          table={table}
+          className='w-fit'
+          actionBar={<TeachersTableActionBar table={table} />}
+        >
           <DataTableToolbar table={table} />
         </DataTable>
       )}

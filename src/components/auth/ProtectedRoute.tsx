@@ -23,8 +23,8 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   if (isPending) {
     return (
       <div className='flex items-center justify-center min-h-screen'>
-        <div className='text-primary'>
-          <IconLoader className='size-4 animate-spin' />
+        <div className='text-primary flex items-center gap-2'>
+          <IconLoader className='size-4 animate-spin' /> Loading...
         </div>
       </div>
     );

@@ -4,18 +4,19 @@ import { DataTable } from '@/components/data-table/data-table';
 import { DataTableToolbar } from '@/components/data-table/data-table-toolbar';
 import { useDataTable } from '@/hooks/use-data-table';
 import { useStudents } from '@/hooks/use-students';
-import { getSortingStateParser } from '@/lib/parsers';
-import { parseAsInteger, useQueryState } from 'nuqs';
+import { useTableQueryState } from '@/hooks/use-table-query';
 import { AddStudentDialog } from '@/components/students/add-student-dialog';
 import { columns } from './columns';
+import { StudentData } from '@/lib/api/services/student.service';
+import { ExtendedColumnSort } from '@/types/data-table';
+
+const DEFAULT_SORTING: ExtendedColumnSort<StudentData>[] = [
+  { id: 'user.createdAt', desc: true },
+];
 
 export default function StudentsPage() {
-  const [page] = useQueryState('page', parseAsInteger.withDefault(1));
-  const [perPage] = useQueryState('perPage', parseAsInteger.withDefault(10));
-  const [sorting] = useQueryState(
-    'sort',
-    getSortingStateParser().withDefault([])
-  );
+  const { page, perPage, sorting } =
+    useTableQueryState<StudentData>(DEFAULT_SORTING);
 
   const {
     data: response,
@@ -35,6 +36,10 @@ export default function StudentsPage() {
     data: students,
     columns,
     pageCount,
+    initialState: {
+      sorting: DEFAULT_SORTING,
+    },
+    clearOnDefault: true,
   });
 
   return (
@@ -54,7 +59,7 @@ export default function StudentsPage() {
       ) : isError ? (
         <div className='text-red-500'>Error loading students.</div>
       ) : (
-        <DataTable table={table}>
+        <DataTable table={table} className='w-fit'>
           <DataTableToolbar table={table} />
         </DataTable>
       )}

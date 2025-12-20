@@ -7,15 +7,18 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { StudentData } from '@/lib/api/services/student.service';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
 import type { ColumnDef } from '@tanstack/react-table';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 import { MoreHorizontal } from 'lucide-react';
+import { useState } from 'react';
+import { EditStudentDialog } from '@/components/students/edit-student-dialog';
+import { DeleteStudentDialog } from '@/components/students/delete-student-dialog';
 
 export const columns: ColumnDef<StudentData>[] = [
   {
@@ -41,6 +44,7 @@ export const columns: ColumnDef<StudentData>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+    size: 40,
   },
   {
     accessorKey: 'user.name',
@@ -54,15 +58,24 @@ export const columns: ColumnDef<StudentData>[] = [
     },
     cell: ({ row }) => {
       const name = row.original.user.name;
-      const studentId = row.original.student?.id;
-      return (
-        <div className='flex flex-col'>
-          <span className='font-medium'>{name}</span>
-          <span className='text-xs text-muted-foreground'>{studentId}</span>
-        </div>
-      );
+      return <div className='font-medium'>{name}</div>;
     },
-    enableSorting: true, // Explicitly enable sorting
+    enableSorting: true,
+  },
+  {
+    accessorKey: 'student.studentId',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label='Student ID' />
+    ),
+    meta: {
+      label: 'Student ID',
+      placeholder: 'Filter by ID...',
+      variant: 'text',
+    },
+    cell: ({ row }) => {
+      const studentId = row.original.student?.studentId;
+      return <div className='truncate'>{studentId || '-'}</div>;
+    },
   },
   {
     accessorKey: 'user.email',
@@ -73,6 +86,10 @@ export const columns: ColumnDef<StudentData>[] = [
       label: 'Email',
       placeholder: 'Filter by email...',
       variant: 'text',
+    },
+    cell: ({ row }) => {
+      const email = row.original.user.email;
+      return <div className='truncate'>{email}</div>;
     },
     enableSorting: true,
   },
@@ -86,15 +103,26 @@ export const columns: ColumnDef<StudentData>[] = [
       variant: 'select',
       options: [
         { label: 'Active', value: 'active' },
-        { label: 'Inactive', value: 'inactive' },
+        { label: 'Pending', value: 'pending' },
         { label: 'Suspended', value: 'suspended' },
       ],
     },
     cell: ({ row }) => {
       const status = row.original.user.status;
       const isActive = status === 'active';
+      const isPending = status === 'pending';
+
       return (
-        <Badge variant={isActive ? 'outline' : 'destructive'}>{status}</Badge>
+        <Badge
+          variant={isActive ? 'outline' : isPending ? 'default' : 'destructive'}
+          className={cn(
+            'capitalize',
+            isPending &&
+              'text-amber-600 dark:text-amber-200 bg-amber-400/10 hover:shadow-amber-500/30'
+          )}
+        >
+          {status}
+        </Badge>
       );
     },
     enableSorting: true,
@@ -109,7 +137,10 @@ export const columns: ColumnDef<StudentData>[] = [
       variant: 'date',
     },
     cell: ({ row }) => {
-      return new Date(row.original.user.createdAt).toLocaleDateString();
+      const date = new Date(row.original.user.createdAt);
+      return (
+        <span className='font-medium'>{format(date, 'MMM dd, yyyy')}</span>
+      );
     },
     enableSorting: true,
   },
@@ -117,35 +148,51 @@ export const columns: ColumnDef<StudentData>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const student = row.original;
+      const [showEditDialog, setShowEditDialog] = useState(false);
+      const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button
-                variant='ghost'
-                className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
-              >
-                <MoreHorizontal className='h-4 w-4' />
-                <span className='sr-only'>Open menu</span>
-              </Button>
-            }
-          ></DropdownMenuTrigger>
-          <DropdownMenuContent align='end' className='w-40'>
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(student.user.id)}
-              >
-                Copy User ID
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant='ghost'
+                  className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
+                >
+                  <MoreHorizontal className='h-4 w-4' />
+                  <span className='sr-only'>Open menu</span>
+                </Button>
+              }
+            ></DropdownMenuTrigger>
+            <DropdownMenuContent align='end' className='w-40'>
+              <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+                <IconEdit /> Edit
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>View details</DropdownMenuItem>
-              <DropdownMenuItem>Edit student</DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuItem
+                variant='destructive'
+                onClick={() => setShowDeleteDialog(true)}
+              >
+                <IconTrash />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <EditStudentDialog
+            student={student}
+            open={showEditDialog}
+            onOpenChange={setShowEditDialog}
+          />
+
+          <DeleteStudentDialog
+            student={student}
+            open={showDeleteDialog}
+            onOpenChange={setShowDeleteDialog}
+          />
+        </>
       );
     },
+    size: 40,
   },
 ];

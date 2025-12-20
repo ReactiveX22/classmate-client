@@ -10,6 +10,12 @@ export interface CreateStudentInput {
   studentId?: string;
 }
 
+export interface UpdateStudentInput {
+  name?: string;
+  studentId?: string;
+  status?: string;
+}
+
 export interface Student {
   id: string;
   userId: string;
@@ -60,6 +66,19 @@ export const studentService = {
   createStudent: async (payload: CreateStudentInput) => {
     const response = await apiClient.post<CreateStudentResponse>(
       '/api/v1/students',
+      payload
+    );
+    return response.data;
+  },
+
+  deleteStudent: async (id: string) => {
+    const response = await apiClient.delete<Student>(`/api/v1/students/${id}`);
+    return response.data;
+  },
+
+  updateStudent: async (id: string, payload: UpdateStudentInput) => {
+    const response = await apiClient.patch<StudentData>(
+      `/api/v1/students/${id}`,
       payload
     );
     return response.data;
