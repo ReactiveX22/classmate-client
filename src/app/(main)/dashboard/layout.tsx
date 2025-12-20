@@ -1,16 +1,16 @@
 'use client';
 
-import { StudentSidebar } from '@/components/dashboard/student-sidebar';
-import { TeacherSidebar } from '@/components/dashboard/teacher-sidebar';
 import { AdminSidebar } from '@/components/dashboard/admin-sidebar';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
+import { StudentSidebar } from '@/components/dashboard/student-sidebar';
+import { TeacherSidebar } from '@/components/dashboard/teacher-sidebar';
 import { Button } from '@/components/ui/button';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
-import { IconBell, IconSettings } from '@tabler/icons-react';
-import { ProfileDropdown } from '@/components/dashboard/profile-dropdown';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { ProfileDropdown } from '@/components/dashboard/profile-dropdown';
 import { useUser } from '@/hooks/useAuth';
+import { IconBell, IconSettings } from '@tabler/icons-react';
 
 export default function DashboardLayout({
   children,

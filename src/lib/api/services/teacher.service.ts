@@ -51,4 +51,9 @@ export const teacherService = {
     });
     return response.data;
   },
+
+  deleteTeacher: async (id: string) => {
+    const response = await apiClient.delete<Teacher>(`/api/v1/teachers/${id}`);
+    return response.data;
+  },
 };

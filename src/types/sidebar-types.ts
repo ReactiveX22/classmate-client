@@ -15,6 +15,7 @@ export type NavLink = BaseNavItem & {
 export type NavCollapsible = BaseNavItem & {
   items: (BaseNavItem & { url: string })[];
   url?: never;
+  open?: boolean;
 };
 
 export type NavItem = NavCollapsible | NavLink;
@@ -25,6 +26,12 @@ export type NavGroup = {
 };
 
 export type SidebarData = {
-  user: User;
+  user: SidebarUser;
   navGroups: NavGroup[];
 };
+
+interface SidebarUser {
+  name: string;
+  email: string;
+  image?: string;
+}

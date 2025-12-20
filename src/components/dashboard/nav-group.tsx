@@ -101,7 +101,7 @@ function SidebarMenuCollapsible({
   const { setOpenMobile } = useSidebar();
   return (
     <Collapsible
-      defaultOpen={checkIsActive(href, item, true)}
+      defaultOpen={checkIsActive(href, item, true) || item.open}
       className='group/collapsible'
       render={
         <SidebarMenuItem>

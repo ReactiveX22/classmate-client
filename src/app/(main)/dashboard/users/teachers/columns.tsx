@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useDeleteTeacher } from '@/hooks/use-teachers';
 import { TeacherData } from '@/lib/api/services/teacher.service';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import type { ColumnDef } from '@tanstack/react-table';
@@ -139,7 +140,8 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const student = row.original;
+      const deleteTeacherMutation = useDeleteTeacher();
+      const teacher = row.original;
 
       return (
         <DropdownMenu>
@@ -156,11 +158,14 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
           ></DropdownMenuTrigger>
           <DropdownMenuContent align='end' className='w-40'>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(student.user.id)}
+              onClick={() => navigator.clipboard.writeText(teacher.user.id)}
             >
               <IconEdit /> Edit
             </DropdownMenuItem>
-            <DropdownMenuItem variant='destructive'>
+            <DropdownMenuItem
+              variant='destructive'
+              onClick={() => deleteTeacherMutation.mutate(teacher.teacher.id)}
+            >
               <IconTrash />
               Delete
             </DropdownMenuItem>

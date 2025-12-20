@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 const protectedRoutes = ['/dashboard'];
-const authRoutes = ['/login', '/signup'];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -11,27 +10,17 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith(route)
   );
 
-  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
-
   const sessionToken = request.cookies.get('better-auth.session_token')?.value;
 
-  const hasValidSession = !!sessionToken && sessionToken.length > 0;
-
-  // 1. If user is on pending verification page, allow access regardless of anything
-  if (pathname === '/pending-verification') {
-    return NextResponse.next();
-  }
+  const hasValidSession = Boolean(
+    sessionToken && sessionToken !== 'undefined' && sessionToken !== 'null'
+  );
 
   if (isProtectedRoute && !hasValidSession) {
     console.log('[Middleware] Blocking access to protected route:', pathname);
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
-  }
-
-  if (isAuthRoute && hasValidSession) {
-    console.log('[Middleware] Redirecting authenticated user from auth page');
-    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   return NextResponse.next();

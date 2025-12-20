@@ -1,23 +1,22 @@
 'use client';
 
+import { Sidebar } from '@/components/ui/sidebar';
+import { SidebarData } from '@/types/sidebar-types';
 import {
-  IconBook,
+  IconActivity,
   IconChartBar,
   IconLayoutDashboard,
   IconSettings,
-  IconUsers,
   IconShieldLock,
-  IconActivity,
+  IconUsers,
 } from '@tabler/icons-react';
 import { AppSidebar } from './app-sidebar';
-import { SidebarData } from '@/types/sidebar-types';
-import { Sidebar } from '@/components/ui/sidebar';
 
 const adminDashboardData: SidebarData = {
   user: {
     name: 'Admin User',
     email: 'admin@classmate.com',
-    avatar: '/avatars/admin.jpg',
+    image: '/avatars/admin.jpg',
   },
   navGroups: [
     {
@@ -31,6 +30,7 @@ const adminDashboardData: SidebarData = {
         {
           title: 'User Management',
           icon: IconUsers,
+          open: true,
           items: [
             {
               title: 'Students',
