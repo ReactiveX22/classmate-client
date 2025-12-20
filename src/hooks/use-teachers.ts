@@ -45,3 +45,20 @@ export function useDeleteTeacher() {
     },
   });
 }
+export function useUpdateTeacher() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) =>
+      teacherService.updateTeacher(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['teachers'] });
+      toast.success('Teacher updated successfully');
+    },
+    onError: (error: AxiosError<ApiError>) => {
+      const apiError = error.response?.data;
+      toast.error('Update Failed', {
+        description: apiError?.message || 'An unexpected error occurred.',
+      });
+    },
+  });
+}

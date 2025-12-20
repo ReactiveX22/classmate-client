@@ -1,5 +1,4 @@
 import { Toaster } from '@/components/ui/sonner';
-import { AuthProvider } from '@/lib/providers/AuthProvider';
 import { Providers } from '@/lib/providers/QueryProvider';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -22,9 +21,7 @@ export default function RootLayout({
     <html lang='en' className={inter.variable}>
       <body className={'antialiased'}>
         <NuqsAdapter>
-          <Providers>
-            <AuthProvider>{children}</AuthProvider>
-          </Providers>
+          <Providers>{children}</Providers>
         </NuqsAdapter>
         <Toaster />
       </body>

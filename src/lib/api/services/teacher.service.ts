@@ -11,6 +11,13 @@ export interface CreateTeacherInput {
   joinDate?: string;
 }
 
+export interface UpdateTeacherInput {
+  name?: string;
+  title?: string;
+  joinDate?: string;
+  status?: string;
+}
+
 export interface Teacher {
   id: string;
   userId: string;
@@ -54,6 +61,14 @@ export const teacherService = {
 
   deleteTeacher: async (id: string) => {
     const response = await apiClient.delete<Teacher>(`/api/v1/teachers/${id}`);
+    return response.data;
+  },
+
+  updateTeacher: async (id: string, payload: UpdateTeacherInput) => {
+    const response = await apiClient.patch<TeacherData>(
+      `/api/v1/teachers/${id}`,
+      payload
+    );
     return response.data;
   },
 };

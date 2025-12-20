@@ -40,36 +40,12 @@ const adminDashboardData: SidebarData = {
               title: 'Teachers',
               url: '/dashboard/users/teachers',
             },
-            {
-              title: 'Admins',
-              url: '/dashboard/users/admins',
-            },
           ],
         },
         {
-          title: 'System',
+          title: 'Settings',
           icon: IconSettings,
-          items: [
-            {
-              title: 'Settings',
-              url: '/dashboard/settings',
-            },
-            {
-              title: 'Audit Logs',
-              url: '/dashboard/logs',
-              icon: IconActivity,
-            },
-            {
-              title: 'Permissions',
-              url: '/dashboard/permissions',
-              icon: IconShieldLock,
-            },
-          ],
-        },
-        {
-          title: 'Reports',
-          url: '/dashboard/reports',
-          icon: IconChartBar,
+          url: '/dashboard/settings',
         },
       ],
     },

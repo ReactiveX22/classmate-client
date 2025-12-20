@@ -9,9 +9,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import { AddTeacherForm } from './add-teacher-form';
+import { IconUserPlus } from '@tabler/icons-react';
 
 export function AddTeacherDialog() {
   const [open, setOpen] = useState(false);
@@ -21,7 +21,7 @@ export function AddTeacherDialog() {
       <DialogTrigger
         render={
           <Button>
-            <IconPlus className='mr-2 h-4 w-4' />
+            <IconUserPlus className='mr-2 h-4 w-4' />
             Add Teacher
           </Button>
         }

@@ -10,12 +10,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useDeleteTeacher } from '@/hooks/use-teachers';
+import { DeleteTeacherDialog } from '@/components/teachers/delete-teacher-dialog';
+import { EditTeacherDialog } from '@/components/teachers/edit-teacher-dialog';
 import { TeacherData } from '@/lib/api/services/teacher.service';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 import { MoreHorizontal } from 'lucide-react';
+import { useState } from 'react';
 
 export const teacherColumns: ColumnDef<TeacherData>[] = [
   {
@@ -100,15 +103,26 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
       variant: 'select',
       options: [
         { label: 'Active', value: 'active' },
-        { label: 'Inactive', value: 'inactive' },
+        { label: 'Pending', value: 'pending' },
         { label: 'Suspended', value: 'suspended' },
       ],
     },
     cell: ({ row }) => {
       const status = row.original.user.status;
       const isActive = status === 'active';
+      const isPending = status === 'pending';
+
       return (
-        <Badge variant={isActive ? 'outline' : 'destructive'}>{status}</Badge>
+        <Badge
+          variant={isActive ? 'outline' : isPending ? 'default' : 'destructive'}
+          className={cn(
+            'capitalize',
+            isPending &&
+              'text-amber-600 dark:text-amber-200 bg-amber-400/10 hover:shadow-amber-500/30'
+          )}
+        >
+          {status}
+        </Badge>
       );
     },
     enableSorting: true,
@@ -140,37 +154,50 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const deleteTeacherMutation = useDeleteTeacher();
       const teacher = row.original;
+      const [showEditDialog, setShowEditDialog] = useState(false);
+      const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button
-                variant='ghost'
-                className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant='ghost'
+                  className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
+                >
+                  <MoreHorizontal className='h-4 w-4' />
+                  <span className='sr-only'>Open menu</span>
+                </Button>
+              }
+            ></DropdownMenuTrigger>
+            <DropdownMenuContent align='end' className='w-40'>
+              <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+                <IconEdit /> Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                variant='destructive'
+                onClick={() => setShowDeleteDialog(true)}
               >
-                <MoreHorizontal className='h-4 w-4' />
-                <span className='sr-only'>Open menu</span>
-              </Button>
-            }
-          ></DropdownMenuTrigger>
-          <DropdownMenuContent align='end' className='w-40'>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(teacher.user.id)}
-            >
-              <IconEdit /> Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              variant='destructive'
-              onClick={() => deleteTeacherMutation.mutate(teacher.teacher.id)}
-            >
-              <IconTrash />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+                <IconTrash />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <EditTeacherDialog
+            teacher={teacher}
+            open={showEditDialog}
+            onOpenChange={setShowEditDialog}
+          />
+
+          <DeleteTeacherDialog
+            teacher={teacher}
+            open={showDeleteDialog}
+            onOpenChange={setShowDeleteDialog}
+          />
+        </>
       );
     },
     size: 40,
