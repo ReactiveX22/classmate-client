@@ -47,7 +47,7 @@ export default function TeachersPage() {
         <div>
           <h1 className='text-3xl font-bold tracking-tight'>Teachers</h1>
           <p className='text-muted-foreground'>
-            Manage your school&apos;s teachers and instructors.
+            Manage your school&apos;s instructors.
           </p>
         </div>
         <AddTeacherDialog />

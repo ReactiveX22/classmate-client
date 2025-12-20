@@ -2,12 +2,11 @@
 
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableToolbar } from '@/components/data-table/data-table-toolbar';
-import { Button } from '@/components/ui/button';
 import { useDataTable } from '@/hooks/use-data-table';
 import { useStudents } from '@/hooks/use-students';
 import { getSortingStateParser } from '@/lib/parsers';
-import { IconUserPlus } from '@tabler/icons-react';
 import { parseAsInteger, useQueryState } from 'nuqs';
+import { AddStudentDialog } from '@/components/students/add-student-dialog';
 import { columns } from './columns';
 
 export default function StudentsPage() {
@@ -47,10 +46,7 @@ export default function StudentsPage() {
             Manage all students in your organization.
           </p>
         </div>
-        <Button>
-          <IconUserPlus className='mr-2 h-4 w-4' />
-          Add Student
-        </Button>
+        <AddStudentDialog />
       </div>
 
       {isLoading ? (
