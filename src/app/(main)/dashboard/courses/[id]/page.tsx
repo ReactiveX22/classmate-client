@@ -14,6 +14,7 @@ import {
   BookMarked,
   Code,
   Book,
+  X,
 } from 'lucide-react';
 import {
   Card,
@@ -30,6 +31,8 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useCourse, useUpdateCourse } from '@/hooks/use-courses';
+import { useDeleteEnrollment } from '@/hooks/use-enrollments';
+import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { IconUsers, IconUserPlus } from '@tabler/icons-react';
 import { AssignTeacherDialog } from '@/components/courses/assign-teacher-dialog';
 import { AssignStudentDialog } from '@/components/courses/assign-student-dialog';
@@ -48,9 +51,14 @@ export default function CourseDetailsPage() {
   const { id } = useParams();
   const { data: course, isLoading, isError } = useCourse(id as string);
   const updateCourseMutation = useUpdateCourse();
+  const deleteEnrollmentMutation = useDeleteEnrollment();
 
   const [showAssignTeacher, setShowAssignTeacher] = React.useState(false);
   const [showAssignStudent, setShowAssignStudent] = React.useState(false);
+  const [studentToDelete, setStudentToDelete] = React.useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   if (isLoading) {
     return (
@@ -261,6 +269,21 @@ export default function CourseDetailsPage() {
                         {en.student.studentId || 'No ID'}
                       </p>
                     </div>
+                    <Button
+                      variant='ghost'
+                      size='icon-sm'
+                      className='size-7 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setStudentToDelete({
+                          id: en.studentId,
+                          name: en.student.user.name,
+                        });
+                      }}
+                      disabled={deleteEnrollmentMutation.isPending}
+                    >
+                      <X className='size-3.5' />
+                    </Button>
                   </div>
                 ))}
 
@@ -310,6 +333,33 @@ export default function CourseDetailsPage() {
         onOpenChange={setShowAssignStudent}
         courseTitle={course.title}
         enrolledStudentIds={course.enrollment?.map((e) => e.studentId) || []}
+      />
+
+      <DeleteConfirmDialog
+        open={!!studentToDelete}
+        onOpenChange={(open) => !open && setStudentToDelete(null)}
+        title='Remove Enrollment'
+        description={
+          <>
+            This will remove <strong>{studentToDelete?.name}</strong> from{' '}
+            <strong>{course.title}</strong>. This action cannot be undone.
+          </>
+        }
+        confirmText='Remove'
+        isLoading={deleteEnrollmentMutation.isPending}
+        onConfirm={() => {
+          if (studentToDelete) {
+            deleteEnrollmentMutation.mutate(
+              {
+                courseId: id as string,
+                studentId: studentToDelete.id,
+              },
+              {
+                onSuccess: () => setStudentToDelete(null),
+              }
+            );
+          }
+        }}
       />
     </div>
   );

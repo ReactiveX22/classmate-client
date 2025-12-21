@@ -21,4 +21,11 @@ export const enrollmentService = {
     );
     return response.data;
   },
+
+  deleteEnrollment: async (
+    courseId: string,
+    studentId: string
+  ): Promise<void> => {
+    await apiClient.delete(`/api/v1/enrollments/${courseId}/${studentId}`);
+  },
 };

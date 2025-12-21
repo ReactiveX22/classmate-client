@@ -24,3 +24,26 @@ export function useCreateEnrollment() {
     },
   });
 }
+
+export function useDeleteEnrollment() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      courseId,
+      studentId,
+    }: {
+      courseId: string;
+      studentId: string;
+    }) => enrollmentService.deleteEnrollment(courseId, studentId),
+    onSuccess: (_, { courseId }) => {
+      queryClient.invalidateQueries({ queryKey: ['courses', courseId] });
+      toast.success('Enrollment removed successfully');
+    },
+    onError: (error: AxiosError<ApiError>) => {
+      const apiError = error.response?.data;
+      toast.error('Failed to remove enrollment', {
+        description: apiError?.message || 'An unexpected error occurred.',
+      });
+    },
+  });
+}
