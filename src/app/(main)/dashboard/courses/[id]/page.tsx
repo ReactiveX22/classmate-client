@@ -185,7 +185,7 @@ export default function CourseDetailsPage() {
             <CardContent>
               {teacher ? (
                 <div className='flex items-center gap-4'>
-                  <Avatar className='size-16 border-2 border-background ring-2 ring-primary/10'>
+                  <Avatar className='size-16'>
                     <AvatarImage
                       src={teacher.user.image || undefined}
                       alt={teacher.user.name}
@@ -252,7 +252,7 @@ export default function CourseDetailsPage() {
                     key={en.studentId}
                     className='flex items-center gap-4 p-4 rounded-xl border bg-card hover:bg-accent/50 transition-all cursor-default group'
                   >
-                    <Avatar className='h-10 w-10 shrink-0 border'>
+                    <Avatar className='h-10 w-10'>
                       <AvatarImage
                         src={en.student.user.image || undefined}
                         alt={en.student.user.name}

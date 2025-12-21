@@ -10,6 +10,7 @@ import { useTeachers } from '@/hooks/use-teachers';
 import { TeacherData } from '@/lib/api/services/teacher.service';
 import { ExtendedColumnSort } from '@/types/data-table';
 import { teacherColumns } from './columns';
+import { PageHeader } from '@/components/common/page-header';
 
 const DEFAULT_SORTING: ExtendedColumnSort<TeacherData>[] = [
   { id: 'createdAt', desc: true },
@@ -44,15 +45,12 @@ export default function TeachersPage() {
 
   return (
     <div className='flex flex-col gap-6 p-6'>
-      <div className='flex items-center justify-between'>
-        <div>
-          <h1 className='text-3xl font-bold tracking-tight'>Teachers</h1>
-          <p className='text-muted-foreground'>
-            Manage your school&apos;s instructors.
-          </p>
-        </div>
+      <PageHeader
+        title='Teachers'
+        description="Manage your school's instructors."
+      >
         <AddTeacherDialog />
-      </div>
+      </PageHeader>
 
       {isLoading ? (
         <div>Loading...</div>

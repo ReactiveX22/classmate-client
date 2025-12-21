@@ -9,6 +9,7 @@ import { AddStudentDialog } from '@/components/students/add-student-dialog';
 import { columns } from './columns';
 import { StudentData } from '@/lib/api/services/student.service';
 import { ExtendedColumnSort } from '@/types/data-table';
+import { PageHeader } from '@/components/common/page-header';
 
 const DEFAULT_SORTING: ExtendedColumnSort<StudentData>[] = [
   { id: 'user.createdAt', desc: true },
@@ -44,15 +45,12 @@ export default function StudentsPage() {
 
   return (
     <div className='flex flex-col gap-6 p-6'>
-      <div className='flex items-center justify-between'>
-        <div>
-          <h1 className='text-3xl font-bold tracking-tight'>Students</h1>
-          <p className='text-muted-foreground'>
-            Manage all students in your organization.
-          </p>
-        </div>
+      <PageHeader
+        title='Students'
+        description='Manage all students in your organization.'
+      >
         <AddStudentDialog />
-      </div>
+      </PageHeader>
 
       {isLoading ? (
         <div>Loading...</div>

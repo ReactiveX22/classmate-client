@@ -10,7 +10,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         defaultOptions: {
           queries: {
             retry: process.env.NODE_ENV === 'production' ? 3 : false,
-            staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+            staleTime: 1000 * 60 * 1, // Cache for 1 minute
           },
         },
       })

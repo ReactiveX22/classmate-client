@@ -10,6 +10,8 @@ import { columns } from './columns';
 import { Course } from '@/lib/api/services/course.service';
 import { ExtendedColumnSort } from '@/types/data-table';
 import { useCourses } from '@/hooks/use-courses';
+import { PageHeader } from '@/components/common/page-header';
+import { PlusIcon } from 'lucide-react';
 
 const DEFAULT_SORTING: ExtendedColumnSort<Course>[] = [
   { id: 'createdAt', desc: true },
@@ -45,17 +47,14 @@ export default function CoursesPage() {
 
   return (
     <div className='flex flex-col gap-6 p-6'>
-      <div className='flex items-center justify-between'>
-        <div>
-          <h1 className='text-3xl font-bold tracking-tight'>Courses</h1>
-          <p className='text-muted-foreground'>
-            Manage all courses in your organization.
-          </p>
-        </div>
+      <PageHeader
+        title='Courses'
+        description='Manage all courses in your organization.'
+      >
         <Button render={<Link href='/dashboard/courses/new' />}>
-          Add Course
+          <PlusIcon /> Add Course
         </Button>
-      </div>
+      </PageHeader>
 
       {isLoading ? (
         <div>Loading...</div>
