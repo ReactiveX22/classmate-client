@@ -56,7 +56,7 @@ export function DeleteTeacherDialog({
               e.preventDefault();
               handleDelete();
             }}
-            className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+            variant='destructive'
             disabled={deleteTeacherMutation.isPending}
           >
             {deleteTeacherMutation.isPending ? 'Deleting...' : 'Delete'}

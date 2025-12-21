@@ -45,9 +45,7 @@ export default function DashboardLayout({
             </Button>
             <ProfileDropdown />
           </DashboardHeader>
-          <div className='flex flex-1 flex-col gap-4 p-4 pt-0'>
-            <div className='mt-4'>{children}</div>
-          </div>
+          <div className='flex flex-1 flex-col gap-4'>{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </ProtectedRoute>

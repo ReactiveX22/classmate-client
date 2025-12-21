@@ -1,38 +1,43 @@
 'use client';
 
+import { useState } from 'react';
 import { AddCourseForm } from '@/components/courses/add-course-form';
 import { Button } from '@/components/ui/button';
-import { IconChevronLeft } from '@tabler/icons-react';
-import Link from 'next/link';
+import { FormPageHeader } from '@/components/ui/form-page-header';
+import { IconBook } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
 export default function NewCoursePage() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
-    <div className='flex flex-col gap-6 p-6 max-w-2xl mx-auto'>
-      <div className='flex items-center gap-4'>
+    <div className='flex flex-col min-h-screen'>
+      <FormPageHeader
+        title='Create New Course'
+        description='Add a new course to your organization catalog.'
+        icon={<IconBook className='size-5' />}
+        backLink='/dashboard/courses'
+      >
         <Button
-          variant='ghost'
-          size='icon'
-          render={<Link href='/dashboard/courses' />}
-          className='-ml-2'
+          form='add-course-form'
+          type='submit'
+          disabled={isSubmitting}
+          className='min-w-[100px]'
         >
-          <IconChevronLeft className='size-5' />
+          {isSubmitting ? 'Creating...' : 'Create Course'}
         </Button>
-        <div>
-          <h1 className='text-3xl font-bold tracking-tight'>
-            Create New Course
-          </h1>
-          <p className='text-muted-foreground'>
-            Fill in the details below to add a new course to your organization.
-          </p>
-        </div>
-      </div>
+      </FormPageHeader>
 
-      <div className='bg-card border rounded-lg p-6'>
-        <AddCourseForm onSuccess={() => router.push('/dashboard/courses')} />
-      </div>
+      <main className='flex-1 p-6 md:p-8 max-w-4xl mx-auto w-full'>
+        <div className='bg-card border rounded-xl p-6 shadow-sm'>
+          <AddCourseForm
+            formId='add-course-form'
+            onSubmittingChange={setIsSubmitting}
+            onSuccess={() => router.push('/dashboard/courses')}
+          />
+        </div>
+      </main>
     </div>
   );
 }

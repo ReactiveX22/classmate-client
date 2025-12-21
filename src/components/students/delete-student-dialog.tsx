@@ -59,7 +59,7 @@ export function DeleteStudentDialog({
               e.preventDefault();
               handleDelete();
             }}
-            className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+            variant='destructive'
             disabled={deleteStudentMutation.isPending}
           >
             {deleteStudentMutation.isPending ? 'Deleting...' : 'Delete'}

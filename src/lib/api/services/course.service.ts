@@ -20,7 +20,7 @@ export interface CreateCourseInput {
   code: string;
   title: string;
   description?: string;
-  credit?: number; // DTO uses 'credit'
+  credits?: number;
   semester: string;
   maxStudents?: number;
 }
@@ -30,7 +30,7 @@ export interface UpdateCourseInput {
   code?: string;
   title?: string;
   description?: string;
-  credit?: number;
+  credits?: number;
   semester?: string;
   maxStudents?: number;
 }

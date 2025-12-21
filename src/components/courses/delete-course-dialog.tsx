@@ -44,7 +44,7 @@ export function DeleteCourseDialog({
             This action cannot be undone. This will permanently delete the
             course{' '}
             <strong>
-              {course.name} ({course.code})
+              {course.title} ({course.code})
             </strong>{' '}
             and remove its data from our servers.
           </AlertDialogDescription>
@@ -58,7 +58,7 @@ export function DeleteCourseDialog({
               e.preventDefault();
               handleDelete();
             }}
-            className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+            variant='destructive'
             disabled={deleteCourseMutation.isPending}
           >
             {deleteCourseMutation.isPending ? 'Deleting...' : 'Delete'}

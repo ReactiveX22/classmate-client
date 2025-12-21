@@ -21,7 +21,7 @@ const editCourseSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters long'),
   code: z.string().min(2, 'Course code must be at least 2 characters long'),
   description: z.string(),
-  credit: z.number().min(1, 'Credit must be at least 1'),
+  credits: z.number().min(1, 'Credits must be at least 1'),
   semester: z.string().min(4, 'Semester must be at least 4 characters long'),
   maxStudents: z.number().min(1, 'Must be at least 1 student'),
   teacherId: z.string().uuid('Invalid teacher ID').or(z.literal('')),
@@ -40,7 +40,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
       title: course.title,
       code: course.code,
       description: course.description || '',
-      credit: course.credits,
+      credits: course.credits,
       semester: course.semester,
       maxStudents: course.maxStudents,
       teacherId: course.teacherId || '',
@@ -57,7 +57,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
               title: value.title,
               code: value.code,
               description: value.description || undefined,
-              credit: value.credit,
+              credits: value.credits,
               semester: value.semester,
               maxStudents: value.maxStudents,
               teacherId: value.teacherId || undefined,
@@ -140,7 +140,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
         </form.Field>
 
         <div className='grid grid-cols-2 gap-4'>
-          <form.Field name='credit'>
+          <form.Field name='credits'>
             {(field) => {
               const isInvalid =
                 field.state.meta.isTouched &&

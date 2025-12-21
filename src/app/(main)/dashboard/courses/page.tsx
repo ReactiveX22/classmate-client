@@ -62,7 +62,7 @@ export default function CoursesPage() {
       ) : isError ? (
         <div className='text-red-500'>Error loading courses.</div>
       ) : (
-        <DataTable table={table} className='w-full'>
+        <DataTable table={table} className='w-fit'>
           <DataTableToolbar table={table} />
         </DataTable>
       )}

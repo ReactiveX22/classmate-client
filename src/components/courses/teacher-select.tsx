@@ -109,7 +109,6 @@ export function TeacherSelect({
                 <div className='flex flex-col gap-1 w-full'>
                   <div className='flex items-center justify-between gap-2'>
                     <span className='font-semibold text-sm flex items-center gap-1.5'>
-                      <IconUser className='size-3.5 text-muted-foreground' />
                       {t.user.name}
                     </span>
                     {t.teacher.title && (
@@ -122,7 +121,6 @@ export function TeacherSelect({
                     )}
                   </div>
                   <div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
-                    <IconMail className='size-3 text-muted-foreground/70' />
                     {t.user.email}
                   </div>
                 </div>
