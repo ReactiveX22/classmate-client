@@ -51,6 +51,7 @@ export interface GetStudentsParams {
   limit?: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
+  search?: string;
 }
 
 export const studentService = {

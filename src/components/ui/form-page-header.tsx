@@ -39,7 +39,7 @@ export function FormPageHeader({
   return (
     <header
       className={cn(
-        'sticky top-0 z-20 flex h-16 items-center gap-2 md:gap-4 border-b bg-background/80 backdrop-blur-xl px-4 md:px-6',
+        'sticky top-16 z-30 flex h-16 items-center gap-2 md:gap-4 border-b bg-background/80 backdrop-blur-xl px-4 md:px-6',
         className
       )}
     >

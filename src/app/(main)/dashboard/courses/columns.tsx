@@ -10,10 +10,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { Course } from '@/lib/api/services/course.service';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { IconEdit, IconTrash, IconEye } from '@tabler/icons-react';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { MoreHorizontal } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 import { EditCourseDialog } from '@/components/courses/edit-course-dialog';
 import { DeleteCourseDialog } from '@/components/courses/delete-course-dialog';
@@ -52,7 +53,14 @@ export const columns: ColumnDef<Course>[] = [
       variant: 'text',
     },
     cell: ({ row }) => {
-      return <div className='font-medium'>{row.original.title}</div>;
+      return (
+        <Link
+          href={`/dashboard/courses/${row.original.id}`}
+          className='font-medium hover:underline underline-offset-4 decoration-primary/30 text-primary'
+        >
+          {row.original.title}
+        </Link>
+      );
     },
     enableSorting: true,
   },
@@ -144,7 +152,12 @@ export const columns: ColumnDef<Course>[] = [
                 </Button>
               }
             ></DropdownMenuTrigger>
-            <DropdownMenuContent align='end' className='w-40'>
+            <DropdownMenuContent align='end' className='w-44'>
+              <DropdownMenuItem
+                render={<Link href={`/dashboard/courses/${course.id}`} />}
+              >
+                <IconEye /> View Details
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
                 <IconEdit /> Edit
               </DropdownMenuItem>

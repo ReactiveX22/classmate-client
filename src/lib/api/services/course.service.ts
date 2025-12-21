@@ -1,5 +1,20 @@
+import { User } from '@/types/auth';
 import apiClient from '../index';
 import { PaginationMeta, PaginationParams } from '@/types/pagination';
+
+export interface Enrollment {
+  studentId: string;
+  courseId: string;
+  enrollAt: string;
+  student: {
+    id: string;
+    userId: string;
+    studentId: string | null;
+    createdAt: string;
+    updatedAt: string;
+    user: User;
+  };
+}
 
 export interface Course {
   id: string;
@@ -10,9 +25,20 @@ export interface Course {
   description: string | null;
   credits: number;
   semester: string;
+  status: string;
   maxStudents: number;
   createdAt: string;
   updatedAt: string;
+  teacher?: {
+    id: string;
+    userId: string;
+    title: string | null;
+    joinDate: string | null;
+    createdAt: string;
+    updatedAt: string;
+    user: User;
+  };
+  enrollment?: Enrollment[];
 }
 
 export interface CreateCourseInput {
@@ -45,6 +71,11 @@ export const courseService = {
     const response = await apiClient.get<CoursesResponse>('/api/v1/courses', {
       params,
     });
+    return response.data;
+  },
+
+  getCourseById: async (id: string): Promise<Course> => {
+    const response = await apiClient.get<Course>(`/api/v1/courses/${id}`);
     return response.data;
   },
 

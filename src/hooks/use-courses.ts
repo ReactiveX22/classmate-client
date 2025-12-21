@@ -3,7 +3,10 @@ import {
   UpdateCourseInput,
   courseService,
 } from '@/lib/api/services/course.service';
-import { createCourseQueryOptions } from '@/lib/queryOptions/courseQueryOptions';
+import {
+  createCourseQueryOptions,
+  getCourseQueryOptions,
+} from '@/lib/queryOptions/courseQueryOptions';
 import { PaginationParams } from '@/types/pagination';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -12,6 +15,10 @@ import { ApiError } from '@/types/errors';
 
 export const useCourses = (params?: PaginationParams) => {
   return useQuery(createCourseQueryOptions(params));
+};
+
+export const useCourse = (id: string) => {
+  return useQuery(getCourseQueryOptions(id));
 };
 
 export function useCreateCourse() {
