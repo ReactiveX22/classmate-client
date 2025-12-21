@@ -4,11 +4,11 @@ import { Sidebar } from '@/components/ui/sidebar';
 import { SidebarData } from '@/types/sidebar-types';
 import {
   IconActivity,
-  IconChartBar,
+  IconBook,
+  IconChalkboard,
   IconLayoutDashboard,
+  IconSchool,
   IconSettings,
-  IconShieldLock,
-  IconUsers,
 } from '@tabler/icons-react';
 import { AppSidebar } from './app-sidebar';
 
@@ -28,24 +28,29 @@ const adminDashboardData: SidebarData = {
           icon: IconLayoutDashboard,
         },
         {
-          title: 'User Management',
-          icon: IconUsers,
-          open: true,
-          items: [
-            {
-              title: 'Students',
-              url: '/dashboard/users/students',
-            },
-            {
-              title: 'Teachers',
-              url: '/dashboard/users/teachers',
-            },
-          ],
-        },
-        {
           title: 'Settings',
           icon: IconSettings,
           url: '/dashboard/settings',
+        },
+      ],
+    },
+    {
+      title: 'Manage',
+      items: [
+        {
+          title: 'Students',
+          url: '/dashboard/users/students',
+          icon: IconSchool,
+        },
+        {
+          title: 'Teachers',
+          url: '/dashboard/users/teachers',
+          icon: IconChalkboard,
+        },
+        {
+          title: 'Courses',
+          url: '/dashboard/courses',
+          icon: IconBook,
         },
       ],
     },

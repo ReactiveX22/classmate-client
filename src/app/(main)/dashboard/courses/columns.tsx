@@ -1,0 +1,177 @@
+'use client';
+
+import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import type { Course } from '@/lib/api/services/course.service';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
+import type { ColumnDef } from '@tanstack/react-table';
+import { format } from 'date-fns';
+import { MoreHorizontal } from 'lucide-react';
+import { useState } from 'react';
+import { EditCourseDialog } from '@/components/courses/edit-course-dialog';
+import { DeleteCourseDialog } from '@/components/courses/delete-course-dialog';
+
+export const columns: ColumnDef<Course>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected()}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label='Select all'
+        className='translate-y-0.5'
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label='Select row'
+        className='translate-y-0.5'
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+    size: 40,
+  },
+  {
+    accessorKey: 'title',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label='Title' />
+    ),
+    meta: {
+      label: 'Title',
+      placeholder: 'Filter by title...',
+      variant: 'text',
+    },
+    cell: ({ row }) => {
+      return <div className='font-medium'>{row.original.title}</div>;
+    },
+    enableSorting: true,
+  },
+  {
+    accessorKey: 'code',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label='Code' />
+    ),
+    meta: {
+      label: 'Code',
+      placeholder: 'Filter by code...',
+      variant: 'text',
+    },
+    cell: ({ row }) => {
+      return <div className='font-mono text-xs'>{row.original.code}</div>;
+    },
+    enableSorting: true,
+  },
+  {
+    accessorKey: 'semester',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label='Semester' />
+    ),
+    meta: {
+      label: 'Semester',
+      placeholder: 'Filter by semester...',
+      variant: 'text',
+    },
+    cell: ({ row }) => {
+      return (
+        <div className='text-sm text-muted-foreground'>
+          {row.original.semester}
+        </div>
+      );
+    },
+    enableSorting: true,
+  },
+  {
+    accessorKey: 'credits',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label='Credits' />
+    ),
+    meta: {
+      label: 'Credits',
+      variant: 'text',
+    },
+    cell: ({ row }) => {
+      return <div>{row.original.credits}</div>;
+    },
+    enableSorting: true,
+  },
+  {
+    accessorKey: 'createdAt',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label='Created' />
+    ),
+    meta: {
+      label: 'Created',
+      variant: 'date',
+    },
+    cell: ({ row }) => {
+      const date = new Date(row.original.createdAt);
+      return (
+        <span className='font-medium text-muted-foreground text-xs'>
+          {format(date, 'MMM dd, yyyy')}
+        </span>
+      );
+    },
+    enableSorting: true,
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => {
+      const course = row.original;
+      const [showEditDialog, setShowEditDialog] = useState(false);
+      const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+      return (
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant='ghost'
+                  className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
+                >
+                  <MoreHorizontal className='h-4 w-4' />
+                  <span className='sr-only'>Open menu</span>
+                </Button>
+              }
+            ></DropdownMenuTrigger>
+            <DropdownMenuContent align='end' className='w-40'>
+              <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+                <IconEdit /> Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                variant='destructive'
+                onClick={() => setShowDeleteDialog(true)}
+              >
+                <IconTrash />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <EditCourseDialog
+            course={course}
+            open={showEditDialog}
+            onOpenChange={setShowEditDialog}
+          />
+
+          <DeleteCourseDialog
+            course={course}
+            open={showDeleteDialog}
+            onOpenChange={setShowDeleteDialog}
+          />
+        </>
+      );
+    },
+    size: 40,
+  },
+];

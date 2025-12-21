@@ -44,8 +44,6 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
       onChange: editStudentSchema,
     },
     onSubmit: async ({ value }) => {
-      // Ensure student.student.id exists. If not, we can't update.
-      // Assuming all listed students have a student record.
       if (!student.student?.id) {
         return;
       }
