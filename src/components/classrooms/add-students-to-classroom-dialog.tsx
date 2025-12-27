@@ -15,7 +15,7 @@ import { useAddStudentsToClassroom } from '@/hooks/use-classrooms';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
+import { cn, getInitials } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 
@@ -24,6 +24,7 @@ interface AddStudentsToClassroomDialogProps {
   onOpenChange: (open: boolean) => void;
   classroomId: string;
   classroomName: string;
+  existingStudentIds?: string[];
 }
 
 export function AddStudentsToClassroomDialog({
@@ -31,6 +32,7 @@ export function AddStudentsToClassroomDialog({
   onOpenChange,
   classroomId,
   classroomName,
+  existingStudentIds = [],
 }: AddStudentsToClassroomDialogProps) {
   const [search, setSearch] = React.useState('');
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
@@ -114,39 +116,58 @@ export function AddStudentsToClassroomDialog({
               <div className='space-y-1'>
                 {students
                   .filter((item) => item.student !== null)
-                  .map((item) => (
-                    <div
-                      key={item.student!.id}
-                      className={cn(
-                        'flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors hover:bg-accent/50 group',
-                        selectedIds.includes(item.student!.id) && 'bg-accent'
-                      )}
-                      onClick={() => toggleStudent(item.student!.id)}
-                    >
-                      <Checkbox
-                        checked={selectedIds.includes(item.student!.id)}
-                        onCheckedChange={() => toggleStudent(item.student!.id)}
-                        className='size-5'
-                      />
-                      <Avatar className='size-9 border'>
-                        <AvatarFallback className='text-xs'>
-                          {item.user.name
-                            .split(' ')
-                            .map((n) => n[0])
-                            .join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className='flex-1 min-w-0'>
-                        <p className='text-sm font-medium leading-none truncate'>
-                          {item.user.name}
-                        </p>
-                        <p className='text-xs text-muted-foreground truncate mt-1'>
-                          {item.student?.studentId || 'No ID'} •{' '}
-                          {item.user.email}
-                        </p>
+                  .map((item) => {
+                    const isAlreadyEnrolled = existingStudentIds.includes(
+                      item.user!.id
+                    );
+                    const isSelected = selectedIds.includes(item.user!.id);
+
+                    return (
+                      <div
+                        key={item.student!.id}
+                        className={cn(
+                          'flex items-center gap-3 p-3 rounded-lg transition-colors group',
+                          isAlreadyEnrolled
+                            ? 'opacity-60 cursor-not-allowed bg-muted/50'
+                            : 'cursor-pointer hover:bg-accent/50',
+                          isSelected && !isAlreadyEnrolled && 'bg-accent'
+                        )}
+                        onClick={() =>
+                          !isAlreadyEnrolled && toggleStudent(item.user!.id)
+                        }
+                      >
+                        <Checkbox
+                          checked={isSelected || isAlreadyEnrolled}
+                          disabled={isAlreadyEnrolled}
+                          onCheckedChange={() =>
+                            !isAlreadyEnrolled && toggleStudent(item.user!.id)
+                          }
+                          className='size-5'
+                        />
+                        <Avatar className='size-9 border'>
+                          <AvatarFallback className='text-xs'>
+                            {getInitials(item.user.name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className='flex-1 min-w-0'>
+                          <div className='flex items-center justify-between gap-2'>
+                            <p className='text-sm font-medium leading-none truncate'>
+                              {item.user.name}
+                            </p>
+                            {isAlreadyEnrolled && (
+                              <span className='text-[10px] font-bold uppercase tracking-wider text-muted-foreground bg-muted px-1.5 py-0.5 rounded'>
+                                Joined
+                              </span>
+                            )}
+                          </div>
+                          <p className='text-xs text-muted-foreground truncate mt-1'>
+                            {item.student?.studentId || 'No ID'} •{' '}
+                            {item.user.email}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
               </div>
             )}
           </div>

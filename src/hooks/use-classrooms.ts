@@ -96,3 +96,26 @@ export function useAddStudentsToClassroom() {
     },
   });
 }
+
+export function useRemoveStudentsFromClassroom() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      classroomId,
+      studentIds,
+    }: {
+      classroomId: string;
+      studentIds: string[];
+    }) => classroomService.removeStudentsFromClassroom(classroomId, studentIds),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['classrooms'] });
+      toast.success('Students removed from classroom');
+    },
+    onError: (error: AxiosError<ApiError>) => {
+      const apiError = error.response?.data;
+      toast.error('Failed to Remove Students', {
+        description: apiError?.message || 'An unexpected error occurred.',
+      });
+    },
+  });
+}

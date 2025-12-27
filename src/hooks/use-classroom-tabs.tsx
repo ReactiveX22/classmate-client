@@ -107,6 +107,7 @@ export function useClassroomTabs({
         icon: IconUsers,
         content: (
           <PeopleTab
+            classroomId={classroom.id}
             teacher={teacher}
             classroomMembers={classroomMembers}
             enrolledCount={enrolledCount}

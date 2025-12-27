@@ -124,4 +124,13 @@ export const classroomService = {
       studentIds,
     });
   },
+
+  removeStudentsFromClassroom: async (
+    classroomId: string,
+    studentIds: string[]
+  ): Promise<void> => {
+    await apiClient.delete(`/api/v1/classrooms/${classroomId}/members`, {
+      data: { studentIds },
+    });
+  },
 };
