@@ -52,7 +52,7 @@ export default function DashboardPage() {
       action: 'submitted assignment',
       target: 'Physics 101 Stats',
       time: '2 hours ago',
-      avatar: '/avatars/01.png',
+      avatar: '',
       initials: 'SM',
     },
     {
@@ -60,7 +60,7 @@ export default function DashboardPage() {
       action: 'posted a new announcement',
       target: 'School Holiday Update',
       time: '5 hours ago',
-      avatar: '/avatars/02.png',
+      avatar: '',
       initials: 'JW',
     },
     {
@@ -68,7 +68,7 @@ export default function DashboardPage() {
       action: 'created a new course',
       target: 'Advanced Biology',
       time: '1 day ago',
-      avatar: '/avatars/03.png',
+      avatar: '',
       initials: 'EC',
     },
     {
@@ -76,7 +76,7 @@ export default function DashboardPage() {
       action: 'registered as new student',
       target: '',
       time: '1 day ago',
-      avatar: '/avatars/04.png',
+      avatar: '',
       initials: 'AT',
     },
   ];

@@ -16,7 +16,7 @@ const adminDashboardData: SidebarData = {
   user: {
     name: 'Admin User',
     email: 'admin@classmate.com',
-    image: '/avatars/admin.jpg',
+    image: '',
   },
   navGroups: [
     {
