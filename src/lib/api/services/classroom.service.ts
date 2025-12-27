@@ -35,6 +35,19 @@ export interface ClassroomWithCourse {
   course: Course;
 }
 
+export interface ClassroomMember {
+  classroomId: string;
+  studentId: string;
+  joinedAt: string;
+  student: User;
+}
+
+export interface ClassroomDetail extends Classroom {
+  course: Course;
+  teacher: User;
+  classroomMembers: ClassroomMember[];
+}
+
 export interface CreateClassroomInput {
   courseId: string;
   teacherId: string;
@@ -71,8 +84,8 @@ export const classroomService = {
     return response.data;
   },
 
-  getClassroomById: async (id: string): Promise<ClassroomWithCourse> => {
-    const response = await apiClient.get<ClassroomWithCourse>(
+  getClassroomById: async (id: string): Promise<ClassroomDetail> => {
+    const response = await apiClient.get<ClassroomDetail>(
       `/api/v1/classrooms/${id}`
     );
     return response.data;
@@ -101,5 +114,14 @@ export const classroomService = {
 
   deleteClassroom: async (id: string): Promise<void> => {
     await apiClient.delete(`/api/v1/classrooms/${id}`);
+  },
+
+  addStudentsToClassroom: async (
+    classroomId: string,
+    studentIds: string[]
+  ): Promise<void> => {
+    await apiClient.post(`/api/v1/classrooms/${classroomId}/members`, {
+      studentIds,
+    });
   },
 };

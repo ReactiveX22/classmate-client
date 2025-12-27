@@ -2,7 +2,7 @@ import { queryOptions, UseQueryOptions } from '@tanstack/react-query';
 import {
   classroomService,
   ClassroomsResponse,
-  ClassroomWithCourse,
+  ClassroomDetail,
 } from '../api/services/classroom.service';
 import { PaginationParams } from '@/types/pagination';
 
@@ -24,12 +24,12 @@ export function createClassroomQueryOptions<
 }
 
 export function getClassroomQueryOptions<
-  TData = ClassroomWithCourse,
+  TData = ClassroomDetail,
   TError = Error
 >(
   id: string,
   options?: Omit<
-    UseQueryOptions<ClassroomWithCourse, TError, TData>,
+    UseQueryOptions<ClassroomDetail, TError, TData>,
     'queryKey' | 'queryFn'
   >
 ) {
