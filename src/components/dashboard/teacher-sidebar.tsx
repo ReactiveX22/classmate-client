@@ -70,11 +70,6 @@ export function TeacherSidebar({
                     ],
             },
             {
-              title: 'Students',
-              url: '/dashboard/students',
-              icon: IconUsers,
-            },
-            {
               title: 'Assignments',
               icon: IconClipboardList,
               items: [

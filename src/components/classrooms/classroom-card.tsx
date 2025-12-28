@@ -48,12 +48,6 @@ export function ClassroomCard({ classroom, course }: ClassroomCardProps) {
         <div className='mt-auto pt-4 flex items-center justify-between'>
           <div className='flex items-center gap-4 text-[11px] font-medium text-muted-foreground'>
             <div className='flex items-center gap-1.5'>
-              <IconUsers className='size-3 opacity-40' />
-              <span>
-                {studentCount}/{maxStudents}
-              </span>
-            </div>
-            <div className='flex items-center gap-1.5'>
               <IconBook className='size-3 opacity-40' />
               <span>{course.credits} Credits</span>
             </div>
