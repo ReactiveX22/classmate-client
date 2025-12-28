@@ -59,6 +59,7 @@ export function TeacherSidebar({
             {
               title: 'My Classes',
               icon: IconSchool,
+              open: true,
               items:
                 classroomItems.length > 0
                   ? myClassesItems

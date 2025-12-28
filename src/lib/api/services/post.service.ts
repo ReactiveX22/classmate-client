@@ -3,12 +3,14 @@ import { PaginationMeta, PaginationParams } from '@/types/pagination';
 import { User } from '@/types/auth';
 
 export type PostType = 'announcement' | 'assignment' | 'material' | 'question';
+export type AttachmentType = 'file' | 'link' | 'video' | 'image';
+export type SubmissionType = 'file' | 'text' | 'link' | 'multiple';
 
 export type Attachment = {
   id: string;
   name: string;
   url: string;
-  type: 'file' | 'link' | 'video' | 'image';
+  type: AttachmentType;
   size?: number;
   mimeType?: string;
 };
@@ -17,7 +19,7 @@ export type AssignmentData = {
   dueDate?: string;
   points?: number;
   allowLateSubmission?: boolean;
-  submissionType?: 'file' | 'text' | 'link' | 'multiple';
+  submissionType?: SubmissionType;
 };
 
 export interface Post {
@@ -41,6 +43,33 @@ export interface PostsResponse {
   meta: PaginationMeta;
 }
 
+// DTO for creating a post
+export interface AttachmentDto {
+  name: string;
+  url: string;
+  type: AttachmentType;
+  size?: number;
+  mimeType?: string;
+}
+
+export interface AssignmentDataDto {
+  dueDate?: string;
+  points?: number;
+  allowLateSubmission?: boolean;
+  submissionType?: SubmissionType;
+}
+
+export interface CreatePostDto {
+  classroomId: string;
+  type: PostType;
+  title?: string;
+  content: string;
+  attachments?: AttachmentDto[];
+  assignmentData?: AssignmentDataDto;
+  isPinned?: boolean;
+  commentsEnabled?: boolean;
+}
+
 export const postService = {
   getPosts: async (
     classroomId: string,
@@ -52,6 +81,11 @@ export const postService = {
         params,
       }
     );
+    return response.data;
+  },
+
+  createPost: async (data: CreatePostDto): Promise<Post> => {
+    const response = await apiClient.post<Post>('/api/v1/posts', data);
     return response.data;
   },
 };

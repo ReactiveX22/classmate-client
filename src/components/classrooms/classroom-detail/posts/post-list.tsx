@@ -72,7 +72,6 @@ export function PostList({ classroomId }: PostListProps) {
     return 0;
   });
 
-  console.log(sortedPosts);
   if (posts.length === 0) {
     return null; // Parent will handle empty state
   }

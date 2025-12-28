@@ -25,7 +25,7 @@ export function AssignmentCard({ post }: AssignmentCardProps) {
             <div className='flex items-start justify-between gap-4'>
               <div className='flex-1'>
                 <div className='flex items-center gap-2 flex-wrap mb-1'>
-                  <h3 className='font-medium text-base'>{post.title}</h3>
+                  <h3 className='font-medium text-sm'>{post.title}</h3>
                   {post.isPinned && (
                     <IconPin size={16} className='text-muted-foreground' />
                   )}

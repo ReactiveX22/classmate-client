@@ -25,7 +25,7 @@ export function MaterialCard({ post }: MaterialCardProps) {
           </div>
           <div className='flex-1 min-w-0'>
             <div className='flex items-center gap-2 flex-wrap mb-1'>
-              <h3 className='font-medium text-base'>
+              <h3 className='font-medium text-sm'>
                 {post.title || 'Class Material'}
               </h3>
               {post.isPinned && (
