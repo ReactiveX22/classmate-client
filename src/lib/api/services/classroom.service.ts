@@ -50,7 +50,6 @@ export interface ClassroomDetail extends Classroom {
 
 export interface CreateClassroomInput {
   courseId: string;
-  teacherId: string;
   name: string;
   section: string;
   description?: string;

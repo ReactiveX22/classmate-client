@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { IconBook, IconPlus } from '@tabler/icons-react';
 import { ClassroomCard } from '@/components/classrooms/classroom-card';
 import { ClassroomListSkeleton } from '@/components/classrooms/classroom-list-skeleton';
+import { CreateClassroomDialog } from '@/components/classrooms/create-classroom-dialog';
 
 export default function ClassroomsPage() {
   const {
@@ -24,10 +25,7 @@ export default function ClassroomsPage() {
         title='My Classrooms'
         description='Manage and view all your assigned classrooms'
       >
-        <Button className='gap-2 shadow-sm'>
-          <IconPlus size={18} />
-          Create Classroom
-        </Button>
+        <CreateClassroomDialog />
       </PageHeader>
 
       {isLoading ? (
@@ -56,10 +54,7 @@ export default function ClassroomsPage() {
               You haven't created any classrooms yet. Start by creating a new
               one for your students.
             </p>
-            <Button variant='outline' className='gap-2'>
-              <IconPlus size={18} />
-              Create Your First Classroom
-            </Button>
+            <CreateClassroomDialog />
           </div>
         </div>
       ) : (
