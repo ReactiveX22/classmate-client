@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { IconMessageCircle } from '@tabler/icons-react';
 import { PostList } from './posts/post-list';
 import { usePosts } from '@/hooks/use-posts';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface StreamTabProps {
   classroomId: string;
@@ -53,7 +54,7 @@ export function StreamTab({ classroomId }: StreamTabProps) {
           </CardContent>
         </Card>
       ) : (
-        <div className='flex gap-4'>
+        <div className='flex gap-4 w-full'>
           <Card className='w-64 h-fit'>
             <CardHeader>
               <CardTitle>Upcoming</CardTitle>

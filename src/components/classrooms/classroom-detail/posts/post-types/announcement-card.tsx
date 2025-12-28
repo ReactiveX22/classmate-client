@@ -7,10 +7,11 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 import { Post } from '@/lib/api/services/post.service';
+import { getInitials } from '@/lib/utils';
 import { IconPin } from '@tabler/icons-react';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, parseISO } from 'date-fns';
 import { MoreVertical } from 'lucide-react';
-import { getAttachmentIcon, getAuthorInitials } from '../post-helpers';
+import { getAttachmentIcon } from '../post-helpers';
 
 interface AnnouncementCardProps {
   post: Post;
@@ -23,13 +24,11 @@ export function AnnouncementCard({ post }: AnnouncementCardProps) {
         <div className='flex items-start gap-3'>
           <Avatar>
             <AvatarImage src={post.author?.image || undefined} />
-            <AvatarFallback>
-              {getAuthorInitials(post.author?.name)}
-            </AvatarFallback>
+            <AvatarFallback>{getInitials(post.author?.name)}</AvatarFallback>
           </Avatar>
           <div className='flex-1 min-w-0'>
             <div className='flex items-center gap-2 flex-wrap'>
-              <p className='font-semibold text-sm'>
+              <p className='font-medium text-sm'>
                 {post.author?.name || 'Unknown'}
               </p>
               {post.isPinned && (
@@ -37,7 +36,7 @@ export function AnnouncementCard({ post }: AnnouncementCardProps) {
               )}
             </div>
             <p className='text-xs text-muted-foreground'>
-              {formatDistanceToNow(new Date(post.createdAt), {
+              {formatDistanceToNow(parseISO(post.createdAt), {
                 addSuffix: true,
               })}
             </p>

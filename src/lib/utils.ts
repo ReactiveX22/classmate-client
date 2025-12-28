@@ -23,7 +23,7 @@ export function formatDate(
   }
 }
 
-export function getInitials(name: string) {
+export function getInitials(name: string | undefined) {
   if (!name) {
     return '';
   }

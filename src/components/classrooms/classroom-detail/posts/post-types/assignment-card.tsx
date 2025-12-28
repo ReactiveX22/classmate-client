@@ -15,17 +15,17 @@ interface AssignmentCardProps {
 
 export function AssignmentCard({ post }: AssignmentCardProps) {
   return (
-    <Card className='overflow-hidden hover:shadow-md transition-shadow'>
+    <Card className='overflow-hidden hover:shadow-md transition-shadow cursor-pointer'>
       <CardContent>
         <div className='flex items-start gap-4'>
           <div className='p-3 bg-blue-500/10 rounded-full'>
-            <IconClipboard size={24} className='text-blue-600' />
+            <IconClipboard size={20} className='text-blue-600' />
           </div>
           <div className='flex-1 min-w-0 space-y-2'>
             <div className='flex items-start justify-between gap-4'>
               <div className='flex-1'>
                 <div className='flex items-center gap-2 flex-wrap mb-1'>
-                  <h3 className='font-semibold text-base'>{post.title}</h3>
+                  <h3 className='font-medium text-base'>{post.title}</h3>
                   {post.isPinned && (
                     <IconPin size={16} className='text-muted-foreground' />
                   )}
@@ -48,8 +48,8 @@ export function AssignmentCard({ post }: AssignmentCardProps) {
             </div>
 
             {post.assignmentData?.dueDate && (
-              <div className='flex items-center gap-2 text-sm'>
-                <IconCalendar size={16} className='text-muted-foreground' />
+              <div className='flex items-center gap-1.5 text-xs'>
+                <IconCalendar className='size-4 text-muted-foreground' />
                 <span className='font-medium'>
                   Due {format(new Date(post.assignmentData.dueDate), 'PPp')}
                 </span>

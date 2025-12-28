@@ -83,8 +83,8 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
       />
 
       {/* Tabbed Content */}
-      <Tabs defaultValue='stream' className='w-full'>
-        <TabsList className='w-full justify-start overflow-x-auto h-auto p-1 bg-muted/50'>
+      <Tabs defaultValue='stream' className='w-full relative'>
+        <TabsList className='w-full justify-start overflow-x-auto h-auto p-1 bg-muted'>
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (

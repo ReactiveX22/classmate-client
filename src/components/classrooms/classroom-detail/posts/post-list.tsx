@@ -64,14 +64,22 @@ export function PostList({ classroomId }: PostListProps) {
   }
 
   const posts = data?.pages.flatMap((page) => page.data) ?? [];
-  console.log(posts);
+
+  // Sort posts: pinned posts first, then by creation date
+  const sortedPosts = posts.sort((a, b) => {
+    if (a.isPinned && !b.isPinned) return -1;
+    if (!a.isPinned && b.isPinned) return 1;
+    return 0;
+  });
+
+  console.log(sortedPosts);
   if (posts.length === 0) {
     return null; // Parent will handle empty state
   }
 
   return (
-    <div className='space-y-4'>
-      {posts.map((post) => (
+    <div className='space-y-4 w-full max-w-2xl'>
+      {sortedPosts.map((post) => (
         <PostCard key={post.id} post={post} />
       ))}
 
