@@ -1,10 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Post } from '@/lib/api/services/post.service';
 import { getInitials } from '@/lib/utils';
-import { IconHelpCircle, IconPaperclip, IconPin } from '@tabler/icons-react';
+import { IconPin } from '@tabler/icons-react';
 import { formatDistanceToNow } from 'date-fns';
+import { AttachmentDisplay } from './attachment-display';
 
 interface QuestionCardProps {
   post: Post;
@@ -39,19 +39,13 @@ export function QuestionCard({ post }: QuestionCardProps) {
         </div>
       </CardHeader>
 
-      <CardContent className='space-y-3'>
-        <p className='text-sm text-foreground leading-relaxed'>
+      <CardContent className='space-y-4'>
+        <p className='text-sm text-foreground leading-relaxed whitespace-pre-wrap'>
           {post.content}
         </p>
 
         {post.attachments && post.attachments.length > 0 && (
-          <div className='flex items-center gap-2 pt-2 text-xs text-muted-foreground'>
-            <IconPaperclip size={14} />
-            <span>
-              {post.attachments.length}{' '}
-              {post.attachments.length === 1 ? 'attachment' : 'attachments'}
-            </span>
-          </div>
+          <AttachmentDisplay attachments={post.attachments} />
         )}
       </CardContent>
     </Card>

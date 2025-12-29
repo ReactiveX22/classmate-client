@@ -11,7 +11,7 @@ import { getInitials } from '@/lib/utils';
 import { IconPin } from '@tabler/icons-react';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { MoreVertical } from 'lucide-react';
-import { getAttachmentIcon } from '../post-helpers';
+import { AttachmentDisplay } from './attachment-display';
 
 interface AnnouncementCardProps {
   post: Post;
@@ -49,40 +49,13 @@ export function AnnouncementCard({ post }: AnnouncementCardProps) {
         </CardAction>
       </CardHeader>
 
-      <CardContent className='space-y-3 pt-0'>
+      <CardContent className='space-y-4 pt-0'>
         <p className='text-sm text-foreground whitespace-pre-wrap leading-relaxed'>
           {post.content}
         </p>
 
         {post.attachments && post.attachments.length > 0 && (
-          <div className='grid gap-2 pt-2'>
-            {post.attachments.map((attachment) => {
-              const Icon = getAttachmentIcon(attachment.type);
-              return (
-                <a
-                  key={attachment.id}
-                  href={attachment.url}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='flex items-center gap-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors group'
-                >
-                  <div className='p-2 bg-muted rounded-md group-hover:bg-muted/80'>
-                    <Icon size={20} className='text-muted-foreground' />
-                  </div>
-                  <div className='flex-1 min-w-0'>
-                    <p className='text-sm font-medium truncate'>
-                      {attachment.name}
-                    </p>
-                    {attachment.size && (
-                      <p className='text-xs text-muted-foreground'>
-                        {(attachment.size / 1024).toFixed(1)} KB
-                      </p>
-                    )}
-                  </div>
-                </a>
-              );
-            })}
-          </div>
+          <AttachmentDisplay attachments={post.attachments} />
         )}
       </CardContent>
     </Card>
