@@ -2,6 +2,7 @@
 
 import { useUser } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function AuthLayout({
   children,
@@ -11,9 +12,11 @@ export default function AuthLayout({
   const router = useRouter();
   const { data: user } = useUser();
 
-  if (user) {
-    router.push('/dashboard');
-  }
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard');
+    }
+  }, [user]);
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-muted/30 p-4'>

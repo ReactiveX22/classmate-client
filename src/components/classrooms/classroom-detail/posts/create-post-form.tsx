@@ -25,18 +25,20 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useCreatePost } from '@/hooks/use-create-post';
+import { UploadResult } from '@/hooks/use-upload-attachment';
 import {
   CreatePostDto,
   PostType,
   SubmissionType,
 } from '@/lib/api/services/post.service';
 import { cn } from '@/lib/utils';
-import { IconCalendar, IconPaperclip } from '@tabler/icons-react';
+import { IconCalendar } from '@tabler/icons-react';
 import { useForm } from '@tanstack/react-form';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { AttachmentUpload } from './attachment-upload';
 
 // Zod Schemas
 const baseSchema = z.object({
@@ -91,6 +93,7 @@ export function CreatePostForm({
 }: CreatePostFormProps) {
   const { mutate: createPost, isPending } = useCreatePost();
   const [globalError, setGlobalError] = useState('');
+  const [attachments, setAttachments] = useState<UploadResult[]>([]);
 
   const form = useForm({
     defaultValues: {
@@ -101,7 +104,7 @@ export function CreatePostForm({
       title: '',
     } as PostFormData,
     validators: {
-      onChange: postSchema,
+      onSubmit: postSchema,
     },
     onSubmit: async ({ value }) => {
       setGlobalError('');
@@ -113,6 +116,7 @@ export function CreatePostForm({
           isPinned: value.isPinned,
           commentsEnabled: value.commentsEnabled,
           title: value.title?.trim() || undefined,
+          attachments: attachments.length > 0 ? attachments : undefined,
         };
 
         if (value.type === 'assignment') {
@@ -125,6 +129,7 @@ export function CreatePostForm({
         await createPost(payload, {
           onSuccess: () => {
             form.reset();
+            setAttachments([]);
             onSuccess?.();
           },
         });
@@ -165,7 +170,7 @@ export function CreatePostForm({
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue className='capitalize ' />
+                  <SelectValue className='capitalize' />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value='announcement'>Announcement</SelectItem>
@@ -185,11 +190,8 @@ export function CreatePostForm({
             const isRequired = type === 'assignment' || type === 'material';
             if (!isRequired && type !== 'question' && type !== 'announcement')
               return null;
-            // Always show title for assignment/material. Optional/Hidden for others?
-            // Requirement: Assignment/Material need title.
-            // We can show it for all, but make it required for assign/material.
 
-            if (type === 'announcement') return null; // Announcements usually don't have titles in this design
+            if (type === 'announcement') return null;
 
             return (
               <form.Field name='title'>
@@ -350,14 +352,12 @@ export function CreatePostForm({
           }
         />
 
-        {/* Attachments Placeholder */}
-        <div className='grid gap-2'>
-          <Label className='text-muted-foreground'>Attachments</Label>
-          <div className='border border-dashed rounded-lg p-4 flex flex-col items-center justify-center text-muted-foreground bg-muted/10'>
-            <IconPaperclip className='h-8 w-8 mb-2 opacity-50' />
-            <p className='text-sm'>Attachment uploads coming soon</p>
-          </div>
-        </div>
+        {/* Attachments Upload */}
+        <AttachmentUpload
+          classroomId={classroomId}
+          attachments={attachments}
+          onAttachmentsChange={setAttachments}
+        />
 
         {/* Footer Options */}
         <div className='flex flex-col gap-3 pt-2'>
@@ -400,8 +400,6 @@ export function CreatePostForm({
       )}
 
       <div className='flex justify-end gap-2'>
-        {/* Cancel button handled by parent/dialog close usually, but we can emit strict close if needed, 
-             or just let the form submission handle the success close. */}
         <form.Subscribe
           selector={(state) => [state.canSubmit, state.isSubmitting]}
           children={([canSubmit, isSubmitting]) => (

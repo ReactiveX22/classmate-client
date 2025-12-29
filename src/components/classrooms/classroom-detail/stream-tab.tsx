@@ -28,9 +28,11 @@ export function StreamTab({ classroomId }: StreamTabProps) {
       <div className='flex gap-4 w-full'>
         <Card className='hidden md:block w-64 h-fit shrink-0'>
           <CardHeader>
-            <CardTitle>Upcoming</CardTitle>
+            <CardTitle className='text-sm'>Upcoming</CardTitle>
           </CardHeader>
-          <CardContent>No work due soon</CardContent>
+          <CardContent className='text-xs text-muted-foreground'>
+            No work due soon
+          </CardContent>
         </Card>
 
         <div className='flex-1 max-w-xl space-y-4'>
