@@ -1,3 +1,4 @@
+import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -6,11 +7,19 @@ import {
   CardContent,
   CardHeader,
 } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useDeletePost } from '@/hooks/use-delete-post';
 import { Post } from '@/lib/api/services/post.service';
 import { getInitials } from '@/lib/utils';
 import { IconPin } from '@tabler/icons-react';
 import { formatDistanceToNow, parseISO } from 'date-fns';
-import { MoreVertical } from 'lucide-react';
+import { Edit2, MoreVertical, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { AttachmentDisplay } from './attachment-display';
 
 interface AnnouncementCardProps {
@@ -18,46 +27,94 @@ interface AnnouncementCardProps {
 }
 
 export function AnnouncementCard({ post }: AnnouncementCardProps) {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const deletePost = useDeletePost();
+
+  const handleDelete = () => {
+    deletePost.mutate(
+      {
+        classroomId: post.classroomId,
+        postId: post.id,
+      },
+      {
+        onSuccess: () => {
+          setShowDeleteDialog(false);
+        },
+      }
+    );
+  };
+
   return (
-    <Card className='overflow-hidden hover:shadow-md transition-shadow'>
-      <CardHeader>
-        <div className='flex items-start gap-3'>
-          <Avatar>
-            <AvatarImage src={post.author?.image || undefined} />
-            <AvatarFallback>{getInitials(post.author?.name)}</AvatarFallback>
-          </Avatar>
-          <div className='flex-1 min-w-0'>
-            <div className='flex items-center gap-2 flex-wrap'>
-              <p className='font-medium text-sm'>
-                {post.author?.name || 'Unknown'}
+    <>
+      <Card className='overflow-hidden hover:shadow-md transition-shadow'>
+        <CardHeader>
+          <div className='flex items-start gap-3'>
+            <Avatar>
+              <AvatarImage src={post.author?.image || undefined} />
+              <AvatarFallback>{getInitials(post.author?.name)}</AvatarFallback>
+            </Avatar>
+            <div className='flex-1 min-w-0'>
+              <div className='flex items-center gap-2 flex-wrap'>
+                <p className='font-medium text-sm'>
+                  {post.author?.name || 'Unknown'}
+                </p>
+                {post.isPinned && (
+                  <IconPin size={16} className='text-muted-foreground' />
+                )}
+              </div>
+              <p className='text-xs text-muted-foreground'>
+                {formatDistanceToNow(parseISO(post.createdAt), {
+                  addSuffix: true,
+                })}
               </p>
-              {post.isPinned && (
-                <IconPin size={16} className='text-muted-foreground' />
-              )}
             </div>
-            <p className='text-xs text-muted-foreground'>
-              {formatDistanceToNow(parseISO(post.createdAt), {
-                addSuffix: true,
-              })}
-            </p>
           </div>
-        </div>
-        <CardAction>
-          <Button variant='ghost' size='icon-sm'>
-            <MoreVertical />
-          </Button>
-        </CardAction>
-      </CardHeader>
+          <CardAction>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button variant='ghost' size='icon-sm'>
+                    <MoreVertical />
+                  </Button>
+                }
+              />
+              <DropdownMenuContent align='end'>
+                <DropdownMenuItem disabled>
+                  <Edit2 />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  variant='destructive'
+                  onClick={() => setShowDeleteDialog(true)}
+                >
+                  <Trash2 />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </CardAction>
+        </CardHeader>
 
-      <CardContent className='space-y-4 pt-0'>
-        <p className='text-sm text-foreground whitespace-pre-wrap leading-relaxed'>
-          {post.content}
-        </p>
+        <CardContent className='space-y-4 pt-0'>
+          <p className='text-sm text-foreground whitespace-pre-wrap leading-relaxed'>
+            {post.content}
+          </p>
 
-        {post.attachments && post.attachments.length > 0 && (
-          <AttachmentDisplay attachments={post.attachments} />
-        )}
-      </CardContent>
-    </Card>
+          {post.attachments && post.attachments.length > 0 && (
+            <AttachmentDisplay attachments={post.attachments} />
+          )}
+        </CardContent>
+      </Card>
+
+      <DeleteConfirmDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        title='Delete Announcement'
+        description='Are you sure you want to delete this announcement? This action cannot be undone.'
+        onConfirm={handleDelete}
+        confirmText='Delete'
+        isLoading={deletePost.isPending}
+      />
+    </>
   );
 }

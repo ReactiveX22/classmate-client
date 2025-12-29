@@ -91,7 +91,7 @@ export function CreatePostForm({
   classroomId,
   onSuccess,
 }: CreatePostFormProps) {
-  const { mutate: createPost, isPending } = useCreatePost();
+  const { mutateAsync: createPost, isPending } = useCreatePost();
   const [globalError, setGlobalError] = useState('');
   const [attachments, setAttachments] = useState<UploadResult[]>([]);
 
@@ -125,19 +125,14 @@ export function CreatePostForm({
           };
         }
 
-        await createPost(
-          { classroomId, data: payload },
-          {
-            onSuccess: () => {
-              form.reset();
-              setAttachments([]);
-              onSuccess?.();
-            },
-          }
-        );
+        await createPost({ classroomId, data: payload });
+
+        form.reset();
+        setAttachments([]);
+        onSuccess?.();
       } catch (error) {
         setGlobalError('Failed to create post. Please try again.');
-        toast.error('Failed to create post');
+        // Note: useCreatePost already has toast.error in its onError
       }
     },
   });

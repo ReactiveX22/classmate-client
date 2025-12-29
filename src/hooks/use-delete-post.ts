@@ -1,19 +1,19 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { postService, CreatePostDto } from '@/lib/api/services/post.service';
+import { postService } from '@/lib/api/services/post.service';
 import { toast } from 'sonner';
 import { handleApiError } from '@/lib/api';
 
-export const useCreatePost = () => {
+export const useDeletePost = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({
       classroomId,
-      data,
+      postId,
     }: {
       classroomId: string;
-      data: CreatePostDto;
-    }) => postService.createPost(classroomId, data),
+      postId: string;
+    }) => postService.deletePost(classroomId, postId),
     onSuccess: (_, variables) => {
       // Invalidate posts query to refetch
       queryClient.invalidateQueries({
@@ -21,11 +21,11 @@ export const useCreatePost = () => {
         refetchType: 'all',
       });
 
-      toast.success('Post created successfully!');
+      toast.success('Post deleted successfully!');
     },
     onError: (error) => {
       const errorMessage = handleApiError(error);
-      toast.error(`Failed to create post: ${errorMessage}`);
+      toast.error(`Failed to delete post: ${errorMessage}`);
     },
   });
 };

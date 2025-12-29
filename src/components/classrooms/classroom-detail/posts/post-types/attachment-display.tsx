@@ -63,6 +63,36 @@ export function AttachmentDisplay({
     setImageErrors((prev) => new Set(prev).add(attachmentId));
   };
 
+  const handleDownload = async (
+    e: React.MouseEvent,
+    attachment: Attachment
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (attachment.type === 'link') {
+      window.open(attachment.url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    try {
+      const response = await fetch(getProxiedUrl(attachment.url));
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = attachment.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
+      // Fallback
+      window.open(getProxiedUrl(attachment.url), '_blank');
+    }
+  };
+
   if (variant === 'compact') {
     return (
       <div className='grid gap-2'>
@@ -142,10 +172,7 @@ export function AttachmentDisplay({
                 variant='ghost'
                 size='icon-sm'
                 className='opacity-0 group-hover:opacity-100 transition-opacity'
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.open(getProxiedUrl(attachment.url), '_blank');
-                }}
+                onClick={(e) => handleDownload(e, attachment)}
               >
                 {isLink ? (
                   <IconExternalLink className='h-4 w-4' />
@@ -306,11 +333,8 @@ export function AttachmentDisplay({
                 <Button
                   variant='ghost'
                   size='icon-sm'
-                  className='opacity-0 group-hover:opacity-100 transition-opacity'
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.open(getProxiedUrl(attachment.url), '_blank');
-                  }}
+                  className='opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer'
+                  onClick={(e) => handleDownload(e, attachment)}
                 >
                   {isLink ? (
                     <IconExternalLink className='h-4 w-4' />

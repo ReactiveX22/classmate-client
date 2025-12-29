@@ -102,4 +102,8 @@ export const postService = {
       `/api/v1/classrooms/${classroomId}/posts/upload/${attachmentId}`
     );
   },
+
+  deletePost: async (classroomId: string, postId: string): Promise<void> => {
+    await apiClient.delete(`/api/v1/classrooms/${classroomId}/posts/${postId}`);
+  },
 };
