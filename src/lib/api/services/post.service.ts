@@ -60,7 +60,6 @@ export interface AssignmentDataDto {
 }
 
 export interface CreatePostDto {
-  classroomId: string;
   type: PostType;
   title?: string;
   content: string;
@@ -84,8 +83,23 @@ export const postService = {
     return response.data;
   },
 
-  createPost: async (data: CreatePostDto): Promise<Post> => {
-    const response = await apiClient.post<Post>('/api/v1/posts', data);
+  createPost: async (
+    classroomId: string,
+    data: CreatePostDto
+  ): Promise<Post> => {
+    const response = await apiClient.post<Post>(
+      `/api/v1/classrooms/${classroomId}/posts`,
+      data
+    );
     return response.data;
+  },
+
+  removeAttachment: async (
+    classroomId: string,
+    attachmentId: string
+  ): Promise<void> => {
+    await apiClient.delete(
+      `/api/v1/classrooms/${classroomId}/posts/upload/${attachmentId}`
+    );
   },
 };

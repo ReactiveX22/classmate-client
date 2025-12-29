@@ -16,6 +16,7 @@ import {
   IconVideo,
   IconX,
 } from '@tabler/icons-react';
+import { postService } from '@/lib/api/services/post.service';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -94,11 +95,17 @@ export function AttachmentUpload({
         status: 'uploading' as const,
       }));
 
+      // Store the starting index before updating state
+      const startIndex = uploads.length;
+
       setUploads((prev) => [...prev, ...newUploads]);
+
+      // Track successful uploads
+      const successfulResults: UploadResult[] = [];
 
       for (let i = 0; i < validFiles.length; i++) {
         const file = validFiles[i];
-        const uploadIndex = uploads.length + i;
+        const uploadIndex = startIndex + i;
 
         try {
           const result = await uploadFile({
@@ -124,7 +131,8 @@ export function AttachmentUpload({
             return updated;
           });
 
-          onAttachmentsChange([...attachments, result]);
+          // Add to successful results array
+          successfulResults.push(result);
         } catch (error) {
           setUploads((prev) => {
             const updated = [...prev];
@@ -136,6 +144,11 @@ export function AttachmentUpload({
             return updated;
           });
         }
+      }
+
+      // After all uploads complete, add all successful ones at once
+      if (successfulResults.length > 0) {
+        onAttachmentsChange([...attachments, ...successfulResults]);
       }
     },
     [classroomId, uploadFile, attachments, onAttachmentsChange, uploads.length]
@@ -159,12 +172,39 @@ export function AttachmentUpload({
     }
   };
 
-  const removeUpload = (index: number) => {
+  const removeUpload = async (index: number) => {
+    const upload = uploads[index];
+
+    // If it was successfully uploaded, also remove from attachments and server
+    if (upload.status === 'success' && upload.result) {
+      try {
+        await postService.removeAttachment(classroomId, upload.result.id);
+      } catch (error) {
+        console.error('Failed to remove attachment from server:', error);
+        // We still remove it from UI state even if server delete fails,
+        // as the user intends to remove it from the post.
+      }
+
+      onAttachmentsChange(
+        attachments.filter((a) => a.id !== upload.result!.id)
+      );
+    }
+
     setUploads((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const removeAttachment = (id: string) => {
+  const removeAttachment = async (id: string) => {
+    try {
+      await postService.removeAttachment(classroomId, id);
+    } catch (error) {
+      console.error('Failed to remove attachment from server:', error);
+    }
+
+    // Remove from attachments
     onAttachmentsChange(attachments.filter((a) => a.id !== id));
+
+    // Also remove from uploads if it's there
+    setUploads((prev) => prev.filter((u) => u.result?.id !== id));
   };
 
   const addLink = () => {
@@ -210,6 +250,21 @@ export function AttachmentUpload({
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
   };
+
+  // Combine uploads and attachments for display
+  const allItems = [
+    ...uploads.map((upload, index) => ({
+      type: 'upload' as const,
+      index,
+      upload,
+    })),
+    ...attachments
+      .filter((att) => !uploads.some((u) => u.result?.id === att.id))
+      .map((attachment) => ({
+        type: 'attachment' as const,
+        attachment,
+      })),
+  ];
 
   return (
     <div className='space-y-4'>
@@ -306,80 +361,88 @@ export function AttachmentUpload({
         </div>
       )}
 
-      {/* Uploading Files */}
-      {uploads.length > 0 && (
+      {/* Combined List: Uploads + Attachments */}
+      {allItems.length > 0 && (
         <div className='space-y-2'>
-          {uploads.map((upload, index) => (
-            <div
-              key={index}
-              className='border rounded-lg p-3 bg-background space-y-2'
-            >
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center gap-2 flex-1 min-w-0'>
-                  {getFileIcon(upload.file.type)}
-                  <div className='flex-1 min-w-0'>
-                    <p className='text-sm font-medium truncate'>
-                      {upload.file.name}
-                    </p>
-                    <p className='text-xs text-muted-foreground'>
-                      {formatFileSize(upload.file.size)}
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  type='button'
-                  variant='ghost'
-                  size='sm'
-                  onClick={() => removeUpload(index)}
+          <Label className='text-sm'>Attached ({allItems.length})</Label>
+          {allItems.map((item, idx) => {
+            if (item.type === 'upload') {
+              const { upload, index } = item;
+              return (
+                <div
+                  key={`upload-${index}`}
+                  className='border rounded-lg p-3 bg-background space-y-2'
                 >
-                  <IconX className='h-4 w-4' />
-                </Button>
-              </div>
-              {upload.status === 'uploading' && (
-                <Progress value={upload.progress} className='h-1' />
-              )}
-              {upload.status === 'error' && (
-                <p className='text-xs text-red-500'>{upload.error}</p>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Uploaded Attachments */}
-      {attachments.length > 0 && (
-        <div className='space-y-2'>
-          <Label className='text-sm'>Attached ({attachments.length})</Label>
-          {attachments.map((attachment) => (
-            <div
-              key={attachment.id}
-              className='border rounded-lg p-3 bg-background flex items-center justify-between'
-            >
-              <div className='flex items-center gap-2 flex-1 min-w-0'>
-                {getFileIcon(
-                  attachment.type === 'link' ? 'link' : attachment.mimeType
-                )}
-                <div className='flex-1 min-w-0'>
-                  <p className='text-sm font-medium truncate'>
-                    {attachment.name}
-                  </p>
-                  {attachment.size > 0 && (
-                    <p className='text-xs text-muted-foreground'>
-                      {formatFileSize(attachment.size)}
-                    </p>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex items-center gap-2 flex-1 min-w-0'>
+                      {getFileIcon(upload.file.type)}
+                      <div className='flex-1 min-w-0'>
+                        <p className='text-sm font-medium truncate'>
+                          {upload.file.name}
+                        </p>
+                        <p className='text-xs text-muted-foreground'>
+                          {formatFileSize(upload.file.size)}
+                          {upload.status === 'uploading' && ' • Uploading...'}
+                          {upload.status === 'success' && ' • Uploaded'}
+                          {upload.status === 'error' && ' • Failed'}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      size='sm'
+                      onClick={() => removeUpload(index)}
+                    >
+                      {upload.status === 'error' ? (
+                        <IconX className='h-4 w-4' />
+                      ) : (
+                        <IconTrash className='h-4 w-4 text-destructive' />
+                      )}
+                    </Button>
+                  </div>
+                  {upload.status === 'uploading' && (
+                    <Progress value={upload.progress} className='h-1' />
+                  )}
+                  {upload.status === 'error' && (
+                    <p className='text-xs text-red-500'>{upload.error}</p>
                   )}
                 </div>
-              </div>
-              <Button
-                type='button'
-                variant='ghost'
-                size='sm'
-                onClick={() => removeAttachment(attachment.id)}
-              >
-                <IconTrash className='h-4 w-4 text-destructive' />
-              </Button>
-            </div>
-          ))}
+              );
+            } else {
+              const { attachment } = item;
+              return (
+                <div
+                  key={attachment.id}
+                  className='border rounded-lg p-3 bg-background flex items-center justify-between'
+                >
+                  <div className='flex items-center gap-2 flex-1 min-w-0'>
+                    {getFileIcon(
+                      attachment.type === 'link' ? 'link' : attachment.mimeType
+                    )}
+                    <div className='flex-1 min-w-0'>
+                      <p className='text-sm font-medium truncate'>
+                        {attachment.name}
+                      </p>
+                      {attachment.size > 0 && (
+                        <p className='text-xs text-muted-foreground'>
+                          {formatFileSize(attachment.size)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <Button
+                    type='button'
+                    variant='ghost'
+                    size='sm'
+                    onClick={() => removeAttachment(attachment.id)}
+                  >
+                    <IconTrash className='h-4 w-4 text-destructive' />
+                  </Button>
+                </div>
+              );
+            }
+          })}
         </div>
       )}
     </div>

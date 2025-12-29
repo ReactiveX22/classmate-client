@@ -110,7 +110,6 @@ export function CreatePostForm({
       setGlobalError('');
       try {
         const payload: CreatePostDto = {
-          classroomId,
           type: value.type,
           content: value.content,
           isPinned: value.isPinned,
@@ -126,13 +125,16 @@ export function CreatePostForm({
           };
         }
 
-        await createPost(payload, {
-          onSuccess: () => {
-            form.reset();
-            setAttachments([]);
-            onSuccess?.();
-          },
-        });
+        await createPost(
+          { classroomId, data: payload },
+          {
+            onSuccess: () => {
+              form.reset();
+              setAttachments([]);
+              onSuccess?.();
+            },
+          }
+        );
       } catch (error) {
         setGlobalError('Failed to create post. Please try again.');
         toast.error('Failed to create post');

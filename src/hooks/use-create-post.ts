@@ -7,7 +7,13 @@ export const useCreatePost = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreatePostDto) => postService.createPost(data),
+    mutationFn: ({
+      classroomId,
+      data,
+    }: {
+      classroomId: string;
+      data: CreatePostDto;
+    }) => postService.createPost(classroomId, data),
     onSuccess: (newPost) => {
       // Invalidate posts query to refetch
       queryClient.invalidateQueries({
