@@ -9,6 +9,7 @@ import { StreamTab } from '@/components/classrooms/classroom-detail/stream-tab';
 import { PeopleTab } from '@/components/classrooms/classroom-detail/people-tab';
 import { SettingsTab } from '@/components/classrooms/classroom-detail/settings-tab';
 import { PlaceholderTab } from '@/components/classrooms/classroom-detail/placeholder-tab';
+import { ClassworkTab } from '@/components/classrooms/classroom-detail/classwork-tab';
 
 import {
   ClassroomDetail,
@@ -57,13 +58,7 @@ export function useClassroomTabs({
         value: 'classwork',
         label: 'Classwork',
         icon: File,
-        content: (
-          <PlaceholderTab
-            title='Classwork'
-            description='Manage assignments, quizzes, and course materials here.'
-            icon={File}
-          />
-        ),
+        content: <ClassworkTab classroomId={classroom.id} />,
       },
       {
         value: 'attendance',

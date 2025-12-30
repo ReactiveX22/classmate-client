@@ -6,7 +6,7 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 import { Classroom, Course } from '@/lib/api/services/classroom.service';
-import { IconBook, IconChevronRight, IconUsers } from '@tabler/icons-react';
+import { IconBook, IconChevronRight } from '@tabler/icons-react';
 import { Code } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
@@ -17,12 +17,8 @@ interface ClassroomCardProps {
 }
 
 export function ClassroomCard({ classroom, course }: ClassroomCardProps) {
-  // These would ideally come from the API
-  const studentCount = 0; // Placeholder until count is added to API
-  const maxStudents = course.maxStudents || 50;
-
   return (
-    <Card>
+    <Card className='h-full'>
       <CardHeader>
         <div className='space-y-1.5'>
           <h3 className='text-lg font-semibold truncate tracking-tight group-hover:text-primary transition-colors'>
@@ -38,12 +34,10 @@ export function ClassroomCard({ classroom, course }: ClassroomCardProps) {
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        {classroom.description && (
-          <p className='text-[13px] text-muted-foreground line-clamp-2 leading-relaxed min-h-[2.5rem]'>
-            {classroom.description}
-          </p>
-        )}
+      <CardContent className='h-full'>
+        <p className='text-[13px] text-muted-foreground line-clamp-2 leading-relaxed min-h-10'>
+          {classroom.description || 'No description available'}
+        </p>
 
         <div className='mt-auto pt-4 flex items-center justify-between'>
           <div className='flex items-center gap-4 text-[11px] font-medium text-muted-foreground'>
@@ -65,6 +59,7 @@ export function ClassroomCard({ classroom, course }: ClassroomCardProps) {
           size='sm'
           className='w-full'
           variant='outline'
+          nativeButton={false}
         >
           Open Classroom
           <IconChevronRight

@@ -13,19 +13,25 @@ import { CreatePostForm } from './create-post-form';
 
 interface CreatePostDialogProps {
   classroomId: string;
+  trigger?: React.ReactElement;
 }
 
-export function CreatePostDialog({ classroomId }: CreatePostDialogProps) {
+export function CreatePostDialog({
+  classroomId,
+  trigger,
+}: CreatePostDialogProps) {
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button size='sm'>
-            <IconPlus className='mr-2 h-4 w-4' />
-            Create Post
-          </Button>
+          trigger || (
+            <Button size='sm'>
+              <IconPlus className='mr-2 h-4 w-4' />
+              Create Post
+            </Button>
+          )
         }
       />
       <DialogContent className='sm:max-w-[600px] max-h-[90vh] overflow-y-auto'>

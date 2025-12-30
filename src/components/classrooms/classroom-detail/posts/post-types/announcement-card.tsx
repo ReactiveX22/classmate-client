@@ -1,26 +1,15 @@
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardHeader,
-} from '@/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useDeletePost } from '@/hooks/use-delete-post';
 import { Post } from '@/lib/api/services/post.service';
 import { getInitials } from '@/lib/utils';
 import { IconPin } from '@tabler/icons-react';
 import { formatDistanceToNow, parseISO } from 'date-fns';
-import { Edit2, MoreVertical, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { AttachmentDisplay } from './attachment-display';
+import { PostCardActions } from './post-card-actions';
 
 interface AnnouncementCardProps {
   post: Post;
@@ -72,30 +61,11 @@ export function AnnouncementCard({ post }: AnnouncementCardProps) {
               </p>
             </div>
           </div>
-          <CardAction>
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={
-                  <Button variant='ghost' size='icon-sm'>
-                    <MoreVertical />
-                  </Button>
-                }
-              />
-              <DropdownMenuContent align='end'>
-                <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-                  <Edit2 />
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  variant='destructive'
-                  onClick={() => setShowDeleteDialog(true)}
-                >
-                  <Trash2 />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </CardAction>
+          <PostCardActions
+            authorId={post.authorId}
+            onEdit={() => setShowEditDialog(true)}
+            onDelete={() => setShowDeleteDialog(true)}
+          />
         </CardHeader>
 
         <CardContent className='space-y-4 pt-0'>

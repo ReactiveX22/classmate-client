@@ -118,4 +118,11 @@ export const postService = {
     );
     return response.data;
   },
+
+  getPost: async (classroomId: string, postId: string): Promise<Post> => {
+    const response = await apiClient.get<Post>(
+      `/api/v1/classrooms/${classroomId}/posts/${postId}`
+    );
+    return response.data;
+  },
 };

@@ -27,13 +27,6 @@ export const authClient = createAuthClient({
       },
     },
   },
-  fetchOptions: {
-    cache: 'no-store',
-    next: {
-      revalidate: 0,
-      tags: ['user'],
-    },
-  },
 });
 
 export const { signIn, signUp, signOut, useSession } = authClient;
