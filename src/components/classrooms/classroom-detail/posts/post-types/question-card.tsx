@@ -26,8 +26,11 @@ interface QuestionCardProps {
   post: Post;
 }
 
+import { EditPostDialog } from '../edit-post-dialog';
+
 export function QuestionCard({ post }: QuestionCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const deletePost = useDeletePost();
 
   const handleDelete = () => {
@@ -81,7 +84,7 @@ export function QuestionCard({ post }: QuestionCardProps) {
                 }
               />
               <DropdownMenuContent align='end'>
-                <DropdownMenuItem disabled>
+                <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
                   <Edit2 />
                   Edit
                 </DropdownMenuItem>
@@ -116,6 +119,12 @@ export function QuestionCard({ post }: QuestionCardProps) {
         onConfirm={handleDelete}
         confirmText='Delete'
         isLoading={deletePost.isPending}
+      />
+
+      <EditPostDialog
+        post={post}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
       />
     </>
   );

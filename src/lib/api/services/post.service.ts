@@ -106,4 +106,16 @@ export const postService = {
   deletePost: async (classroomId: string, postId: string): Promise<void> => {
     await apiClient.delete(`/api/v1/classrooms/${classroomId}/posts/${postId}`);
   },
+
+  updatePost: async (
+    classroomId: string,
+    postId: string,
+    data: Partial<CreatePostDto>
+  ): Promise<Post> => {
+    const response = await apiClient.patch<Post>(
+      `/api/v1/classrooms/${classroomId}/posts/${postId}`,
+      data
+    );
+    return response.data;
+  },
 };
