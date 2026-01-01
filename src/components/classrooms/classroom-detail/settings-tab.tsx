@@ -1,28 +1,22 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { IconBook, IconCopy } from '@tabler/icons-react';
-
-interface Course {
-  title: string;
-  code: string;
-  credits: number;
-  semester: string;
-  maxStudents: number;
-  status: string;
-  description: string | null;
-}
-
-interface Classroom {
-  section: string;
-  classCode: string;
-  createdAt: string;
-  updatedAt: string;
-  description: string | null;
-}
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { ClassroomDetail, Course } from '@/lib/api/services/classroom.service';
+import { IconBook, IconCopy, IconPencil } from '@tabler/icons-react';
+import { useState } from 'react';
+import { UpdateClassroomDialog } from './settings/update-classroom-dialog';
+import { RoleGuard } from '@/components/common/role-guard';
+import { Role } from '@/types/auth';
 
 interface SettingsTabProps {
-  classroom: Classroom;
+  classroom: ClassroomDetail;
   course: Course;
   onCopyClassCode: (code: string) => void;
 }
@@ -32,20 +26,38 @@ export function SettingsTab({
   course,
   onCopyClassCode,
 }: SettingsTabProps) {
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+
   return (
     <div className='max-w-3xl mx-auto space-y-6 mt-6'>
+      <UpdateClassroomDialog
+        classroom={classroom}
+        open={isUpdateDialogOpen}
+        onOpenChange={setIsUpdateDialogOpen}
+      />
       <Card>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
             <IconBook size={20} />
             Classroom Settings
           </CardTitle>
+          <RoleGuard allowedRoles={[Role.Instructor]}>
+            <CardAction>
+              <Button
+                variant='outline'
+                size='sm'
+                onClick={() => setIsUpdateDialogOpen(true)}
+              >
+                <IconPencil size={20} /> Update
+              </Button>
+            </CardAction>
+          </RoleGuard>
         </CardHeader>
-        <CardContent className='space-y-8'>
+        <CardContent className='space-y-6'>
           {/* Course Information */}
           <section>
-            <h3 className='text-lg font-semibold mb-4'>Course Information</h3>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <h3 className='font-medium mb-4'>Course Information</h3>
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
               <div>
                 <p className='text-sm font-medium text-muted-foreground mb-1'>
                   Course Title
@@ -97,8 +109,14 @@ export function SettingsTab({
 
           {/* Classroom Details */}
           <section>
-            <h3 className='text-lg font-semibold mb-4'>Classroom Details</h3>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <h3 className='font-medium mb-4'>Classroom Details</h3>
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+              <div>
+                <p className='text-sm font-medium text-muted-foreground mb-1'>
+                  Class Name
+                </p>
+                <p className='font-medium'>{classroom.name}</p>
+              </div>
               <div>
                 <p className='text-sm font-medium text-muted-foreground mb-1'>
                   Section
