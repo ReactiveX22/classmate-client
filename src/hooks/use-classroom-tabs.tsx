@@ -10,6 +10,7 @@ import { PeopleTab } from '@/components/classrooms/classroom-detail/people-tab';
 import { SettingsTab } from '@/components/classrooms/classroom-detail/settings-tab';
 import { PlaceholderTab } from '@/components/classrooms/classroom-detail/placeholder-tab';
 import { ClassworkTab } from '@/components/classrooms/classroom-detail/classwork-tab';
+import { ResourcesTab } from '@/components/classrooms/classroom-detail/resources-tab';
 
 import {
   ClassroomDetail,
@@ -76,13 +77,7 @@ export function useClassroomTabs({
         value: 'resources',
         label: 'Resources',
         icon: Book,
-        content: (
-          <PlaceholderTab
-            title='Resources'
-            description='Shared documents, links, and study materials for the classroom.'
-            icon={Book}
-          />
-        ),
+        content: <ResourcesTab classroomId={classroom.id} />,
       },
       {
         value: 'grades',
