@@ -11,7 +11,7 @@ import { PaginationParams } from '@/types/pagination';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
-import { ApiError } from '@/types/errors';
+import { ApiError, ErrorCode } from '@/types/errors';
 
 export const useClassrooms = (params?: PaginationParams) => {
   return useQuery(createClassroomQueryOptions(params));
@@ -114,6 +114,32 @@ export function useRemoveStudentsFromClassroom() {
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;
       toast.error('Failed to Remove Students', {
+        description: apiError?.message || 'An unexpected error occurred.',
+      });
+    },
+  });
+}
+
+export function useJoinClassroom() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (classCode: string) =>
+      classroomService.joinClassroom(classCode),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['classrooms'] });
+      toast.success('Joined classroom successfully');
+    },
+    onError: (error: AxiosError<ApiError>) => {
+      const apiError = error.response?.data;
+
+      if (apiError?.errorCode === ErrorCode.DUPLICATE_KEY) {
+        toast.info('Already a Member', {
+          description: 'You are already a member of this classroom.',
+        });
+        return;
+      }
+
+      toast.error('Failed to Join Classroom', {
         description: apiError?.message || 'An unexpected error occurred.',
       });
     },

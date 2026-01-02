@@ -132,4 +132,10 @@ export const classroomService = {
       data: { studentIds },
     });
   },
+
+  joinClassroom: async (classCode: string): Promise<void> => {
+    await apiClient.post('/api/v1/classrooms/join', {
+      classCode,
+    });
+  },
 };

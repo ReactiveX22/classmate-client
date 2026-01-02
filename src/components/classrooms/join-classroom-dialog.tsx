@@ -17,8 +17,11 @@ import { useForm } from '@tanstack/react-form';
 import { useState } from 'react';
 import z from 'zod';
 
+import { useJoinClassroom } from '@/hooks/use-classrooms';
+
 export function JoinClassroomDialog() {
   const [open, setOpen] = useState(false);
+  const { mutateAsync: joinClassroom } = useJoinClassroom();
 
   const form = useForm({
     defaultValues: {
@@ -30,8 +33,7 @@ export function JoinClassroomDialog() {
       }),
     },
     onSubmit: async ({ value }) => {
-      // Visual only for now
-      console.log('Joining classroom with code:', value.code);
+      await joinClassroom(value.code);
       setOpen(false);
       form.reset();
     },
