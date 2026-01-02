@@ -1,11 +1,12 @@
 'use client';
 
-import { useClassroom } from '@/hooks/use-classrooms';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AddStudentsToClassroomDialog } from '@/components/classrooms/add-students-to-classroom-dialog';
 import { ClassroomHeader } from '@/components/classrooms/classroom-detail/classroom-header';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useClassroomTabs } from '@/hooks/use-classroom-tabs';
+import { useClassroom } from '@/hooks/use-classrooms';
+import { parseAsString, useQueryState } from 'nuqs';
 import { use, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -17,6 +18,11 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
   const { id } = use(params);
   const { data, isLoading, isError } = useClassroom(id);
   const [addStudentsOpen, setAddStudentsOpen] = useState(false);
+
+  const [tab, setTab] = useQueryState(
+    'tab',
+    parseAsString.withDefault('stream')
+  );
 
   const copyClassCode = (code: string) => {
     navigator.clipboard.writeText(code);
@@ -83,7 +89,11 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
       />
 
       {/* Tabbed Content */}
-      <Tabs defaultValue='stream' className='w-full relative'>
+      <Tabs
+        value={tab}
+        onValueChange={(value) => setTab(value as string)}
+        className='w-full relative'
+      >
         <TabsList className='w-full justify-start overflow-x-auto h-auto p-1 bg-muted'>
           {tabs.map((tab) => {
             const Icon = tab.icon;
