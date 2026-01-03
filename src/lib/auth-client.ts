@@ -2,7 +2,7 @@ import { UserStatus } from '@/types/auth';
 import { createAuthClient } from 'better-auth/react';
 
 export const authClient = createAuthClient({
-  baseURL: typeof window !== 'undefined' ? window.location.origin : '',
+  baseURL: process.env.API_URL,
   basePath: '/api/v1/auth',
   user: {
     additionalFields: {
@@ -27,6 +27,26 @@ export const authClient = createAuthClient({
       },
     },
   },
+  plugins: [
+    {
+      id: 'next-cookies-request',
+      fetchPlugins: [
+        {
+          id: 'next-cookies-request-plugin',
+          name: 'next-cookies-request-plugin',
+          hooks: {
+            async onRequest(ctx: any) {
+              if (typeof window === 'undefined') {
+                const { cookies } = await import('next/headers');
+                const headerList = await cookies();
+                ctx.headers.set('cookie', headerList.toString());
+              }
+            },
+          },
+        },
+      ],
+    } as any,
+  ],
 });
 
 export const { signIn, signUp, signOut, useSession } = authClient;

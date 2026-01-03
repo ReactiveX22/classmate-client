@@ -1,6 +1,6 @@
-import apiClient, { handleApiError } from '../index';
 import { authClient } from '@/lib/auth-client';
-import type { LoginCredentials, SignupCredentials, User } from '@/types/auth';
+import type { LoginCredentials, SignupCredentials } from '@/types/auth';
+import { handleApiError } from '../index';
 
 export const authService = {
   async login(credentials: LoginCredentials) {
