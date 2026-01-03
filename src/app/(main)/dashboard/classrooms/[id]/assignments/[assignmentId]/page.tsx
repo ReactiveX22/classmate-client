@@ -1,11 +1,11 @@
 'use client';
 
+import { StudentWorkCard } from '@/components/classrooms/classroom-detail/assignments/student-work-card';
 import { EditPostDialog } from '@/components/classrooms/classroom-detail/posts/edit-post-dialog';
 import { AttachmentDisplay } from '@/components/classrooms/classroom-detail/posts/post-types/attachment-display';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,10 +21,8 @@ import {
   IconArrowLeft,
   IconClipboard,
   IconDotsVertical,
-  IconFilePlus,
   IconMessageCircle,
   IconPencil,
-  IconPlus,
   IconTrash,
 } from '@tabler/icons-react';
 import { format } from 'date-fns';
@@ -202,36 +200,16 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
           </div>
         </div>
 
-        {/* Right Column - Your Work */}
-        <div className='lg:col-span-1 space-y-6'>
-          <Card className='shadow-sm'>
-            <CardHeader className='flex flex-row items-center justify-between border-b border-border/50'>
-              <CardTitle>Your work</CardTitle>
-              <Badge className='text-xs font-medium text-green-700 bg-green-100 dark:bg-green-900/30 dark:text-green-400'>
-                Assigned
-              </Badge>
-            </CardHeader>
-            <CardContent className='space-y-4'>
-              <div className='flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted-foreground/20 rounded-lg bg-muted/5 text-muted-foreground text-sm transition-colors hover:bg-muted/10'>
-                <IconFilePlus
-                  className='mb-3 opacity-40'
-                  stroke={1.5}
-                  size={40}
-                />
-                <span>No work attached</span>
-              </div>
-
-              <Button className='w-full h-10' variant='outline'>
-                <IconPlus size={18} />
-                Add or create
-              </Button>
-
-              <Button className='w-full h-10' variant='default'>
-                Mark as done
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Right Column - Your Work (Students only) */}
+        {!isAuthor && (
+          <div className='lg:col-span-1 space-y-6'>
+            <StudentWorkCard
+              classroomId={classroomId}
+              postId={assignmentId}
+              assignmentData={post.assignmentData}
+            />
+          </div>
+        )}
       </div>
 
       <DeleteConfirmDialog

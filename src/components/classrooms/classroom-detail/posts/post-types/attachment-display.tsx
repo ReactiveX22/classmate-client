@@ -27,6 +27,29 @@ const formatFileSize = (bytes: number) => {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 };
 
+/**
+ * Truncate long file names while preserving the extension.
+ * Example: "VeryLongFileName.pdf" -> "VeryLon...pdf"
+ */
+const truncateFileName = (name: string, maxLength: number = 30): string => {
+  if (name.length <= maxLength) return name;
+
+  const lastDotIndex = name.lastIndexOf('.');
+  const hasExtension = lastDotIndex > 0 && lastDotIndex > name.length - 6;
+
+  if (hasExtension) {
+    const extension = name.slice(lastDotIndex);
+    const baseName = name.slice(0, lastDotIndex);
+    const availableLength = maxLength - extension.length - 3; // 3 for "..."
+
+    if (availableLength > 5) {
+      return baseName.slice(0, availableLength) + '...' + extension;
+    }
+  }
+
+  return name.slice(0, maxLength - 3) + '...';
+};
+
 const getAttachmentIcon = (type: string, mimeType?: string) => {
   if (type === 'image') return IconPhoto;
   if (type === 'video') return IconVideo;
@@ -137,8 +160,11 @@ export function AttachmentDisplay({
                 />
               </div>
               <div className='flex-1 min-w-0'>
-                <p className='text-sm font-medium truncate group-hover:text-primary transition-colors'>
-                  {attachment.name}
+                <p
+                  className='text-sm font-medium truncate group-hover:text-primary transition-colors'
+                  title={attachment.name}
+                >
+                  {truncateFileName(attachment.name, 28)}
                 </p>
                 <div className='flex items-center gap-2 mt-0.5'>
                   {attachment.size !== undefined && attachment.size > 0 && (
@@ -309,8 +335,11 @@ export function AttachmentDisplay({
                   />
                 </div>
                 <div className='flex-1 min-w-0'>
-                  <p className='text-sm font-medium truncate group-hover:text-primary transition-colors'>
-                    {attachment.name}
+                  <p
+                    className='text-sm font-medium truncate group-hover:text-primary transition-colors'
+                    title={attachment.name}
+                  >
+                    {truncateFileName(attachment.name, 40)}
                   </p>
                   <div className='flex items-center gap-2 mt-0.5'>
                     {attachment.size !== undefined && attachment.size > 0 && (
