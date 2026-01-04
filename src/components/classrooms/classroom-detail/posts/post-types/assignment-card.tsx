@@ -122,7 +122,7 @@ export function AssignmentCard({
                     })}
                   </p>
                 </div>
-                <div className='flex flex-col items-end gap-2'>
+                <div className='flex flex-col items-end gap-1.5'>
                   {post.assignmentData?.points && (
                     <Badge
                       variant='outline'
@@ -131,21 +131,20 @@ export function AssignmentCard({
                       {post.assignmentData.points} pts
                     </Badge>
                   )}
-                </div>
-              </div>
-
-              <div className='flex items-center justify-between gap-4 mt-2'>
-                <div className='flex items-center gap-3'>
-                  {post.assignmentData?.dueDate && (
-                    <div className='flex items-center gap-1.5 text-xs'>
-                      <IconCalendar className='size-4 text-muted-foreground' />
-                      <span className='font-medium'>
-                        Due{' '}
-                        {format(new Date(post.assignmentData.dueDate), 'PPp')}
-                      </span>
-                    </div>
+                  {isTeacher && post.submissionStats && (
+                    <Badge
+                      variant='outline'
+                      className={
+                        post.submissionStats.graded ===
+                        post.submissionStats.total
+                          ? 'bg-green-500/5 border-green-200 text-green-700'
+                          : 'bg-amber-500/5 border-amber-200 text-amber-700'
+                      }
+                    >
+                      {post.submissionStats.graded}/{post.submissionStats.total}{' '}
+                      graded
+                    </Badge>
                   )}
-
                   {!isTeacher &&
                     (post.submission ? (
                       getSubmissionBadge(post.submission)
@@ -159,6 +158,15 @@ export function AssignmentCard({
                     ))}
                 </div>
               </div>
+
+              {post.assignmentData?.dueDate && (
+                <div className='flex items-center gap-1.5 text-xs mt-2'>
+                  <IconCalendar className='size-4 text-muted-foreground' />
+                  <span className='font-medium'>
+                    Due {format(new Date(post.assignmentData.dueDate), 'PPp')}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
           <div onClick={(e) => e.stopPropagation()}>

@@ -322,7 +322,10 @@ export function StudentWorkCard({
         <Button
           className='w-full h-10'
           variant='outline'
-          onClick={() => setIsEditing(true)}
+          onClick={() => {
+            setIsEditing(true);
+            setIsAddingAttachment(true);
+          }}
         >
           <IconPlus size={18} />
           Add or create

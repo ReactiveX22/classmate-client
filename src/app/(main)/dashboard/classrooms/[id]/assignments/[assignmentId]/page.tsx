@@ -106,67 +106,70 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
           <IconClipboard size={24} />
         </div>
         <div className='flex-1 space-y-2'>
-          <div className='flex items-start justify-between'>
-            <h1 className='text-3xl font-semibold tracking-tight text-foreground'>
-              {post.title}
-            </h1>
-
-            {isAuthor && (
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <Button
-                      variant='ghost'
-                      size='icon'
-                      className='h-8 w-8 text-muted-foreground'
-                    >
-                      <IconDotsVertical size={20} />
-                      <span className='sr-only'>Actions</span>
-                    </Button>
-                  }
-                />
-                <DropdownMenuContent align='end'>
-                  <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-                    <IconPencil className='mr-2 h-4 w-4' />
-                    Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => setShowDeleteDialog(true)}
-                    className='text-destructive focus:text-destructive'
-                  >
-                    <IconTrash className='mr-2 h-4 w-4' />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-          </div>
-
-          <div className='flex flex-wrap items-center gap-x-2 gap-y-2 text-sm text-muted-foreground'>
-            <span className='font-medium text-foreground'>
-              {post.author?.name}
-            </span>
-            <span>•</span>
-            <span>Posted {format(new Date(post.createdAt), 'MMM d')}</span>
-            {post.assignmentData?.points && (
-              <>
-                <span>•</span>
-                <Badge
-                  variant='outline'
-                  className='bg-blue-500/5 border-blue-200 text-blue-700'
-                >
-                  {post.assignmentData.points} points
-                </Badge>
-              </>
-            )}
-            {post.assignmentData?.dueDate && (
-              <>
-                <span>•</span>
-                <span className='font-medium text-destructive/80'>
-                  Due {format(new Date(post.assignmentData.dueDate), 'PPp')}
+          <div className='flex items-start justify-between gap-4'>
+            <div className='flex-1'>
+              <h1 className='text-3xl font-semibold tracking-tight text-foreground'>
+                {post.title}
+              </h1>
+              <div className='flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground mt-2'>
+                <span className='font-medium text-foreground'>
+                  {post.author?.name}
                 </span>
-              </>
-            )}
+                <span>•</span>
+                <span>Posted {format(new Date(post.createdAt), 'MMM d')}</span>
+              </div>
+            </div>
+
+            <div className='flex items-start gap-3'>
+              <div className='flex flex-col items-end gap-1.5'>
+                {post.assignmentData?.points && (
+                  <Badge
+                    variant='outline'
+                    className='bg-blue-500/5 border-blue-200 text-blue-700'
+                  >
+                    {post.assignmentData.points} points
+                  </Badge>
+                )}
+                {post.assignmentData?.dueDate && (
+                  <Badge
+                    variant='outline'
+                    className='bg-red-500/5 border-red-200 text-red-700'
+                  >
+                    Due {format(new Date(post.assignmentData.dueDate), 'PPp')}
+                  </Badge>
+                )}
+              </div>
+
+              {isAuthor && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    render={
+                      <Button
+                        variant='ghost'
+                        size='icon'
+                        className='h-8 w-8 text-muted-foreground'
+                      >
+                        <IconDotsVertical size={20} />
+                        <span className='sr-only'>Actions</span>
+                      </Button>
+                    }
+                  />
+                  <DropdownMenuContent align='end'>
+                    <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+                      <IconPencil className='mr-2 h-4 w-4' />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setShowDeleteDialog(true)}
+                      className='text-destructive focus:text-destructive'
+                    >
+                      <IconTrash className='mr-2 h-4 w-4' />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
           </div>
         </div>
       </div>

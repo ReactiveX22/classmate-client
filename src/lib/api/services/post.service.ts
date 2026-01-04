@@ -23,6 +23,11 @@ export type AssignmentData = {
   submissionType?: SubmissionType;
 };
 
+export type SubmissionStats = {
+  total: number;
+  graded: number;
+};
+
 export interface Post {
   id: string;
   classroomId: string;
@@ -38,6 +43,7 @@ export interface Post {
   updatedAt: string;
   author?: User;
   submission?: Submission | null;
+  submissionStats?: SubmissionStats | null;
 }
 
 export interface PostsResponse {

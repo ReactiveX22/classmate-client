@@ -104,7 +104,7 @@ export function EditableGradeCell({
         isSaving && 'opacity-70 cursor-not-allowed'
       )}
     >
-      <span>{initialGrade ?? 'Grade'}</span>
+      <span>{initialGrade ?? '___'}</span>
       <span className='text-muted-foreground ml-0.5'>/ {maxPoints}</span>
       <span className='ml-4'>
         {isSaving ? (

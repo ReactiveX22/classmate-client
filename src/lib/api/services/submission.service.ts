@@ -97,12 +97,13 @@ export const submissionService = {
   gradeSubmission: async (
     classroomId: string,
     postId: string,
-    submissionId: string,
-    grade: number
+    studentId: string,
+    grade: number,
+    feedback?: string
   ): Promise<Submission> => {
     const response = await apiClient.patch<Submission>(
-      `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/${submissionId}/grade`,
-      { grade }
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/students/${studentId}/grade`,
+      { grade, ...(feedback && { feedback }) }
     );
     return response.data;
   },

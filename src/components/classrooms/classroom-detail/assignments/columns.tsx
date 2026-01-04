@@ -27,7 +27,7 @@ export const getColumns = (
   classroomId: string,
   postId: string,
   maxPoints: number = 100,
-  onGrade: (submissionId: string, grade: number) => void,
+  onGrade: (studentId: string, grade: number, feedback?: string) => void,
   onReturn: (submissionId: string) => void,
   dueDate?: string | null
 ): ColumnDef<Submission>[] => [
@@ -175,14 +175,14 @@ export const getColumns = (
     ),
     cell: ({ row, table }) => {
       const isSaving =
-        (table.options.meta as any)?.isSavingRow === row.original.id;
+        (table.options.meta as any)?.isSavingRow === row.original.studentId;
       return (
         <EditableGradeCell
           initialGrade={row.original.grade}
           maxPoints={maxPoints}
           isSaving={isSaving}
           onSave={(newGrade) => {
-            onGrade(row.original.id, newGrade);
+            onGrade(row.original.studentId, newGrade);
           }}
         />
       );

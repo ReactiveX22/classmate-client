@@ -9,19 +9,22 @@ export const useGradeSubmission = () => {
     mutationFn: ({
       classroomId,
       postId,
-      submissionId,
+      studentId,
       grade,
+      feedback,
     }: {
       classroomId: string;
       postId: string;
-      submissionId: string;
+      studentId: string;
       grade: number;
+      feedback?: string;
     }) =>
       submissionService.gradeSubmission(
         classroomId,
         postId,
-        submissionId,
-        grade
+        studentId,
+        grade,
+        feedback
       ),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({

@@ -69,12 +69,13 @@ export function StudentWorkTab({
   const submissions = data?.data || [];
   const meta = data?.meta;
 
-  const handleGrade = (submissionId: string, grade: number) => {
+  const handleGrade = (studentId: string, grade: number, feedback?: string) => {
     gradeMutation.mutate({
       classroomId,
       postId,
-      submissionId,
+      studentId,
       grade,
+      feedback,
     });
   };
 
@@ -131,7 +132,7 @@ export function StudentWorkTab({
     pageCount: meta?.totalPages || -1,
     meta: {
       isSavingRow: gradeMutation.isPending
-        ? gradeMutation.variables?.submissionId
+        ? gradeMutation.variables?.studentId
         : null,
     },
     onPaginationChange: (updater) => {
