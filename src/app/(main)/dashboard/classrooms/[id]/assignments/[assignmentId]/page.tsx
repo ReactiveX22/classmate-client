@@ -207,6 +207,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
               classroomId={classroomId}
               postId={assignmentId}
               assignmentData={post.assignmentData}
+              submission={post.submission}
             />
           </div>
         )}

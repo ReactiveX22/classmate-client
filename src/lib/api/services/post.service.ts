@@ -1,6 +1,7 @@
 import apiClient from '../index';
 import { PaginationMeta, PaginationParams } from '@/types/pagination';
 import { User } from '@/types/auth';
+import { Submission } from './submission.service';
 
 export type PostType = 'announcement' | 'assignment' | 'material' | 'question';
 export type AttachmentType = 'file' | 'link' | 'video' | 'image';
@@ -36,6 +37,7 @@ export interface Post {
   createdAt: string;
   updatedAt: string;
   author?: User;
+  submission?: Submission | null;
 }
 
 export interface PostsResponse {

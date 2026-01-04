@@ -2,7 +2,7 @@ import apiClient from '../index';
 import { Attachment, AttachmentDto } from './post.service';
 import { User } from '@/types/auth';
 
-export type SubmissionStatus = 'submitted' | 'late' | 'graded' | 'returned';
+export type SubmissionStatus = 'assigned' | 'turned_in' | 'graded' | 'returned';
 
 export interface Submission {
   id: string;
@@ -49,5 +49,25 @@ export const submissionService = {
     } catch {
       return null;
     }
+  },
+
+  unsubmit: async (
+    classroomId: string,
+    postId: string
+  ): Promise<Submission> => {
+    const response = await apiClient.patch<Submission>(
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/unsubmit`
+    );
+    return response.data;
+  },
+
+  removeAttachment: async (
+    classroomId: string,
+    postId: string,
+    attachmentId: string
+  ): Promise<void> => {
+    await apiClient.delete(
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/upload/${attachmentId}`
+    );
   },
 };

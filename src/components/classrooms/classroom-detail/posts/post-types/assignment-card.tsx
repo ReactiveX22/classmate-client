@@ -3,20 +3,31 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useDeletePost } from '@/hooks/use-delete-post';
 import { Post } from '@/lib/api/services/post.service';
-import { IconCalendar, IconClipboard, IconPin } from '@tabler/icons-react';
+import { Submission } from '@/lib/api/services/submission.service';
+import {
+  IconCalendar,
+  IconCheck,
+  IconClipboard,
+  IconClock,
+  IconFile,
+  IconPin,
+} from '@tabler/icons-react';
 import { format, formatDistanceToNow } from 'date-fns';
-import { useState } from 'react';
-import { AttachmentDisplay } from './attachment-display';
-import { EditPostDialog } from '../edit-post-dialog';
-import { PostCardActions } from './post-card-actions';
-
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { EditPostDialog } from '../edit-post-dialog';
+import { AttachmentDisplay } from './attachment-display';
+import { PostCardActions } from './post-card-actions';
 
 interface AssignmentCardProps {
   post: Post;
+  isTeacher?: boolean;
 }
 
-export function AssignmentCard({ post }: AssignmentCardProps) {
+export function AssignmentCard({
+  post,
+  isTeacher = false,
+}: AssignmentCardProps) {
   const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -42,6 +53,51 @@ export function AssignmentCard({ post }: AssignmentCardProps) {
     );
   };
 
+  const getSubmissionBadge = (submission: Submission) => {
+    switch (submission.status) {
+      case 'assigned':
+        return (
+          <Badge
+            variant='outline'
+            className='text-muted-foreground font-normal bg-transparent border-dashed'
+          >
+            Assigned
+          </Badge>
+        );
+      case 'turned_in':
+        return (
+          <Badge
+            variant='secondary'
+            className='bg-green-100 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-400 gap-1'
+          >
+            <IconCheck size={14} />
+            Turned in
+          </Badge>
+        );
+      case 'graded':
+        return (
+          <Badge
+            variant='secondary'
+            className='bg-purple-100 text-purple-700 hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400 gap-1'
+          >
+            <IconCheck size={14} />
+            Graded
+          </Badge>
+        );
+      case 'returned':
+        return (
+          <Badge
+            variant='secondary'
+            className='bg-gray-100 text-gray-700 hover:bg-gray-100 dark:bg-gray-900/30 dark:text-gray-400 gap-1'
+          >
+            Returned
+          </Badge>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
       <Card
@@ -58,9 +114,6 @@ export function AssignmentCard({ post }: AssignmentCardProps) {
                 <div className='flex-1'>
                   <div className='flex items-center gap-2 flex-wrap mb-1'>
                     <h3 className='font-medium text-sm'>{post.title}</h3>
-                    {post.isPinned && (
-                      <IconPin size={16} className='text-muted-foreground' />
-                    )}
                   </div>
                   <p className='text-xs text-muted-foreground'>
                     Posted by {post.author?.name || 'Unknown'} •{' '}
@@ -69,24 +122,43 @@ export function AssignmentCard({ post }: AssignmentCardProps) {
                     })}
                   </p>
                 </div>
-                {post.assignmentData?.points && (
-                  <Badge
-                    variant='outline'
-                    className='bg-blue-500/5 border-blue-200 text-blue-700'
-                  >
-                    {post.assignmentData.points} pts
-                  </Badge>
-                )}
+                <div className='flex flex-col items-end gap-2'>
+                  {post.assignmentData?.points && (
+                    <Badge
+                      variant='outline'
+                      className='bg-blue-500/5 border-blue-200 text-blue-700'
+                    >
+                      {post.assignmentData.points} pts
+                    </Badge>
+                  )}
+                </div>
               </div>
 
-              {post.assignmentData?.dueDate && (
-                <div className='flex items-center gap-1.5 text-xs'>
-                  <IconCalendar className='size-4 text-muted-foreground' />
-                  <span className='font-medium'>
-                    Due {format(new Date(post.assignmentData.dueDate), 'PPp')}
-                  </span>
+              <div className='flex items-center justify-between gap-4 mt-2'>
+                <div className='flex items-center gap-3'>
+                  {post.assignmentData?.dueDate && (
+                    <div className='flex items-center gap-1.5 text-xs'>
+                      <IconCalendar className='size-4 text-muted-foreground' />
+                      <span className='font-medium'>
+                        Due{' '}
+                        {format(new Date(post.assignmentData.dueDate), 'PPp')}
+                      </span>
+                    </div>
+                  )}
+
+                  {!isTeacher &&
+                    (post.submission ? (
+                      getSubmissionBadge(post.submission)
+                    ) : (
+                      <Badge
+                        variant='outline'
+                        className='text-muted-foreground font-normal bg-transparent border-dashed'
+                      >
+                        Assigned
+                      </Badge>
+                    ))}
                 </div>
-              )}
+              </div>
             </div>
           </div>
           <div onClick={(e) => e.stopPropagation()}>
@@ -100,17 +172,33 @@ export function AssignmentCard({ post }: AssignmentCardProps) {
 
         <CardContent className='pt-0'>
           {post.content && (
-            <p className='text-sm text-foreground mb-4 whitespace-pre-wrap leading-relaxed'>
+            <p className='text-sm text-foreground mb-4 whitespace-pre-wrap leading-relaxed line-clamp-3'>
               {post.content}
             </p>
           )}
 
-          {post.attachments && post.attachments.length > 0 && (
-            <AttachmentDisplay
-              attachments={post.attachments}
-              variant='compact'
-            />
-          )}
+          <div className='flex flex-wrap gap-2'>
+            {post.attachments && post.attachments.length > 0 && (
+              <Badge variant='outline' className='gap-1 text-muted-foreground'>
+                <IconFile size={12} />
+                {post.attachments.length} attachment
+                {post.attachments.length !== 1 ? 's' : ''}
+              </Badge>
+            )}
+            {!isTeacher &&
+              post.submission?.attachments &&
+              post.submission.attachments.length > 0 && (
+                <Badge
+                  variant='outline'
+                  className='gap-1 text-muted-foreground'
+                >
+                  <IconFile size={12} />
+                  {post.submission.attachments.length} attachment
+                  {post.submission.attachments.length !== 1 ? 's' : ''}{' '}
+                  submitted
+                </Badge>
+              )}
+          </div>
         </CardContent>
       </Card>
 

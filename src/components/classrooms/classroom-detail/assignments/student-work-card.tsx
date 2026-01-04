@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useCreateSubmission } from '@/hooks/use-create-submission';
-import { useSubmission } from '@/hooks/use-submission';
+import { useRemoveSubmissionAttachment } from '@/hooks/use-remove-submission-attachment';
+import { useUnsubmit } from '@/hooks/use-unsubmit';
 import { UploadResult } from '@/hooks/use-upload-attachment';
-import { AssignmentData } from '@/lib/api/services/post.service';
+import { AssignmentData, postService } from '@/lib/api/services/post.service';
 import { Submission } from '@/lib/api/services/submission.service';
 import {
   IconCheck,
@@ -18,29 +19,44 @@ import {
   IconPlus,
 } from '@tabler/icons-react';
 import { format } from 'date-fns';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface StudentWorkCardProps {
   classroomId: string;
   postId: string;
   assignmentData?: AssignmentData | null;
+  submission?: Submission | null;
 }
 
 export function StudentWorkCard({
   classroomId,
   postId,
   assignmentData,
+  submission,
 }: StudentWorkCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState('');
   const [attachments, setAttachments] = useState<UploadResult[]>([]);
 
-  const { data: submission, isLoading: isLoadingSubmission } = useSubmission(
-    classroomId,
-    postId
-  );
   const { mutate: createSubmission, isPending: isSubmitting } =
     useCreateSubmission();
+  const { mutate: unsubmit, isPending: isUnsubmitting } = useUnsubmit();
+  const { mutateAsync: removeSubmissionAttachment } =
+    useRemoveSubmissionAttachment();
+
+  useEffect(() => {
+    if (submission && submission.status === 'assigned') {
+      setContent(submission.content || '');
+      setAttachments((submission.attachments as UploadResult[]) || []);
+      setIsEditing(true);
+    } else if (!submission) {
+      setContent('');
+      setAttachments([]);
+      setIsEditing(false); // Default state handles the "Add or create" button
+    } else {
+      setIsEditing(false); // Submitted state
+    }
+  }, [submission]);
 
   const submissionType = assignmentData?.submissionType || 'file';
   const allowsText = submissionType === 'text' || submissionType === 'multiple';
@@ -48,25 +64,22 @@ export function StudentWorkCard({
     submissionType === 'file' || submissionType === 'multiple';
 
   const getStatusBadge = (submission: Submission | null | undefined) => {
-    if (!submission) {
+    if (!submission || submission.status === 'assigned') {
       return (
-        <Badge className='text-xs font-medium text-green-700 bg-green-100 dark:bg-green-900/30 dark:text-green-400'>
+        <Badge
+          variant='secondary'
+          className='text-xs font-normal text-muted-foreground bg-muted hover:bg-muted'
+        >
           Assigned
         </Badge>
       );
     }
 
     switch (submission.status) {
-      case 'submitted':
+      case 'turned_in':
         return (
-          <Badge className='text-xs font-medium text-blue-700 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400'>
+          <Badge className='text-xs font-medium text-green-700 bg-green-100 dark:bg-green-900/30 dark:text-green-400'>
             Turned in
-          </Badge>
-        );
-      case 'late':
-        return (
-          <Badge className='text-xs font-medium text-orange-700 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400'>
-            Turned in late
           </Badge>
         );
       case 'graded':
@@ -116,25 +129,32 @@ export function StudentWorkCard({
     );
   };
 
+  const handleUnsubmit = () => {
+    unsubmit({ classroomId, postId });
+  };
+
+  const handleRemoveAttachment = async (id: string) => {
+    // Check if it's an existing submission attachment
+    const isExisting = submission?.attachments?.some((a) => a.id === id);
+
+    if (isExisting && submission?.status === 'assigned') {
+      await removeSubmissionAttachment({
+        classroomId,
+        postId,
+        attachmentId: id,
+      });
+    } else {
+      // It's a new upload, remove from post service (temp upload)
+      // Note: This matches logic in AttachmentUpload but we need to call it here
+      await postService.removeAttachment(classroomId, id);
+    }
+  };
+
   const hasWork = content.trim() || attachments.length > 0;
   const canSubmit = hasWork && !isSubmitting;
 
-  // Loading state
-  if (isLoadingSubmission) {
-    return (
-      <Card className='shadow-sm'>
-        <CardHeader className='flex flex-row items-center justify-between border-b border-border/50'>
-          <CardTitle>Your work</CardTitle>
-        </CardHeader>
-        <CardContent className='flex items-center justify-center py-8'>
-          <IconLoader2 className='h-6 w-6 animate-spin text-muted-foreground' />
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Already submitted state
-  if (submission) {
+  // Submitted / Read-only state
+  if (submission && submission.status !== 'assigned') {
     return (
       <Card className='shadow-sm'>
         <CardHeader className='flex flex-row items-center justify-between border-b border-border/50'>
@@ -189,12 +209,31 @@ export function StudentWorkCard({
           <p className='text-xs text-muted-foreground'>
             Submitted on {format(new Date(submission.createdAt), 'PPp')}
           </p>
+
+          {(submission.status === 'turned_in' ||
+            submission.status === 'returned') && (
+            <Button
+              variant='outline'
+              className='w-full'
+              onClick={handleUnsubmit}
+              disabled={isUnsubmitting}
+            >
+              {isUnsubmitting ? (
+                <>
+                  <IconLoader2 className='mr-2 h-4 w-4 animate-spin' />
+                  Unsubmitting...
+                </>
+              ) : (
+                'Unsubmit'
+              )}
+            </Button>
+          )}
         </CardContent>
       </Card>
     );
   }
 
-  // Editing/Adding work state
+  // Edit/Create Mode (Assigned or New)
   if (isEditing) {
     return (
       <Card className='shadow-sm'>
@@ -222,11 +261,18 @@ export function StudentWorkCard({
               classroomId={classroomId}
               attachments={attachments}
               onAttachmentsChange={setAttachments}
+              onRemove={handleRemoveAttachment}
             />
           )}
 
           <div className='flex gap-2'>
-            <Button
+            {/* Only show Cancel if it's a fresh creation, not an edit of unsubmitted work? 
+                 Actually, if I am editing 'assigned', cancel might mean "revert changes" or "exit edit mode"?
+                 For now, keep Cancel but clearing state might be annoying if it was pre-filled.
+                 If submission exists (assigned), Cancel could just reset to submission values?
+                 Or if it's new, reset to empty.
+              */}
+            {/* <Button
               variant='outline'
               className='flex-1'
               onClick={() => {
@@ -236,9 +282,11 @@ export function StudentWorkCard({
               }}
             >
               Cancel
-            </Button>
+            </Button> */}
+            {/* Removing Cancel for now as flow is simpler: You are always editing if assigned. */}
+
             <Button
-              className='flex-1'
+              className='w-full'
               onClick={handleSubmit}
               disabled={!canSubmit}
             >
@@ -260,7 +308,7 @@ export function StudentWorkCard({
     );
   }
 
-  // Default empty state
+  // Default empty state (No submission, start fresh)
   return (
     <Card className='shadow-sm'>
       <CardHeader className='flex flex-row items-center justify-between border-b border-border/50'>

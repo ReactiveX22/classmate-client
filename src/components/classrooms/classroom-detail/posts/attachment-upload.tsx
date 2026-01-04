@@ -32,6 +32,7 @@ interface AttachmentUploadProps {
   classroomId: string;
   attachments: UploadResult[];
   onAttachmentsChange: (attachments: UploadResult[]) => void;
+  onRemove?: (id: string) => Promise<void>;
 }
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -55,6 +56,7 @@ export function AttachmentUpload({
   classroomId,
   attachments,
   onAttachmentsChange,
+  onRemove,
 }: AttachmentUploadProps) {
   const [uploads, setUploads] = useState<FileUploadState[]>([]);
   const [showLinkInput, setShowLinkInput] = useState(false);
@@ -178,7 +180,11 @@ export function AttachmentUpload({
     // If it was successfully uploaded, also remove from attachments and server
     if (upload.status === 'success' && upload.result) {
       try {
-        await postService.removeAttachment(classroomId, upload.result.id);
+        if (onRemove) {
+          await onRemove(upload.result.id);
+        } else {
+          await postService.removeAttachment(classroomId, upload.result.id);
+        }
       } catch (error) {
         console.error('Failed to remove attachment from server:', error);
         // We still remove it from UI state even if server delete fails,
@@ -195,7 +201,11 @@ export function AttachmentUpload({
 
   const removeAttachment = async (id: string) => {
     try {
-      await postService.removeAttachment(classroomId, id);
+      if (onRemove) {
+        await onRemove(id);
+      } else {
+        await postService.removeAttachment(classroomId, id);
+      }
     } catch (error) {
       console.error('Failed to remove attachment from server:', error);
     }
