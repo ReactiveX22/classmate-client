@@ -14,16 +14,15 @@ import {
 import { usePosts } from '@/hooks/use-posts';
 import { Post } from '@/lib/api/services/post.service';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
 import {
   IconAlertCircle,
   IconCheck,
-  IconClock,
   IconFileText,
   IconLoader2,
 } from '@tabler/icons-react';
-import { useMemo } from 'react';
+import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 
 interface GradesTabProps {
   classroomId: string;
@@ -93,7 +92,7 @@ export function GradesTab({ classroomId }: GradesTabProps) {
       submission.grade === null
     ) {
       if (!maxPoints) return 'No grade';
-      return `__ / ${maxPoints}`;
+      return <span className='text-muted-foreground'>__ / {maxPoints}</span>;
     }
 
     return (
@@ -148,7 +147,7 @@ export function GradesTab({ classroomId }: GradesTabProps) {
     Math.round((completedAssignments / totalAssignments) * 100) || 0;
 
   return (
-    <div className='flex flex-col md:flex-row gap-6 mt-6 pb-20'>
+    <div className='flex flex-col md:flex-row gap-4 mt-6 pb-20'>
       {/* Stats Sidebar */}
       <div className='w-full md:w-64 shrink-0 space-y-4'>
         <Card className='gap-1.5'>
@@ -196,15 +195,15 @@ export function GradesTab({ classroomId }: GradesTabProps) {
                 return (
                   <TableRow
                     key={post.id}
-                    className='cursor-pointer hover:bg-muted/50 transition-colors'
+                    className='cursor-pointer transition-colors'
                     onClick={() => handleRowClick(post.id)}
                   >
-                    <TableCell className='font-medium'>
+                    <TableCell className='font-medium hover:text-primary'>
                       <div className='flex items-center gap-3'>
                         <div className='p-2 bg-primary/10 rounded-md text-primary'>
                           <IconFileText size={18} />
                         </div>
-                        <span className='max-w-[200px] font-semibold text-foreground/90 line-clamp-1 truncate'>
+                        <span className='max-w-[200px] line-clamp-1 truncate'>
                           {post.title || 'Untitled Assignment'}
                         </span>
                       </div>
@@ -231,19 +230,75 @@ export function GradesTab({ classroomId }: GradesTabProps) {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Badge
-                        variant={
-                          status.color as
-                            | 'default'
-                            | 'secondary'
-                            | 'destructive'
-                            | 'outline'
+                      {(() => {
+                        if (!post.submission) {
+                          if (isMissing) {
+                            return (
+                              <Badge variant='destructive' className='gap-1.5'>
+                                Missing
+                              </Badge>
+                            );
+                          }
+                          return (
+                            <Badge
+                              variant='outline'
+                              className='text-muted-foreground font-normal bg-transparent border-dashed'
+                            >
+                              Assigned
+                            </Badge>
+                          );
                         }
-                        className='gap-1.5 px-2.5 py-0.5'
-                      >
-                        <StatusIcon size={12} />
-                        {status.label}
-                      </Badge>
+
+                        switch (post.submission.status) {
+                          case 'turned_in':
+                            return (
+                              <Badge
+                                variant='secondary'
+                                className='bg-green-100 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-400 gap-1'
+                              >
+                                Turned in
+                              </Badge>
+                            );
+                          case 'graded':
+                            return (
+                              <Badge
+                                variant='secondary'
+                                className='bg-purple-100 text-purple-700 hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400 gap-1'
+                              >
+                                Graded
+                              </Badge>
+                            );
+                          case 'returned':
+                            return (
+                              <Badge
+                                variant='secondary'
+                                className='bg-gray-100 text-gray-700 hover:bg-gray-100 dark:bg-gray-900/30 dark:text-gray-400 gap-1'
+                              >
+                                Returned
+                              </Badge>
+                            );
+                          case 'assigned':
+                          default:
+                            if (isMissing) {
+                              return (
+                                <Badge
+                                  variant='destructive'
+                                  className='gap-1.5'
+                                >
+                                  Missing
+                                </Badge>
+                              );
+                            }
+                            return (
+                              <Badge
+                                variant='outline'
+                                className='text-muted-foreground font-normal bg-transparent border-dashed'
+                              >
+                                Assigned
+                              </Badge>
+                            );
+                        }
+                      })()}
                     </TableCell>
                     <TableCell className='text-muted-foreground text-sm'>
                       {post.submission?.submittedAt
