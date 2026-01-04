@@ -1,13 +1,8 @@
 import { useMemo } from 'react';
-import {
-  IconMessageCircle,
-  IconUsers,
-  IconSettings,
-} from '@tabler/icons-react';
+import { IconMessageCircle, IconUsers } from '@tabler/icons-react';
 import { Book, CalendarCheck, File, Star, LucideIcon } from 'lucide-react';
 import { StreamTab } from '@/components/classrooms/classroom-detail/stream-tab';
 import { PeopleTab } from '@/components/classrooms/classroom-detail/people-tab';
-import { SettingsTab } from '@/components/classrooms/classroom-detail/settings-tab';
 import { PlaceholderTab } from '@/components/classrooms/classroom-detail/placeholder-tab';
 import { ClassworkTab } from '@/components/classrooms/classroom-detail/classwork-tab';
 import { ResourcesTab } from '@/components/classrooms/classroom-detail/resources-tab';
@@ -27,6 +22,7 @@ export interface TabConfig {
   label: string;
   icon: LucideIcon | React.ComponentType<{ size?: number; className?: string }>;
   content?: React.ReactNode;
+  hidden?: boolean;
 }
 
 interface UseClassroomTabsProps {
@@ -104,18 +100,6 @@ export function useClassroomTabs({
             classroomMembers={classroomMembers}
             enrolledCount={enrolledCount}
             onAddStudents={onAddStudents}
-          />
-        ),
-      },
-      {
-        value: 'settings',
-        label: 'Settings',
-        icon: IconSettings,
-        content: (
-          <SettingsTab
-            classroom={classroom}
-            course={course}
-            onCopyClassCode={onCopyClassCode}
           />
         ),
       },

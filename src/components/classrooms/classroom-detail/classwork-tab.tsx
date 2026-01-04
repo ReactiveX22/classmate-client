@@ -1,15 +1,14 @@
 'use client';
 
+import { RoleGuard } from '@/components/common/role-guard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { usePosts } from '@/hooks/use-posts';
+import { Role } from '@/types/auth';
 import { IconClipboardList, IconLoader2, IconPlus } from '@tabler/icons-react';
-import { useUser } from '@/hooks/useAuth';
 import { useMemo } from 'react';
 import { CreatePostDialog } from './posts/create-post-dialog';
 import { AssignmentCard } from './posts/post-types/assignment-card';
-import { RoleGuard } from '@/components/common/role-guard';
-import { Role } from '@/types/auth';
 
 interface ClassworkTabProps {
   classroomId: string;
@@ -17,13 +16,11 @@ interface ClassworkTabProps {
 }
 
 export function ClassworkTab({ classroomId, isTeacher }: ClassworkTabProps) {
-  const { data: user } = useUser();
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     usePosts(classroomId, { limit: 20 });
 
   const assignments = useMemo(() => {
     if (!data) return [];
-    // Flatten pages and filter only assignments
     return data.pages
       .flatMap((page) => page.data)
       .filter((post) => post.type === 'assignment');

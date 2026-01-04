@@ -29,15 +29,15 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
   const isEmpty = !isLoading && materials.length === 0;
 
   return (
-    <div className='max-w-3xl mx-auto space-y-6 pb-20'>
-      <div className='flex items-center justify-between mb-6'>
+    <div className='max-w-3xl mx-auto space-y-4 pb-20'>
+      <div className='flex items-center justify-end mb-4'>
         <RoleGuard allowedRoles={[Role.Instructor]}>
           <CreatePostDialog
             classroomId={classroomId}
             trigger={
-              <Button className='gap-2 shadow-sm'>
+              <Button className='gap-2 shadow-sm mt-4'>
                 <IconPlus size={18} />
-                <span>Create</span>
+                <span>Add</span>
               </Button>
             }
           />

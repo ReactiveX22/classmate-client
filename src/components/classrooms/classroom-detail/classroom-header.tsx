@@ -1,5 +1,18 @@
 import { Button } from '@/components/ui/button';
-import { IconBook, IconUsers, IconCopy } from '@tabler/icons-react';
+import {
+  IconBook,
+  IconUsers,
+  IconCopy,
+  IconDotsVertical,
+  IconPencil,
+  IconInfoCircle,
+} from '@tabler/icons-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface ClassroomHeaderProps {
   classroom: {
@@ -13,14 +26,20 @@ interface ClassroomHeaderProps {
     credits: number;
   };
   enrolledCount: number;
+  isTeacher: boolean;
   onCopyClassCode: (code: string) => void;
+  onEditClick?: () => void;
+  onDetailsClick?: () => void;
 }
 
 export function ClassroomHeader({
   classroom,
   course,
   enrolledCount,
+  isTeacher,
   onCopyClassCode,
+  onEditClick,
+  onDetailsClick,
 }: ClassroomHeaderProps) {
   return (
     <div className='space-y-4'>
@@ -33,6 +52,32 @@ export function ClassroomHeader({
             {course.code} • Section {classroom.section}
           </p>
         </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button
+                variant='ghost'
+                size='icon'
+                className='text-muted-foreground'
+              >
+                <IconDotsVertical size={20} />
+              </Button>
+            }
+          />
+          <DropdownMenuContent align='end' className='w-48'>
+            {isTeacher && (
+              <DropdownMenuItem onClick={onEditClick}>
+                <IconPencil size={18} className='mr-2' />
+                Edit Classroom
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem onClick={onDetailsClick}>
+              <IconInfoCircle size={18} className='mr-2' />
+              Class Details
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Quick Stats */}
