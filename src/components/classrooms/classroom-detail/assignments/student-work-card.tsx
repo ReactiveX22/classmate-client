@@ -37,6 +37,7 @@ export function StudentWorkCard({
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState('');
   const [attachments, setAttachments] = useState<UploadResult[]>([]);
+  const [isAddingAttachment, setIsAddingAttachment] = useState(false);
 
   const { mutate: createSubmission, isPending: isSubmitting } =
     useCreateSubmission();
@@ -52,6 +53,7 @@ export function StudentWorkCard({
     } else if (!submission) {
       setContent('');
       setAttachments([]);
+      setIsAddingAttachment(false);
       setIsEditing(false); // Default state handles the "Add or create" button
     } else {
       setIsEditing(false); // Submitted state
@@ -257,34 +259,30 @@ export function StudentWorkCard({
           )}
 
           {allowsFiles && (
-            <AttachmentUpload
-              classroomId={classroomId}
-              attachments={attachments}
-              onAttachmentsChange={setAttachments}
-              onRemove={handleRemoveAttachment}
-            />
+            <div className='space-y-2'>
+              {attachments.length > 0 || isAddingAttachment ? (
+                <div className='space-y-2 animate-in fade-in slide-in-from-top-2 duration-300'>
+                  <AttachmentUpload
+                    classroomId={classroomId}
+                    attachments={attachments}
+                    onAttachmentsChange={setAttachments}
+                    onRemove={handleRemoveAttachment}
+                  />
+                </div>
+              ) : (
+                <Button
+                  variant='outline'
+                  className='w-full'
+                  onClick={() => setIsAddingAttachment(true)}
+                >
+                  <IconPlus />
+                  Add Work
+                </Button>
+              )}
+            </div>
           )}
 
           <div className='flex gap-2'>
-            {/* Only show Cancel if it's a fresh creation, not an edit of unsubmitted work? 
-                 Actually, if I am editing 'assigned', cancel might mean "revert changes" or "exit edit mode"?
-                 For now, keep Cancel but clearing state might be annoying if it was pre-filled.
-                 If submission exists (assigned), Cancel could just reset to submission values?
-                 Or if it's new, reset to empty.
-              */}
-            {/* <Button
-              variant='outline'
-              className='flex-1'
-              onClick={() => {
-                setIsEditing(false);
-                setContent('');
-                setAttachments([]);
-              }}
-            >
-              Cancel
-            </Button> */}
-            {/* Removing Cancel for now as flow is simpler: You are always editing if assigned. */}
-
             <Button
               className='w-full'
               onClick={handleSubmit}

@@ -5,6 +5,7 @@ import {
   UploadResult,
   useUploadAttachment,
 } from '@/hooks/use-upload-attachment';
+import { postService } from '@/lib/api/services/post.service';
 import { cn } from '@/lib/utils';
 import {
   IconFile,
@@ -16,7 +17,7 @@ import {
   IconVideo,
   IconX,
 } from '@tabler/icons-react';
-import { postService } from '@/lib/api/services/post.service';
+import { FileIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -312,6 +313,7 @@ export function AttachmentUpload({
               size='sm'
               onClick={() => document.getElementById('file-input')?.click()}
             >
+              <FileIcon className='mr-2' />
               Browse Files
             </Button>
             <Button
@@ -320,7 +322,7 @@ export function AttachmentUpload({
               size='sm'
               onClick={() => setShowLinkInput(true)}
             >
-              <IconLink className='h-4 w-4 mr-2' />
+              <IconLink className='mr-2' />
               Add Link
             </Button>
           </div>

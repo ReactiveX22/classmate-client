@@ -11,6 +11,7 @@ import { SettingsTab } from '@/components/classrooms/classroom-detail/settings-t
 import { PlaceholderTab } from '@/components/classrooms/classroom-detail/placeholder-tab';
 import { ClassworkTab } from '@/components/classrooms/classroom-detail/classwork-tab';
 import { ResourcesTab } from '@/components/classrooms/classroom-detail/resources-tab';
+import { GradesTab } from '@/components/classrooms/classroom-detail/grades-tab';
 
 import {
   ClassroomDetail,
@@ -83,13 +84,7 @@ export function useClassroomTabs({
         value: 'grades',
         label: 'Grades',
         icon: Star,
-        content: (
-          <PlaceholderTab
-            title='Grades'
-            description='View and manage student grades, feedback, and performance metrics.'
-            icon={Star}
-          />
-        ),
+        content: <GradesTab classroomId={classroom.id} />,
       },
       {
         value: 'people',
