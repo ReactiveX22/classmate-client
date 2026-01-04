@@ -13,9 +13,10 @@ import { PostList } from './posts/post-list';
 
 interface StreamTabProps {
   classroomId: string;
+  isTeacher?: boolean;
 }
 
-export function StreamTab({ classroomId }: StreamTabProps) {
+export function StreamTab({ classroomId, isTeacher }: StreamTabProps) {
   const { data, isLoading } = usePosts(classroomId, { limit: 10 });
 
   const totalPosts =
@@ -77,7 +78,7 @@ export function StreamTab({ classroomId }: StreamTabProps) {
               </CardContent>
             </Card>
           ) : (
-            <PostList classroomId={classroomId} />
+            <PostList classroomId={classroomId} isTeacher={isTeacher} />
           )}
         </div>
       </div>

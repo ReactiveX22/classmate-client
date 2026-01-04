@@ -7,9 +7,10 @@ import { useEffect, useRef } from 'react';
 
 interface PostListProps {
   classroomId: string;
+  isTeacher?: boolean;
 }
 
-export function PostList({ classroomId }: PostListProps) {
+export function PostList({ classroomId, isTeacher }: PostListProps) {
   const {
     data,
     fetchNextPage,
@@ -79,7 +80,7 @@ export function PostList({ classroomId }: PostListProps) {
   return (
     <div className='space-y-4 w-full max-w-2xl'>
       {sortedPosts.map((post) => (
-        <PostCard key={post.id} post={post} />
+        <PostCard key={post.id} post={post} isTeacher={isTeacher} />
       ))}
 
       {/* Intersection observer target */}

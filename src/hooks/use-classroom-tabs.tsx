@@ -20,6 +20,8 @@ import {
 } from '@/lib/api/services/classroom.service';
 import { User } from '@/types/auth';
 
+import { useUser } from '@/hooks/useAuth';
+
 export interface TabConfig {
   value: string;
   label: string;
@@ -46,6 +48,9 @@ export function useClassroomTabs({
   onAddStudents,
   onCopyClassCode,
 }: UseClassroomTabsProps) {
+  const { data: user } = useUser();
+  const isTeacher = user?.id === classroom?.teacherId;
+
   return useMemo<TabConfig[]>(() => {
     if (!classroom || !course || !teacher) return [];
 
@@ -54,13 +59,15 @@ export function useClassroomTabs({
         value: 'stream',
         label: 'Stream',
         icon: IconMessageCircle,
-        content: <StreamTab classroomId={classroom.id} />,
+        content: <StreamTab classroomId={classroom.id} isTeacher={isTeacher} />,
       },
       {
         value: 'classwork',
         label: 'Classwork',
         icon: File,
-        content: <ClassworkTab classroomId={classroom.id} />,
+        content: (
+          <ClassworkTab classroomId={classroom.id} isTeacher={isTeacher} />
+        ),
       },
       {
         value: 'attendance',
@@ -84,7 +91,7 @@ export function useClassroomTabs({
         value: 'grades',
         label: 'Grades',
         icon: Star,
-        content: <GradesTab classroomId={classroom.id} />,
+        content: <GradesTab classroomId={classroom.id} isTeacher={isTeacher} />,
       },
       {
         value: 'people',
@@ -121,5 +128,6 @@ export function useClassroomTabs({
     enrolledCount,
     onAddStudents,
     onCopyClassCode,
+    isTeacher,
   ]);
 }

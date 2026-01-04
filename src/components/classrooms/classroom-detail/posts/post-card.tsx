@@ -6,14 +6,15 @@ import { QuestionCard } from './post-types/question-card';
 
 interface PostCardProps {
   post: Post;
+  isTeacher?: boolean;
 }
 
-export function PostCard({ post }: PostCardProps) {
+export function PostCard({ post, isTeacher }: PostCardProps) {
   switch (post.type) {
     case 'announcement':
       return <AnnouncementCard post={post} />;
     case 'assignment':
-      return <AssignmentCard post={post} />;
+      return <AssignmentCard post={post} isTeacher={isTeacher} />;
     case 'material':
       return <MaterialCard post={post} />;
     case 'question':

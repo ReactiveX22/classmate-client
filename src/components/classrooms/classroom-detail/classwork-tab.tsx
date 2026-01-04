@@ -13,9 +13,10 @@ import { Role } from '@/types/auth';
 
 interface ClassworkTabProps {
   classroomId: string;
+  isTeacher?: boolean;
 }
 
-export function ClassworkTab({ classroomId }: ClassworkTabProps) {
+export function ClassworkTab({ classroomId, isTeacher }: ClassworkTabProps) {
   const { data: user } = useUser();
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     usePosts(classroomId, { limit: 20 });
@@ -70,11 +71,7 @@ export function ClassworkTab({ classroomId }: ClassworkTabProps) {
       ) : (
         <div className='space-y-4'>
           {assignments.map((post) => (
-            <AssignmentCard
-              key={post.id}
-              post={post}
-              isTeacher={user?.role === Role.Instructor}
-            />
+            <AssignmentCard key={post.id} post={post} isTeacher={isTeacher} />
           ))}
 
           {hasNextPage && (
