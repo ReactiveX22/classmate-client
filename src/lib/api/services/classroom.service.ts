@@ -70,6 +70,53 @@ export interface ClassroomsResponse {
   meta: PaginationMeta;
 }
 
+export interface AssignmentSubmission {
+  id: string;
+  postId: string;
+  studentId: string;
+  content: string | null;
+  attachments: any[] | null;
+  status: string;
+  grade: number | null;
+  feedback: string | null;
+  gradedById: string | null;
+  submittedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AssignmentWithSubmission {
+  id: string;
+  classroomId: string;
+  authorId: string;
+  type: 'assignment' | 'announcement' | 'material';
+  title: string;
+  content: string;
+  attachments: any[];
+  assignmentData: {
+    points: number;
+    dueDate: string | null;
+    submissionType: string;
+    allowLateSubmission: boolean;
+  } | null;
+  isPinned: boolean;
+  commentsEnabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+  submissions: AssignmentSubmission[];
+}
+
+export interface GradeStats {
+  overall_grade: number;
+  missing_work: number;
+  attendance: number;
+}
+
+export interface StudentGradeStatsResponse {
+  assignments: AssignmentWithSubmission[];
+  gradeStats: GradeStats;
+}
+
 export const classroomService = {
   getClassrooms: async (
     params?: PaginationParams
@@ -137,5 +184,15 @@ export const classroomService = {
     await apiClient.post('/api/v1/classrooms/join', {
       classCode,
     });
+  },
+
+  getStudentGradeStats: async (
+    classroomId: string,
+    studentId: string
+  ): Promise<StudentGradeStatsResponse> => {
+    const response = await apiClient.get<StudentGradeStatsResponse>(
+      `/api/v1/classrooms/${classroomId}/students/${studentId}/grade-stats`
+    );
+    return response.data;
   },
 };

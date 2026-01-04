@@ -145,3 +145,12 @@ export function useJoinClassroom() {
     },
   });
 }
+
+export function useStudentGradeStats(classroomId: string, studentId: string) {
+  return useQuery({
+    queryKey: ['classroom', classroomId, 'student', studentId, 'grade-stats'],
+    queryFn: () =>
+      classroomService.getStudentGradeStats(classroomId, studentId),
+    enabled: !!classroomId && !!studentId,
+  });
+}

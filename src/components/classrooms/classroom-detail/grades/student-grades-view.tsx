@@ -64,7 +64,7 @@ export function StudentGradesView({ classroomId }: StudentGradesViewProps) {
 
     switch (submission.status) {
       case 'turned_in':
-        return { label: 'Turned In', color: 'default', icon: IconCheck }; // Greenish via class
+        return { label: 'Turned In', color: 'default', icon: IconCheck };
       case 'graded':
         return { label: 'Graded', color: 'outline', icon: IconCheck };
       case 'returned':
