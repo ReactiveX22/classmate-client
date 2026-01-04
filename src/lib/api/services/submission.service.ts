@@ -1,6 +1,7 @@
 import apiClient from '../index';
 import { Attachment, AttachmentDto } from './post.service';
 import { User } from '@/types/auth';
+import { PaginationParams } from '@/types/pagination';
 
 export type SubmissionStatus = 'assigned' | 'turned_in' | 'graded' | 'returned';
 
@@ -69,5 +70,51 @@ export const submissionService = {
     await apiClient.delete(
       `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/upload/${attachmentId}`
     );
+  },
+
+  getSubmissions: async (
+    classroomId: string,
+    postId: string,
+    params?: PaginationParams
+  ): Promise<{
+    data: Submission[];
+    meta: {
+      page: number;
+      limit: number;
+      totalItems: number;
+      totalPages: number;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+    };
+  }> => {
+    const response = await apiClient.get(
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions`,
+      { params }
+    );
+    return response.data;
+  },
+
+  gradeSubmission: async (
+    classroomId: string,
+    postId: string,
+    submissionId: string,
+    grade: number
+  ): Promise<Submission> => {
+    const response = await apiClient.patch<Submission>(
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/${submissionId}/grade`,
+      { grade }
+    );
+    return response.data;
+  },
+
+  returnSubmission: async (
+    classroomId: string,
+    postId: string,
+    submissionId: string
+  ): Promise<Submission> => {
+    const response = await apiClient.patch<Submission>(
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/${submissionId}/return`
+    );
+    return response.data;
   },
 };

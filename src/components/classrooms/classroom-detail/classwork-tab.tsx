@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { usePosts } from '@/hooks/use-posts';
 import { IconClipboardList, IconLoader2, IconPlus } from '@tabler/icons-react';
+import { useUser } from '@/hooks/useAuth';
 import { useMemo } from 'react';
 import { CreatePostDialog } from './posts/create-post-dialog';
 import { AssignmentCard } from './posts/post-types/assignment-card';
@@ -15,6 +16,7 @@ interface ClassworkTabProps {
 }
 
 export function ClassworkTab({ classroomId }: ClassworkTabProps) {
+  const { data: user } = useUser();
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     usePosts(classroomId, { limit: 20 });
 
@@ -29,13 +31,13 @@ export function ClassworkTab({ classroomId }: ClassworkTabProps) {
   const isEmpty = !isLoading && assignments.length === 0;
 
   return (
-    <div className='max-w-3xl mx-auto space-y-6 pb-20'>
-      <div className='flex items-center justify-between mb-6'>
+    <div className='max-w-3xl mx-auto space-y-4 pb-20'>
+      <div className='flex items-center justify-end mb-4'>
         <RoleGuard allowedRoles={[Role.Instructor]}>
           <CreatePostDialog
             classroomId={classroomId}
             trigger={
-              <Button className='gap-2 shadow-sm'>
+              <Button className='gap-2 shadow-sm mt-4'>
                 <IconPlus size={18} />
                 <span>Create</span>
               </Button>
@@ -68,7 +70,11 @@ export function ClassworkTab({ classroomId }: ClassworkTabProps) {
       ) : (
         <div className='space-y-4'>
           {assignments.map((post) => (
-            <AssignmentCard key={post.id} post={post} />
+            <AssignmentCard
+              key={post.id}
+              post={post}
+              isTeacher={user?.role === Role.Instructor}
+            />
           ))}
 
           {hasNextPage && (

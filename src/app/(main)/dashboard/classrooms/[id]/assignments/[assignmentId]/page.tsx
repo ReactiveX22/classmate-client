@@ -28,6 +28,8 @@ import {
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { use, useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { StudentWorkTab } from '@/components/classrooms/classroom-detail/assignments/student-work-tab';
 
 interface AssignmentPageProps {
   params: Promise<{ id: string; assignmentId: string }>;
@@ -99,119 +101,113 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
         Back to Classwork
       </Button>
 
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-        {/* Left Column - Assignment Details */}
-        <div className='lg:col-span-2 space-y-6'>
-          <div className='flex items-start gap-5'>
-            <div className='p-3.5 bg-primary/10 rounded-full text-primary mt-1'>
-              <IconClipboard size={24} />
-            </div>
-            <div className='flex-1 space-y-2'>
-              <div className='flex items-start justify-between'>
-                <h1 className='text-xl font-semibold tracking-tight text-foreground'>
-                  {post.title}
-                </h1>
+      <div className='flex items-start gap-5 mb-6'>
+        <div className='p-3.5 bg-primary/10 rounded-full text-primary mt-1'>
+          <IconClipboard size={24} />
+        </div>
+        <div className='flex-1 space-y-2'>
+          <div className='flex items-start justify-between'>
+            <h1 className='text-3xl font-semibold tracking-tight text-foreground'>
+              {post.title}
+            </h1>
 
-                {isAuthor && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      render={
-                        <Button
-                          variant='ghost'
-                          size='icon'
-                          className='h-8 w-8 text-muted-foreground'
-                        >
-                          <IconDotsVertical size={20} />
-                          <span className='sr-only'>Actions</span>
-                        </Button>
-                      }
-                    />
-                    <DropdownMenuContent align='end'>
-                      <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-                        <IconPencil className='mr-2 h-4 w-4' />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => setShowDeleteDialog(true)}
-                        className='text-destructive focus:text-destructive'
-                      >
-                        <IconTrash className='mr-2 h-4 w-4' />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
-              </div>
-
-              <div className='flex flex-wrap items-center gap-x-2 gap-y-2 text-xs text-muted-foreground'>
-                <span className='font-medium text-foreground'>
-                  {post.author?.name}
-                </span>
-                <span>•</span>
-                <span>Posted {format(new Date(post.createdAt), 'MMM d')}</span>
-                {post.assignmentData?.points && (
-                  <>
-                    <span>•</span>
-                    <Badge
-                      variant='outline'
-                      className='bg-blue-500/5 border-blue-200 text-blue-700'
+            {isAuthor && (
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button
+                      variant='ghost'
+                      size='icon'
+                      className='h-8 w-8 text-muted-foreground'
                     >
-                      {post.assignmentData.points} points
-                    </Badge>
-                  </>
-                )}
-                {post.assignmentData?.dueDate && (
-                  <>
-                    <span>•</span>
-                    <span className='font-medium text-destructive/80'>
-                      Due {format(new Date(post.assignmentData.dueDate), 'PPp')}
-                    </span>
-                  </>
-                )}
-              </div>
-            </div>
+                      <IconDotsVertical size={20} />
+                      <span className='sr-only'>Actions</span>
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent align='end'>
+                  <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+                    <IconPencil className='mr-2 h-4 w-4' />
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setShowDeleteDialog(true)}
+                    className='text-destructive focus:text-destructive'
+                  >
+                    <IconTrash className='mr-2 h-4 w-4' />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
 
-          <Separator className='bg-border/60' />
-
-          <div className='prose prose-zinc dark:prose-invert max-w-none'>
-            <p className='whitespace-pre-wrap leading-relaxed text-base'>
-              {post.content}
-            </p>
-          </div>
-
-          {post.attachments && post.attachments.length > 0 && (
-            <div className='space-y-4 pt-2'>
-              <h3 className='font-medium text-muted-foreground uppercase tracking-wider text-xs'>
-                Attachments
-              </h3>
-              <AttachmentDisplay
-                attachments={post.attachments}
-                variant='default'
-              />
-            </div>
-          )}
-
-          <Separator className='my-8 bg-border/60' />
-
-          <div className='flex items-center gap-3 text-muted-foreground text-sm py-4 border-t border-b border-dashed border-border/60'>
-            <IconMessageCircle size={20} />
-            <span>Class comments coming soon</span>
+          <div className='flex flex-wrap items-center gap-x-2 gap-y-2 text-sm text-muted-foreground'>
+            <span className='font-medium text-foreground'>
+              {post.author?.name}
+            </span>
+            <span>•</span>
+            <span>Posted {format(new Date(post.createdAt), 'MMM d')}</span>
+            {post.assignmentData?.points && (
+              <>
+                <span>•</span>
+                <Badge
+                  variant='outline'
+                  className='bg-blue-500/5 border-blue-200 text-blue-700'
+                >
+                  {post.assignmentData.points} points
+                </Badge>
+              </>
+            )}
+            {post.assignmentData?.dueDate && (
+              <>
+                <span>•</span>
+                <span className='font-medium text-destructive/80'>
+                  Due {format(new Date(post.assignmentData.dueDate), 'PPp')}
+                </span>
+              </>
+            )}
           </div>
         </div>
+      </div>
 
-        {/* Right Column - Your Work (Students only) */}
-        {!isAuthor && (
-          <div className='lg:col-span-1 space-y-6'>
-            <StudentWorkCard
+      <Separator className='my-6' />
+
+      {isAuthor ? (
+        <Tabs defaultValue='instructions' className='w-full'>
+          <TabsList className='mb-6'>
+            <TabsTrigger value='instructions'>Instructions</TabsTrigger>
+            <TabsTrigger value='student-work'>Submissions</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value='instructions' className='space-y-6'>
+            <AssignmentContent
+              post={post}
+              isAuthor={isAuthor}
+              classroomId={classroomId}
+              assignmentId={assignmentId}
+            />
+          </TabsContent>
+
+          <TabsContent value='student-work'>
+            <StudentWorkTab
               classroomId={classroomId}
               postId={assignmentId}
-              assignmentData={post.assignmentData}
-              submission={post.submission}
+              maxPoints={post.assignmentData?.points}
+              dueDate={post.assignmentData?.dueDate}
             />
-          </div>
-        )}
-      </div>
+          </TabsContent>
+        </Tabs>
+      ) : (
+        <div className='space-y-6'>
+          <AssignmentContent
+            post={post}
+            isAuthor={isAuthor}
+            classroomId={classroomId}
+            assignmentId={assignmentId}
+          />
+        </div>
+      )}
 
       <DeleteConfirmDialog
         open={showDeleteDialog}
@@ -228,6 +224,62 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
         open={showEditDialog}
         onOpenChange={setShowEditDialog}
       />
+    </div>
+  );
+}
+
+function AssignmentContent({
+  post,
+  isAuthor,
+  classroomId,
+  assignmentId,
+}: {
+  post: any;
+  isAuthor: boolean;
+  classroomId: string;
+  assignmentId: string;
+}) {
+  return (
+    <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+      {/* Left Column - Assignment Details */}
+      <div className='lg:col-span-2 space-y-6'>
+        <div className='prose prose-zinc dark:prose-invert max-w-none'>
+          <p className='whitespace-pre-wrap leading-relaxed text-base'>
+            {post.content}
+          </p>
+        </div>
+
+        {post.attachments && post.attachments.length > 0 && (
+          <div className='space-y-4 pt-2'>
+            <h3 className='font-medium text-muted-foreground uppercase tracking-wider text-xs'>
+              Attachments
+            </h3>
+            <AttachmentDisplay
+              attachments={post.attachments}
+              variant='default'
+            />
+          </div>
+        )}
+
+        <Separator className='my-8 bg-border/60' />
+
+        <div className='flex items-center gap-3 text-muted-foreground text-sm py-4 border-t border-b border-dashed border-border/60'>
+          <IconMessageCircle size={20} />
+          <span>Class comments coming soon</span>
+        </div>
+      </div>
+
+      {/* Right Column - Your Work (Students only) */}
+      {!isAuthor && (
+        <div className='lg:col-span-1 space-y-6'>
+          <StudentWorkCard
+            classroomId={classroomId}
+            postId={assignmentId}
+            assignmentData={post.assignmentData}
+            submission={post.submission}
+          />
+        </div>
+      )}
     </div>
   );
 }
