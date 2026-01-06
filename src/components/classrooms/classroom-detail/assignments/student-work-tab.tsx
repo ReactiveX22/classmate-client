@@ -2,34 +2,26 @@
 
 import { useSubmissions } from '@/hooks/use-submissions';
 import { useState, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/data-table/data-table';
 import {
   getCoreRowModel,
   useReactTable,
   getSortedRowModel,
   SortingState,
+  RowData,
 } from '@tanstack/react-table';
 import { getColumns } from './columns';
 import { Submission } from '@/lib/api/services/submission.service';
-import { RowData } from '@tanstack/react-table';
+import { PaginationParams } from '@/types/pagination';
+import { useGradeSubmission } from '@/hooks/use-grade-submission';
+import { useReturnSubmission } from '@/hooks/use-return-submission';
+import { StudentWorkActionBar } from './student-work-action-bar';
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
     isSavingRow?: string | null;
   }
 }
-
-import { PaginationParams } from '@/types/pagination';
-
-import { useGradeSubmission } from '@/hooks/use-grade-submission';
-import { useReturnSubmission } from '@/hooks/use-return-submission';
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconDotsVertical,
-  IconArrowBackUp,
-} from '@tabler/icons-react';
 
 interface StudentWorkTabProps {
   classroomId: string;
@@ -156,26 +148,11 @@ export function StudentWorkTab({
 
   return (
     <div className='space-y-4'>
-      <DataTable
+      <DataTable table={table} />
+      <StudentWorkActionBar
         table={table}
-        actionBar={
-          <div className='flex items-center gap-4 px-4 py-2 border rounded-lg bg-primary/5 border-primary/20 backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-300'>
-            <span className='text-sm font-medium text-primary'>
-              {table.getFilteredSelectedRowModel().rows.length} selected
-            </span>
-            <div className='h-4 w-px bg-primary/20' />
-            <Button
-              size='sm'
-              variant='default'
-              className='gap-2 h-8'
-              onClick={handleBulkReturn}
-              disabled={returnMutation.isPending}
-            >
-              <IconArrowBackUp size={16} />
-              Return
-            </Button>
-          </div>
-        }
+        onBulkReturn={handleBulkReturn}
+        isReturning={returnMutation.isPending}
       />
     </div>
   );
