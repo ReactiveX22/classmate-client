@@ -3,10 +3,10 @@ import { IconMessageCircle, IconUsers } from '@tabler/icons-react';
 import { Book, CalendarCheck, File, Star, LucideIcon } from 'lucide-react';
 import { StreamTab } from '@/components/classrooms/classroom-detail/stream-tab';
 import { PeopleTab } from '@/components/classrooms/classroom-detail/people-tab';
-import { PlaceholderTab } from '@/components/classrooms/classroom-detail/placeholder-tab';
 import { ClassworkTab } from '@/components/classrooms/classroom-detail/classwork-tab';
 import { ResourcesTab } from '@/components/classrooms/classroom-detail/resources-tab';
 import { GradesTab } from '@/components/classrooms/classroom-detail/grades-tab';
+import { AttendanceTab } from '@/components/classrooms/classroom-detail/attendance-tab';
 
 import {
   ClassroomDetail,
@@ -70,11 +70,7 @@ export function useClassroomTabs({
         label: 'Attendance',
         icon: CalendarCheck,
         content: (
-          <PlaceholderTab
-            title='Attendance'
-            description='Track student attendance and participation for each class session.'
-            icon={CalendarCheck}
-          />
+          <AttendanceTab classroomId={classroom.id} isTeacher={isTeacher} />
         ),
       },
       {

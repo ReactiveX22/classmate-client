@@ -45,12 +45,14 @@ export function ClassroomHeader({
     <div className='space-y-4'>
       <div className='flex items-start justify-between gap-4'>
         <div className='flex-1 min-w-0'>
-          <div className='flex items-center gap-2 flex-wrap'>
-            <h1 className='text-xl font-semibold truncate'>{classroom.name}</h1>
+          <div className='space-y-1'>
+            <h1 className='text-xl font-semibold truncate leading-none'>
+              {classroom.name}
+            </h1>
+            <p className='text-sm text-muted-foreground'>
+              {course.code} • Section {classroom.section}
+            </p>
           </div>
-          <p className='text-sm text-muted-foreground'>
-            {course.code} • Section {classroom.section}
-          </p>
         </div>
 
         <DropdownMenu>
@@ -81,7 +83,7 @@ export function ClassroomHeader({
       </div>
 
       {/* Quick Stats */}
-      <div className='flex items-center gap-6 text-sm'>
+      {/* <div className='flex items-center gap-6 text-sm'>
         <div className='flex items-center gap-2'>
           <IconUsers size={16} className='text-muted-foreground' />
           <span>
@@ -103,7 +105,7 @@ export function ClassroomHeader({
             <IconCopy size={18} />
           </Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

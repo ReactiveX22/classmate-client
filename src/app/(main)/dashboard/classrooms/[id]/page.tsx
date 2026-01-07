@@ -94,7 +94,7 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
   }
 
   return (
-    <div className='flex flex-col gap-6 p-6'>
+    <div className='flex flex-col gap-6 p-4'>
       {/* Header Section */}
       <ClassroomHeader
         classroom={data}
