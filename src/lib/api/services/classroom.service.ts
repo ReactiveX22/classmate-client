@@ -256,4 +256,8 @@ export const classroomService = {
     );
     return response.data;
   },
+
+  leaveClassroom: async (classroomId: string): Promise<void> => {
+    await apiClient.post(`/api/v1/classrooms/${classroomId}/members/leave`);
+  },
 };

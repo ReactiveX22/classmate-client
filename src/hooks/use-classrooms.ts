@@ -146,6 +146,24 @@ export function useJoinClassroom() {
   });
 }
 
+export function useLeaveClassroom() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (classroomId: string) =>
+      classroomService.leaveClassroom(classroomId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['classrooms'] });
+      toast.success('Left classroom successfully');
+    },
+    onError: (error: AxiosError<ApiError>) => {
+      const apiError = error.response?.data;
+      toast.error('Failed to Leave Classroom', {
+        description: apiError?.message || 'An unexpected error occurred.',
+      });
+    },
+  });
+}
+
 export function useStudentGradeStats(classroomId: string, studentId: string) {
   return useQuery({
     queryKey: ['classroom', classroomId, 'student', studentId, 'grade-stats'],

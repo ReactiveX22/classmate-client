@@ -4,6 +4,7 @@ import { AddStudentsToClassroomDialog } from '@/components/classrooms/add-studen
 import { ClassroomDetails } from '@/components/classrooms/classroom-detail/classroom-details-sheet';
 import { ClassroomHeader } from '@/components/classrooms/classroom-detail/classroom-header';
 import { UpdateClassroomDialog } from '@/components/classrooms/classroom-detail/settings/update-classroom-dialog';
+import { RoleGuard } from '@/components/common/role-guard';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Sheet,
@@ -16,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useClassroomTabs } from '@/hooks/use-classroom-tabs';
 import { useClassroom } from '@/hooks/use-classrooms';
 import { useUser } from '@/hooks/useAuth';
+import { Role } from '@/types/auth';
 import { parseAsString, useQueryState } from 'nuqs';
 import { use, useState } from 'react';
 import { toast } from 'sonner';
@@ -36,7 +38,7 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
 
   const [tab, setTab] = useQueryState(
     'tab',
-    parseAsString.withDefault('stream')
+    parseAsString.withDefault('stream'),
   );
 
   const copyClassCode = (code: string) => {
@@ -161,13 +163,15 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
       </Sheet>
 
       {/* Add Students Dialog */}
-      <AddStudentsToClassroomDialog
-        open={addStudentsOpen}
-        onOpenChange={setAddStudentsOpen}
-        classroomId={data.id}
-        classroomName={data.name}
-        existingStudentIds={data.classroomMembers.map((m) => m.studentId)}
-      />
+      <RoleGuard allowedRoles={[Role.Instructor]}>
+        <AddStudentsToClassroomDialog
+          open={addStudentsOpen}
+          onOpenChange={setAddStudentsOpen}
+          classroomId={data.id}
+          classroomName={data.name}
+          existingStudentIds={data.classroomMembers.map((m) => m.studentId)}
+        />
+      </RoleGuard>
     </div>
   );
 }

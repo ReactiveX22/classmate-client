@@ -6,6 +6,7 @@ import {
   IconDotsVertical,
   IconPencil,
   IconInfoCircle,
+  IconLogout,
 } from '@tabler/icons-react';
 import {
   DropdownMenu,
@@ -14,10 +15,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Trash } from 'lucide-react';
-import { useDeleteClassroom } from '@/hooks/use-classrooms';
+import { useDeleteClassroom, useLeaveClassroom } from '@/hooks/use-classrooms';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Role } from '@/types/auth';
+import { RoleGuard } from '@/components/common/role-guard';
 
 interface ClassroomHeaderProps {
   classroom: {
@@ -49,12 +52,23 @@ export function ClassroomHeader({
 }: ClassroomHeaderProps) {
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [leaveDialogOpen, setLeaveDialogOpen] = useState(false);
   const deleteClassroomMutation = useDeleteClassroom();
+  const leaveClassroomMutation = useLeaveClassroom();
 
   const handleDelete = () => {
     deleteClassroomMutation.mutate(classroom.id, {
       onSuccess: () => {
         setDeleteDialogOpen(false);
+        router.push('/dashboard/classrooms');
+      },
+    });
+  };
+
+  const handleLeave = () => {
+    leaveClassroomMutation.mutate(classroom.id, {
+      onSuccess: () => {
+        setLeaveDialogOpen(false);
         router.push('/dashboard/classrooms');
       },
     });
@@ -104,6 +118,20 @@ export function ClassroomHeader({
                 </DropdownMenuItem>
               </>
             )}
+
+            <RoleGuard allowedRoles={[Role.Student]}>
+              <DropdownMenuItem
+                variant='destructive'
+                onClick={(e) => {
+                  e.preventDefault();
+                  setLeaveDialogOpen(true);
+                }}
+              >
+                <IconLogout size={18} className='mr-2' />
+                Leave Classroom
+              </DropdownMenuItem>
+            </RoleGuard>
+
             <DropdownMenuItem onClick={onDetailsClick}>
               <IconInfoCircle size={18} className='mr-2' />
               Class Details
@@ -143,6 +171,16 @@ export function ClassroomHeader({
         description='Are you sure you want to delete this classroom? This action cannot be undone and will remove all students, assignments, and grades associated with it.'
         onConfirm={handleDelete}
         isLoading={deleteClassroomMutation.isPending}
+      />
+
+      <DeleteConfirmDialog
+        open={leaveDialogOpen}
+        onOpenChange={setLeaveDialogOpen}
+        title='Leave Classroom'
+        description='Are you sure you want to leave this classroom? You will no longer have access to the materials, assignments, or grades.'
+        confirmText='Leave'
+        onConfirm={handleLeave}
+        isLoading={leaveClassroomMutation.isPending}
       />
     </div>
   );
