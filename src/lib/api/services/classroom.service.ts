@@ -117,6 +117,15 @@ export interface StudentGradeStatsResponse {
   gradeStats: GradeStats;
 }
 
+export interface StudentAttendanceStats {
+  present: number;
+  late: number;
+  absent: number;
+  excused: number;
+  total: number;
+  attendanceRate: number;
+}
+
 export interface AttendanceChecklistItem {
   id: string; // This is actually user id/enrollment id in some cases, or just a unique key
   name: string;
@@ -236,5 +245,15 @@ export const classroomService = {
       `/api/v1/classrooms/${classroomId}/attendances/bulk`,
       payload,
     );
+  },
+
+  getStudentAttendanceStats: async (
+    classroomId: string,
+    studentId: string,
+  ): Promise<StudentAttendanceStats> => {
+    const response = await apiClient.get<StudentAttendanceStats>(
+      `/api/v1/classrooms/${classroomId}/attendances/stats/${studentId}`,
+    );
+    return response.data;
   },
 };

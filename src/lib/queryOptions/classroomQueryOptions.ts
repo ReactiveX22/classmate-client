@@ -57,3 +57,19 @@ export function getAttendanceChecklistQueryOptions<
     queryFn: () => classroomService.getAttendanceChecklist(classroomId, date),
   });
 }
+
+export function getStudentAttendanceStatsQueryOptions<
+  TData = any, // Using any for TData to allow for flexibility, but could be StudentAttendanceStats
+  TError = Error,
+>(
+  classroomId: string,
+  studentId: string,
+  options?: Omit<UseQueryOptions<any, TError, TData>, 'queryKey' | 'queryFn'>,
+) {
+  return queryOptions({
+    ...options,
+    queryKey: ['classrooms', classroomId, 'attendance-stats', studentId],
+    queryFn: () =>
+      classroomService.getStudentAttendanceStats(classroomId, studentId),
+  });
+}
