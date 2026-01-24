@@ -10,6 +10,19 @@ import { IconBook, IconChevronRight } from '@tabler/icons-react';
 import { Code } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { IconDotsVertical } from '@tabler/icons-react';
+import { RoleGuard } from '@/components/common/role-guard';
+import { Role } from '@/types/auth';
+import { useDeleteClassroom } from '@/hooks/use-classrooms';
+import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
+import { useState } from 'react';
+import { Trash } from 'lucide-react';
 
 interface ClassroomCardProps {
   classroom: Classroom;
@@ -17,10 +30,21 @@ interface ClassroomCardProps {
 }
 
 export function ClassroomCard({ classroom, course }: ClassroomCardProps) {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const deleteClassroomMutation = useDeleteClassroom();
+
+  const handleDelete = () => {
+    deleteClassroomMutation.mutate(classroom.id, {
+      onSuccess: () => {
+        setDeleteDialogOpen(false);
+      },
+    });
+  };
+
   return (
     <Card className='h-full'>
-      <CardHeader>
-        <div className='space-y-1.5'>
+      <CardHeader className='flex flex-row items-start justify-between space-y-0 gap-2'>
+        <div className='space-y-1.5 flex-1 min-w-0'>
           <h3 className='text-lg font-semibold truncate tracking-tight group-hover:text-primary transition-colors'>
             {classroom.name}
           </h3>
@@ -33,6 +57,31 @@ export function ClassroomCard({ classroom, course }: ClassroomCardProps) {
             </Badge>
           </div>
         </div>
+
+        <RoleGuard allowedRoles={[Role.Instructor]}>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='h-8 w-8 text-muted-foreground'
+                >
+                  <IconDotsVertical size={18} />
+                </Button>
+              }
+            />
+            <DropdownMenuContent align='end'>
+              <DropdownMenuItem
+                variant='destructive'
+                onClick={() => setDeleteDialogOpen(true)}
+              >
+                <Trash size={16} className='mr-2' />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </RoleGuard>
       </CardHeader>
       <CardContent className='h-full'>
         <p className='text-[13px] text-muted-foreground line-clamp-2 leading-relaxed min-h-10'>
@@ -68,6 +117,15 @@ export function ClassroomCard({ classroom, course }: ClassroomCardProps) {
           />
         </Button>
       </CardFooter>
+
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title='Delete Classroom'
+        description='Are you sure you want to delete this classroom? This action cannot be undone.'
+        onConfirm={handleDelete}
+        isLoading={deleteClassroomMutation.isPending}
+      />
     </Card>
   );
 }

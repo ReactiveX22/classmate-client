@@ -13,9 +13,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Trash } from 'lucide-react';
+import { useDeleteClassroom } from '@/hooks/use-classrooms';
+import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface ClassroomHeaderProps {
   classroom: {
+    id: string; // Added id to interface
     name: string;
     section: string;
     classCode: string;
@@ -41,6 +47,18 @@ export function ClassroomHeader({
   onEditClick,
   onDetailsClick,
 }: ClassroomHeaderProps) {
+  const router = useRouter();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const deleteClassroomMutation = useDeleteClassroom();
+
+  const handleDelete = () => {
+    deleteClassroomMutation.mutate(classroom.id, {
+      onSuccess: () => {
+        setDeleteDialogOpen(false);
+        router.push('/dashboard/classrooms');
+      },
+    });
+  };
   return (
     <div className='space-y-4'>
       <div className='flex items-start justify-between gap-4'>
@@ -69,10 +87,22 @@ export function ClassroomHeader({
           />
           <DropdownMenuContent align='end' className='w-48'>
             {isTeacher && (
-              <DropdownMenuItem onClick={onEditClick}>
-                <IconPencil size={18} className='mr-2' />
-                Edit Classroom
-              </DropdownMenuItem>
+              <>
+                <DropdownMenuItem onClick={onEditClick}>
+                  <IconPencil size={18} className='mr-2' />
+                  Edit Classroom
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  variant='destructive'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setDeleteDialogOpen(true);
+                  }}
+                >
+                  <Trash size={18} className='mr-2' />
+                  Delete Classroom
+                </DropdownMenuItem>
+              </>
             )}
             <DropdownMenuItem onClick={onDetailsClick}>
               <IconInfoCircle size={18} className='mr-2' />
@@ -106,6 +136,14 @@ export function ClassroomHeader({
           </Button>
         </div>
       </div> */}
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title='Delete Classroom'
+        description='Are you sure you want to delete this classroom? This action cannot be undone and will remove all students, assignments, and grades associated with it.'
+        onConfirm={handleDelete}
+        isLoading={deleteClassroomMutation.isPending}
+      />
     </div>
   );
 }
