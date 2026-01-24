@@ -1,4 +1,8 @@
 'use client';
+import { useQuery } from '@tanstack/react-query';
+import { getAttendanceChecklistQueryOptions } from '@/lib/queryOptions/classroomQueryOptions';
+import { AttendanceChecklistItem } from '@/lib/api/services/classroom.service';
+import { useBulkCreateAttendance } from '@/hooks/use-attendance';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -52,69 +56,6 @@ interface StudentAttendance {
   note?: string;
 }
 
-// Fake data for demonstration
-const FAKE_STUDENTS: StudentAttendance[] = [
-  {
-    id: '1',
-    name: 'Alex Johnson',
-    studentId: '1824',
-    avatar:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100',
-    status: 'present',
-  },
-  {
-    id: '2',
-    name: 'Beatriz Silva',
-    studentId: '1825',
-    avatar:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100',
-    status: 'absent',
-    note: 'Medical appointment',
-  },
-  {
-    id: '3',
-    name: 'Caleb Robinson',
-    studentId: '1826',
-    status: 'late',
-  },
-  {
-    id: '4',
-    name: 'Diana Prince',
-    studentId: '1827',
-    avatar:
-      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100',
-    status: 'pending',
-  },
-  {
-    id: '5',
-    name: 'Ethan Lee',
-    studentId: '1828',
-    status: 'pending',
-  },
-  {
-    id: '6',
-    name: 'Fiona Chen',
-    studentId: '1829',
-    avatar:
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100',
-    status: 'present',
-  },
-  {
-    id: '7',
-    name: 'Gabriel Martinez',
-    studentId: '1830',
-    status: 'present',
-  },
-  {
-    id: '8',
-    name: 'Hannah Kim',
-    studentId: '1831',
-    avatar:
-      'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100',
-    status: 'pending',
-  },
-];
-
 interface AttendanceTabProps {
   classroomId: string;
   isTeacher?: boolean;
@@ -154,17 +95,37 @@ export function AttendanceTab({
   classroomId,
   isTeacher = true,
 }: AttendanceTabProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [students, setStudents] = useState<StudentAttendance[]>(FAKE_STUDENTS);
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+
+  const {
+    data: checklistData,
+    isLoading,
+    isRefetching,
+  } = useQuery(getAttendanceChecklistQueryOptions(classroomId, formattedDate));
+
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [students, setStudents] = useState<StudentAttendance[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [noteStudent, setNoteStudent] = useState<string | null>(null);
   const [noteValue, setNoteValue] = useState('');
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Scroll to card when attendance tab is selected
   useEffect(() => {
-    // Small delay to ensure the tab content is rendered
+    if (checklistData) {
+      const mappedStudents: StudentAttendance[] = checklistData.map((item) => ({
+        id: item.id,
+        name: item.name,
+        studentId: item.studentId,
+        avatar: item.image || undefined,
+        status: item.status || 'pending',
+        note: item.remarks || undefined,
+      }));
+      setStudents(mappedStudents);
+    }
+  }, [checklistData]);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
@@ -177,7 +138,7 @@ export function AttendanceTab({
     return students.filter(
       (s) =>
         s.name.toLowerCase().includes(query) ||
-        s.studentId.toLowerCase().includes(query)
+        s.studentId.toLowerCase().includes(query),
     );
   }, [students, searchQuery]);
 
@@ -191,23 +152,28 @@ export function AttendanceTab({
     return { present, absent, late, pending, total, completed };
   }, [students]);
 
-  const progressPercentage = (stats.completed / stats.total) * 100;
+  const progressPercentage = (stats.completed / (stats.total || 1)) * 100;
 
   const updateStatus = (studentId: string, status: AttendanceStatus) => {
     setStudents((prev) =>
-      prev.map((s) => (s.id === studentId ? { ...s, status } : s))
+      prev.map((s) => (s.id === studentId ? { ...s, status } : s)),
     );
     setHasChanges(true);
   };
 
-  const markAllPresent = () => {
-    setStudents((prev) => prev.map((s) => ({ ...s, status: 'present' })));
-    setHasChanges(true);
+  const areAllPresent = useMemo(() => {
+    return students.every((s) => s.status === 'present');
+  }, [students]);
+
+  const toggleAllAttendance = () => {
+    const newStatus: AttendanceStatus = areAllPresent ? 'pending' : 'present';
+    setStudents((prev) => prev.map((s) => ({ ...s, status: newStatus })));
+    setHasChanges(areAllPresent ? false : true);
   };
 
   const handleSaveNote = (studentId: string) => {
     setStudents((prev) =>
-      prev.map((s) => (s.id === studentId ? { ...s, note: noteValue } : s))
+      prev.map((s) => (s.id === studentId ? { ...s, note: noteValue } : s)),
     );
     setNoteStudent(null);
     setNoteValue('');
@@ -219,20 +185,51 @@ export function AttendanceTab({
     setNoteValue(student.note || '');
   };
 
+  const { mutate: saveAttendance, isPending: isSaving } =
+    useBulkCreateAttendance();
+
   const handleSave = () => {
-    toast.success('Attendance saved successfully!', {
-      description: `Recorded ${stats.present} present, ${
-        stats.absent
-      } absent, ${stats.late} late for ${format(
-        selectedDate,
-        'MMMM d, yyyy'
-      )}.`,
-    });
-    setHasChanges(false);
+    const records = students
+      .filter((s) => s.status !== 'pending')
+      .map((s) => ({
+        studentId: s.id,
+        status: s.status as 'present' | 'absent' | 'late',
+        remarks: s.note,
+      }));
+
+    if (records.length === 0) {
+      toast.info('No attendance records to save.');
+      return;
+    }
+
+    saveAttendance(
+      {
+        classroomId,
+        data: {
+          date: formattedDate,
+          records,
+        },
+      },
+      {
+        onSuccess: () => {
+          setHasChanges(false);
+        },
+      },
+    );
   };
 
   const handleCancel = () => {
-    setStudents(FAKE_STUDENTS);
+    if (checklistData) {
+      const mappedStudents: StudentAttendance[] = checklistData.map((item) => ({
+        id: item.id,
+        name: item.name,
+        studentId: item.studentId,
+        avatar: item.image || undefined,
+        status: item.status || 'pending',
+        note: item.remarks || undefined,
+      }));
+      setStudents(mappedStudents);
+    }
     setHasChanges(false);
   };
 
@@ -262,7 +259,7 @@ export function AttendanceTab({
                     mode='single'
                     selected={selectedDate}
                     onSelect={(date) => date && setSelectedDate(date)}
-                    initialFocus
+                    autoFocus
                   />
                 </PopoverContent>
               </Popover>
@@ -270,7 +267,11 @@ export function AttendanceTab({
           </div>
         </CardHeader>
 
-        <CardContent className='space-y-4'>
+        <CardContent
+          className={cn('space-y-4 transition-opacity duration-200', {
+            'opacity-50 pointer-events-none': isLoading || isRefetching,
+          })}
+        >
           {/* Search and Actions Bar */}
           <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
             <div className='relative max-w-sm flex-1'>
@@ -285,8 +286,8 @@ export function AttendanceTab({
             <div className='flex items-center gap-3'>
               {/* Progress indicator */}
               <div className='hidden sm:flex items-center gap-3 text-sm text-muted-foreground'>
-                <span className='font-medium'>PROGRESS</span>
-                <div className='w-32'>
+                <span className='font-medium text-xs'>Progress</span>
+                <div className='w-40'>
                   <Progress value={progressPercentage}>
                     <ProgressLabel className='sr-only'>Progress</ProgressLabel>
                   </Progress>
@@ -295,11 +296,20 @@ export function AttendanceTab({
               <Button
                 variant='outline'
                 size='sm'
-                onClick={markAllPresent}
+                onClick={toggleAllAttendance}
                 className='gap-2'
               >
-                <CheckCheck className='size-4' />
-                Mark All Present
+                {areAllPresent ? (
+                  <>
+                    <X className='size-4' />
+                    Unmark All
+                  </>
+                ) : (
+                  <>
+                    <CheckCheck className='size-4' />
+                    Mark All Present
+                  </>
+                )}
               </Button>
             </div>
           </div>
@@ -309,8 +319,8 @@ export function AttendanceTab({
             <Table>
               <TableHeader>
                 <TableRow className='hover:bg-transparent'>
-                  <TableHead className='w-[280px]'>Student</TableHead>
                   <TableHead className='w-[100px]'>ID</TableHead>
+                  <TableHead className='w-[280px]'>Student</TableHead>
                   <TableHead className='w-[220px]'>Status</TableHead>
                   <TableHead className='text-right'>Note</TableHead>
                 </TableRow>
@@ -318,6 +328,9 @@ export function AttendanceTab({
               <TableBody>
                 {filteredStudents.map((student) => (
                   <TableRow key={student.id} className='group'>
+                    <TableCell className='text-muted-foreground'>
+                      {student.studentId}
+                    </TableCell>
                     <TableCell>
                       <div className='flex items-center gap-3'>
                         <Avatar>
@@ -334,9 +347,6 @@ export function AttendanceTab({
                         <span className='font-medium'>{student.name}</span>
                       </div>
                     </TableCell>
-                    <TableCell className='text-muted-foreground'>
-                      {student.studentId}
-                    </TableCell>
                     <TableCell>
                       <div className='flex items-center gap-1.5'>
                         {(
@@ -349,10 +359,10 @@ export function AttendanceTab({
                               key={status}
                               onClick={() => updateStatus(student.id, status)}
                               className={cn(
-                                'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all',
+                                'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all cursor-pointer',
                                 isActive
                                   ? `${config.bgColor} ${config.color} border-current`
-                                  : 'border-transparent bg-muted/30 text-muted-foreground hover:bg-muted/60'
+                                  : 'border-transparent bg-muted/30 text-muted-foreground hover:bg-muted/60',
                               )}
                             >
                               {isActive && config.icon}
@@ -381,7 +391,7 @@ export function AttendanceTab({
                               className={cn(
                                 'relative',
                                 student.note &&
-                                  'text-primary after:absolute after:-right-0.5 after:-top-0.5 after:size-2 after:rounded-full after:bg-primary'
+                                  'text-primary after:absolute after:-right-0.5 after:-top-0.5 after:size-2 after:rounded-full after:bg-primary',
                               )}
                             >
                               <StickyNote className='size-4' />
@@ -460,8 +470,8 @@ export function AttendanceTab({
             >
               Cancel
             </Button>
-            <Button onClick={handleSave} disabled={!hasChanges}>
-              Save
+            <Button onClick={handleSave} disabled={!hasChanges || isSaving}>
+              {isSaving ? 'Saving...' : 'Save'}
             </Button>
           </div>
         </CardFooter>
