@@ -4,6 +4,7 @@ import {
   ClassroomsResponse,
   ClassroomDetail,
   AttendanceChecklistItem,
+  UpcomingPost,
 } from '../api/services/classroom.service';
 import { PaginationParams } from '@/types/pagination';
 
@@ -71,5 +72,21 @@ export function getStudentAttendanceStatsQueryOptions<
     queryKey: ['classrooms', classroomId, 'attendance-stats', studentId],
     queryFn: () =>
       classroomService.getStudentAttendanceStats(classroomId, studentId),
+  });
+}
+export function getUpcomingPostsQueryOptions<
+  TData = UpcomingPost[],
+  TError = Error,
+>(
+  classroomId: string,
+  options?: Omit<
+    UseQueryOptions<UpcomingPost[], TError, TData>,
+    'queryKey' | 'queryFn'
+  >,
+) {
+  return queryOptions({
+    ...options,
+    queryKey: ['classrooms', classroomId, 'upcoming-posts'],
+    queryFn: () => classroomService.getUpcomingPosts(classroomId),
   });
 }

@@ -10,6 +10,7 @@ import { usePosts } from '@/hooks/use-posts';
 import { IconMessageCircle } from '@tabler/icons-react';
 import { CreatePostDialog } from './posts/create-post-dialog';
 import { PostList } from './posts/post-list';
+import { UpcomingCard } from './upcoming-card';
 
 interface StreamTabProps {
   classroomId: string;
@@ -27,14 +28,7 @@ export function StreamTab({ classroomId, isTeacher }: StreamTabProps) {
   return (
     <div className='space-y-4 mt-6'>
       <div className='flex gap-4 w-full'>
-        <Card className='hidden md:block w-64 h-fit shrink-0'>
-          <CardHeader>
-            <CardTitle className='text-sm'>Upcoming</CardTitle>
-          </CardHeader>
-          <CardContent className='text-xs text-muted-foreground'>
-            No work due soon
-          </CardContent>
-        </Card>
+        <UpcomingCard classroomId={classroomId} isTeacher={isTeacher} />
 
         <div className='flex-1 max-w-xl space-y-4'>
           <Card className='py-2'>

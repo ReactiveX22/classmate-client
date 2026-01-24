@@ -145,6 +145,13 @@ export interface BulkCreateAttendanceInput {
   }[];
 }
 
+export interface UpcomingPost {
+  id: string;
+  title: string;
+  type: 'assignment';
+  dueAt: string;
+}
+
 export const classroomService = {
   getClassrooms: async (
     params?: PaginationParams,
@@ -259,5 +266,11 @@ export const classroomService = {
 
   leaveClassroom: async (classroomId: string): Promise<void> => {
     await apiClient.post(`/api/v1/classrooms/${classroomId}/members/leave`);
+  },
+  getUpcomingPosts: async (classroomId: string): Promise<UpcomingPost[]> => {
+    const response = await apiClient.get<UpcomingPost[]>(
+      `/api/v1/classrooms/${classroomId}/upcoming-posts`,
+    );
+    return response.data;
   },
 };

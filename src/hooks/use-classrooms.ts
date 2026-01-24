@@ -6,6 +6,7 @@ import {
 import {
   createClassroomQueryOptions,
   getClassroomQueryOptions,
+  getUpcomingPostsQueryOptions,
 } from '@/lib/queryOptions/classroomQueryOptions';
 import { PaginationParams } from '@/types/pagination';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -171,4 +172,7 @@ export function useStudentGradeStats(classroomId: string, studentId: string) {
       classroomService.getStudentGradeStats(classroomId, studentId),
     enabled: !!classroomId && !!studentId,
   });
+}
+export function useUpcomingPosts(classroomId: string) {
+  return useQuery(getUpcomingPostsQueryOptions(classroomId));
 }
