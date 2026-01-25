@@ -1,14 +1,12 @@
 import { useMemo } from 'react';
-import {
-  IconMessageCircle,
-  IconUsers,
-  IconSettings,
-} from '@tabler/icons-react';
+import { IconMessageCircle, IconUsers } from '@tabler/icons-react';
 import { Book, CalendarCheck, File, Star, LucideIcon } from 'lucide-react';
 import { StreamTab } from '@/components/classrooms/classroom-detail/stream-tab';
 import { PeopleTab } from '@/components/classrooms/classroom-detail/people-tab';
-import { SettingsTab } from '@/components/classrooms/classroom-detail/settings-tab';
-import { PlaceholderTab } from '@/components/classrooms/classroom-detail/placeholder-tab';
+import { ClassworkTab } from '@/components/classrooms/classroom-detail/classwork-tab';
+import { ResourcesTab } from '@/components/classrooms/classroom-detail/resources-tab';
+import { GradesTab } from '@/components/classrooms/classroom-detail/grades-tab';
+import { AttendanceTab } from '@/components/classrooms/classroom-detail/attendance-tab';
 
 import {
   ClassroomDetail,
@@ -17,11 +15,14 @@ import {
 } from '@/lib/api/services/classroom.service';
 import { User } from '@/types/auth';
 
+import { useUser } from '@/hooks/useAuth';
+
 export interface TabConfig {
   value: string;
   label: string;
   icon: LucideIcon | React.ComponentType<{ size?: number; className?: string }>;
   content?: React.ReactNode;
+  hidden?: boolean;
 }
 
 interface UseClassroomTabsProps {
@@ -43,6 +44,9 @@ export function useClassroomTabs({
   onAddStudents,
   onCopyClassCode,
 }: UseClassroomTabsProps) {
+  const { data: user } = useUser();
+  const isTeacher = user?.id === classroom?.teacherId;
+
   return useMemo<TabConfig[]>(() => {
     if (!classroom || !course || !teacher) return [];
 
@@ -51,18 +55,14 @@ export function useClassroomTabs({
         value: 'stream',
         label: 'Stream',
         icon: IconMessageCircle,
-        content: <StreamTab classroomId={classroom.id} />,
+        content: <StreamTab classroomId={classroom.id} isTeacher={isTeacher} />,
       },
       {
         value: 'classwork',
         label: 'Classwork',
         icon: File,
         content: (
-          <PlaceholderTab
-            title='Classwork'
-            description='Manage assignments, quizzes, and course materials here.'
-            icon={File}
-          />
+          <ClassworkTab classroomId={classroom.id} isTeacher={isTeacher} />
         ),
       },
       {
@@ -70,36 +70,20 @@ export function useClassroomTabs({
         label: 'Attendance',
         icon: CalendarCheck,
         content: (
-          <PlaceholderTab
-            title='Attendance'
-            description='Track student attendance and participation for each class session.'
-            icon={CalendarCheck}
-          />
+          <AttendanceTab classroomId={classroom.id} isTeacher={isTeacher} />
         ),
       },
       {
         value: 'resources',
         label: 'Resources',
         icon: Book,
-        content: (
-          <PlaceholderTab
-            title='Resources'
-            description='Shared documents, links, and study materials for the classroom.'
-            icon={Book}
-          />
-        ),
+        content: <ResourcesTab classroomId={classroom.id} />,
       },
       {
         value: 'grades',
         label: 'Grades',
         icon: Star,
-        content: (
-          <PlaceholderTab
-            title='Grades'
-            description='View and manage student grades, feedback, and performance metrics.'
-            icon={Star}
-          />
-        ),
+        content: <GradesTab classroomId={classroom.id} isTeacher={isTeacher} />,
       },
       {
         value: 'people',
@@ -115,18 +99,6 @@ export function useClassroomTabs({
           />
         ),
       },
-      {
-        value: 'settings',
-        label: 'Settings',
-        icon: IconSettings,
-        content: (
-          <SettingsTab
-            classroom={classroom}
-            course={course}
-            onCopyClassCode={onCopyClassCode}
-          />
-        ),
-      },
     ];
   }, [
     classroom,
@@ -136,5 +108,6 @@ export function useClassroomTabs({
     enrolledCount,
     onAddStudents,
     onCopyClassCode,
+    isTeacher,
   ]);
 }

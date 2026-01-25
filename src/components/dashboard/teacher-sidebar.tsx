@@ -1,21 +1,11 @@
 'use client';
 
-import {
-  IconBook,
-  IconBuildingBank,
-  IconCalendar,
-  IconChartBar,
-  IconClipboardList,
-  IconLayoutDashboard,
-  IconLifebuoy,
-  IconSchool,
-  IconUsers,
-} from '@tabler/icons-react';
-import { AppSidebar } from './app-sidebar';
-import { SidebarData } from '@/types/sidebar-types';
 import { Sidebar } from '@/components/ui/sidebar';
 import { useClassrooms } from '@/hooks/use-classrooms';
+import { SidebarData } from '@/types/sidebar-types';
+import { IconLayoutDashboard, IconSchool } from '@tabler/icons-react';
 import { useMemo } from 'react';
+import { AppSidebar } from './app-sidebar';
 
 export function TeacherSidebar({
   ...props
@@ -59,6 +49,7 @@ export function TeacherSidebar({
             {
               title: 'My Classes',
               icon: IconSchool,
+              open: true,
               items:
                 classroomItems.length > 0
                   ? myClassesItems
@@ -68,50 +59,6 @@ export function TeacherSidebar({
                         url: '/dashboard/classrooms',
                       },
                     ],
-            },
-            {
-              title: 'Students',
-              url: '/dashboard/students',
-              icon: IconUsers,
-            },
-            {
-              title: 'Assignments',
-              icon: IconClipboardList,
-              items: [
-                {
-                  title: 'Create New',
-                  url: '/dashboard/assignments/new',
-                },
-                {
-                  title: 'Review',
-                  url: '/dashboard/assignments/review',
-                },
-              ],
-            },
-            {
-              title: 'Reports',
-              url: '/dashboard/reports',
-              icon: IconChartBar,
-            },
-          ],
-        },
-        {
-          title: 'Quick Access',
-          items: [
-            {
-              title: 'Calendar',
-              url: '/dashboard/calendar',
-              icon: IconCalendar,
-            },
-            {
-              title: 'Library',
-              url: '/dashboard/library',
-              icon: IconBuildingBank,
-            },
-            {
-              title: 'Support',
-              url: '/dashboard/support',
-              icon: IconLifebuoy,
             },
           ],
         },

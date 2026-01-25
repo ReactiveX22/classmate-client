@@ -20,6 +20,8 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
+import { RoleGuard } from '@/components/common/role-guard';
+import { Role } from '@/types/auth';
 
 interface Teacher {
   name: string;
@@ -77,7 +79,7 @@ export function PeopleTab({
   };
 
   return (
-    <div className='space-y-6 mt-6'>
+    <div className='max-w-3xl mx-auto space-y-6 mt-6'>
       {/* Teacher Section */}
       <Card>
         <CardHeader>
@@ -114,10 +116,12 @@ export function PeopleTab({
             Manage students enrolled in this classroom
           </CardDescription>
           <CardAction>
-            <Button onClick={onAddStudents} size='sm'>
-              <IconUserPlus />
-              Add Students
-            </Button>
+            <RoleGuard allowedRoles={[Role.Instructor]}>
+              <Button onClick={onAddStudents} size='sm'>
+                <IconUserPlus />
+                Add Students
+              </Button>
+            </RoleGuard>
           </CardAction>
         </CardHeader>
         <CardContent>
@@ -148,20 +152,22 @@ export function PeopleTab({
                     >
                       <IconMessage className='size-4' />
                     </Button>
-                    <Button
-                      variant='ghost'
-                      size='icon'
-                      className='text-destructive hover:text-destructive hover:bg-destructive/10 size-8'
-                      onClick={() => setStudentToRemove(member)}
-                      disabled={removeStudentsMutation.isPending}
-                    >
-                      {removeStudentsMutation.isPending &&
-                      studentToRemove?.studentId === member.studentId ? (
-                        <IconLoader2 className='size-4 animate-spin' />
-                      ) : (
-                        <IconUserX className='size-4' />
-                      )}
-                    </Button>
+                    <RoleGuard allowedRoles={[Role.Instructor]}>
+                      <Button
+                        variant='ghost'
+                        size='icon'
+                        className='text-destructive hover:text-destructive hover:bg-destructive/10 size-8'
+                        onClick={() => setStudentToRemove(member)}
+                        disabled={removeStudentsMutation.isPending}
+                      >
+                        {removeStudentsMutation.isPending &&
+                        studentToRemove?.studentId === member.studentId ? (
+                          <IconLoader2 className='size-4 animate-spin' />
+                        ) : (
+                          <IconUserX className='size-4' />
+                        )}
+                      </Button>
+                    </RoleGuard>
                   </div>
                 </div>
               ))}
@@ -173,10 +179,12 @@ export function PeopleTab({
               <p className='text-sm text-muted-foreground text-center mb-4'>
                 Add students to get started with your classroom
               </p>
-              <Button onClick={onAddStudents}>
-                <IconUserPlus className='mr-2 h-4 w-4' />
-                Add Your First Student
-              </Button>
+              <RoleGuard allowedRoles={[Role.Instructor]}>
+                <Button onClick={onAddStudents}>
+                  <IconUserPlus className='mr-2 h-4 w-4' />
+                  Add Your First Student
+                </Button>
+              </RoleGuard>
             </div>
           )}
         </CardContent>

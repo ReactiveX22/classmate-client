@@ -6,6 +6,10 @@ import { Button } from '@/components/ui/button';
 import { IconBook, IconPlus } from '@tabler/icons-react';
 import { ClassroomCard } from '@/components/classrooms/classroom-card';
 import { ClassroomListSkeleton } from '@/components/classrooms/classroom-list-skeleton';
+import { CreateClassroomDialog } from '@/components/classrooms/create-classroom-dialog';
+import { JoinClassroomDialog } from '@/components/classrooms/join-classroom-dialog';
+import { RoleGuard } from '@/components/common/role-guard';
+import { Role } from '@/types/auth';
 
 export default function ClassroomsPage() {
   const {
@@ -24,10 +28,12 @@ export default function ClassroomsPage() {
         title='My Classrooms'
         description='Manage and view all your assigned classrooms'
       >
-        <Button className='gap-2 shadow-sm'>
-          <IconPlus size={18} />
-          Create Classroom
-        </Button>
+        <RoleGuard allowedRoles={[Role.Instructor, Role.Admin]}>
+          <CreateClassroomDialog />
+        </RoleGuard>
+        <RoleGuard allowedRoles={[Role.Student]}>
+          <JoinClassroomDialog />
+        </RoleGuard>
       </PageHeader>
 
       {isLoading ? (
@@ -52,24 +58,31 @@ export default function ClassroomsPage() {
               <IconBook className='text-primary size-8' />
             </div>
             <h3 className='text-xl font-bold mb-2'>No classrooms found</h3>
-            <p className='text-muted-foreground mb-6'>
-              You haven't created any classrooms yet. Start by creating a new
-              one for your students.
-            </p>
-            <Button variant='outline' className='gap-2'>
-              <IconPlus size={18} />
-              Create Your First Classroom
-            </Button>
+            <div className='text-muted-foreground mb-6'>
+              <RoleGuard
+                allowedRoles={[Role.Student]}
+                fallback={
+                  <p>
+                    You haven't created any classrooms yet. Start by creating a
+                    new one for your students.
+                  </p>
+                }
+              >
+                <p>You haven't joined any classrooms yet.</p>
+              </RoleGuard>
+            </div>
+            <RoleGuard allowedRoles={[Role.Instructor, Role.Admin]}>
+              <CreateClassroomDialog />
+            </RoleGuard>
+            <RoleGuard allowedRoles={[Role.Student]}>
+              <JoinClassroomDialog />
+            </RoleGuard>
           </div>
         </div>
       ) : (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {classrooms.map((item) => (
-            <ClassroomCard
-              key={item.classroom.id}
-              classroom={item.classroom}
-              course={item.course}
-            />
+            <ClassroomCard key={item.classroom.id} data={item} />
           ))}
         </div>
       )}

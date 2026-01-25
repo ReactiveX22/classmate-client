@@ -1,7 +1,10 @@
-import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { authClient } from './lib/auth-client';
 
 const protectedRoutes = ['/dashboard'];
+
+const authRoutes = ['/login'];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -10,17 +13,21 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith(route)
   );
 
-  const sessionToken = request.cookies.get('better-auth.session_token')?.value;
+  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
-  const hasValidSession = Boolean(
-    sessionToken && sessionToken !== 'undefined' && sessionToken !== 'null'
-  );
+  const session = await authClient.getSession();
 
-  if (isProtectedRoute && !hasValidSession) {
+  if (isProtectedRoute && !session.data?.session) {
     console.log('[Middleware] Blocking access to protected route:', pathname);
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  if (isAuthRoute && session.data?.session) {
+    console.log('[Middleware] Blocking access to auth route:', pathname);
+    const dashboardUrl = new URL('/dashboard', request.url);
+    return NextResponse.redirect(dashboardUrl);
   }
 
   return NextResponse.next();

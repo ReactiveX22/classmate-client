@@ -120,6 +120,7 @@ export default function Header({
             <Button
               render={<Link href={auth.signup.url}>{auth.signup.title}</Link>}
               size='sm'
+              nativeButton={false}
             ></Button>
           </div>
         </nav>
