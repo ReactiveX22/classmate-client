@@ -10,12 +10,21 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
+    pathname.startsWith(route),
   );
 
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
-  const session = await authClient.getSession();
+  let session;
+
+  try {
+    session = await authClient.getSession();
+  } catch (error) {
+    console.error('Failed to get session:', error);
+    session = {
+      data: null,
+    };
+  }
 
   if (isProtectedRoute && !session.data?.session) {
     console.log('[Middleware] Blocking access to protected route:', pathname);
