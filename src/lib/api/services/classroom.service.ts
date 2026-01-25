@@ -30,9 +30,25 @@ export interface Course {
   updatedAt: string;
 }
 
+export interface TeacherProfile {
+  id: string;
+  name: string;
+  image: string | null;
+}
+
+export interface UpcomingPost {
+  id: string;
+  title: string;
+  type: 'assignment' | 'announcement' | 'material';
+  dueAt: string;
+}
+
 export interface ClassroomWithCourse {
   classroom: Classroom;
   course: Course;
+  studentCount: number;
+  teacher: TeacherProfile;
+  upcoming: UpcomingPost[];
 }
 
 export interface ClassroomMember {
@@ -143,13 +159,6 @@ export interface BulkCreateAttendanceInput {
     status: 'present' | 'absent' | 'late';
     remarks?: string;
   }[];
-}
-
-export interface UpcomingPost {
-  id: string;
-  title: string;
-  type: 'assignment';
-  dueAt: string;
 }
 
 export const classroomService = {

@@ -82,11 +82,7 @@ export default function ClassroomsPage() {
       ) : (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {classrooms.map((item) => (
-            <ClassroomCard
-              key={item.classroom.id}
-              classroom={item.classroom}
-              course={item.course}
-            />
+            <ClassroomCard key={item.classroom.id} data={item} />
           ))}
         </div>
       )}

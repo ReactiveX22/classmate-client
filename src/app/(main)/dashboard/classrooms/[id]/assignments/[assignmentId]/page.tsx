@@ -59,7 +59,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
           setShowDeleteDialog(false);
           router.push(`/dashboard/classrooms/${classroomId}`);
         },
-      }
+      },
     );
   };
 
@@ -254,7 +254,7 @@ function AssignmentContent({
 
         {post.attachments && post.attachments.length > 0 && (
           <div className='space-y-4 pt-2'>
-            <h3 className='font-medium text-muted-foreground uppercase tracking-wider text-xs'>
+            <h3 className='font-medium text-muted-foreground text-xs'>
               Attachments
             </h3>
             <AttachmentDisplay

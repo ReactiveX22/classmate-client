@@ -37,7 +37,7 @@ export function StudentGradeSummary({
   const { data: classroom } = useClassroom(classroomId);
   const { data: gradeStatsData, isLoading } = useStudentGradeStats(
     classroomId,
-    studentId
+    studentId,
   );
 
   const student = useMemo(() => {
@@ -120,7 +120,7 @@ export function StudentGradeSummary({
                 {isLoading ? '-' : `${gradeStats.attendance}%`}
               </div>
               <p className='text-xs text-muted-foreground'>
-                Present for last 30 days
+                Present of total classes
               </p>
             </CardContent>
           </Card>
@@ -157,7 +157,7 @@ export function StudentGradeSummary({
                       className='cursor-pointer hover:bg-muted/50 transition-colors group'
                       onClick={() =>
                         router.push(
-                          `/dashboard/classrooms/${classroomId}/assignments/${post.id}`
+                          `/dashboard/classrooms/${classroomId}/assignments/${post.id}`,
                         )
                       }
                     >
@@ -173,7 +173,7 @@ export function StudentGradeSummary({
                         {post.assignmentData?.dueDate
                           ? format(
                               new Date(post.assignmentData.dueDate),
-                              'MMM d, h:mm a'
+                              'MMM d, h:mm a',
                             )
                           : 'No due date'}
                       </TableCell>
