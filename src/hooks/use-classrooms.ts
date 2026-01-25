@@ -6,12 +6,13 @@ import {
 import {
   createClassroomQueryOptions,
   getClassroomQueryOptions,
+  getUpcomingPostsQueryOptions,
 } from '@/lib/queryOptions/classroomQueryOptions';
 import { PaginationParams } from '@/types/pagination';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
-import { ApiError } from '@/types/errors';
+import { ApiError, ErrorCode } from '@/types/errors';
 
 export const useClassrooms = (params?: PaginationParams) => {
   return useQuery(createClassroomQueryOptions(params));
@@ -118,4 +119,60 @@ export function useRemoveStudentsFromClassroom() {
       });
     },
   });
+}
+
+export function useJoinClassroom() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (classCode: string) =>
+      classroomService.joinClassroom(classCode),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['classrooms'] });
+      toast.success('Joined classroom successfully');
+    },
+    onError: (error: AxiosError<ApiError>) => {
+      const apiError = error.response?.data;
+
+      if (apiError?.errorCode === ErrorCode.DUPLICATE_KEY) {
+        toast.info('Already a Member', {
+          description: 'You are already a member of this classroom.',
+        });
+        return;
+      }
+
+      toast.error('Failed to Join Classroom', {
+        description: apiError?.message || 'An unexpected error occurred.',
+      });
+    },
+  });
+}
+
+export function useLeaveClassroom() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (classroomId: string) =>
+      classroomService.leaveClassroom(classroomId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['classrooms'] });
+      toast.success('Left classroom successfully');
+    },
+    onError: (error: AxiosError<ApiError>) => {
+      const apiError = error.response?.data;
+      toast.error('Failed to Leave Classroom', {
+        description: apiError?.message || 'An unexpected error occurred.',
+      });
+    },
+  });
+}
+
+export function useStudentGradeStats(classroomId: string, studentId: string) {
+  return useQuery({
+    queryKey: ['classroom', classroomId, 'student', studentId, 'grade-stats'],
+    queryFn: () =>
+      classroomService.getStudentGradeStats(classroomId, studentId),
+    enabled: !!classroomId && !!studentId,
+  });
+}
+export function useUpcomingPosts(classroomId: string) {
+  return useQuery(getUpcomingPostsQueryOptions(classroomId));
 }

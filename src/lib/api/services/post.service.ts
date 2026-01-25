@@ -1,0 +1,136 @@
+import apiClient from '../index';
+import { PaginationMeta, PaginationParams } from '@/types/pagination';
+import { User } from '@/types/auth';
+import { Submission } from './submission.service';
+
+export type PostType = 'announcement' | 'assignment' | 'material' | 'question';
+export type AttachmentType = 'file' | 'link' | 'video' | 'image';
+export type SubmissionType = 'file' | 'text' | 'link' | 'multiple';
+
+export type Attachment = {
+  id: string;
+  name: string;
+  url: string;
+  type: AttachmentType;
+  size?: number;
+  mimeType?: string;
+};
+
+export type AssignmentData = {
+  dueDate?: string;
+  points?: number;
+  allowLateSubmission?: boolean;
+  submissionType?: SubmissionType;
+};
+
+export type SubmissionStats = {
+  total: number;
+  graded: number;
+};
+
+export interface Post {
+  id: string;
+  classroomId: string;
+  authorId: string;
+  type: PostType;
+  title: string | null;
+  content: string;
+  attachments: Attachment[];
+  assignmentData: AssignmentData | null;
+  isPinned: boolean;
+  commentsEnabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+  author?: User;
+  submission?: Submission | null;
+  submissionStats?: SubmissionStats | null;
+}
+
+export interface PostsResponse {
+  data: Post[];
+  meta: PaginationMeta;
+}
+
+// DTO for creating a post
+export interface AttachmentDto {
+  name: string;
+  url: string;
+  type: AttachmentType;
+  size?: number;
+  mimeType?: string;
+}
+
+export interface AssignmentDataDto {
+  dueDate?: string;
+  points?: number;
+  allowLateSubmission?: boolean;
+  submissionType?: SubmissionType;
+}
+
+export interface CreatePostDto {
+  type: PostType;
+  title?: string;
+  content: string;
+  attachments?: AttachmentDto[];
+  assignmentData?: AssignmentDataDto;
+  isPinned?: boolean;
+  commentsEnabled?: boolean;
+}
+
+export const postService = {
+  getPosts: async (
+    classroomId: string,
+    params?: PaginationParams
+  ): Promise<PostsResponse> => {
+    const response = await apiClient.get<PostsResponse>(
+      `/api/v1/classrooms/${classroomId}/posts`,
+      {
+        params,
+      }
+    );
+    return response.data;
+  },
+
+  createPost: async (
+    classroomId: string,
+    data: CreatePostDto
+  ): Promise<Post> => {
+    const response = await apiClient.post<Post>(
+      `/api/v1/classrooms/${classroomId}/posts`,
+      data
+    );
+    return response.data;
+  },
+
+  removeAttachment: async (
+    classroomId: string,
+    attachmentId: string
+  ): Promise<void> => {
+    await apiClient.delete(
+      `/api/v1/classrooms/${classroomId}/posts/upload/${attachmentId}`
+    );
+  },
+
+  deletePost: async (classroomId: string, postId: string): Promise<void> => {
+    await apiClient.delete(`/api/v1/classrooms/${classroomId}/posts/${postId}`);
+  },
+
+  updatePost: async (
+    classroomId: string,
+    postId: string,
+    data: Partial<CreatePostDto>
+  ): Promise<Post> => {
+    const response = await apiClient.patch<Post>(
+      `/api/v1/classrooms/${classroomId}/posts/${postId}`,
+      data
+    );
+    return response.data;
+  },
+
+  getPost: async (classroomId: string, postId: string): Promise<Post> => {
+    const response = await apiClient.get<Post>(
+      `/api/v1/classrooms/${classroomId}/posts/${postId}`
+    );
+    return response.data;
+  },
+};

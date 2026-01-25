@@ -1,120 +1,68 @@
 'use client';
 
-import {
-  IconBook,
-  IconBuildingBank,
-  IconCalendar,
-  IconClipboardList,
-  IconLayoutDashboard,
-  IconLifebuoy,
-  IconSpeakerphone,
-  IconUserCircle,
-} from '@tabler/icons-react';
+import { IconBook, IconLayoutDashboard } from '@tabler/icons-react';
 import { Sidebar } from '@/components/ui/sidebar';
 import { AppSidebar } from './app-sidebar';
 import { SidebarData } from '@/types/sidebar-types';
-
-const studentDashboardData: SidebarData = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    image: '',
-  },
-  navGroups: [
-    {
-      title: 'General',
-      items: [
-        {
-          title: 'Dashboard',
-          url: '/dashboard',
-          icon: IconLayoutDashboard,
-        },
-        {
-          title: 'Courses',
-          icon: IconBook,
-          items: [
-            {
-              title: 'Mathematics',
-              url: '/dashboard/courses/math',
-            },
-            {
-              title: 'Physics',
-              url: '/dashboard/courses/physics',
-            },
-            {
-              title: 'History',
-              url: '/dashboard/courses/history',
-            },
-          ],
-        },
-        {
-          title: 'Assignments',
-          icon: IconClipboardList,
-          items: [
-            {
-              title: 'Pending',
-              url: '/dashboard/assignments/pending',
-            },
-            {
-              title: 'Completed',
-              url: '/dashboard/assignments/completed',
-            },
-            {
-              title: 'Grades',
-              url: '/dashboard/assignments/grades',
-            },
-          ],
-        },
-        {
-          title: 'Notices',
-          icon: IconSpeakerphone,
-          items: [
-            {
-              title: 'Official',
-              url: '/dashboard/notices/official',
-            },
-            {
-              title: 'Department',
-              url: '/dashboard/notices/dept',
-            },
-            {
-              title: 'Events',
-              url: '/dashboard/notices/events',
-            },
-          ],
-        },
-        {
-          title: 'Profile',
-          url: '/dashboard/profile',
-          icon: IconUserCircle,
-        },
-      ],
-    },
-    {
-      title: 'Quick Access',
-      items: [
-        {
-          title: 'Calendar',
-          url: '/dashboard/calendar',
-          icon: IconCalendar,
-        },
-        {
-          title: 'Library',
-          url: '/dashboard/library',
-          icon: IconBuildingBank,
-        },
-        {
-          title: 'Support',
-          url: '/dashboard/support',
-          icon: IconLifebuoy,
-        },
-      ],
-    },
-  ],
-};
+import { useClassrooms } from '@/hooks/use-classrooms';
+import { useMemo } from 'react';
 
 export function StudentSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const { data: classroomsResponse, isLoading } = useClassrooms({
+    limit: 50,
+  });
+
+  const studentDashboardData: SidebarData = useMemo(() => {
+    const classroomItems =
+      classroomsResponse?.data?.map((item) => ({
+        title: item.classroom.name,
+        url: `/dashboard/classrooms/${item.classroom.id}`,
+      })) || [];
+
+    const myClassesItems = [
+      {
+        title: 'All Classes',
+        url: '/dashboard/classrooms',
+      },
+      ...classroomItems,
+    ];
+
+    return {
+      user: {
+        name: 'Student', // Ideally fetched from user context if AppSidebar doesn't handle it
+        email: 'student@example.com',
+        image: '',
+      },
+      navGroups: [
+        {
+          title: 'General',
+          items: [
+            {
+              title: 'Dashboard',
+              url: '/dashboard',
+              icon: IconLayoutDashboard,
+            },
+            {
+              title: 'Classrooms',
+              icon: IconBook,
+              open: true,
+              items:
+                classroomItems.length > 0
+                  ? myClassesItems
+                  : [
+                      {
+                        title: isLoading ? 'Loading...' : 'No classes yet',
+                        url: '/dashboard/classrooms',
+                      },
+                    ],
+            },
+          ],
+        },
+      ],
+    };
+  }, [classroomsResponse, isLoading]);
+
   return <AppSidebar data={studentDashboardData} {...props} />;
 }

@@ -23,7 +23,7 @@ export function formatDate(
   }
 }
 
-export function getInitials(name: string) {
+export function getInitials(name: string | undefined) {
   if (!name) {
     return '';
   }
@@ -38,4 +38,20 @@ export function getInitials(name: string) {
   }
 
   return initials.toUpperCase();
+}
+
+/**
+ * Converts an absolute API URL to a relative path to support Next.js rewrites
+ * and hide the backend API address from the end user.
+ */
+export function getProxiedUrl(url: string | undefined) {
+  if (!url) return '';
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+
+  if (url.startsWith(apiUrl)) {
+    return url.replace(apiUrl, '');
+  }
+
+  return url;
 }
