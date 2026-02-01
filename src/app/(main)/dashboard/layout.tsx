@@ -2,6 +2,7 @@
 
 import { AdminSidebar } from '@/components/dashboard/admin-sidebar';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
+import { NotificationPopover } from '@/components/dashboard/notification-popover';
 import { StudentSidebar } from '@/components/dashboard/student-sidebar';
 import { TeacherSidebar } from '@/components/dashboard/teacher-sidebar';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,7 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { ProfileDropdown } from '@/components/dashboard/profile-dropdown';
 import { useUser } from '@/hooks/useAuth';
-import { IconBell, IconSettings } from '@tabler/icons-react';
+import { IconSettings } from '@tabler/icons-react';
 
 export default function DashboardLayout({
   children,
@@ -37,9 +38,7 @@ export default function DashboardLayout({
         {getSidebar()}
         <SidebarInset>
           <DashboardHeader title='Dashboard'>
-            <Button variant='ghost' size='icon'>
-              <IconBell size={20} />
-            </Button>
+            <NotificationPopover />
             <Button variant='ghost' size='icon'>
               <IconSettings size={20} />
             </Button>

@@ -156,6 +156,7 @@ function EmptyState() {
         </p>
         <Button
           render={<Link href='/dashboard/classrooms/new'>Create Class</Link>}
+          nativeButton={false}
         />
       </CardContent>
     </Card>
