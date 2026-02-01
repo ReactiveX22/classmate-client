@@ -21,7 +21,9 @@ export interface NotificationContent {
 
 export interface NotificationItem {
   notification: NotificationContent;
-  actor: NotificationActor;
+  actor: NotificationActor | null;
+  readAt: string | null;
+  isRead: boolean;
 }
 
 export interface NotificationsResponse {

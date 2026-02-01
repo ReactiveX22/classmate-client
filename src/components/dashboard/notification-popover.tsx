@@ -4,7 +4,14 @@ import { useEffect, useCallback, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useNotifications } from '@/hooks/use-notifications';
 import { formatDistanceToNow } from 'date-fns';
-import { IconBell, IconLoader2 } from '@tabler/icons-react';
+import {
+  IconBell,
+  IconLoader2,
+  IconClipboardText,
+  IconAward,
+  IconSpeakerphone,
+  IconInfoCircle,
+} from '@tabler/icons-react';
 import {
   Popover,
   PopoverContent,
@@ -12,9 +19,9 @@ import {
 } from '@/components/ui/popover';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { NotificationItem } from '@/lib/api/services/notification.service';
+import { NotificationType } from '@/lib/constants/notifications';
 
 export function NotificationPopover() {
   const {
@@ -53,6 +60,7 @@ export function NotificationPopover() {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const notifications = data?.pages.flatMap((page) => page.data) || [];
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   return (
     <Popover>
@@ -63,6 +71,11 @@ export function NotificationPopover() {
         )}
       >
         <IconBell size={20} />
+        {unreadCount > 0 && (
+          <span className='absolute top-1.5 right-1.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-primary ring-2 ring-background'>
+            <span className='sr-only'>{unreadCount} unread notifications</span>
+          </span>
+        )}
       </PopoverTrigger>
       <PopoverContent className='w-80 p-0 gap-0' align='end'>
         <div className='flex items-center justify-between border-b px-4 py-3'>
@@ -111,16 +124,63 @@ export function NotificationPopover() {
 }
 
 function NotificationItemRow({ item }: { item: NotificationItem }) {
-  const { notification, actor } = item;
+  const { notification } = item;
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case NotificationType.CLASSROOM.ASSIGNMENT:
+        return <IconClipboardText className='h-4 w-4 text-orange-500' />;
+      case NotificationType.CLASSROOM.GRADE:
+        return <IconAward className='h-4 w-4 text-yellow-500' />;
+      case NotificationType.ORGANIZATION.NOTICE:
+        return <IconSpeakerphone className='h-4 w-4 text-blue-500' />;
+      default:
+        return <IconInfoCircle className='h-4 w-4 text-muted-foreground' />;
+    }
+  };
+
+  const getNotificationColor = (type: string) => {
+    switch (type) {
+      case NotificationType.CLASSROOM.ASSIGNMENT:
+        return 'bg-orange-500/10 border-orange-500/20';
+      case NotificationType.CLASSROOM.GRADE:
+        return 'bg-yellow-500/10 border-yellow-500/20';
+      case NotificationType.ORGANIZATION.NOTICE:
+        return 'bg-blue-500/10 border-blue-500/20';
+      default:
+        return 'bg-muted border-border';
+    }
+  };
 
   return (
-    <div className='flex items-start gap-4 border-b px-4 py-3 last:border-0 hover:bg-muted/50'>
-      <Avatar className='h-8 w-8 mt-1'>
-        <AvatarImage src={actor.image || undefined} alt={actor.name} />
-        <AvatarFallback>{actor.name.charAt(0)}</AvatarFallback>
-      </Avatar>
+    <div
+      className={cn(
+        'flex items-start gap-4 border-b px-4 py-3 last:border-0 hover:bg-muted/50 transition-colors relative',
+        !item.isRead && 'bg-primary/5 hover:bg-primary/10',
+      )}
+    >
+      <div
+        className={cn(
+          'mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border',
+          getNotificationColor(notification.type),
+        )}
+      >
+        {getNotificationIcon(notification.type)}
+      </div>
       <div className='flex-1 space-y-1'>
-        <p className='text-sm font-medium leading-none'>{notification.title}</p>
+        <div className='flex justify-between items-start gap-2'>
+          <p
+            className={cn(
+              'text-sm leading-normal flex-1',
+              !item.isRead ? 'font-semibold' : 'font-medium',
+            )}
+          >
+            {notification.title}
+          </p>
+          {!item.isRead && (
+            <span className='h-2 w-2 rounded-full bg-primary shrink-0 mt-1.5' />
+          )}
+        </div>
         <p className='text-sm text-muted-foreground line-clamp-2'>
           {notification.content}
         </p>
