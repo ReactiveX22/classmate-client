@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useNotices } from '@/hooks/use-notices';
+import { useRecentNotices } from '@/hooks/use-notices';
 import { useUser } from '@/hooks/useAuth';
 import { NoticeData } from '@/lib/api/services/notice.service';
 import { IconBell, IconChevronRight, IconCalendar } from '@tabler/icons-react';
@@ -14,11 +14,7 @@ import { AddNoticeDialog } from '../notices/add-notice-dialog';
 import { TagBadge } from '../notices/tag-badge';
 
 export function AdminDashboard() {
-  const { data: noticesResponse, isLoading } = useNotices({
-    limit: 10,
-    sortBy: 'createdAt',
-    sortOrder: 'desc',
-  });
+  const { data: noticesResponse, isLoading } = useRecentNotices(5);
   const { data: user } = useUser();
 
   const notices = noticesResponse?.data || [];
