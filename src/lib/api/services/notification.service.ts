@@ -34,7 +34,7 @@ export const notificationService = {
     params?: PaginationParams,
   ): Promise<NotificationsResponse> => {
     const response = await apiClient.get<NotificationsResponse>(
-      '/api/v1/notifications/',
+      '/api/v1/notifications',
       {
         params,
       },

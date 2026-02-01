@@ -40,7 +40,9 @@ export const useUpdateNotice = () => {
       noticeService.updateNotice(id, data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: noticeKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: noticeKeys.detail(data.id) });
+      queryClient.invalidateQueries({
+        queryKey: noticeKeys.detail(data.notice.id),
+      });
     },
   });
 };

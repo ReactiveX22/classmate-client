@@ -14,7 +14,7 @@ import Link from 'next/link';
 
 export function StudentDashboard() {
   const { data: classroomsResponse, isLoading } = useClassrooms({
-    limit: 100,
+    limit: 50,
   });
   const { data: user } = useUser();
 

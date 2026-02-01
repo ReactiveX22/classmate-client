@@ -1,36 +1,27 @@
 'use client';
 
-import { CreateClassroomDialog } from '@/components/classrooms/create-classroom-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useClassrooms } from '@/hooks/use-classrooms';
+import { useNotices } from '@/hooks/use-notices';
 import { useUser } from '@/hooks/useAuth';
-import { ClassroomWithCourse } from '@/lib/api/services/classroom.service';
-import { IconBook, IconChevronRight } from '@tabler/icons-react';
+import { NoticeData } from '@/lib/api/services/notice.service';
+import { IconBell, IconChevronRight, IconCalendar } from '@tabler/icons-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
+import { AddNoticeDialog } from '../notices/add-notice-dialog';
+import { TagBadge } from '../notices/tag-badge';
 
-export function TeacherDashboard() {
-  const { data: classroomsResponse, isLoading } = useClassrooms({
-    limit: 50,
+export function AdminDashboard() {
+  const { data: noticesResponse, isLoading } = useNotices({
+    limit: 10,
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
   });
   const { data: user } = useUser();
 
-  const classrooms = classroomsResponse?.data || [];
-
-  const allUpcomingPosts = classrooms.flatMap((c) =>
-    (c.upcoming || []).map((p) => ({
-      ...p,
-      classroomId: c.classroom.id,
-      classroomName: c.classroom.name,
-    })),
-  );
-
-  const upcomingDeadlines = allUpcomingPosts
-    .sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime())
-    .slice(0, 5);
+  const notices = noticesResponse?.data || [];
 
   if (isLoading) {
     return <DashboardSkeleton />;
@@ -47,29 +38,29 @@ export function TeacherDashboard() {
             {format(new Date(), 'EEEE, MMMM do, yyyy')}
           </p>
         </div>
-        <CreateClassroomDialog />
+        <AddNoticeDialog />
       </div>
 
       <div className='grid gap-6 lg:grid-cols-3'>
         <div className='lg:col-span-2 space-y-4'>
           <div className='flex items-center justify-between'>
-            <h2 className='font-medium tracking-tight'>Your Classes</h2>
+            <h2 className='font-medium tracking-tight'>Latest Notices</h2>
             <Button
               variant='link'
               className='px-0 h-auto'
               nativeButton={false}
-              render={<Link href='/dashboard/classrooms' />}
+              render={<Link href='/dashboard/notices' />}
             >
               View All <IconChevronRight className='ml-1 h-4 w-4' />
             </Button>
           </div>
 
-          {classrooms.length === 0 ? (
+          {notices.length === 0 ? (
             <EmptyState />
           ) : (
             <div className='grid gap-4 sm:grid-cols-2'>
-              {classrooms.map((item) => (
-                <ClassroomCard key={item.classroom.id} data={item} />
+              {notices.map((item) => (
+                <NoticeCard key={item.notice.id} data={item} />
               ))}
             </div>
           )}
@@ -80,36 +71,10 @@ export function TeacherDashboard() {
           <Card className='p-0'>
             <CardContent className='p-0'>
               <ScrollArea className='max-h-[400px]'>
-                {upcomingDeadlines.length === 0 ? (
-                  <div className='p-8 text-center text-muted-foreground text-sm'>
-                    No upcoming deadlines.
-                  </div>
-                ) : (
-                  <div className='divide-y'>
-                    {upcomingDeadlines.map((post) => (
-                      <Link
-                        key={post.id}
-                        href={`/dashboard/classrooms/${post.classroomId}/assignments/${post.id}`}
-                        className='group block p-4 hover:bg-muted/50 transition-colors'
-                      >
-                        <div className='space-y-1'>
-                          <div className='flex items-center justify-between gap-2'>
-                            <span className='font-medium text-sm line-clamp-1 group-hover:text-primary transition-colors'>
-                              {post.title}
-                            </span>
-                            <p className='text-xs text-muted-foreground pt-1'>
-                              Due{' '}
-                              {format(new Date(post.dueAt), 'MMM d, h:mm a')}
-                            </p>
-                          </div>
-                          <p className='text-xs text-muted-foreground line-clamp-1'>
-                            {post.classroomName}
-                          </p>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                )}
+                <div className='p-8 text-center text-muted-foreground text-sm'>
+                  <IconCalendar className='h-8 w-8 mx-auto mb-2 opacity-50' />
+                  No upcoming events.
+                </div>
               </ScrollArea>
             </CardContent>
           </Card>
@@ -119,23 +84,40 @@ export function TeacherDashboard() {
   );
 }
 
-function ClassroomCard({ data }: { data: ClassroomWithCourse }) {
-  const { classroom, course } = data;
+function NoticeCard({ data }: { data: NoticeData }) {
+  const { notice, author } = data;
 
   return (
     <Link
-      href={`/dashboard/classrooms/${classroom.id}`}
+      href={`/dashboard/notices?id=${notice.id}`}
       className='group block h-full'
     >
       <Card className='h-full transition-colors hover:bg-muted/50 gap-2'>
         <CardHeader>
-          <div className='space-y-1'>
+          <div className='space-y-2'>
             <CardTitle className='text-base font-semibold line-clamp-1 group-hover:text-primary transition-colors'>
-              {classroom.name}
+              {notice.title}
             </CardTitle>
             <p className='text-xs text-muted-foreground'>
-              {course.code} • {classroom.section} • {course.credits} Credits
+              By {author?.name || 'Admin'} •{' '}
+              {format(new Date(notice.createdAt), 'MMM d, yyyy')}
             </p>
+            {notice.tags && notice.tags.length > 0 && (
+              <div className='flex flex-wrap gap-1.5'>
+                {notice.tags.slice(0, 2).map((tag) => (
+                  <TagBadge
+                    key={tag}
+                    tag={tag}
+                    className='text-[10px] px-1.5 h-5'
+                  />
+                ))}
+                {notice.tags.length > 2 && (
+                  <span className='text-[10px] text-muted-foreground self-center px-1'>
+                    +{notice.tags.length - 2}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </CardHeader>
       </Card>
@@ -148,16 +130,13 @@ function EmptyState() {
     <Card className='border-dashed shadow-none'>
       <CardContent className='flex flex-col items-center justify-center py-12 text-center'>
         <div className='p-3 rounded-full bg-primary/10 mb-4'>
-          <IconBook className='h-6 w-6 text-primary' />
+          <IconBell className='h-6 w-6 text-primary' />
         </div>
-        <h3 className='text-lg font-semibold'>No Classes Yet</h3>
+        <h3 className='text-lg font-semibold'>No Notices Yet</h3>
         <p className='text-sm text-muted-foreground max-w-sm mt-1 mb-4'>
-          Get started by creating your first class.
+          Get started by creating your first notice.
         </p>
-        <Button
-          render={<Link href='/dashboard/classrooms/new'>Create Class</Link>}
-          nativeButton={false}
-        />
+        <AddNoticeDialog />
       </CardContent>
     </Card>
   );

@@ -22,6 +22,7 @@ export function createClassroomQueryOptions<
     ...options,
     queryKey: ['classrooms', params],
     queryFn: () => classroomService.getClassrooms(params),
+    staleTime: 5 * 60 * 1000,
   });
 }
 
