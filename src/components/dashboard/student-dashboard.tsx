@@ -21,7 +21,11 @@ export function StudentDashboard() {
   const classrooms = classroomsResponse?.data || [];
 
   const allUpcomingPosts = classrooms.flatMap((c) =>
-    (c.upcoming || []).map((p) => ({ ...p, classroomName: c.classroom.name })),
+    (c.upcoming || []).map((p) => ({
+      ...p,
+      classroomId: c.classroom.id,
+      classroomName: c.classroom.name,
+    })),
   );
 
   const upcomingDeadlines = allUpcomingPosts
@@ -53,6 +57,7 @@ export function StudentDashboard() {
             <Button
               variant='link'
               className='px-0 h-auto'
+              nativeButton={false}
               render={<Link href='/dashboard/classrooms' />}
             >
               View All <IconChevronRight className='ml-1 h-4 w-4' />
@@ -82,13 +87,14 @@ export function StudentDashboard() {
                 ) : (
                   <div className='divide-y'>
                     {upcomingDeadlines.map((post) => (
-                      <div
+                      <Link
                         key={post.id}
-                        className='p-4 hover:bg-muted/50 transition-colors'
+                        href={`/dashboard/classrooms/${post.classroomId}/assignments/${post.id}`}
+                        className='group block p-4 hover:bg-muted/50 transition-colors'
                       >
                         <div className='space-y-1'>
                           <div className='flex items-center justify-between gap-2'>
-                            <span className='font-medium text-sm line-clamp-1'>
+                            <span className='font-medium text-sm line-clamp-1 group-hover:text-primary transition-colors'>
                               {post.title}
                             </span>
                             <p className='text-xs text-muted-foreground pt-1'>
@@ -100,7 +106,7 @@ export function StudentDashboard() {
                             {post.classroomName}
                           </p>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 )}

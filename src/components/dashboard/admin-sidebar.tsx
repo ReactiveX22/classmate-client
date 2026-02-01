@@ -9,6 +9,7 @@ import {
   IconLayoutDashboard,
   IconSchool,
   IconSettings,
+  IconSpeakerphone,
 } from '@tabler/icons-react';
 import { AppSidebar } from './app-sidebar';
 
@@ -28,9 +29,9 @@ const adminDashboardData: SidebarData = {
           icon: IconLayoutDashboard,
         },
         {
-          title: 'Settings',
-          icon: IconSettings,
-          url: '/dashboard/settings',
+          title: 'Notices',
+          icon: IconSpeakerphone,
+          url: '/dashboard/notices',
         },
       ],
     },

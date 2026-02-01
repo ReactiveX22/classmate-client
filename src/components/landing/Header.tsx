@@ -22,7 +22,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { IconMenu, IconSchool } from '@tabler/icons-react';
+import { IconMenu2, IconSchool } from '@tabler/icons-react';
 import Link from 'next/link';
 import React from 'react';
 
@@ -142,7 +142,7 @@ export default function Header({
               <SheetTrigger
                 render={
                   <Button variant='outline' size='icon'>
-                    <IconMenu className='size-4' />
+                    <IconMenu2 className='size-4' />
                   </Button>
                 }
               ></SheetTrigger>
@@ -174,12 +174,14 @@ export default function Header({
                       render={
                         <Link href={auth.login.url}>{auth.login.title}</Link>
                       }
+                      nativeButton={false}
                       variant='outline'
                     ></Button>
                     <Button
                       render={
                         <Link href={auth.signup.url}>{auth.signup.title}</Link>
                       }
+                      nativeButton={false}
                     ></Button>
                   </div>
                 </div>
