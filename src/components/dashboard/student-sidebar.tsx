@@ -1,6 +1,11 @@
 'use client';
 
-import { IconBook, IconLayoutDashboard } from '@tabler/icons-react';
+import {
+  IconBook,
+  IconLayoutDashboard,
+  IconSchool,
+  IconSpeakerphone,
+} from '@tabler/icons-react';
 import { Sidebar } from '@/components/ui/sidebar';
 import { AppSidebar } from './app-sidebar';
 import { SidebarData } from '@/types/sidebar-types';
@@ -45,9 +50,8 @@ export function StudentSidebar({
               icon: IconLayoutDashboard,
             },
             {
-              title: 'Classrooms',
-              icon: IconBook,
-              open: true,
+              title: 'My Classes',
+              icon: IconSchool,
               items:
                 classroomItems.length > 0
                   ? myClassesItems
@@ -57,6 +61,11 @@ export function StudentSidebar({
                         url: '/dashboard/classrooms',
                       },
                     ],
+            },
+            {
+              title: 'Notices',
+              url: '/dashboard/notices',
+              icon: IconSpeakerphone,
             },
           ],
         },
