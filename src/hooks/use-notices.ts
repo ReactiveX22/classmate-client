@@ -1,9 +1,15 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  useInfiniteQuery,
+} from '@tanstack/react-query';
 import {
   noticeService,
   GetNoticesParams,
   CreateNoticeInput,
   UpdateNoticeInput,
+  NoticesResponse,
 } from '@/lib/api/services/notice.service';
 
 export const noticeKeys = {
@@ -15,9 +21,40 @@ export const noticeKeys = {
 };
 
 export const useNotices = (params: GetNoticesParams) => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: noticeKeys.list(params),
-    queryFn: () => noticeService.getNotices(params),
+    queryFn: ({ pageParam }: { pageParam: number }) =>
+      noticeService.getNotices({ ...params, page: pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage: NoticesResponse) => {
+      if (lastPage.meta.hasNextPage) {
+        return lastPage.meta.page + 1;
+      }
+      return undefined;
+    },
+  });
+};
+
+export const useNotice = (
+  id: string | null,
+  options?: { enabled?: boolean },
+) => {
+  return useQuery({
+    queryKey: noticeKeys.detail(id!),
+    queryFn: () => noticeService.getNotice(id!),
+    enabled: !!id && (options?.enabled ?? true),
+  });
+};
+
+export const useRecentNotices = (limit: number = 5) => {
+  return useQuery({
+    queryKey: noticeKeys.lists(),
+    queryFn: () =>
+      noticeService.getNotices({
+        limit,
+        sortBy: 'createdAt',
+        sortOrder: 'desc',
+      }),
   });
 };
 

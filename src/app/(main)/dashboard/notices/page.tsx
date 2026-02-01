@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useNotices } from '@/hooks/use-notices';
+import { useQueryState } from 'nuqs';
+import { useNotices, useNotice } from '@/hooks/use-notices';
 import { NoticeList } from '@/components/notices/notice-list';
 import { NoticeDetail } from '@/components/notices/notice-detail';
 import { NoticeToolbar } from '@/components/notices/notice-toolbar';
 import { PageHeader } from '@/components/common/page-header';
 
 export default function NoticesPage() {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useQueryState('id');
 
   // Filter States
   const [search, setSearch] = useState('');
@@ -26,15 +27,20 @@ export default function NoticesPage() {
   }, [search]);
 
   // Data Query
-  const { data: response, isLoading } = useNotices({
-    page: 1,
-    limit: 50, // Fetch more for the list view
-    search: debouncedSearch,
+  const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
+    useNotices({
+      limit: 50,
+      search: debouncedSearch,
+    });
+
+  const notices = data?.pages.flatMap((page) => page.data) || [];
+  const foundInList = notices.find((n) => n.notice.id === selectedId);
+
+  const { data: individualNotice } = useNotice(selectedId, {
+    enabled: !foundInList,
   });
 
-  const notices = response?.data || [];
-  const selectedNotice =
-    notices.find((n) => n.notice.id === selectedId) || null;
+  const selectedNotice = foundInList || individualNotice || null;
 
   return (
     <div className='flex flex-col h-[calc(100vh-64px)] overflow-hidden bg-background'>
@@ -49,6 +55,9 @@ export default function NoticesPage() {
               isLoading={isLoading}
               selectedId={selectedId}
               onSelect={setSelectedId}
+              hasNextPage={hasNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+              fetchNextPage={fetchNextPage}
             />
           </div>
 
