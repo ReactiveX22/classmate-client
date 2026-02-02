@@ -1,27 +1,28 @@
 'use client';
 
-import { useEffect, useCallback, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
-import { useNotifications } from '@/hooks/use-notifications';
-import { formatDistanceToNow } from 'date-fns';
-import {
-  IconBell,
-  IconLoader2,
-  IconClipboardText,
-  IconAward,
-  IconSpeakerphone,
-  IconInfoCircle,
-} from '@tabler/icons-react';
+import { buttonVariants } from '@/components/ui/button';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Button, buttonVariants } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { cn } from '@/lib/utils';
+import { useNotifications } from '@/hooks/use-notifications';
 import { NotificationItem } from '@/lib/api/services/notification.service';
-import { NotificationType } from '@/lib/constants/notifications';
+import { NotificationType } from '@/lib/constants/notifications.constants';
+import { cn } from '@/lib/utils';
+import {
+  IconAward,
+  IconBell,
+  IconClipboardText,
+  IconInfoCircle,
+  IconLoader2,
+  IconSpeakerphone,
+} from '@tabler/icons-react';
+import { formatDistanceToNow } from 'date-fns';
+import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 export function NotificationPopover() {
   const {
@@ -152,44 +153,60 @@ function NotificationItemRow({ item }: { item: NotificationItem }) {
     }
   };
 
+  const getNotificationLink = (type: string, entityId: string) => {
+    // TODO: handle other notification types
+    switch (type) {
+      case NotificationType.CLASSROOM.ASSIGNMENT:
+        return `/classroom/assignment/${entityId}`;
+      case NotificationType.CLASSROOM.GRADE:
+        return `/classroom/grade/${entityId}`;
+      case NotificationType.ORGANIZATION.NOTICE:
+        return `/dashboard/notices?id=${entityId}`;
+      default:
+        return '/';
+    }
+  };
+
   return (
-    <div
-      className={cn(
-        'flex items-start gap-4 border-b px-4 py-3 last:border-0 hover:bg-muted/50 transition-colors relative',
-        !item.isRead && 'bg-primary/5 hover:bg-primary/10',
-      )}
-    >
+    <Link href={getNotificationLink(notification.type, notification.entityId)}>
       <div
         className={cn(
-          'mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border',
-          getNotificationColor(notification.type),
+          'cursor-pointer flex items-start gap-4 border-b px-4 py-3 last:border-0 hover:bg-muted/50 transition-colors relative',
+          !item.isRead && 'bg-primary/5 hover:bg-primary/10',
         )}
       >
-        {getNotificationIcon(notification.type)}
-      </div>
-      <div className='flex-1 space-y-1'>
-        <div className='flex justify-between items-start gap-2'>
-          <p
-            className={cn(
-              'text-sm leading-normal flex-1',
-              !item.isRead ? 'font-semibold' : 'font-medium',
-            )}
-          >
-            {notification.title}
-          </p>
-          {!item.isRead && (
-            <span className='h-2 w-2 rounded-full bg-primary shrink-0 mt-1.5' />
+        <div
+          className={cn(
+            'mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border',
+            getNotificationColor(notification.type),
           )}
+        >
+          {getNotificationIcon(notification.type)}
         </div>
-        <p className='text-sm text-muted-foreground line-clamp-2'>
-          {notification.content}
-        </p>
-        <p className='text-xs text-muted-foreground'>
-          {formatDistanceToNow(new Date(notification.createdAt), {
-            addSuffix: true,
-          })}
-        </p>
+        <div className='flex-1 space-y-1'>
+          <div className='flex justify-between items-start gap-2'>
+            <p
+              className={cn(
+                'text-sm leading-normal flex-1',
+                !item.isRead ? 'font-semibold' : 'font-medium',
+              )}
+            >
+              {notification.title}
+            </p>
+            {!item.isRead && (
+              <span className='h-2 w-2 rounded-full bg-primary shrink-0 mt-1.5' />
+            )}
+          </div>
+          <p className='text-sm text-muted-foreground line-clamp-2'>
+            {notification.content}
+          </p>
+          <p className='text-xs text-muted-foreground'>
+            {formatDistanceToNow(new Date(notification.createdAt), {
+              addSuffix: true,
+            })}
+          </p>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }

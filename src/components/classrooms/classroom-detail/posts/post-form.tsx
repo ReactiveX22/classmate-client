@@ -1,5 +1,4 @@
-'use client';
-
+import { AttachmentUpload } from '@/components/common/attachment-upload';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -24,9 +23,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { UploadResult } from '@/hooks/use-upload-attachment';
+import {
+  UploadResult,
+  useUploadAttachment,
+} from '@/hooks/use-upload-attachment';
 import {
   CreatePostDto,
+  postService,
   PostType,
   SubmissionType,
 } from '@/lib/api/services/post.service';
@@ -34,9 +37,8 @@ import { cn } from '@/lib/utils';
 import { IconCalendar } from '@tabler/icons-react';
 import { useForm } from '@tanstack/react-form';
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { z } from 'zod';
-import { AttachmentUpload } from './attachment-upload';
 
 // Zod Schemas
 const baseSchema = z.object({
@@ -100,6 +102,8 @@ export function PostForm({
   const [globalError, setGlobalError] = useState('');
   const [attachments, setAttachments] =
     useState<UploadResult[]>(initialAttachments);
+
+  const { mutateAsync: uploadFile } = useUploadAttachment();
 
   const defaultValues: PostFormData = initialValues || {
     type: 'announcement',
@@ -262,7 +266,7 @@ export function PostForm({
                                 variant='outline'
                                 className={cn(
                                   'w-full justify-start text-left font-normal',
-                                  !field.state.value && 'text-muted-foreground'
+                                  !field.state.value && 'text-muted-foreground',
                                 )}
                               >
                                 <IconCalendar className='mr-2 h-4 w-4' />
@@ -361,9 +365,18 @@ export function PostForm({
 
         {/* Attachments Upload */}
         <AttachmentUpload
-          classroomId={classroomId}
           attachments={attachments}
           onAttachmentsChange={setAttachments}
+          onUpload={async (file, onProgress) => {
+            return uploadFile({
+              classroomId,
+              file,
+              onProgress,
+            });
+          }}
+          onRemove={async (id) => {
+            await postService.removeAttachment(classroomId, id);
+          }}
         />
 
         {/* Footer Options */}

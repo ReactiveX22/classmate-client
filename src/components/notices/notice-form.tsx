@@ -1,5 +1,5 @@
-'use client';
-
+import { AttachmentUpload } from '@/components/common/attachment-upload';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Field,
@@ -9,12 +9,13 @@ import {
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { X, Plus } from 'lucide-react';
+import { useNoticeUploadAttachment } from '@/hooks/use-notice-upload-attachment';
+import { UploadResult } from '@/hooks/use-upload-attachment';
+import { Notice, noticeService } from '@/lib/api/services/notice.service';
 import { useForm } from '@tanstack/react-form';
-import { z } from 'zod';
-import { Notice } from '@/lib/api/services/notice.service';
+import { Plus, X } from 'lucide-react';
 import { useState } from 'react';
+import { z } from 'zod';
 
 const noticeSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -22,7 +23,9 @@ const noticeSchema = z.object({
   tags: z.array(z.string()).default([]),
 });
 
-export type NoticeFormValues = z.infer<typeof noticeSchema>;
+export type NoticeFormValues = z.infer<typeof noticeSchema> & {
+  attachments?: UploadResult[];
+};
 
 interface NoticeFormProps {
   initialData?: Notice;
@@ -38,6 +41,11 @@ export function NoticeForm({
   submitLabel = 'Save',
 }: NoticeFormProps) {
   const [currentTag, setCurrentTag] = useState('');
+  const [attachments, setAttachments] = useState<UploadResult[]>(
+    initialData?.attachments || [],
+  );
+
+  const { mutateAsync: uploadFile } = useNoticeUploadAttachment();
 
   const form = useForm({
     defaultValues: {
@@ -49,7 +57,7 @@ export function NoticeForm({
       onChange: noticeSchema,
     },
     onSubmit: async ({ value }) => {
-      onSubmit(value);
+      onSubmit({ ...value, attachments });
     },
   });
 
@@ -184,6 +192,18 @@ export function NoticeForm({
             );
           }}
         </form.Field>
+
+        {/* Attachments */}
+        <AttachmentUpload
+          attachments={attachments}
+          onAttachmentsChange={setAttachments}
+          onUpload={async (file, onProgress) => {
+            return uploadFile({ file, onProgress });
+          }}
+          onRemove={async (id) => {
+            await noticeService.removeAttachment(id);
+          }}
+        />
       </FieldGroup>
 
       <div className='flex justify-end pt-2'>
