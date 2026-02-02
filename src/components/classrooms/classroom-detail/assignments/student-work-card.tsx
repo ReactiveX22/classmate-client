@@ -1,6 +1,4 @@
-'use client';
-
-import { AttachmentUpload } from '@/components/classrooms/classroom-detail/posts/attachment-upload';
+import { AttachmentUpload } from '@/components/common/attachment-upload';
 import { AttachmentDisplay } from '@/components/classrooms/classroom-detail/posts/post-types/attachment-display';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,7 +7,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCreateSubmission } from '@/hooks/use-create-submission';
 import { useRemoveSubmissionAttachment } from '@/hooks/use-remove-submission-attachment';
 import { useUnsubmit } from '@/hooks/use-unsubmit';
-import { UploadResult } from '@/hooks/use-upload-attachment';
+import {
+  UploadResult,
+  useUploadAttachment,
+} from '@/hooks/use-upload-attachment';
 import { AssignmentData, postService } from '@/lib/api/services/post.service';
 import { Submission } from '@/lib/api/services/submission.service';
 import {
@@ -44,6 +45,7 @@ export function StudentWorkCard({
   const { mutate: unsubmit, isPending: isUnsubmitting } = useUnsubmit();
   const { mutateAsync: removeSubmissionAttachment } =
     useRemoveSubmissionAttachment();
+  const { mutateAsync: uploadFile } = useUploadAttachment();
 
   useEffect(() => {
     if (submission && submission.status === 'assigned') {
@@ -127,7 +129,7 @@ export function StudentWorkCard({
           setContent('');
           setAttachments([]);
         },
-      }
+      },
     );
   };
 
@@ -263,10 +265,16 @@ export function StudentWorkCard({
               {attachments.length > 0 || isAddingAttachment ? (
                 <div className='space-y-2 animate-in fade-in slide-in-from-top-2 duration-300'>
                   <AttachmentUpload
-                    classroomId={classroomId}
                     attachments={attachments}
                     onAttachmentsChange={setAttachments}
                     onRemove={handleRemoveAttachment}
+                    onUpload={async (file, onProgress) => {
+                      return uploadFile({
+                        classroomId,
+                        file,
+                        onProgress,
+                      });
+                    }}
                   />
                 </div>
               ) : (

@@ -94,4 +94,11 @@ export const noticeService = {
     );
     return response.data;
   },
+
+  removeAttachment: async (id: string) => {
+    const response = await apiClient.delete<NoticeData>(
+      `/api/v1/notices/attachments/${id}`,
+    );
+    return response.data;
+  },
 };
