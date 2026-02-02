@@ -92,119 +92,136 @@ export function NoticeForm({
       }}
       className='flex flex-col gap-6'
     >
-      <FieldGroup>
-        <form.Field name='title'>
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Title</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='Enter notice title'
-                  aria-invalid={isInvalid}
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
-
-        <form.Field name='content'>
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Content</FieldLabel>
-                <Textarea
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value || ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='Enter notice details...'
-                  className='min-h-[120px]'
-                  aria-invalid={isInvalid}
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
-
-        <form.Field name='tags' mode='array'>
-          {(field) => {
-            return (
-              <Field>
-                <FieldLabel htmlFor='tag-input'>Tags</FieldLabel>
-                <div className='space-y-3'>
-                  <div className='flex gap-2'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+        {/* LEFT COLUMN: Title + Tags */}
+        <div className='space-y-6'>
+          <FieldGroup>
+            <form.Field name='title'>
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched &&
+                  field.state.meta.errors.length > 0;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Title</FieldLabel>
                     <Input
-                      id='tag-input'
-                      placeholder='Add a tag and press Enter'
-                      value={currentTag}
-                      onChange={(e) => setCurrentTag(e.target.value)}
-                      onKeyDown={(e) =>
-                        handleKeyDown(e, field.pushValue, field.state.value)
-                      }
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder='Enter notice title'
+                      aria-invalid={isInvalid}
                     />
-                    <Button
-                      type='button'
-                      variant='outline'
-                      size='icon'
-                      onClick={() =>
-                        handleAddTag(field.pushValue, field.state.value)
-                      }
-                    >
-                      <Plus className='h-4 w-4' />
-                    </Button>
-                  </div>
-                  <div className='flex flex-wrap gap-2'>
-                    {field.state.value.map((tag, index) => (
-                      <Badge
-                        key={`${tag}-${index}`}
-                        variant='secondary'
-                        className='gap-1 pl-2.5'
-                      >
-                        {tag}
-                        <button
-                          type='button'
-                          onClick={() => field.removeValue(index)}
-                          className='ml-1 rounded-full p-0.5 hover:bg-muted-foreground/20'
-                        >
-                          <X className='h-3 w-3' />
-                          <span className='sr-only'>Remove {tag} tag</span>
-                        </button>
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                <p className='text-xs text-muted-foreground'>
-                  Categorize your notice with tags (e.g., urgent, announcement).
-                </p>
-              </Field>
-            );
-          }}
-        </form.Field>
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
 
-        {/* Attachments */}
-        <AttachmentUpload
-          attachments={attachments}
-          onAttachmentsChange={setAttachments}
-          onUpload={async (file, onProgress) => {
-            return uploadFile({ file, onProgress });
-          }}
-          onRemove={async (id) => {
-            await noticeService.removeAttachment(id);
-          }}
-        />
-      </FieldGroup>
+            <form.Field name='tags' mode='array'>
+              {(field) => {
+                return (
+                  <Field>
+                    <FieldLabel htmlFor='tag-input'>Tags</FieldLabel>
+                    <div className='space-y-3'>
+                      <div className='flex gap-2'>
+                        <Input
+                          id='tag-input'
+                          placeholder='Add a tag and press Enter'
+                          value={currentTag}
+                          onChange={(e) => setCurrentTag(e.target.value)}
+                          onKeyDown={(e) =>
+                            handleKeyDown(e, field.pushValue, field.state.value)
+                          }
+                        />
+                        <Button
+                          type='button'
+                          variant='outline'
+                          size='icon'
+                          onClick={() =>
+                            handleAddTag(field.pushValue, field.state.value)
+                          }
+                        >
+                          <Plus className='h-4 w-4' />
+                        </Button>
+                      </div>
+                      <div className='flex flex-wrap gap-2'>
+                        {field.state.value.map((tag, index) => (
+                          <Badge
+                            key={`${tag}-${index}`}
+                            variant='secondary'
+                            className='gap-1 pl-2.5'
+                          >
+                            {tag}
+                            <button
+                              type='button'
+                              onClick={() => field.removeValue(index)}
+                              className='ml-1 rounded-full p-0.5 hover:bg-muted-foreground/20'
+                            >
+                              <X className='h-3 w-3' />
+                              <span className='sr-only'>Remove {tag} tag</span>
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <p className='text-xs text-muted-foreground'>
+                      Categorize your notice with tags (e.g., urgent,
+                      announcement).
+                    </p>
+                  </Field>
+                );
+              }}
+            </form.Field>
+          </FieldGroup>
+        </div>
+
+        {/* RIGHT COLUMN: Content + Attachments */}
+        <div className='space-y-6'>
+          <FieldGroup>
+            <form.Field name='content'>
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched &&
+                  field.state.meta.errors.length > 0;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Content</FieldLabel>
+                    <Textarea
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value || ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder='Enter notice details...'
+                      className='min-h-[200px]'
+                      aria-invalid={isInvalid}
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
+            {/* Attachments */}
+            <AttachmentUpload
+              attachments={attachments}
+              onAttachmentsChange={setAttachments}
+              onUpload={async (file, onProgress) => {
+                return uploadFile({ file, onProgress });
+              }}
+              onRemove={async (id) => {
+                await noticeService.removeAttachment(id);
+              }}
+            />
+          </FieldGroup>
+        </div>
+      </div>
 
       <div className='flex justify-end pt-2'>
         <form.Subscribe

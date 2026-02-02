@@ -2,6 +2,7 @@
 
 import { format } from 'date-fns';
 import { Calendar, User, MoreVertical, LayoutTemplate } from 'lucide-react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -13,7 +14,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { NoticeData } from '@/lib/api/services/notice.service';
 import { TagBadge } from './tag-badge';
-import { EditNoticeDialog } from './edit-notice-dialog';
 import { toast } from 'sonner';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { useDeleteNotice } from '@/hooks/use-notices';
@@ -26,7 +26,6 @@ interface NoticeDetailProps {
 }
 
 export function NoticeDetail({ data }: NoticeDetailProps) {
-  const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
 
   const { mutateAsync: deleteNotice, isPending: isDeleting } =
@@ -79,9 +78,13 @@ export function NoticeDetail({ data }: NoticeDetailProps) {
                 }
               />
               <DropdownMenuContent align='end'>
-                <DropdownMenuItem onClick={() => setShowEdit(true)}>
-                  Edit Notice
-                </DropdownMenuItem>
+                <DropdownMenuItem
+                  render={
+                    <Link href={`/dashboard/notices/${notice.id}/edit`}>
+                      Edit Notice
+                    </Link>
+                  }
+                />
                 <DropdownMenuItem
                   onClick={() => setShowDelete(true)}
                   className='text-destructive focus:text-destructive'
@@ -131,11 +134,6 @@ export function NoticeDetail({ data }: NoticeDetailProps) {
 
       {/* Dialogs controlled by internal state, rendering only when needed */}
       <RoleGuard allowedRoles={[Role.Admin]}>
-        <EditNoticeDialog
-          notice={notice}
-          open={showEdit}
-          onOpenChange={setShowEdit}
-        />
         <DeleteConfirmDialog
           open={showDelete}
           onOpenChange={setShowDelete}
