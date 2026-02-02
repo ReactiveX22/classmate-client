@@ -1,10 +1,11 @@
 'use client';
 
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Role } from '@/types/auth';
-import { Search } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
+import Link from 'next/link';
 import { RoleGuard } from '../common/role-guard';
-import { AddNoticeDialog } from './add-notice-dialog';
 
 interface NoticeToolbarProps {
   searchPromise: string;
@@ -29,7 +30,13 @@ export function NoticeToolbar({
           />
         </div>
         <RoleGuard allowedRoles={[Role.Admin]}>
-          <AddNoticeDialog />
+          <Link
+            href='/dashboard/notices/new'
+            className={buttonVariants({ variant: 'default', size: 'default' })}
+          >
+            <Plus className='mr-2 h-4 w-4' />
+            Publish Notice
+          </Link>
         </RoleGuard>
       </div>
     </div>
