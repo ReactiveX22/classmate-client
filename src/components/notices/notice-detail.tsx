@@ -1,8 +1,6 @@
 'use client';
 
-import { format } from 'date-fns';
-import { Calendar, User, MoreVertical, LayoutTemplate } from 'lucide-react';
-import Link from 'next/link';
+import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,15 +9,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { NoticeData } from '@/lib/api/services/notice.service';
-import { TagBadge } from './tag-badge';
-import { toast } from 'sonner';
-import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { useDeleteNotice } from '@/hooks/use-notices';
-import { useState } from 'react';
-import { RoleGuard } from '../common/role-guard';
+import { NoticeData } from '@/lib/api/services/notice.service';
 import { Role } from '@/types/auth';
+import { format } from 'date-fns';
+import { Calendar, LayoutTemplate, MoreVertical, User } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { RoleGuard } from '../common/role-guard';
+import { TagBadge } from './tag-badge';
 
 interface NoticeDetailProps {
   data: NoticeData | null;
@@ -31,7 +30,7 @@ export function NoticeDetail({ data }: NoticeDetailProps) {
   const { mutateAsync: deleteNotice, isPending: isDeleting } =
     useDeleteNotice();
 
-  if (!data) {
+  if (!data || !data.notice) {
     return (
       <div className='flex flex-col items-center justify-center h-full text-muted-foreground p-8 bg-muted/5'>
         <div className='h-16 w-16 bg-muted rounded-full flex items-center justify-center mb-4'>

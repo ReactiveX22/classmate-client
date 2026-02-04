@@ -8,8 +8,10 @@ import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { useBrowserNotification } from './use-browser-notification';
+import { useUser } from './useAuth';
 
 export const useNotificationSocket = () => {
+  const { data: user } = useUser();
   const queryClient = useQueryClient();
   const { queryKey } = infiniteNotificationsQueryOptions();
   const { sendBrowserNotification, requestPermission } =
@@ -20,6 +22,8 @@ export const useNotificationSocket = () => {
     if (!socket) return;
 
     socket.on('notification', (newNotification: NotificationItem) => {
+      if (newNotification?.actor?.id === user?.id) return;
+
       const { title, content } = newNotification.notification;
       toast.success(title, { description: content });
 
