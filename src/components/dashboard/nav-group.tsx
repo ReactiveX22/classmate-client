@@ -35,6 +35,7 @@ import {
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export function NavGroup({ title, items }: NavGroupProps) {
   const { state, isMobile } = useSidebar();
@@ -99,9 +100,20 @@ function SidebarMenuCollapsible({
   href: string;
 }) {
   const { setOpenMobile } = useSidebar();
+  const [isOpen, setIsOpen] = useState(
+    checkIsActive(href, item, true) || !!item.open,
+  );
+
+  useEffect(() => {
+    if (checkIsActive(href, item, true)) {
+      setIsOpen(true);
+    }
+  }, [href, item]);
+
   return (
     <Collapsible
-      defaultOpen={checkIsActive(href, item, true) || item.open}
+      open={isOpen}
+      onOpenChange={setIsOpen}
       className='group/collapsible'
       render={
         <SidebarMenuItem>
@@ -111,7 +123,7 @@ function SidebarMenuCollapsible({
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
                 {item.badge && <NavBadge>{item.badge}</NavBadge>}
-                <ChevronRight className='ms-auto transition-transform duration-200 group-data-[open]/collapsible:rotate-90 rtl:rotate-180' />
+                <ChevronRight className='ms-auto transition-transform duration-200 group-data-open/collapsible:rotate-90 rtl:rotate-180' />
               </SidebarMenuButton>
             }
           />

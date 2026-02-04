@@ -16,6 +16,9 @@ export interface NotificationContent {
   recipientId: string | null;
   actorId: string;
   entityId: string;
+  meta?: {
+    postId?: string;
+  };
   createdAt: string;
 }
 
