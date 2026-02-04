@@ -19,8 +19,11 @@ import {
   IconAward,
   IconBell,
   IconClipboardText,
+  IconFileDescription,
+  IconHelp,
   IconInfoCircle,
   IconLoader2,
+  IconMessage2,
   IconSpeakerphone,
 } from '@tabler/icons-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -158,6 +161,14 @@ function NotificationItemRow({ item }: { item: NotificationItem }) {
         return <IconClipboardText className='h-4 w-4 text-orange-500' />;
       case NotificationType.CLASSROOM.GRADE:
         return <IconAward className='h-4 w-4 text-yellow-500' />;
+      case NotificationType.CLASSROOM.POST:
+        return <IconMessage2 className='h-4 w-4 text-emerald-500' />;
+      case NotificationType.CLASSROOM.ANNOUNCEMENT:
+        return <IconSpeakerphone className='h-4 w-4 text-purple-500' />;
+      case NotificationType.CLASSROOM.MATERIAL:
+        return <IconFileDescription className='h-4 w-4 text-indigo-500' />;
+      case NotificationType.CLASSROOM.QUESTION:
+        return <IconHelp className='h-4 w-4 text-cyan-500' />;
       case NotificationType.ORGANIZATION.NOTICE:
         return <IconSpeakerphone className='h-4 w-4 text-blue-500' />;
       default:
@@ -171,6 +182,14 @@ function NotificationItemRow({ item }: { item: NotificationItem }) {
         return 'bg-orange-500/10 border-orange-500/20';
       case NotificationType.CLASSROOM.GRADE:
         return 'bg-yellow-500/10 border-yellow-500/20';
+      case NotificationType.CLASSROOM.POST:
+        return 'bg-emerald-500/10 border-emerald-500/20';
+      case NotificationType.CLASSROOM.ANNOUNCEMENT:
+        return 'bg-purple-500/10 border-purple-500/20';
+      case NotificationType.CLASSROOM.MATERIAL:
+        return 'bg-indigo-500/10 border-indigo-500/20';
+      case NotificationType.CLASSROOM.QUESTION:
+        return 'bg-cyan-500/10 border-cyan-500/20';
       case NotificationType.ORGANIZATION.NOTICE:
         return 'bg-blue-500/10 border-blue-500/20';
       default:
@@ -178,13 +197,23 @@ function NotificationItemRow({ item }: { item: NotificationItem }) {
     }
   };
 
-  const getNotificationLink = (type: string, entityId: string) => {
-    // TODO: handle other notification types
+  const getNotificationLink = (
+    type: string,
+    entityId: string,
+    meta?: { postId?: string },
+  ) => {
     switch (type) {
       case NotificationType.CLASSROOM.ASSIGNMENT:
-        return `/classroom/assignment/${entityId}`;
       case NotificationType.CLASSROOM.GRADE:
-        return `/classroom/grade/${entityId}`;
+        if (meta?.postId) {
+          return `/dashboard/classrooms/${entityId}/assignments/${meta.postId}`;
+        }
+        return `/dashboard/classrooms/${entityId}`;
+      case NotificationType.CLASSROOM.POST:
+      case NotificationType.CLASSROOM.ANNOUNCEMENT:
+      case NotificationType.CLASSROOM.MATERIAL:
+      case NotificationType.CLASSROOM.QUESTION:
+        return `/dashboard/classrooms/${entityId}`;
       case NotificationType.ORGANIZATION.NOTICE:
         return `/dashboard/notices?id=${entityId}`;
       default:
@@ -194,7 +223,11 @@ function NotificationItemRow({ item }: { item: NotificationItem }) {
 
   return (
     <Link
-      href={getNotificationLink(notification.type, notification.entityId)}
+      href={getNotificationLink(
+        notification.type,
+        notification.entityId,
+        notification.meta,
+      )}
       onClick={handleNotificationClick}
     >
       <div

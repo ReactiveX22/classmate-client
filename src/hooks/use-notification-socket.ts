@@ -25,7 +25,7 @@ export const useNotificationSocket = () => {
       if (newNotification?.actor?.id === user?.id) return;
 
       const { title, content } = newNotification.notification;
-      toast.success(title, { description: content });
+      toast.info(title, { description: content });
 
       requestPermission();
       sendBrowserNotification(title, { body: content });
