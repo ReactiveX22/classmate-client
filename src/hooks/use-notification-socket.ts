@@ -1,29 +1,33 @@
-import { useEffect } from 'react';
-import { useQueryClient, InfiniteData } from '@tanstack/react-query';
-import { socketService } from '@/lib/api/services/socket.service';
-import { infiniteNotificationsQueryOptions } from '@/lib/queryOptions/notificationQueryOptions';
 import {
   NotificationItem,
   NotificationsResponse,
 } from '@/lib/api/services/notification.service';
+import { socketService } from '@/lib/api/services/socket.service';
+import { infiniteNotificationsQueryOptions } from '@/lib/queryOptions/notificationQueryOptions';
+import { InfiniteData, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
-import { NotificationTypeValue } from '@/lib/constants/notifications.constants';
+import { useBrowserNotification } from './use-browser-notification';
 
 export const useNotificationSocket = () => {
   const queryClient = useQueryClient();
   const { queryKey } = infiniteNotificationsQueryOptions();
+  const { sendBrowserNotification, requestPermission } =
+    useBrowserNotification();
 
   useEffect(() => {
     const socket = socketService.getSocket();
     if (!socket) return;
 
     socket.on('notification', (newNotification: NotificationItem) => {
-      console.log('New notification', newNotification);
-      toast.success(newNotification.notification.title, {
-        description: newNotification.notification.content,
-      });
-      queryClient.setQueryData<InfiniteData<NotificationsResponse>>(
-        queryKey,
+      const { title, content } = newNotification.notification;
+      toast.success(title, { description: content });
+
+      requestPermission();
+      sendBrowserNotification(title, { body: content });
+
+      queryClient.setQueriesData<InfiniteData<NotificationsResponse>>(
+        { queryKey: ['notifications'] },
         (oldData) => {
           if (!oldData) return undefined;
 
