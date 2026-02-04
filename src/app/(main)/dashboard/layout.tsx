@@ -10,8 +10,11 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { ProfileDropdown } from '@/components/dashboard/profile-dropdown';
+import { useNotificationSocket } from '@/hooks/use-notification-socket';
 import { useUser } from '@/hooks/useAuth';
+import { socketService } from '@/lib/api/services/socket.service';
 import { IconSettings } from '@tabler/icons-react';
+import { useEffect } from 'react';
 
 export default function DashboardLayout({
   children,
@@ -19,6 +22,16 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { data: user } = useUser();
+
+  useNotificationSocket();
+
+  useEffect(() => {
+    socketService.connect();
+
+    return () => {
+      socketService.disconnect();
+    };
+  }, []);
 
   const getSidebar = () => {
     switch (user?.role) {

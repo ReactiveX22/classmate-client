@@ -4,7 +4,7 @@ import { PaginationParams } from '@/types/pagination';
 
 export function infinitePostsQueryOptions(
   classroomId: string,
-  params?: Omit<PaginationParams, 'page'>
+  params?: Omit<PaginationParams, 'page'>,
 ) {
   return infiniteQueryOptions({
     queryKey: ['posts', classroomId, params],
