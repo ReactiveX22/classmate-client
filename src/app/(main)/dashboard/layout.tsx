@@ -2,6 +2,7 @@
 
 import { AdminSidebar } from '@/components/dashboard/admin-sidebar';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
+import { NotificationPopover } from '@/components/dashboard/notification-popover';
 import { StudentSidebar } from '@/components/dashboard/student-sidebar';
 import { TeacherSidebar } from '@/components/dashboard/teacher-sidebar';
 import { Button } from '@/components/ui/button';
@@ -9,8 +10,11 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { ProfileDropdown } from '@/components/dashboard/profile-dropdown';
+import { useNotificationSocket } from '@/hooks/use-notification-socket';
 import { useUser } from '@/hooks/useAuth';
-import { IconBell, IconSettings } from '@tabler/icons-react';
+import { socketService } from '@/lib/api/services/socket.service';
+import { IconSettings } from '@tabler/icons-react';
+import { useEffect } from 'react';
 
 export default function DashboardLayout({
   children,
@@ -18,6 +22,16 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { data: user } = useUser();
+
+  useNotificationSocket();
+
+  useEffect(() => {
+    socketService.connect();
+
+    return () => {
+      socketService.disconnect();
+    };
+  }, []);
 
   const getSidebar = () => {
     switch (user?.role) {
@@ -36,13 +50,8 @@ export default function DashboardLayout({
       <SidebarProvider>
         {getSidebar()}
         <SidebarInset>
-          <DashboardHeader title='Dashboard'>
-            <Button variant='ghost' size='icon'>
-              <IconBell size={20} />
-            </Button>
-            <Button variant='ghost' size='icon'>
-              <IconSettings size={20} />
-            </Button>
+          <DashboardHeader>
+            <NotificationPopover />
             <ProfileDropdown />
           </DashboardHeader>
           <div className='flex flex-1 flex-col gap-4'>{children}</div>

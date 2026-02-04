@@ -3,12 +3,10 @@ import * as React from 'react';
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar';
 import { NavHeader } from './nav-header';
-import { NavUser } from './nav-user';
 import { SidebarData } from '@/types/sidebar-types';
 import { NavGroup } from './nav-group';
 
@@ -27,9 +25,6 @@ export function AppSidebar({ data, ...props }: AppSidebarProps) {
           <NavGroup key={props.title} {...props} />
         ))}
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser />
-      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

@@ -8,9 +8,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { IconLogout, IconSettings, IconUser } from '@tabler/icons-react';
 
 import { useLogout } from '@/hooks/useAuth';
 import { useSession } from '@/lib/auth-client';
@@ -56,7 +56,10 @@ export function ProfileDropdown() {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger
         render={
-          <Button variant='ghost' className='relative h-8 w-8 rounded-full'>
+          <Button
+            variant='ghost'
+            className='relative h-8 w-8 rounded-full cursor-pointer'
+          >
             <Avatar className='h-8 w-8'>
               <AvatarImage src={user.image || ''} alt={user.name || 'User'} />
               <AvatarFallback>{initials}</AvatarFallback>
@@ -67,9 +70,9 @@ export function ProfileDropdown() {
       <DropdownMenuContent className='w-56' align='end'>
         <DropdownMenuGroup>
           <DropdownMenuLabel className='font-normal'>
-            <div className='flex flex-col gap-1.5'>
+            <div className='flex flex-col gap-1.5 text-foreground'>
               <p className='text-sm leading-none font-medium'>{user.name}</p>
-              <p className='text-muted-foreground text-xs leading-none'>
+              <p className='text-xs text-muted-foreground leading-none'>
                 {user.email}
               </p>
             </div>
@@ -79,29 +82,20 @@ export function ProfileDropdown() {
         <DropdownMenuGroup>
           <DropdownMenuItem
             render={
-              <Link href='/settings'>
+              <Link href='/dashboard'>
+                <IconUser size={16} />
                 Profile
-                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
               </Link>
             }
           />
           <DropdownMenuItem
             render={
-              <Link href='/settings'>
-                Billing
-                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-              </Link>
-            }
-          />
-          <DropdownMenuItem
-            render={
-              <Link href='/settings'>
+              <Link href='/dashboard'>
+                <IconSettings size={16} />
                 Settings
-                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
               </Link>
             }
           />
-          <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -109,10 +103,8 @@ export function ProfileDropdown() {
           onClick={handleLogout}
           disabled={logoutMutation.isPending}
         >
+          <IconLogout size={16} />
           {logoutMutation.isPending ? 'Signing out...' : 'Sign out'}
-          <DropdownMenuShortcut className='text-current'>
-            ⇧⌘Q
-          </DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
