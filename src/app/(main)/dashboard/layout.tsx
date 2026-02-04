@@ -52,9 +52,6 @@ export default function DashboardLayout({
         <SidebarInset>
           <DashboardHeader title='Dashboard'>
             <NotificationPopover />
-            <Button variant='ghost' size='icon'>
-              <IconSettings size={20} />
-            </Button>
             <ProfileDropdown />
           </DashboardHeader>
           <div className='flex flex-1 flex-col gap-4'>{children}</div>

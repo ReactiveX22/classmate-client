@@ -47,12 +47,12 @@ export default function EditNoticePage() {
   }
 
   return (
-    <div className='flex flex-col h-full'>
+    <div className='flex flex-col gap-6 p-6 h-full'>
       <PageHeader
         title='Edit Notice'
         description='Make changes to the notice.'
       />
-      <div className='flex-1 p-6 max-w-6xl'>
+      <div className='flex-1 max-w-6xl'>
         <NoticeForm
           initialData={data.notice}
           onSubmit={onSubmit}

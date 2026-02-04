@@ -7,7 +7,11 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useNotifications } from '@/hooks/use-notifications';
+import {
+  useMarkAllAsRead,
+  useMarkAsRead,
+  useNotifications,
+} from '@/hooks/use-notifications';
 import { NotificationItem } from '@/lib/api/services/notification.service';
 import { NotificationType } from '@/lib/constants/notifications.constants';
 import { cn } from '@/lib/utils';
@@ -21,6 +25,7 @@ import {
 } from '@tabler/icons-react';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -33,6 +38,8 @@ export function NotificationPopover() {
     isLoading,
     isError,
   } = useNotifications({ limit: 10 });
+
+  const { mutate: markAllAsRead } = useMarkAllAsRead();
 
   const [scrollViewport, setScrollViewport] = useState<HTMLElement | null>(
     null,
@@ -68,19 +75,27 @@ export function NotificationPopover() {
       <PopoverTrigger
         className={cn(
           buttonVariants({ variant: 'ghost', size: 'icon' }),
-          'relative',
+          'relative size-8 mr-2',
         )}
       >
-        <IconBell size={20} />
+        <IconBell className='size-5' />
         {unreadCount > 0 && (
-          <span className='absolute top-1.5 right-1.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-primary ring-2 ring-background'>
-            <span className='sr-only'>{unreadCount} unread notifications</span>
+          <span className='absolute -top-0.5 -right-0.5 flex min-w-3.5 h-3.5 items-center justify-center rounded-full bg-primary px-1 text-[9px] text-primary-foreground ring-2 ring-background'>
+            {unreadCount > 10 ? '10+' : unreadCount}
           </span>
         )}
       </PopoverTrigger>
       <PopoverContent className='w-80 p-0 gap-0' align='end'>
         <div className='flex items-center justify-between border-b px-4 py-3'>
           <h4 className='font-semibold'>Notifications</h4>
+          {unreadCount > 0 && (
+            <button
+              onClick={() => markAllAsRead()}
+              className='text-xs font-medium text-primary cursor-pointer hover:underline'
+            >
+              Mark all as read
+            </button>
+          )}
         </div>
         <ScrollArea ref={scrollAreaRef} className='h-80 w-full'>
           {isLoading ? (
@@ -126,6 +141,16 @@ export function NotificationPopover() {
 
 function NotificationItemRow({ item }: { item: NotificationItem }) {
   const { notification } = item;
+  const router = useRouter();
+  const { mutate: markAsRead } = useMarkAsRead();
+
+  const handleNotificationClick = (e: React.MouseEvent) => {
+    if (!item.isRead) {
+      markAsRead(notification.id);
+    }
+    // We handle navigation manually to ensure markAsRead is triggered if needed
+    // though the Link component would also work, doing it here for clarity.
+  };
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -168,7 +193,10 @@ function NotificationItemRow({ item }: { item: NotificationItem }) {
   };
 
   return (
-    <Link href={getNotificationLink(notification.type, notification.entityId)}>
+    <Link
+      href={getNotificationLink(notification.type, notification.entityId)}
+      onClick={handleNotificationClick}
+    >
       <div
         className={cn(
           'cursor-pointer flex items-start gap-4 border-b px-4 py-3 last:border-0 hover:bg-muted/50 transition-colors relative',
