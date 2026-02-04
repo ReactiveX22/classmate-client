@@ -50,7 +50,7 @@ export default function DashboardLayout({
       <SidebarProvider>
         {getSidebar()}
         <SidebarInset>
-          <DashboardHeader title='Dashboard'>
+          <DashboardHeader>
             <NotificationPopover />
             <ProfileDropdown />
           </DashboardHeader>

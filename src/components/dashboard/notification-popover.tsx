@@ -78,7 +78,7 @@ export function NotificationPopover() {
       <PopoverTrigger
         className={cn(
           buttonVariants({ variant: 'ghost', size: 'icon' }),
-          'relative size-8 mr-2',
+          'relative size-8 mr-2 cursor-pointer',
         )}
       >
         <IconBell className='size-5' />
