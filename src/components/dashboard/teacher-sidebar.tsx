@@ -3,7 +3,12 @@
 import { Sidebar } from '@/components/ui/sidebar';
 import { useClassrooms } from '@/hooks/use-classrooms';
 import { SidebarData } from '@/types/sidebar-types';
-import { IconLayoutDashboard, IconSchool } from '@tabler/icons-react';
+import {
+  IconLayoutDashboard,
+  IconMicrophone,
+  IconSchool,
+  IconSpeakerphone,
+} from '@tabler/icons-react';
 import { useMemo } from 'react';
 import { AppSidebar } from './app-sidebar';
 
@@ -49,7 +54,6 @@ export function TeacherSidebar({
             {
               title: 'My Classes',
               icon: IconSchool,
-              open: true,
               items:
                 classroomItems.length > 0
                   ? myClassesItems
@@ -59,6 +63,11 @@ export function TeacherSidebar({
                         url: '/dashboard/classrooms',
                       },
                     ],
+            },
+            {
+              title: 'Notices',
+              url: '/dashboard/notices',
+              icon: IconSpeakerphone,
             },
           ],
         },
