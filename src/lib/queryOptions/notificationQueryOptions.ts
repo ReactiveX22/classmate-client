@@ -1,9 +1,9 @@
+import { PaginationParams } from '@/types/pagination';
 import { infiniteQueryOptions } from '@tanstack/react-query';
 import {
   notificationService,
   NotificationsResponse,
 } from '../api/services/notification.service';
-import { PaginationParams } from '@/types/pagination';
 
 export function infiniteNotificationsQueryOptions(
   params?: Omit<PaginationParams, 'page'>,
@@ -19,5 +19,7 @@ export function infiniteNotificationsQueryOptions(
       return lastPage.meta.hasNextPage ? lastPage.meta.page + 1 : undefined;
     },
     initialPageParam: 1,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 }
