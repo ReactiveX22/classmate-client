@@ -1,18 +1,17 @@
 'use client';
 
+import { Sidebar } from '@/components/ui/sidebar';
+import { useClassrooms } from '@/hooks/use-classrooms';
+import { SidebarData } from '@/types/sidebar-types';
 import {
   BookOpen,
   LayoutDashboard,
   Megaphone,
-  School,
   Settings,
   User,
 } from 'lucide-react';
-import { Sidebar } from '@/components/ui/sidebar';
-import { AppSidebar } from './app-sidebar';
-import { SidebarData } from '@/types/sidebar-types';
-import { useClassrooms } from '@/hooks/use-classrooms';
 import { useMemo } from 'react';
+import { AppSidebar } from './app-sidebar';
 
 export function StudentSidebar({
   ...props
@@ -53,7 +52,7 @@ export function StudentSidebar({
             },
             {
               title: 'My Classes',
-              icon: School,
+              icon: BookOpen,
               items:
                 classroomItems.length > 0
                   ? myClassesItems

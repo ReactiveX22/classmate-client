@@ -3,7 +3,6 @@
 import { Sidebar } from '@/components/ui/sidebar';
 import { SidebarData } from '@/types/sidebar-types';
 import {
-  Activity,
   BookOpen,
   GraduationCap,
   LayoutDashboard,
