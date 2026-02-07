@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -21,13 +21,21 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { useUser } from '@/hooks/useAuth';
-import { Role } from '@/types/auth';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { useUpdateProfile, useUserProfile } from '@/hooks/use-user-profile';
+import { Achievement, UpdateProfileInput } from '@/types/user-profile';
 import { format } from 'date-fns';
 import {
   BriefcaseBusiness,
+  CalendarIcon,
   Check,
   IdCard,
   Pencil,
@@ -37,109 +45,118 @@ import {
   User,
   X,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-interface Achievement {
-  id: string;
-  date: string;
-  title: string;
-  issuer: string;
-  description: string;
-}
-
 export default function ProfilePage() {
-  const { data: user, isLoading } = useUser();
+  const { data: userAuth, isLoading: isAuthLoading } = useUser();
+  const { data: userProfileData, isLoading: isProfileLoading } =
+    useUserProfile();
+  const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
 
-  // Mock data state - in a real app this would come from an API
-  const [phone, setPhone] = useState('+1 (555) 000-0000');
-  const [bio, setBio] = useState(
-    'Passionate learner and technology enthusiast. Always looking to expand my knowledge and collaborate with others.',
-  );
-  const [skills, setSkills] = useState([
-    'JavaScript',
-    'React',
-    'Node.js',
-    'TypeScript',
-    'UI/UX Design',
-  ]);
-  const [achievements, setAchievements] = useState<Achievement[]>([
-    {
-      id: '1',
-      date: '2024-05-15',
-      title: 'Open Source Contributor',
-      issuer: 'GitHub',
-      description: 'Contributed core features to a major ORM library.',
-    },
-    {
-      id: '2',
-      date: '2023-11-20',
-      title: 'Hackathon Winner',
-      issuer: 'TechCrunch',
-      description: 'First place in the annual university hackathon.',
-    },
-  ]);
+  const userProfile = userProfileData?.profile;
+  const teacherProfile = userProfileData?.teacher;
+  const studentProfile = userProfileData?.student;
+
+  // Form states
+  const [phone, setPhone] = useState('');
+  const [bio, setBio] = useState('');
+  const [skills, setSkills] = useState<string[]>([]);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+
+  // Initialize form data when profile is loaded
+  useEffect(() => {
+    if (userProfile) {
+      setPhone(userProfile.phone || '');
+      setBio(userProfile.bio || '');
+      setSkills(userProfile.skills || []);
+      setAchievements(userProfile.achievements || []);
+    }
+  }, [userProfile]);
 
   // Dialog states
   const [isAchievementDialogOpen, setIsAchievementDialogOpen] = useState(false);
-  const [newAchievement, setNewAchievement] = useState<Omit<Achievement, 'id'>>(
-    {
-      date: new Date().toISOString().split('T')[0],
-      title: '',
-      issuer: '',
-      description: '',
-    },
-  );
+  const [newAchievement, setNewAchievement] = useState<Achievement>({
+    id: '',
+    date: new Date().toISOString().split('T')[0],
+    title: '',
+    issuer: '',
+    description: '',
+  });
 
   const [newSkill, setNewSkill] = useState('');
 
-  if (isLoading) {
+  if (isProfileLoading) {
     return <div className='p-8'>Loading profile...</div>;
   }
 
-  if (!user) {
+  if (!userAuth) {
     return <div className='p-8'>User not found.</div>;
   }
 
   const handleSaveProfile = () => {
-    // Here call mutation to update profile
-    toast.success('Profile updated successfully');
+    const payload: UpdateProfileInput = {
+      phone,
+      bio,
+    };
+    updateProfile(payload);
   };
 
   const handleAddSkill = () => {
     if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-      setSkills([...skills, newSkill.trim()]);
+      const updatedSkills = [...skills, newSkill.trim()];
+      setSkills(updatedSkills);
       setNewSkill('');
-      toast.success('Skill added');
+      updateProfile({ skills: updatedSkills });
     }
   };
 
   const handleRemoveSkill = (skillToRemove: string) => {
-    setSkills(skills.filter((skill) => skill !== skillToRemove));
+    const updatedSkills = skills.filter((skill) => skill !== skillToRemove);
+    setSkills(updatedSkills);
+    updateProfile({ skills: updatedSkills });
   };
 
-  const handleAddAchievement = () => {
+  const handleSaveAchievement = () => {
     if (newAchievement.title && newAchievement.issuer && newAchievement.date) {
-      setAchievements([
-        ...achievements,
-        { ...newAchievement, id: crypto.randomUUID() },
-      ]);
+      let updatedAchievements: Achievement[];
+      if (newAchievement.id) {
+        // Edit existing
+        updatedAchievements = achievements.map((a) =>
+          a.id === newAchievement.id ? newAchievement : a,
+        );
+      } else {
+        // Add new
+        updatedAchievements = [
+          ...achievements,
+          { ...newAchievement, id: crypto.randomUUID() },
+        ];
+      }
+      setAchievements(updatedAchievements);
+      updateProfile({ achievements: updatedAchievements });
+
       setNewAchievement({
+        id: '',
         date: new Date().toISOString().split('T')[0],
         title: '',
         issuer: '',
         description: '',
       });
       setIsAchievementDialogOpen(false);
-      toast.success('Achievement added');
     } else {
       toast.error('Please fill in all required fields');
     }
   };
 
+  const handleEditAchievement = (achievement: Achievement) => {
+    setNewAchievement(achievement);
+    setIsAchievementDialogOpen(true);
+  };
+
   const handleRemoveAchievement = (id: string) => {
-    setAchievements(achievements.filter((a) => a.id !== id));
-    toast.success('Achievement removed');
+    const updatedAchievements = achievements.filter((a) => a.id !== id);
+    setAchievements(updatedAchievements);
+    updateProfile({ achievements: updatedAchievements });
   };
 
   return (
@@ -158,7 +175,7 @@ export default function ProfilePage() {
             <CardHeader className='flex flex-row items-center gap-4 pb-2'>
               <div className='relative group cursor-pointer'>
                 <Avatar className='size-16 md:size-20'>
-                  <AvatarImage src={user.image} alt={user.name} />
+                  <AvatarImage src={userAuth.image} alt={userAuth.name} />
                   <AvatarFallback className='bg-primary/10'>
                     <User className='text-muted-foreground' />
                   </AvatarFallback>
@@ -168,39 +185,45 @@ export default function ProfilePage() {
                 </div>
               </div>
               <div className='flex flex-col gap-1'>
-                <CardTitle>{user.name}</CardTitle>
+                <CardTitle>{userAuth.name}</CardTitle>
                 <div className='flex items-center gap-2 text-sm text-muted-foreground'>
-                  {user.email}
+                  {userAuth.email}
                 </div>
                 <Badge
                   variant='secondary'
                   className='w-fit text-[10px] mt-1 capitalize'
                 >
-                  {user.role}
+                  {userAuth.role}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent className='space-y-4'>
               {/* Role Specific Read-only Fields */}
-              {user.role === Role.Student && (
+              {studentProfile && (
                 <div className='flex items-center gap-2 text-sm'>
                   <IdCard size={16} />
-                  <span>STU-{user.id.slice(0, 8).toUpperCase()}</span>
+                  <span>{studentProfile.studentId}</span>
                 </div>
               )}
 
-              {(user.role === Role.Instructor || user.role === Role.Admin) && (
+              {teacherProfile && (
                 <div className='space-y-1'>
                   <div className='flex items-center gap-2 text-sm font-medium'>
                     <BriefcaseBusiness
                       size={16}
                       className='text-muted-foreground'
                     />
-                    <span>Senior Instructor</span>
+                    <span>{teacherProfile.title}</span>
                   </div>
-                  <div className='flex items-center gap-2 text-xs text-muted-foreground pl-6'>
-                    Joined at {format(new Date(user.createdAt), 'MMMM d, yyyy')}
-                  </div>
+                  {teacherProfile.joinDate && (
+                    <div className='flex items-center gap-2 text-xs text-muted-foreground pl-6'>
+                      Joined at{' '}
+                      {format(
+                        new Date(teacherProfile.joinDate),
+                        'MMMM d, yyyy',
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -242,9 +265,16 @@ export default function ProfilePage() {
                   variant='outline'
                   onClick={handleSaveProfile}
                   className='w-full cursor-pointer'
+                  disabled={isUpdating}
                 >
-                  <Check size={16} />
-                  Save Changes
+                  {isUpdating ? (
+                    <span className='flex items-center gap-2'>Saving...</span>
+                  ) : (
+                    <>
+                      <Check size={16} />
+                      Save Changes
+                    </>
+                  )}
                 </Button>
               </div>
             </CardContent>
@@ -321,22 +351,34 @@ export default function ProfilePage() {
                 onOpenChange={setIsAchievementDialogOpen}
               >
                 <DialogTrigger
-                  render={
-                    <Button
-                      size='sm'
-                      variant='outline'
-                      className='cursor-pointer'
-                    >
-                      <Plus size={16} />
-                      Add
-                    </Button>
+                  className={cn(
+                    buttonVariants({ variant: 'outline', size: 'sm' }),
+                    'cursor-pointer',
+                  )}
+                  onClick={() =>
+                    setNewAchievement({
+                      id: '',
+                      date: new Date().toISOString().split('T')[0],
+                      title: '',
+                      issuer: '',
+                      description: '',
+                    })
                   }
-                />
+                >
+                  <Plus size={16} />
+                  Add
+                </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Add New Achievement</DialogTitle>
+                    <DialogTitle>
+                      {newAchievement.id
+                        ? 'Edit Achievement'
+                        : 'Add New Achievement'}
+                    </DialogTitle>
                     <DialogDescription>
-                      Add details about your certification, award, or milestone.
+                      {newAchievement.id
+                        ? 'Update details about your certification, award, or milestone.'
+                        : 'Add details about your certification, award, or milestone.'}
                     </DialogDescription>
                   </DialogHeader>
                   <div className='space-y-4 py-4'>
@@ -370,17 +412,41 @@ export default function ProfilePage() {
                     </div>
                     <div className='grid gap-2'>
                       <Label htmlFor='date'>Date</Label>
-                      <Input
-                        id='date'
-                        type='date'
-                        value={newAchievement.date}
-                        onChange={(e) =>
-                          setNewAchievement({
-                            ...newAchievement,
-                            date: e.target.value,
-                          })
-                        }
-                      />
+                      <Popover>
+                        <PopoverTrigger
+                          className={cn(
+                            buttonVariants({ variant: 'outline' }),
+                            'w-full justify-start text-left font-normal',
+                            !newAchievement.date && 'text-muted-foreground',
+                          )}
+                        >
+                          <CalendarIcon className='mr-2 h-4 w-4' />
+                          {newAchievement.date ? (
+                            format(new Date(newAchievement.date), 'PPP')
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                        </PopoverTrigger>
+                        <PopoverContent className='w-auto p-0'>
+                          <Calendar
+                            mode='single'
+                            selected={
+                              newAchievement.date
+                                ? new Date(newAchievement.date)
+                                : undefined
+                            }
+                            onSelect={(date) =>
+                              setNewAchievement({
+                                ...newAchievement,
+                                date: date
+                                  ? date.toISOString().split('T')[0] // Format as YYYY-MM-DD
+                                  : '',
+                              })
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
                     </div>
                     <div className='grid gap-2'>
                       <Label htmlFor='desc'>Description</Label>
@@ -404,8 +470,8 @@ export default function ProfilePage() {
                     >
                       Cancel
                     </Button>
-                    <Button onClick={handleAddAchievement}>
-                      Add Achievement
+                    <Button onClick={handleSaveAchievement}>
+                      Save Achievement
                     </Button>
                   </DialogFooter>
                 </DialogContent>
@@ -418,9 +484,9 @@ export default function ProfilePage() {
                     No achievements added yet.
                   </div>
                 ) : (
-                  achievements.map((achievement) => (
+                  achievements.map((achievement, index) => (
                     <div
-                      key={achievement.id}
+                      key={index}
                       className='flex flex-col sm:flex-row gap-4 p-4 rounded-lg border bg-card text-card-foreground shadow-sm relative group'
                     >
                       <div className='min-w-[120px] text-sm text-muted-foreground flex flex-col gap-1 sm:border-r sm:pr-4'>
@@ -439,14 +505,26 @@ export default function ProfilePage() {
                           {achievement.description}
                         </p>
                       </div>
-                      <Button
-                        size='icon'
-                        variant='ghost'
-                        className='absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 text-destructive hover:bg-destructive/10'
-                        onClick={() => handleRemoveAchievement(achievement.id)}
-                      >
-                        <Trash2 size={16} />
-                      </Button>
+                      <div className='absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1'>
+                        <Button
+                          size='icon'
+                          variant='ghost'
+                          className='h-8 w-8 text-muted-foreground hover:bg-muted'
+                          onClick={() => handleEditAchievement(achievement)}
+                        >
+                          <Pencil size={16} />
+                        </Button>
+                        <Button
+                          size='icon'
+                          variant='ghost'
+                          className='h-8 w-8 text-destructive hover:bg-destructive/10'
+                          onClick={() =>
+                            handleRemoveAchievement(achievement.id)
+                          }
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </div>
                     </div>
                   ))
                 )}
