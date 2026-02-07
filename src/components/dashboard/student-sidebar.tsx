@@ -1,11 +1,13 @@
 'use client';
 
 import {
-  IconBook,
-  IconLayoutDashboard,
-  IconSchool,
-  IconSpeakerphone,
-} from '@tabler/icons-react';
+  BookOpen,
+  LayoutDashboard,
+  Megaphone,
+  School,
+  Settings,
+  User,
+} from 'lucide-react';
 import { Sidebar } from '@/components/ui/sidebar';
 import { AppSidebar } from './app-sidebar';
 import { SidebarData } from '@/types/sidebar-types';
@@ -47,11 +49,11 @@ export function StudentSidebar({
             {
               title: 'Dashboard',
               url: '/dashboard',
-              icon: IconLayoutDashboard,
+              icon: LayoutDashboard,
             },
             {
               title: 'My Classes',
-              icon: IconSchool,
+              icon: School,
               items:
                 classroomItems.length > 0
                   ? myClassesItems
@@ -65,7 +67,22 @@ export function StudentSidebar({
             {
               title: 'Notices',
               url: '/dashboard/notices',
-              icon: IconSpeakerphone,
+              icon: Megaphone,
+            },
+          ],
+        },
+        {
+          title: 'Account',
+          items: [
+            {
+              title: 'Profile',
+              url: '/dashboard/profile',
+              icon: User,
+            },
+            {
+              title: 'Settings',
+              url: '/dashboard/settings',
+              icon: Settings,
             },
           ],
         },

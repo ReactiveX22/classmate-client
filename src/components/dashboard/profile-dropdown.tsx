@@ -11,9 +11,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { IconLogout, IconSettings, IconUser } from '@tabler/icons-react';
+import { User } from 'lucide-react';
 
 import { useLogout } from '@/hooks/useAuth';
 import { useSession } from '@/lib/auth-client';
+
 import Link from 'next/link';
 
 export function ProfileDropdown() {
@@ -36,14 +38,6 @@ export function ProfileDropdown() {
     return null;
   }
 
-  const initials =
-    user.name
-      ?.split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2) || 'U';
-
   const handleLogout = async () => {
     try {
       await logoutMutation.mutateAsync();
@@ -62,7 +56,9 @@ export function ProfileDropdown() {
           >
             <Avatar className='h-8 w-8'>
               <AvatarImage src={user.image || ''} alt={user.name || 'User'} />
-              <AvatarFallback>{initials}</AvatarFallback>
+              <AvatarFallback>
+                <User className='size-4' />
+              </AvatarFallback>
             </Avatar>
           </Button>
         }
@@ -82,7 +78,7 @@ export function ProfileDropdown() {
         <DropdownMenuGroup>
           <DropdownMenuItem
             render={
-              <Link href='/dashboard'>
+              <Link href='/dashboard/profile'>
                 <IconUser size={16} />
                 Profile
               </Link>
