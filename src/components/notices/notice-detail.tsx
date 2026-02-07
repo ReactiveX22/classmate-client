@@ -17,6 +17,7 @@ import { Calendar, LayoutTemplate, MoreVertical, User } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { AttachmentDisplay } from '../classrooms/classroom-detail/posts/post-types/attachment-display';
 import { RoleGuard } from '../common/role-guard';
 import { TagBadge } from './tag-badge';
 
@@ -64,7 +65,7 @@ export function NoticeDetail({ data }: NoticeDetailProps) {
     <div className='flex flex-col h-full bg-card'>
       <div className='flex flex-col gap-2 p-4 border-b'>
         <div className='flex items-center justify-between gap-2'>
-          <h1 className='text-lg font-semibold leading-none'>{notice.title}</h1>
+          <h1 className='text-lg font-semibold'>{notice.title}</h1>
 
           <RoleGuard allowedRoles={[Role.Admin]}>
             <DropdownMenu>
@@ -125,7 +126,7 @@ export function NoticeDetail({ data }: NoticeDetailProps) {
           {notice.attachments && notice.attachments.length > 0 && (
             <div className='pt-6'>
               <h4 className='text-sm font-medium mb-3'>Attachments</h4>
-              {/* Attachment list would go here */}
+              <AttachmentDisplay attachments={notice.attachments as any} />
             </div>
           )}
         </div>
