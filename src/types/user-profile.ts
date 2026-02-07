@@ -42,6 +42,7 @@ export interface UserProfileResponse {
 }
 
 export interface UpdateProfileInput {
+  image?: File | string;
   phone?: string;
   bio?: string;
   skills?: string[];

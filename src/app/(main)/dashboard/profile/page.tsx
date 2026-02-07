@@ -45,7 +45,7 @@ import {
   User,
   X,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function ProfilePage() {
@@ -63,6 +63,9 @@ export default function ProfilePage() {
   const [bio, setBio] = useState('');
   const [skills, setSkills] = useState<string[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Initialize form data when profile is loaded
   useEffect(() => {
@@ -90,6 +93,26 @@ export default function ProfilePage() {
     return <div className='p-8'>Loading profile...</div>;
   }
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error('Image size should be less than 2MB');
+        return;
+      }
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleTriggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
   if (!userAuth) {
     return <div className='p-8'>User not found.</div>;
   }
@@ -99,7 +122,14 @@ export default function ProfilePage() {
       phone,
       bio,
     };
-    updateProfile(payload);
+    if (selectedImage) {
+      payload.image = selectedImage;
+    }
+    updateProfile(payload, {
+      onSuccess: () => {
+        setSelectedImage(null);
+      },
+    });
   };
 
   const handleAddSkill = () => {
@@ -173,9 +203,15 @@ export default function ProfilePage() {
         <div className='lg:col-span-1 space-y-6'>
           <Card>
             <CardHeader className='flex flex-row items-center gap-4 pb-2'>
-              <div className='relative group cursor-pointer'>
+              <div
+                className='relative group cursor-pointer'
+                onClick={handleTriggerFileInput}
+              >
                 <Avatar className='size-16 md:size-20'>
-                  <AvatarImage src={userAuth.image} alt={userAuth.name} />
+                  <AvatarImage
+                    src={imagePreview || userAuth.image}
+                    alt={userAuth.name}
+                  />
                   <AvatarFallback className='bg-primary/10'>
                     <User className='text-muted-foreground' />
                   </AvatarFallback>
@@ -183,6 +219,13 @@ export default function ProfilePage() {
                 <div className='absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity'>
                   <Pencil className='size-5 text-white' />
                 </div>
+                <input
+                  type='file'
+                  ref={fileInputRef}
+                  className='hidden'
+                  accept='image/*'
+                  onChange={handleImageChange}
+                />
               </div>
               <div className='flex flex-col gap-1'>
                 <CardTitle>{userAuth.name}</CardTitle>
