@@ -86,7 +86,7 @@ export function ProfileDropdown() {
           />
           <DropdownMenuItem
             render={
-              <Link href='/dashboard'>
+              <Link href='/dashboard/settings'>
                 <IconSettings size={16} />
                 Settings
               </Link>
