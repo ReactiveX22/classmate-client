@@ -17,7 +17,6 @@ import { NotificationType } from '@/lib/constants/notifications.constants';
 import { cn } from '@/lib/utils';
 import {
   IconAward,
-  IconBell,
   IconClipboardText,
   IconFileDescription,
   IconHelp,
@@ -27,6 +26,7 @@ import {
   IconSpeakerphone,
 } from '@tabler/icons-react';
 import { formatDistanceToNow } from 'date-fns';
+import { Bell } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
@@ -78,10 +78,10 @@ export function NotificationPopover() {
       <PopoverTrigger
         className={cn(
           buttonVariants({ variant: 'ghost', size: 'icon' }),
-          'relative size-8 mr-2 cursor-pointer',
+          'relative size-8 mr-1 cursor-pointer',
         )}
       >
-        <IconBell className='size-5' />
+        <Bell className='size-4' />
         {unreadCount > 0 && (
           <span className='absolute -top-0.5 -right-0.5 flex min-w-3.5 h-3.5 items-center justify-center rounded-full bg-primary px-1 text-[9px] text-primary-foreground ring-2 ring-background'>
             {unreadCount > 10 ? '10+' : unreadCount}

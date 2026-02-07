@@ -4,11 +4,13 @@ import { Sidebar } from '@/components/ui/sidebar';
 import { useClassrooms } from '@/hooks/use-classrooms';
 import { SidebarData } from '@/types/sidebar-types';
 import {
-  IconLayoutDashboard,
-  IconMicrophone,
-  IconSchool,
-  IconSpeakerphone,
-} from '@tabler/icons-react';
+  BookOpenIcon,
+  LayoutDashboard,
+  Megaphone,
+  School,
+  Settings,
+  User,
+} from 'lucide-react';
 import { useMemo } from 'react';
 import { AppSidebar } from './app-sidebar';
 
@@ -49,11 +51,11 @@ export function TeacherSidebar({
             {
               title: 'Dashboard',
               url: '/dashboard',
-              icon: IconLayoutDashboard,
+              icon: LayoutDashboard,
             },
             {
               title: 'My Classes',
-              icon: IconSchool,
+              icon: BookOpenIcon,
               items:
                 classroomItems.length > 0
                   ? myClassesItems
@@ -67,7 +69,22 @@ export function TeacherSidebar({
             {
               title: 'Notices',
               url: '/dashboard/notices',
-              icon: IconSpeakerphone,
+              icon: Megaphone,
+            },
+          ],
+        },
+        {
+          title: 'Account',
+          items: [
+            {
+              title: 'Profile',
+              url: '/dashboard/profile',
+              icon: User,
+            },
+            {
+              title: 'Settings',
+              url: '/dashboard/settings',
+              icon: Settings,
             },
           ],
         },
