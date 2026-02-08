@@ -28,7 +28,7 @@ export function DeleteTeacherDialog({
   const deleteTeacherMutation = useDeleteTeacher();
 
   const handleDelete = () => {
-    deleteTeacherMutation.mutate(teacher.teacher.id, {
+    deleteTeacherMutation.mutate(teacher.user.id, {
       onSuccess: () => {
         toast.success('Teacher deleted successfully');
         onOpenChange(false);

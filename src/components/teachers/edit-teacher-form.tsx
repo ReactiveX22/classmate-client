@@ -35,7 +35,6 @@ const editTeacherSchema = z.object({
   name: z.string().min(1, 'Name is required e.g. "John Doe"'),
   title: z.string(),
   joinDate: z.string(),
-  status: z.enum(['active', 'pending', 'suspended'] as const),
 });
 
 interface EditTeacherFormProps {
@@ -53,7 +52,6 @@ export function EditTeacherForm({ teacher, onSuccess }: EditTeacherFormProps) {
       joinDate: teacher.teacher.joinDate
         ? new Date(teacher.teacher.joinDate).toISOString().split('T')[0]
         : '',
-      status: (teacher.user.status as any) || 'active',
     },
     validators: {
       onChange: editTeacherSchema,
@@ -61,19 +59,18 @@ export function EditTeacherForm({ teacher, onSuccess }: EditTeacherFormProps) {
     onSubmit: async ({ value }) => {
       await updateTeacherMutation.mutateAsync(
         {
-          id: teacher.teacher.id,
+          id: teacher.user.id,
           data: {
             name: value.name,
             title: value.title || undefined,
             joinDate: value.joinDate || undefined,
-            status: value.status,
           },
         },
         {
           onSuccess: () => {
             onSuccess?.();
           },
-        }
+        },
       );
     },
   });
@@ -128,27 +125,6 @@ export function EditTeacherForm({ teacher, onSuccess }: EditTeacherFormProps) {
           }}
         </form.Field>
 
-        <form.Field name='status'>
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Status</FieldLabel>
-              <Select
-                value={field.state.value}
-                onValueChange={(value) => field.handleChange(value as any)}
-              >
-                <SelectTrigger>
-                  <SelectValue className='capitalize' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='active'>Active</SelectItem>
-                  <SelectItem value='pending'>Pending</SelectItem>
-                  <SelectItem value='suspended'>Suspended</SelectItem>
-                </SelectContent>
-              </Select>
-            </Field>
-          )}
-        </form.Field>
-
         <form.Field name='joinDate'>
           {(field) => {
             return (
@@ -164,7 +140,7 @@ export function EditTeacherForm({ teacher, onSuccess }: EditTeacherFormProps) {
                         variant={'outline'}
                         className={cn(
                           'w-full pl-3 text-left font-normal',
-                          !field.state.value && 'text-muted-foreground'
+                          !field.state.value && 'text-muted-foreground',
                         )}
                       >
                         {field.state.value ? (
@@ -186,7 +162,7 @@ export function EditTeacherForm({ teacher, onSuccess }: EditTeacherFormProps) {
                       }
                       onSelect={(date) => {
                         field.handleChange(
-                          date ? format(date, 'yyyy-MM-dd') : ''
+                          date ? format(date, 'yyyy-MM-dd') : '',
                         );
                       }}
                       disabled={(date) =>

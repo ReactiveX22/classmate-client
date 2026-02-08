@@ -7,6 +7,7 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
+  User,
 } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -36,14 +37,6 @@ export function NavUser() {
     return null;
   }
 
-  const initials =
-    user.name
-      ?.split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2) || 'U';
-
   const handleLogout = async () => {
     try {
       await logoutMutation.mutateAsync();
@@ -65,7 +58,7 @@ export function NavUser() {
                 <Avatar className='h-8 w-8 rounded-lg'>
                   <AvatarImage src={user.image || ''} alt={user.name} />
                   <AvatarFallback className='rounded-lg'>
-                    {initials}
+                    <User className='size-4' />
                   </AvatarFallback>
                 </Avatar>
                 <div className='grid flex-1 text-left text-sm leading-tight'>
@@ -88,7 +81,7 @@ export function NavUser() {
                   <Avatar className='h-8 w-8 rounded-lg'>
                     <AvatarImage src={user.image || ''} alt={user.name} />
                     <AvatarFallback className='rounded-lg'>
-                      {initials}
+                      <User className='size-4' />
                     </AvatarFallback>
                   </Avatar>
                   <div className='grid flex-1 text-left text-sm leading-tight'>
