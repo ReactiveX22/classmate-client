@@ -11,15 +11,15 @@ import {
   ActionBarSelection,
   ActionBarSeparator,
 } from '@/components/ui/action-bar';
-import { useDeleteTeacher } from '@/hooks/use-teachers';
-import { TeacherData } from '@/lib/api/services/teacher.service';
+import { StudentData } from '@/lib/api/services/student.service';
+import { useDeleteStudent } from '@/hooks/use-students';
 import { toast } from 'sonner';
 
-interface TeachersTableActionBarProps {
-  table: Table<TeacherData>;
+interface StudentsTableActionBarProps {
+  table: Table<StudentData>;
 }
 
-export function TeachersTableActionBar({ table }: TeachersTableActionBarProps) {
+export function StudentsTableActionBar({ table }: StudentsTableActionBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows;
 
   const onOpenChange = React.useCallback(
@@ -31,21 +31,26 @@ export function TeachersTableActionBar({ table }: TeachersTableActionBarProps) {
     [table],
   );
 
-  const deleteTeacherMutation = useDeleteTeacher();
+  const deleteStudentMutation = useDeleteStudent();
 
   const onBulkDelete = React.useCallback(async () => {
     try {
       await Promise.all(
-        rows.map((row) =>
-          deleteTeacherMutation.mutateAsync(row.original.teacher.userId),
-        ),
+        rows.map((row) => {
+          if (row.original.student?.userId) {
+            return deleteStudentMutation.mutateAsync(
+              row.original.student.userId,
+            );
+          }
+          return Promise.resolve();
+        }),
       );
-      toast.success(`Deleted ${rows.length} teacher(s)`);
+      toast.success(`Deleted ${rows.length} student(s)`);
       table.toggleAllRowsSelected(false);
     } catch (error) {
       // Error handled by hook
     }
-  }, [rows, table, deleteTeacherMutation]);
+  }, [rows, table, deleteStudentMutation]);
 
   return (
     <ActionBar open={rows.length > 0} onOpenChange={onOpenChange}>
@@ -62,10 +67,10 @@ export function TeachersTableActionBar({ table }: TeachersTableActionBarProps) {
         <ActionBarItem
           variant='destructive'
           onClick={onBulkDelete}
-          disabled={deleteTeacherMutation.isPending}
+          disabled={deleteStudentMutation.isPending}
         >
           <Trash2 />
-          {deleteTeacherMutation.isPending ? 'Deleting...' : 'Delete'}
+          {deleteStudentMutation.isPending ? 'Deleting...' : 'Delete'}
         </ActionBarItem>
       </ActionBarGroup>
     </ActionBar>

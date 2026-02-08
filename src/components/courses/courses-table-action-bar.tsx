@@ -11,15 +11,15 @@ import {
   ActionBarSelection,
   ActionBarSeparator,
 } from '@/components/ui/action-bar';
-import { useDeleteTeacher } from '@/hooks/use-teachers';
-import { TeacherData } from '@/lib/api/services/teacher.service';
+import { Course } from '@/lib/api/services/course.service';
+import { useDeleteCourse } from '@/hooks/use-courses';
 import { toast } from 'sonner';
 
-interface TeachersTableActionBarProps {
-  table: Table<TeacherData>;
+interface CoursesTableActionBarProps {
+  table: Table<Course>;
 }
 
-export function TeachersTableActionBar({ table }: TeachersTableActionBarProps) {
+export function CoursesTableActionBar({ table }: CoursesTableActionBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows;
 
   const onOpenChange = React.useCallback(
@@ -31,21 +31,19 @@ export function TeachersTableActionBar({ table }: TeachersTableActionBarProps) {
     [table],
   );
 
-  const deleteTeacherMutation = useDeleteTeacher();
+  const deleteCourseMutation = useDeleteCourse();
 
   const onBulkDelete = React.useCallback(async () => {
     try {
       await Promise.all(
-        rows.map((row) =>
-          deleteTeacherMutation.mutateAsync(row.original.teacher.userId),
-        ),
+        rows.map((row) => deleteCourseMutation.mutateAsync(row.original.id)),
       );
-      toast.success(`Deleted ${rows.length} teacher(s)`);
+      toast.success(`Deleted ${rows.length} course(s)`);
       table.toggleAllRowsSelected(false);
     } catch (error) {
       // Error handled by hook
     }
-  }, [rows, table, deleteTeacherMutation]);
+  }, [rows, table, deleteCourseMutation]);
 
   return (
     <ActionBar open={rows.length > 0} onOpenChange={onOpenChange}>
@@ -62,10 +60,10 @@ export function TeachersTableActionBar({ table }: TeachersTableActionBarProps) {
         <ActionBarItem
           variant='destructive'
           onClick={onBulkDelete}
-          disabled={deleteTeacherMutation.isPending}
+          disabled={deleteCourseMutation.isPending}
         >
           <Trash2 />
-          {deleteTeacherMutation.isPending ? 'Deleting...' : 'Delete'}
+          {deleteCourseMutation.isPending ? 'Deleting...' : 'Delete'}
         </ActionBarItem>
       </ActionBarGroup>
     </ActionBar>
