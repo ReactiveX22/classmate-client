@@ -235,12 +235,45 @@ export function AttachmentUpload({
     setShowLinkInput(false);
   };
 
-  const getFileIcon = (type: string) => {
-    if (type.startsWith('image/')) return <IconPhoto className='h-5 w-5' />;
-    if (type.startsWith('video/')) return <IconVideo className='h-5 w-5' />;
-    if (type === 'application/pdf') return <IconFileText className='h-5 w-5' />;
-    if (type === 'link') return <IconLink className='h-5 w-5' />;
-    return <IconFile className='h-5 w-5' />;
+  const getFileIcon = (mimeType: string, type?: string) => {
+    const isImage = type === 'image' || mimeType.startsWith('image/');
+    const isVideo = type === 'video' || mimeType.startsWith('video/');
+    const isPdf = mimeType === 'application/pdf' || mimeType.includes('pdf');
+    const isLink = type === 'link' || mimeType === 'text/uri-list';
+
+    let Icon = IconFile;
+    if (isImage) Icon = IconPhoto;
+    else if (isVideo) Icon = IconVideo;
+    else if (isLink) Icon = IconLink;
+    else if (isPdf) Icon = IconFileText;
+
+    return (
+      <div
+        className={cn(
+          'p-2 rounded-md transition-transform',
+          isLink && 'bg-blue-100 dark:bg-blue-950',
+          isPdf && 'bg-red-100 dark:bg-red-950',
+          isImage && 'bg-purple-100 dark:bg-purple-950',
+          isVideo && 'bg-pink-100 dark:bg-pink-950',
+          !isLink && !isPdf && !isImage && !isVideo && 'bg-muted',
+        )}
+      >
+        <Icon
+          size={18}
+          className={cn(
+            isLink && 'text-blue-600 dark:text-blue-400',
+            isPdf && 'text-red-600 dark:text-red-400',
+            isImage && 'text-purple-600 dark:text-purple-400',
+            isVideo && 'text-pink-600 dark:text-pink-400',
+            !isLink &&
+              !isPdf &&
+              !isImage &&
+              !isVideo &&
+              'text-muted-foreground',
+          )}
+        />
+      </div>
+    );
   };
 
   const formatFileSize = (bytes: number) => {
@@ -375,7 +408,7 @@ export function AttachmentUpload({
                   className='border rounded-lg p-3 bg-background space-y-2'
                 >
                   <div className='flex items-center justify-between'>
-                    <div className='flex items-center gap-2 flex-1 min-w-0'>
+                    <div className='flex items-center gap-2.5 flex-1 min-w-0'>
                       {getFileIcon(upload.file.type)}
                       <div className='flex-1 min-w-0'>
                         <p className='text-sm font-medium truncate'>
@@ -418,9 +451,7 @@ export function AttachmentUpload({
                   className='border rounded-lg p-3 bg-background flex items-center justify-between'
                 >
                   <div className='flex items-center gap-2 flex-1 min-w-0'>
-                    {getFileIcon(
-                      attachment.type === 'link' ? 'link' : attachment.mimeType,
-                    )}
+                    {getFileIcon(attachment.mimeType, attachment.type)}
                     <div className='flex-1 min-w-0'>
                       <p className='text-sm font-medium truncate'>
                         {attachment.name}

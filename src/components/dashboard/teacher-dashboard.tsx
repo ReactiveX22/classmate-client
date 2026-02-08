@@ -2,15 +2,16 @@
 
 import { CreateClassroomDialog } from '@/components/classrooms/create-classroom-dialog';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Skeleton } from '@/components/ui/skeleton';
 import { useClassrooms } from '@/hooks/use-classrooms';
 import { useUser } from '@/hooks/useAuth';
-import { ClassroomWithCourse } from '@/lib/api/services/classroom.service';
 import { IconBook, IconChevronRight } from '@tabler/icons-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
+import { ClassroomCard } from './classroom-card';
+import { DashboardSkeleton } from './dashboard-skeleton';
+import { RecentNotices } from './recent-notices';
 
 export function TeacherDashboard() {
   const { data: classroomsResponse, isLoading } = useClassrooms({
@@ -51,34 +52,38 @@ export function TeacherDashboard() {
       </div>
 
       <div className='grid gap-6 lg:grid-cols-3'>
-        <div className='lg:col-span-2 space-y-4'>
-          <div className='flex items-center justify-between'>
-            <h2 className='font-medium tracking-tight'>Your Classes</h2>
-            <Button
-              variant='link'
-              className='px-0 h-auto'
-              nativeButton={false}
-              render={<Link href='/dashboard/classrooms' />}
-            >
-              View All <IconChevronRight className='ml-1 h-4 w-4' />
-            </Button>
+        <div className='lg:col-span-2 space-y-8'>
+          <div className='space-y-4'>
+            <div className='flex items-center justify-between'>
+              <h2 className='font-medium tracking-tight'>Your Classes</h2>
+              <Button
+                variant='link'
+                className='px-0 h-auto'
+                nativeButton={false}
+                render={<Link href='/dashboard/classrooms' />}
+              >
+                View All <IconChevronRight className='ml-1 h-4 w-4' />
+              </Button>
+            </div>
+
+            {classrooms.length === 0 ? (
+              <EmptyState />
+            ) : (
+              <div className='grid gap-4 sm:grid-cols-2'>
+                {classrooms.map((item) => (
+                  <ClassroomCard key={item.classroom.id} data={item} />
+                ))}
+              </div>
+            )}
           </div>
 
-          {classrooms.length === 0 ? (
-            <EmptyState />
-          ) : (
-            <div className='grid gap-4 sm:grid-cols-2'>
-              {classrooms.map((item) => (
-                <ClassroomCard key={item.classroom.id} data={item} />
-              ))}
-            </div>
-          )}
+          <RecentNotices />
         </div>
 
         <div className='space-y-4'>
           <h2 className='font-medium tracking-tight'>Upcoming</h2>
-          <Card className='p-0'>
-            <CardContent className='p-0'>
+          <Card className='p-0 md:py-0'>
+            <CardContent className='p-0 md:px-0'>
               <ScrollArea className='max-h-[400px]'>
                 {upcomingDeadlines.length === 0 ? (
                   <div className='p-8 text-center text-muted-foreground text-sm'>
@@ -119,30 +124,6 @@ export function TeacherDashboard() {
   );
 }
 
-function ClassroomCard({ data }: { data: ClassroomWithCourse }) {
-  const { classroom, course } = data;
-
-  return (
-    <Link
-      href={`/dashboard/classrooms/${classroom.id}`}
-      className='group block h-full'
-    >
-      <Card className='h-full transition-colors hover:bg-muted/50 gap-2'>
-        <CardHeader>
-          <div className='space-y-1'>
-            <CardTitle className='text-base font-semibold line-clamp-1 group-hover:text-primary transition-colors'>
-              {classroom.name}
-            </CardTitle>
-            <p className='text-xs text-muted-foreground'>
-              {course.code} • {classroom.section} • {course.credits} Credits
-            </p>
-          </div>
-        </CardHeader>
-      </Card>
-    </Link>
-  );
-}
-
 function EmptyState() {
   return (
     <Card className='border-dashed shadow-none'>
@@ -160,46 +141,5 @@ function EmptyState() {
         />
       </CardContent>
     </Card>
-  );
-}
-
-function DashboardSkeleton() {
-  return (
-    <div className='container mx-auto p-6 space-y-8'>
-      <div className='space-y-2'>
-        <Skeleton className='h-8 w-48' />
-        <Skeleton className='h-4 w-32' />
-      </div>
-
-      <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-4'>
-        {[1, 2].map((i) => (
-          <Card key={i}>
-            <CardHeader className='flex flex-row items-center justify-between pb-2'>
-              <Skeleton className='h-4 w-24' />
-              <Skeleton className='h-4 w-4' />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className='h-8 w-16 mb-1' />
-              <Skeleton className='h-3 w-24' />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <div className='grid gap-6 lg:grid-cols-3'>
-        <div className='lg:col-span-2 space-y-6'>
-          <Skeleton className='h-6 w-32' />
-          <div className='grid gap-4 sm:grid-cols-2'>
-            {[1, 2, 3, 4].map((i) => (
-              <Skeleton key={i} className='h-32 w-full' />
-            ))}
-          </div>
-        </div>
-        <div className='space-y-6'>
-          <Skeleton className='h-6 w-40' />
-          <Skeleton className='h-[400px] w-full' />
-        </div>
-      </div>
-    </div>
   );
 }
