@@ -1,43 +1,35 @@
 'use client';
 
-import * as React from 'react';
-import { useParams } from 'next/navigation';
-import { FormPageHeader } from '@/components/ui/form-page-header';
-import {
-  BookOpen,
-  Users,
-  UserPen,
-  Calendar,
-  Clock,
-  GraduationCap,
-  Plus,
-  BookMarked,
-  Code,
-  Book,
-  X,
-} from 'lucide-react';
+import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
+import { AssignStudentDialog } from '@/components/courses/assign-student-dialog';
+import { AssignTeacherDialog } from '@/components/courses/assign-teacher-dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { FormPageHeader } from '@/components/ui/form-page-header';
 import { useCourse, useUpdateCourse } from '@/hooks/use-courses';
 import { useDeleteEnrollment } from '@/hooks/use-enrollments';
-import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
-import { IconUsers, IconUserPlus } from '@tabler/icons-react';
-import { AssignTeacherDialog } from '@/components/courses/assign-teacher-dialog';
-import { AssignStudentDialog } from '@/components/courses/assign-student-dialog';
-import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { IconUserPlus } from '@tabler/icons-react';
+import {
+  Book,
+  BookOpen,
+  GraduationCap,
+  Plus,
+  UserPen,
+  Users,
+  X,
+} from 'lucide-react';
+import { useParams } from 'next/navigation';
+import * as React from 'react';
 
 const getInitials = (name: string) => {
   return name
@@ -102,11 +94,7 @@ export default function CourseDetailsPage() {
         description={`${course.code} • ${course.semester}`}
         icon={<BookOpen className='size-4' />}
         backLink='/dashboard/courses'
-      >
-        <Button size='sm' className='gap-2'>
-          <BookMarked className='size-4' /> Syllabus
-        </Button>
-      </FormPageHeader>
+      ></FormPageHeader>
 
       <main className='flex-1 p-4 md:p-6 lg:p-8 space-y-8 max-w-7xl mx-auto w-full'>
         {/* Course Overview Grid */}
@@ -125,7 +113,7 @@ export default function CourseDetailsPage() {
                     'capitalize',
                     course.status === 'active'
                       ? 'bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 border-emerald-500/20'
-                      : 'bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 border-amber-500/20'
+                      : 'bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 border-amber-500/20',
                   )}
                 >
                   {course.status}
@@ -187,22 +175,20 @@ export default function CourseDetailsPage() {
                 <div className='flex items-center gap-4'>
                   <Avatar className='size-16'>
                     <AvatarImage
-                      src={teacher.user.image || undefined}
-                      alt={teacher.user.name}
+                      src={teacher.image || undefined}
+                      alt={teacher.name}
                     />
                     <AvatarFallback className='text-xl'>
-                      {getInitials(teacher.user.name)}
+                      {getInitials(teacher.name)}
                     </AvatarFallback>
                   </Avatar>
                   <div className='min-w-0'>
-                    <h3 className='font-semibold truncate'>
-                      {teacher.user.name}
-                    </h3>
+                    <h3 className='font-semibold truncate'>{teacher.name}</h3>
                     <p className='text-sm text-muted-foreground truncate'>
-                      {teacher.title || 'Instructor'}
+                      {teacher.role || 'Instructor'}
                     </p>
                     <p className='text-xs text-primary mt-1 truncate'>
-                      {teacher.user.email}
+                      {teacher.email}
                     </p>
                   </div>
                 </div>
@@ -356,7 +342,7 @@ export default function CourseDetailsPage() {
               },
               {
                 onSuccess: () => setStudentToDelete(null),
-              }
+              },
             );
           }
         }}

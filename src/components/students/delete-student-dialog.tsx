@@ -28,10 +28,9 @@ export function DeleteStudentDialog({
   const deleteStudentMutation = useDeleteStudent();
 
   const handleDelete = () => {
-    // Assuming student.student.id is the ID we need to delete.
-    if (!student.student?.id) return;
+    if (!student.user?.id) return;
 
-    deleteStudentMutation.mutate(student.student.id, {
+    deleteStudentMutation.mutate(student.user.id, {
       onSuccess: () => {
         toast.success('Student deleted successfully');
         onOpenChange(false);

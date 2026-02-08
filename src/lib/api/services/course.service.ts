@@ -29,15 +29,7 @@ export interface Course {
   maxStudents: number;
   createdAt: string;
   updatedAt: string;
-  teacher?: {
-    id: string;
-    userId: string;
-    title: string | null;
-    joinDate: string | null;
-    createdAt: string;
-    updatedAt: string;
-    user: User;
-  };
+  teacher?: User;
   enrollment?: Enrollment[];
 }
 
@@ -86,11 +78,11 @@ export const courseService = {
 
   updateCourse: async (
     id: string,
-    payload: UpdateCourseInput
+    payload: UpdateCourseInput,
   ): Promise<Course> => {
     const response = await apiClient.patch<Course>(
       `/api/v1/courses/${id}`,
-      payload
+      payload,
     );
     return response.data;
   },

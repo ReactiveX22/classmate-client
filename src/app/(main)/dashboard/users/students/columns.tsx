@@ -93,40 +93,7 @@ export const columns: ColumnDef<StudentData>[] = [
     },
     enableSorting: true,
   },
-  {
-    accessorKey: 'user.status',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} label='Status' />
-    ),
-    meta: {
-      label: 'Status',
-      variant: 'select',
-      options: [
-        { label: 'Active', value: 'active' },
-        { label: 'Pending', value: 'pending' },
-        { label: 'Suspended', value: 'suspended' },
-      ],
-    },
-    cell: ({ row }) => {
-      const status = row.original.user.status;
-      const isActive = status === 'active';
-      const isPending = status === 'pending';
 
-      return (
-        <Badge
-          variant={isActive ? 'outline' : isPending ? 'default' : 'destructive'}
-          className={cn(
-            'capitalize',
-            isPending &&
-              'text-amber-600 dark:text-amber-200 bg-amber-400/10 hover:shadow-amber-500/30'
-          )}
-        >
-          {status}
-        </Badge>
-      );
-    },
-    enableSorting: true,
-  },
   {
     accessorKey: 'user.createdAt',
     header: ({ column }) => (
