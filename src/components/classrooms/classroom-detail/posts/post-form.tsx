@@ -43,8 +43,8 @@ import { z } from 'zod';
 // Zod Schemas
 const baseSchema = z.object({
   content: z.string().min(1, 'Content is required'),
-  isPinned: z.boolean(),
-  commentsEnabled: z.boolean(),
+  isPinned: z.boolean().default(false),
+  commentsEnabled: z.boolean().default(true),
 });
 
 const assignmentSchema = baseSchema.extend({
@@ -52,9 +52,11 @@ const assignmentSchema = baseSchema.extend({
   title: z.string().min(1, 'Title is required'),
   assignmentData: z.object({
     dueDate: z.date().optional(),
-    points: z.number().min(0).max(1000),
-    submissionType: z.enum(['file', 'text', 'link', 'multiple'] as const),
-    allowLateSubmission: z.boolean(),
+    points: z.number().min(0).max(1000).default(100),
+    submissionType: z
+      .enum(['file', 'text', 'link', 'multiple'] as const)
+      .default('file'),
+    allowLateSubmission: z.boolean().default(true),
   }),
 });
 
@@ -116,7 +118,17 @@ export function PostForm({
   const form = useForm({
     defaultValues,
     validators: {
-      onSubmit: postSchema,
+      onSubmit: ({ value }) => {
+        const result = postSchema.safeParse(value);
+        if (result.success) return undefined;
+
+        const errors: Record<string, string> = {};
+        result.error.issues.forEach((issue) => {
+          const path = issue.path.join('.');
+          errors[path] = issue.message;
+        });
+        return errors;
+      },
     },
     onSubmit: async ({ value }) => {
       setGlobalError('');
@@ -166,7 +178,7 @@ export function PostForm({
             <Field>
               <FieldLabel htmlFor={field.name}>Post Type</FieldLabel>
               <Select
-                value={field.state.value}
+                value={field.state.value || 'announcement'}
                 onValueChange={(val) => {
                   field.handleChange(val as PostType);
                   // Set defaults when switching types
@@ -235,7 +247,7 @@ export function PostForm({
               <Textarea
                 id={field.name}
                 name={field.name}
-                value={field.state.value}
+                value={field.state.value || ''}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
                 className='min-h-[100px]'
@@ -300,7 +312,7 @@ export function PostForm({
                           type='number'
                           min='0'
                           max='1000'
-                          value={field.state.value}
+                          value={field.state.value ?? ''}
                           onChange={(e) =>
                             field.handleChange(Number(e.target.value))
                           }
@@ -317,7 +329,7 @@ export function PostForm({
                       <Field>
                         <FieldLabel>Submission Type</FieldLabel>
                         <Select
-                          value={field.state.value}
+                          value={field.state.value || 'file'}
                           onValueChange={(val) =>
                             field.handleChange(val as SubmissionType)
                           }
@@ -344,14 +356,14 @@ export function PostForm({
                     <div className='flex items-center space-x-2 pt-2'>
                       <Checkbox
                         id='late-submission'
-                        checked={field.state.value}
+                        checked={!!field.state.value}
                         onCheckedChange={(checked) =>
                           field.handleChange(!!checked)
                         }
                       />
                       <Label
                         htmlFor='late-submission'
-                        className='font-normal text-sm text-muted-foreground'
+                        className='font-normal text-sm'
                       >
                         Allow late submissions
                       </Label>
@@ -386,7 +398,7 @@ export function PostForm({
               <div className='flex items-center space-x-2'>
                 <Checkbox
                   id='pinned'
-                  checked={field.state.value}
+                  checked={!!field.state.value}
                   onCheckedChange={(checked) => field.handleChange(!!checked)}
                 />
                 <Label htmlFor='pinned' className='font-medium'>
@@ -401,7 +413,7 @@ export function PostForm({
               <div className='flex items-center space-x-2'>
                 <Checkbox
                   id='comments'
-                  checked={field.state.value}
+                  checked={!!field.state.value}
                   onCheckedChange={(checked) => field.handleChange(!!checked)}
                 />
                 <Label htmlFor='comments' className='font-medium'>
