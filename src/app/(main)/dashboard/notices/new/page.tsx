@@ -1,10 +1,11 @@
 'use client';
 
+import { NoticeForm, NoticeFormValues } from '@/components/notices/notice-form';
+import { FormPageHeader } from '@/components/ui/form-page-header';
+import { useCreateNotice } from '@/hooks/use-notices';
+import { Bell } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { PageHeader } from '@/components/common/page-header';
-import { NoticeForm, NoticeFormValues } from '@/components/notices/notice-form';
-import { useCreateNotice } from '@/hooks/use-notices';
 
 export default function NewNoticePage() {
   const router = useRouter();
@@ -22,12 +23,14 @@ export default function NewNoticePage() {
   };
 
   return (
-    <div className='flex flex-col gap-6 p-6 h-full'>
-      <PageHeader
+    <div className='flex flex-col gap-6 h-full'>
+      <FormPageHeader
+        icon={<Bell className='size-4' />}
         title='Create Notice'
         description='Create a new notice for your organization.'
+        backLink='/dashboard/notices'
       />
-      <div className='flex-1 max-w-6xl'>
+      <div className='flex-1 max-w-6xl p-6'>
         <NoticeForm
           onSubmit={onSubmit}
           isSubmitting={isPending}

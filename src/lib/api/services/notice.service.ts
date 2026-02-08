@@ -67,21 +67,18 @@ export const noticeService = {
     return response.data;
   },
 
-  getNotice: async (id: string): Promise<NoticeData> => {
-    const response = await apiClient.get<NoticeData>(`/api/v1/notices/${id}`);
+  getNotice: async (id: string): Promise<Notice> => {
+    const response = await apiClient.get<Notice>(`/api/v1/notices/${id}`);
     return response.data;
   },
 
   createNotice: async (payload: CreateNoticeInput) => {
-    const response = await apiClient.post<NoticeData>(
-      '/api/v1/notices',
-      payload,
-    );
+    const response = await apiClient.post<Notice>('/api/v1/notices', payload);
     return response.data;
   },
 
   updateNotice: async (id: string, payload: UpdateNoticeInput) => {
-    const response = await apiClient.patch<NoticeData>(
+    const response = await apiClient.patch<Notice>(
       `/api/v1/notices/${id}`,
       payload,
     );
@@ -89,14 +86,12 @@ export const noticeService = {
   },
 
   deleteNotice: async (id: string) => {
-    const response = await apiClient.delete<NoticeData>(
-      `/api/v1/notices/${id}`,
-    );
+    const response = await apiClient.delete<Notice>(`/api/v1/notices/${id}`);
     return response.data;
   },
 
   removeAttachment: async (id: string) => {
-    const response = await apiClient.delete<NoticeData>(
+    const response = await apiClient.delete<Notice>(
       `/api/v1/notices/attachments/${id}`,
     );
     return response.data;

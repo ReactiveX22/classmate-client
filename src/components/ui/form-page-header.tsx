@@ -39,8 +39,8 @@ export function FormPageHeader({
   return (
     <header
       className={cn(
-        'sticky top-16 z-30 flex h-16 items-center gap-2 md:gap-4 border-b bg-background/80 backdrop-blur-xl px-4 md:px-6',
-        className
+        'sticky top-14 z-30 flex h-16 items-center gap-2 md:gap-4 border-b bg-background/80 backdrop-blur-xl px-4 md:px-6',
+        className,
       )}
     >
       {showDefaultBackButton && (

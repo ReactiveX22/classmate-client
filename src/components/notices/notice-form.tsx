@@ -19,7 +19,7 @@ import { z } from 'zod';
 
 const noticeSchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  content: z.string().optional(),
+  content: z.string(),
   tags: z.array(z.string()).default([]),
 });
 
@@ -42,7 +42,18 @@ export function NoticeForm({
 }: NoticeFormProps) {
   const [currentTag, setCurrentTag] = useState('');
   const [attachments, setAttachments] = useState<UploadResult[]>(
-    initialData?.attachments || [],
+    initialData?.attachments?.map((att) => ({
+      id: att.id,
+      name: att.name,
+      url: att.url,
+      type: att.type.startsWith('image/')
+        ? 'image'
+        : att.type.startsWith('video/')
+          ? 'video'
+          : 'file',
+      size: att.size,
+      mimeType: att.type,
+    })) || [],
   );
 
   const { mutateAsync: uploadFile } = useNoticeUploadAttachment();
