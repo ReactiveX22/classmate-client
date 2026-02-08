@@ -3,14 +3,14 @@
 import { Sidebar } from '@/components/ui/sidebar';
 import { SidebarData } from '@/types/sidebar-types';
 import {
-  IconActivity,
-  IconBook,
-  IconChalkboard,
-  IconLayoutDashboard,
-  IconSchool,
-  IconSettings,
-  IconSpeakerphone,
-} from '@tabler/icons-react';
+  BookOpen,
+  GraduationCap,
+  LayoutDashboard,
+  Megaphone,
+  Presentation,
+  Settings,
+  User,
+} from 'lucide-react';
 import { AppSidebar } from './app-sidebar';
 
 const adminDashboardData: SidebarData = {
@@ -26,11 +26,11 @@ const adminDashboardData: SidebarData = {
         {
           title: 'Dashboard',
           url: '/dashboard',
-          icon: IconLayoutDashboard,
+          icon: LayoutDashboard,
         },
         {
           title: 'Notices',
-          icon: IconSpeakerphone,
+          icon: Megaphone,
           url: '/dashboard/notices',
         },
       ],
@@ -41,17 +41,32 @@ const adminDashboardData: SidebarData = {
         {
           title: 'Students',
           url: '/dashboard/users/students',
-          icon: IconSchool,
+          icon: GraduationCap,
         },
         {
           title: 'Teachers',
           url: '/dashboard/users/teachers',
-          icon: IconChalkboard,
+          icon: Presentation,
         },
         {
           title: 'Courses',
           url: '/dashboard/courses',
-          icon: IconBook,
+          icon: BookOpen,
+        },
+      ],
+    },
+    {
+      title: 'Account',
+      items: [
+        {
+          title: 'Profile',
+          url: '/dashboard/profile',
+          icon: User,
+        },
+        {
+          title: 'Settings',
+          url: '/dashboard/settings',
+          icon: Settings,
         },
       ],
     },

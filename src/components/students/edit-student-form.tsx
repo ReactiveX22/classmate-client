@@ -23,7 +23,6 @@ import { z } from 'zod';
 const editStudentSchema = z.object({
   name: z.string().min(1, 'Name is required e.g. "John Doe"'),
   studentId: z.string(),
-  status: z.enum(['active', 'pending', 'suspended'] as const),
 });
 
 interface EditStudentFormProps {
@@ -38,30 +37,28 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
     defaultValues: {
       name: student.user.name || '',
       studentId: student.student?.studentId || '',
-      status: (student.user.status as any) || 'active',
     },
     validators: {
       onChange: editStudentSchema,
     },
     onSubmit: async ({ value }) => {
-      if (!student.student?.id) {
+      if (!student.user?.id) {
         return;
       }
 
       await updateStudentMutation.mutateAsync(
         {
-          id: student.student.id,
+          id: student.user.id,
           data: {
             name: value.name,
             studentId: value.studentId || undefined,
-            status: value.status,
           },
         },
         {
           onSuccess: () => {
             onSuccess?.();
           },
-        }
+        },
       );
     },
   });
@@ -116,27 +113,6 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
               </Field>
             );
           }}
-        </form.Field>
-
-        <form.Field name='status'>
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Status</FieldLabel>
-              <Select
-                value={field.state.value}
-                onValueChange={(value) => field.handleChange(value as any)}
-              >
-                <SelectTrigger>
-                  <SelectValue className='capitalize' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='active'>Active</SelectItem>
-                  <SelectItem value='pending'>Pending</SelectItem>
-                  <SelectItem value='suspended'>Suspended</SelectItem>
-                </SelectContent>
-              </Select>
-            </Field>
-          )}
         </form.Field>
       </FieldGroup>
 

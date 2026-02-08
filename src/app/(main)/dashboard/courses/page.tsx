@@ -12,6 +12,7 @@ import { ExtendedColumnSort } from '@/types/data-table';
 import { useCourses } from '@/hooks/use-courses';
 import { PageHeader } from '@/components/common/page-header';
 import { PlusIcon } from 'lucide-react';
+import { CoursesTableActionBar } from '@/components/courses/courses-table-action-bar';
 
 const DEFAULT_SORTING: ExtendedColumnSort<Course>[] = [
   { id: 'createdAt', desc: true },
@@ -51,7 +52,10 @@ export default function CoursesPage() {
         title='Courses'
         description='Manage all courses in your organization.'
       >
-        <Button render={<Link href='/dashboard/courses/new' />}>
+        <Button
+          nativeButton={false}
+          render={<Link href='/dashboard/courses/new' />}
+        >
           <PlusIcon /> Add Course
         </Button>
       </PageHeader>
@@ -61,7 +65,11 @@ export default function CoursesPage() {
       ) : isError ? (
         <div className='text-red-500'>Error loading courses.</div>
       ) : (
-        <DataTable table={table} className='w-fit'>
+        <DataTable
+          table={table}
+          className='w-fit'
+          actionBar={<CoursesTableActionBar table={table} />}
+        >
           <DataTableToolbar table={table} />
         </DataTable>
       )}

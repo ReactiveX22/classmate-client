@@ -27,20 +27,22 @@ export function EditPostDialog({
   const initialValues: PostFormData = {
     type: post.type,
     content: post.content,
-    isPinned: post.isPinned,
-    commentsEnabled: post.commentsEnabled,
-    title: post.title || undefined,
-    assignmentData: post.assignmentData
-      ? {
-          dueDate: post.assignmentData.dueDate
-            ? new Date(post.assignmentData.dueDate)
-            : undefined,
-          points: post.assignmentData.points || 100,
-          submissionType:
-            post.assignmentData.submissionType || ('file' as SubmissionType),
-          allowLateSubmission: post.assignmentData.allowLateSubmission ?? true,
-        }
-      : undefined,
+    isPinned: !!post.isPinned,
+    commentsEnabled: post.commentsEnabled ?? true,
+    title: post.title || '',
+    assignmentData:
+      post.type === 'assignment'
+        ? {
+            dueDate: post.assignmentData?.dueDate
+              ? new Date(post.assignmentData.dueDate)
+              : undefined,
+            points: post.assignmentData?.points ?? 100,
+            submissionType:
+              post.assignmentData?.submissionType ?? ('file' as SubmissionType),
+            allowLateSubmission:
+              post.assignmentData?.allowLateSubmission ?? true,
+          }
+        : undefined,
   } as PostFormData;
 
   return (

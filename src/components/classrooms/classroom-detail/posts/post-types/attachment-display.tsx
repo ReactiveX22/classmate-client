@@ -13,6 +13,7 @@ import {
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useState } from 'react';
+import { ImageGalleryDialog } from './image-gallery-dialog';
 
 interface AttachmentDisplayProps {
   attachments: Attachment[];
@@ -75,11 +76,13 @@ export function AttachmentDisplay({
   variant = 'default',
 }: AttachmentDisplayProps) {
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const images = attachments.filter(isImageFile);
   const videos = attachments.filter(isVideoFile);
   const otherFiles = attachments.filter(
-    (a) => !isImageFile(a) && !isVideoFile(a)
+    (a) => !isImageFile(a) && !isVideoFile(a),
   );
 
   const handleImageError = (attachmentId: string) => {
@@ -88,7 +91,7 @@ export function AttachmentDisplay({
 
   const handleDownload = async (
     e: React.MouseEvent,
-    attachment: Attachment
+    attachment: Attachment,
   ) => {
     e.preventDefault();
     e.stopPropagation();
@@ -141,7 +144,7 @@ export function AttachmentDisplay({
                   isPdf && 'bg-red-100 dark:bg-red-950',
                   isImage && 'bg-purple-100 dark:bg-purple-950',
                   isVideo && 'bg-pink-100 dark:bg-pink-950',
-                  !isLink && !isPdf && !isImage && !isVideo && 'bg-muted'
+                  !isLink && !isPdf && !isImage && !isVideo && 'bg-muted',
                 )}
               >
                 <Icon
@@ -155,7 +158,7 @@ export function AttachmentDisplay({
                       !isPdf &&
                       !isImage &&
                       !isVideo &&
-                      'text-muted-foreground'
+                      'text-muted-foreground',
                   )}
                 />
               </div>
@@ -223,7 +226,7 @@ export function AttachmentDisplay({
             images.length === 1 && 'grid-cols-1',
             images.length === 2 && 'grid-cols-2',
             images.length === 3 && 'grid-cols-3',
-            images.length >= 4 && 'grid-cols-2'
+            images.length >= 4 && 'grid-cols-2',
           )}
         >
           {images.slice(0, 4).map((image, index) => {
@@ -232,17 +235,19 @@ export function AttachmentDisplay({
             const remainingCount = images.length - 4;
 
             return (
-              <a
+              <div
                 key={image.id}
-                href={getProxiedUrl(image.url)}
-                target='_blank'
-                rel='noopener noreferrer'
+                role='button'
+                onClick={() => {
+                  setSelectedImageIndex(index);
+                  setIsGalleryOpen(true);
+                }}
                 className={cn(
-                  'relative group overflow-hidden bg-muted rounded-md',
+                  'relative group overflow-hidden bg-muted rounded-md cursor-pointer',
                   images.length === 1 && 'aspect-video max-h-[400px]',
                   images.length === 2 && 'aspect-square',
                   images.length >= 3 && 'aspect-square',
-                  'hover:opacity-95 transition-opacity'
+                  'hover:opacity-95 transition-opacity',
                 )}
               >
                 {!hasError ? (
@@ -270,15 +275,24 @@ export function AttachmentDisplay({
                   </div>
                 )}
 
-                {/* Hover overlay */}
-                <div className='absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100'>
-                  <IconExternalLink className='text-white h-6 w-6' />
-                </div>
-              </a>
+                {/* Hover overlay - Only show if not the "+more" overlay to avoid overlap */}
+                {(!isLastItem || remainingCount === 0) && (
+                  <div className='absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100'>
+                    {/* <IconExternalLink className='text-white h-6 w-6' /> */}
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
       )}
+
+      <ImageGalleryDialog
+        images={images}
+        initialIndex={selectedImageIndex}
+        open={isGalleryOpen}
+        onOpenChange={setIsGalleryOpen}
+      />
 
       {/* Video Players */}
       {videos.length > 0 && (
@@ -304,7 +318,7 @@ export function AttachmentDisplay({
           {otherFiles.map((attachment) => {
             const Icon = getAttachmentIcon(
               attachment.type,
-              attachment.mimeType
+              attachment.mimeType,
             );
             const isLink = attachment.type === 'link';
             const isPdf = attachment.mimeType?.includes('pdf');
@@ -322,7 +336,7 @@ export function AttachmentDisplay({
                     'p-2 rounded-md group-hover:scale-105 transition-transform',
                     isLink && 'bg-blue-100 dark:bg-blue-950',
                     isPdf && 'bg-red-100 dark:bg-red-950',
-                    !isLink && !isPdf && 'bg-muted'
+                    !isLink && !isPdf && 'bg-muted',
                   )}
                 >
                   <Icon
@@ -330,7 +344,7 @@ export function AttachmentDisplay({
                     className={cn(
                       isLink && 'text-blue-600 dark:text-blue-400',
                       isPdf && 'text-red-600 dark:text-red-400',
-                      !isLink && !isPdf && 'text-muted-foreground'
+                      !isLink && !isPdf && 'text-muted-foreground',
                     )}
                   />
                 </div>

@@ -6,6 +6,7 @@ import { useDataTable } from '@/hooks/use-data-table';
 import { useStudents } from '@/hooks/use-students';
 import { useTableQueryState } from '@/hooks/use-table-query';
 import { AddStudentDialog } from '@/components/students/add-student-dialog';
+import { StudentsTableActionBar } from '@/components/students/students-table-action-bar';
 import { columns } from './columns';
 import { StudentData } from '@/lib/api/services/student.service';
 import { ExtendedColumnSort } from '@/types/data-table';
@@ -57,7 +58,11 @@ export default function StudentsPage() {
       ) : isError ? (
         <div className='text-red-500'>Error loading students.</div>
       ) : (
-        <DataTable table={table} className='w-fit'>
+        <DataTable
+          table={table}
+          className='w-fit'
+          actionBar={<StudentsTableActionBar table={table} />}
+        >
           <DataTableToolbar table={table} />
         </DataTable>
       )}
