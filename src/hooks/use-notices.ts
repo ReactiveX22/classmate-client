@@ -78,7 +78,7 @@ export const useUpdateNotice = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: noticeKeys.lists() });
       queryClient.invalidateQueries({
-        queryKey: noticeKeys.detail(data.notice.id),
+        queryKey: noticeKeys.detail(data.id),
       });
     },
   });
