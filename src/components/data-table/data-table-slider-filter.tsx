@@ -37,7 +37,7 @@ function parseValuesAsNumbers(value: unknown): RangeValue | undefined {
     value.length === 2 &&
     value.every(
       (v) =>
-        (typeof v === 'string' || typeof v === 'number') && !Number.isNaN(v)
+        (typeof v === 'string' || typeof v === 'number') && !Number.isNaN(v),
     )
   ) {
     return [Number(value[0]), Number(value[1])];
@@ -87,8 +87,8 @@ export function DataTableSliderFilter<TData>({
       rangeSize <= 20
         ? 1
         : rangeSize <= 100
-        ? Math.ceil(rangeSize / 20)
-        : Math.ceil(rangeSize / 50);
+          ? Math.ceil(rangeSize / 20)
+          : Math.ceil(rangeSize / 50);
 
     return { min: minValue, max: maxValue, step };
   }, [column, defaultRange]);
@@ -108,7 +108,7 @@ export function DataTableSliderFilter<TData>({
         column.setFilterValue([numValue, range[1]]);
       }
     },
-    [column, min, range]
+    [column, min, range],
   );
 
   const onToInputChange = React.useCallback(
@@ -118,16 +118,16 @@ export function DataTableSliderFilter<TData>({
         column.setFilterValue([range[0], numValue]);
       }
     },
-    [column, max, range]
+    [column, max, range],
   );
 
   const onSliderValueChange = React.useCallback(
-    (value: RangeValue) => {
+    (value: number | readonly number[]) => {
       if (Array.isArray(value) && value.length === 2) {
         column.setFilterValue(value);
       }
     },
-    [column]
+    [column],
   );
 
   const onReset = React.useCallback(
@@ -137,44 +137,46 @@ export function DataTableSliderFilter<TData>({
       }
       column.setFilterValue(undefined);
     },
-    [column]
+    [column],
   );
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant='outline'
-          size='sm'
-          className='border-dashed font-normal'
-        >
-          {columnFilterValue ? (
-            <div
-              role='button'
-              aria-label={`Clear ${title} filter`}
-              tabIndex={0}
-              className='rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
-              onClick={onReset}
-            >
-              <XCircle />
-            </div>
-          ) : (
-            <PlusCircle />
-          )}
-          <span>{title}</span>
-          {columnFilterValue ? (
-            <>
-              <Separator
-                orientation='vertical'
-                className='mx-0.5 data-[orientation=vertical]:h-4'
-              />
-              {formatValue(columnFilterValue[0])} -{' '}
-              {formatValue(columnFilterValue[1])}
-              {unit ? ` ${unit}` : ''}
-            </>
-          ) : null}
-        </Button>
-      </PopoverTrigger>
+      <PopoverTrigger
+        render={
+          <Button
+            variant='outline'
+            size='sm'
+            className='border-dashed font-normal'
+          >
+            {columnFilterValue ? (
+              <div
+                role='button'
+                aria-label={`Clear ${title} filter`}
+                tabIndex={0}
+                className='rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
+                onClick={onReset}
+              >
+                <XCircle />
+              </div>
+            ) : (
+              <PlusCircle />
+            )}
+            <span>{title}</span>
+            {columnFilterValue ? (
+              <>
+                <Separator
+                  orientation='vertical'
+                  className='mx-0.5 data-[orientation=vertical]:h-4'
+                />
+                {formatValue(columnFilterValue[0])} -{' '}
+                {formatValue(columnFilterValue[1])}
+                {unit ? ` ${unit}` : ''}
+              </>
+            ) : null}
+          </Button>
+        }
+      />
       <PopoverContent align='start' className='flex w-auto flex-col gap-4'>
         <div className='flex flex-col gap-3'>
           <p className='font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>

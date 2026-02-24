@@ -18,7 +18,7 @@ const classroomSchema = z.object({
   courseId: z.string().min(1, 'Course is required'),
   name: z.string().min(2, 'Name must be at least 2 characters'),
   section: z.string().min(1, 'Section is required'),
-  description: z.string().optional(),
+  description: z.string(),
 });
 
 interface CreateClassroomFormProps {
