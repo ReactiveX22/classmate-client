@@ -20,7 +20,7 @@ import { z } from 'zod';
 const noticeSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   content: z.string(),
-  tags: z.array(z.string()).default([]),
+  tags: z.array(z.string()),
 });
 
 export type NoticeFormValues = z.infer<typeof noticeSchema> & {
