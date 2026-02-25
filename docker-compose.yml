@@ -1,0 +1,16 @@
+services:
+  api:
+    build: .
+    container_name: classmate-client
+    ports:
+      - '3001:3001'
+    env_file:
+      - .env
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    networks:
+      - classmate-network
+
+networks:
+  classmate-network:
+    driver: bridge

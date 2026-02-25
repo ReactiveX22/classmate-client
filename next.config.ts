@@ -1,13 +1,15 @@
 import type { NextConfig } from 'next';
 
+const apiUrl = process.env.API_URL || 'http://localhost:3000';
+const { protocol, hostname, port } = new URL(apiUrl);
+
 const nextConfig: NextConfig = {
+  output: 'standalone',
   async rewrites() {
     return [
       {
         source: '/api/:path*',
-        destination: `${
-          process.env.API_URL || 'http://localhost:3000'
-        }/api/:path*`,
+        destination: `${apiUrl}/api/:path*`,
       },
     ];
   },
@@ -15,9 +17,9 @@ const nextConfig: NextConfig = {
     dangerouslyAllowLocalIP: true,
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3000',
+        protocol: protocol.replace(':', '') as 'http' | 'https',
+        hostname,
+        port: port || '',
         pathname: '/**',
       },
     ],

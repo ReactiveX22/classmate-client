@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+build
+dist
+.git
+.env*
+npm-debug.log
+README.md
+.vscode
+pnpm-debug.log*
+.pnpm-store
