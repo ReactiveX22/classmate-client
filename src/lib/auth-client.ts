@@ -2,7 +2,10 @@ import { UserStatus } from '@/types/auth';
 import { createAuthClient } from 'better-auth/react';
 
 export const authClient = createAuthClient({
-  baseURL: process.env.API_URL,
+  baseURL:
+    typeof window !== 'undefined'
+      ? ''
+      : process.env.API_URL || 'http://backend:3000',
   basePath: '/api/v1/auth',
   user: {
     additionalFields: {
