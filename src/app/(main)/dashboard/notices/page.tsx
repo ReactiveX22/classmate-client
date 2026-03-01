@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useQueryState } from 'nuqs';
-import { useNotices, useNotice } from '@/hooks/use-notices';
-import { NoticeList } from '@/components/notices/notice-list';
 import { NoticeDetail } from '@/components/notices/notice-detail';
+import { NoticeList } from '@/components/notices/notice-list';
 import { NoticeToolbar } from '@/components/notices/notice-toolbar';
-import { PageHeader } from '@/components/common/page-header';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useNotice, useNotices } from '@/hooks/use-notices';
+import { useQueryState } from 'nuqs';
+import { useEffect, useState } from 'react';
 
 export default function NoticesPage() {
   const [selectedId, setSelectedId] = useQueryState('id');
+  const isMobile = useIsMobile();
 
   // Filter States
   const [search, setSearch] = useState('');
@@ -42,29 +43,39 @@ export default function NoticesPage() {
 
   const selectedNotice = foundInList || individualNotice || null;
 
+  const showDetail = isMobile && selectedId;
+  const showList = !isMobile || !selectedId;
+
   return (
     <div className='flex flex-col h-[calc(100vh-64px)] overflow-hidden bg-background'>
-      <div className='flex-1 flex flex-col min-h-0 m-4 rounded-xl border bg-card shadow-sm overflow-hidden'>
+      <div className='flex-1 flex flex-col min-h-0 m-2 md:m-4 rounded-xl border bg-card shadow-sm overflow-hidden'>
         <NoticeToolbar searchPromise={search} onSearchChange={setSearch} />
 
         <div className='flex flex-1 overflow-hidden'>
           {/* Left Column: List */}
-          <div className='w-[380px] border-r bg-muted/10 flex flex-col'>
-            <NoticeList
-              notices={notices}
-              isLoading={isLoading}
-              selectedId={selectedId}
-              onSelect={setSelectedId}
-              hasNextPage={hasNextPage}
-              isFetchingNextPage={isFetchingNextPage}
-              fetchNextPage={fetchNextPage}
-            />
-          </div>
+          {showList && (
+            <div className='w-full md:w-[380px] md:border-r bg-muted/10 flex flex-col'>
+              <NoticeList
+                notices={notices}
+                isLoading={isLoading}
+                selectedId={selectedId}
+                onSelect={setSelectedId}
+                hasNextPage={hasNextPage}
+                isFetchingNextPage={isFetchingNextPage}
+                fetchNextPage={fetchNextPage}
+              />
+            </div>
+          )}
 
           {/* Right Column: Detail */}
-          <div className='flex-1 overflow-hidden bg-background'>
-            <NoticeDetail data={selectedNotice} />
-          </div>
+          {(!isMobile || showDetail) && (
+            <div className='flex-1 overflow-hidden bg-background'>
+              <NoticeDetail
+                data={selectedNotice}
+                onBack={isMobile ? () => setSelectedId(null) : undefined}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -13,7 +13,13 @@ import { useDeleteNotice } from '@/hooks/use-notices';
 import { NoticeData } from '@/lib/api/services/notice.service';
 import { Role } from '@/types/auth';
 import { format } from 'date-fns';
-import { Calendar, LayoutTemplate, MoreVertical, User } from 'lucide-react';
+import {
+  ArrowLeft,
+  Calendar,
+  LayoutTemplate,
+  MoreVertical,
+  User,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -23,9 +29,10 @@ import { TagBadge } from './tag-badge';
 
 interface NoticeDetailProps {
   data: NoticeData | null;
+  onBack?: () => void;
 }
 
-export function NoticeDetail({ data }: NoticeDetailProps) {
+export function NoticeDetail({ data, onBack }: NoticeDetailProps) {
   const [showDelete, setShowDelete] = useState(false);
 
   const { mutateAsync: deleteNotice, isPending: isDeleting } =
@@ -65,7 +72,22 @@ export function NoticeDetail({ data }: NoticeDetailProps) {
     <div className='flex flex-col h-full bg-card'>
       <div className='flex flex-col gap-2 p-4 border-b'>
         <div className='flex items-center justify-between gap-2'>
-          <h1 className='text-lg font-semibold'>{notice.title}</h1>
+          <div className='flex items-start gap-2 min-w-0'>
+            {onBack && (
+              <Button
+                variant='ghost'
+                size='icon-sm'
+                onClick={onBack}
+                className='shrink-0 size-6'
+              >
+                <ArrowLeft className='h-4 w-4' />
+                <span className='sr-only'>Back to list</span>
+              </Button>
+            )}
+            <h1 className='text-lg font-semibold line-clamp-2'>
+              {notice.title}
+            </h1>
+          </div>
 
           <RoleGuard allowedRoles={[Role.Admin]}>
             <DropdownMenu>
