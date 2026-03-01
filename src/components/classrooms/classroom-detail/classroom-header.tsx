@@ -78,7 +78,7 @@ export function ClassroomHeader({
       <div className='flex items-start justify-between gap-4'>
         <div className='flex-1 min-w-0'>
           <div className='space-y-1'>
-            <h1 className='text-xl font-semibold truncate leading-none'>
+            <h1 className='text-lg sm:text-xl font-semibold truncate leading-none'>
               {classroom.name}
             </h1>
             <p className='text-sm text-muted-foreground'>

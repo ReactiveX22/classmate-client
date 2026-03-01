@@ -31,7 +31,7 @@ export function MaterialCard({ post }: MaterialCardProps) {
         onSuccess: () => {
           setShowDeleteDialog(false);
         },
-      }
+      },
     );
   };
 
@@ -39,9 +39,9 @@ export function MaterialCard({ post }: MaterialCardProps) {
     <>
       <Card className='overflow-hidden hover:shadow-md transition-shadow'>
         <CardHeader>
-          <div className='flex items-start gap-3'>
-            <div className='p-2.5 bg-green-500/10 rounded-full'>
-              <IconBook size={20} className='text-green-600' />
+          <div className='flex items-start gap-2.5 sm:gap-3'>
+            <div className='p-2 sm:p-2.5 bg-green-500/10 rounded-full shrink-0'>
+              <IconBook className='w-4 h-4 sm:w-5 sm:h-5 text-green-600' />
             </div>
             <div className='flex-1 min-w-0'>
               <div className='flex items-center gap-2 flex-wrap mb-1'>

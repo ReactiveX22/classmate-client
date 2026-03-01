@@ -64,10 +64,10 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
 
   if (isLoading) {
     return (
-      <div className='flex flex-col gap-6 p-6'>
+      <div className='flex flex-col gap-4 sm:gap-6 p-4 sm:p-6'>
         <div className='space-y-2'>
-          <Skeleton className='h-8 w-64' />
-          <Skeleton className='h-4 w-96' />
+          <Skeleton className='h-8 w-48 sm:w-64' />
+          <Skeleton className='h-4 w-64 sm:w-96' />
         </div>
         <Skeleton className='h-10 w-full max-w-md' />
         <div className='space-y-4'>
@@ -80,7 +80,7 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
 
   if (isError || !data) {
     return (
-      <div className='flex flex-col gap-6 p-6'>
+      <div className='flex flex-col gap-4 sm:gap-6 p-4 sm:p-6'>
         <div className='flex items-center justify-center h-64'>
           <div className='text-center'>
             <p className='text-destructive text-lg font-medium'>
@@ -96,7 +96,7 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
   }
 
   return (
-    <div className='flex flex-col gap-6 p-4'>
+    <div className='flex flex-col gap-4 sm:gap-6 p-4'>
       {/* Header Section */}
       <ClassroomHeader
         classroom={data}
@@ -123,7 +123,7 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}
-                  className='gap-2 py-2 px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm'
+                  className='gap-1.5 sm:gap-2 py-2 px-2.5 sm:px-4 text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm'
                 >
                   <Icon size={16} />
                   <span className='whitespace-nowrap'>{tab.label}</span>

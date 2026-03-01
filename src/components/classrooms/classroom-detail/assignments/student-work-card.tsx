@@ -161,11 +161,11 @@ export function StudentWorkCard({
   if (submission && submission.status !== 'assigned') {
     return (
       <Card className='shadow-sm'>
-        <CardHeader className='flex flex-row items-center justify-between border-b border-border/50'>
+        <CardHeader className='flex flex-col gap-2 items-start sm:flex-row sm:items-center sm:justify-between border-b border-border/50 p-4 sm:p-6'>
           <CardTitle>Your work</CardTitle>
           {getStatusBadge(submission)}
         </CardHeader>
-        <CardContent className='space-y-4'>
+        <CardContent className='space-y-4 p-4 sm:p-6 pt-4 sm:pt-6'>
           {submission.content && (
             <div className='space-y-2'>
               <p className='text-sm font-medium text-muted-foreground'>
@@ -241,11 +241,11 @@ export function StudentWorkCard({
   if (isEditing) {
     return (
       <Card className='shadow-sm'>
-        <CardHeader className='flex flex-row items-center justify-between border-b border-border/50'>
+        <CardHeader className='flex flex-col gap-2 items-start sm:flex-row sm:items-center sm:justify-between border-b border-border/50 p-4 sm:p-6'>
           <CardTitle>Your work</CardTitle>
           {getStatusBadge(submission)}
         </CardHeader>
-        <CardContent className='space-y-4'>
+        <CardContent className='space-y-4 p-4 sm:p-6 pt-4 sm:pt-6'>
           {allowsText && (
             <div className='space-y-2'>
               <label className='text-sm font-medium text-muted-foreground'>
@@ -317,11 +317,11 @@ export function StudentWorkCard({
   // Default empty state (No submission, start fresh)
   return (
     <Card className='shadow-sm'>
-      <CardHeader className='flex flex-row items-center justify-between border-b border-border/50'>
+      <CardHeader className='flex flex-col gap-2 items-start sm:flex-row sm:items-center sm:justify-between border-b border-border/50 p-4 sm:p-6'>
         <CardTitle>Your work</CardTitle>
         {getStatusBadge(submission)}
       </CardHeader>
-      <CardContent className='space-y-4'>
+      <CardContent className='space-y-4 p-4 sm:p-6 pt-4 sm:pt-6'>
         <div className='flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted-foreground/20 rounded-lg bg-muted/5 text-muted-foreground text-sm transition-colors hover:bg-muted/10'>
           <IconFilePlus className='mb-3 opacity-40' stroke={1.5} size={40} />
           <span>No work attached</span>

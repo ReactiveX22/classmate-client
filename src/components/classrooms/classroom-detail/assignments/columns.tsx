@@ -29,7 +29,7 @@ export const getColumns = (
   maxPoints: number = 100,
   onGrade: (studentId: string, grade: number, feedback?: string) => void,
   onReturn: (submissionId: string) => void,
-  dueDate?: string | null
+  dueDate?: string | null,
 ): ColumnDef<Submission>[] => [
   {
     id: 'select',
@@ -142,7 +142,9 @@ export const getColumns = (
   {
     accessorKey: 'submittedAt',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} label='Turned In' />
+      <div className='hidden sm:block'>
+        <DataTableColumnHeader column={column} label='Turned In' />
+      </div>
     ),
     cell: ({ row }) => {
       const date = row.original.submittedAt;
@@ -156,7 +158,7 @@ export const getColumns = (
         const isLate = dueDate && new Date(date) > new Date(dueDate);
 
         return (
-          <div className='flex items-center gap-2'>
+          <div className='hidden sm:flex items-center gap-2'>
             <span className='text-sm text-muted-foreground'>
               {format(new Date(date), 'MMM d, p')}
             </span>
@@ -164,7 +166,11 @@ export const getColumns = (
           </div>
         );
       }
-      return <span className='text-sm text-muted-foreground'>-</span>;
+      return (
+        <span className='hidden sm:inline text-sm text-muted-foreground'>
+          -
+        </span>
+      );
     },
     enableSorting: true,
   },
@@ -192,40 +198,46 @@ export const getColumns = (
   },
   {
     id: 'attachments',
-    header: 'Attachments',
+    header: () => <div className='hidden sm:block'>Attachments</div>,
     cell: ({ row }) => {
       const attachments = row.original.attachments;
       if (!attachments || attachments.length === 0) {
-        return <span className='text-muted-foreground text-xs'>-</span>;
+        return (
+          <span className='hidden sm:inline text-muted-foreground text-xs'>
+            -
+          </span>
+        );
       }
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button
-                variant='ghost'
-                size='sm'
-                className='gap-2 w-full text-muted-foreground justify-start'
-              >
-                <IconFile size={16} />
-                {attachments.length} files
-              </Button>
-            }
-          />
-          <DropdownMenuContent align='end' className='w-[200px]'>
-            {attachments.map((file) => (
-              <DropdownMenuItem
-                key={file.id}
-                onClick={() => window.open(file.url, '_blank')}
-                className='cursor-pointer'
-              >
-                <EyeIcon size={14} />
-                <span className='truncate max-w-[200px]'>{file.name}</span>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className='hidden sm:block'>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  className='gap-2 w-full text-muted-foreground justify-start'
+                >
+                  <IconFile size={16} />
+                  {attachments.length} files
+                </Button>
+              }
+            />
+            <DropdownMenuContent align='end' className='w-[200px]'>
+              {attachments.map((file) => (
+                <DropdownMenuItem
+                  key={file.id}
+                  onClick={() => window.open(file.url, '_blank')}
+                  className='cursor-pointer'
+                >
+                  <EyeIcon size={14} />
+                  <span className='truncate max-w-[200px]'>{file.name}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       );
     },
     size: 30,

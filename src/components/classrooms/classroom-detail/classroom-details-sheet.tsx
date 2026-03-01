@@ -19,7 +19,7 @@ export function ClassroomDetails({
     <div className='flex flex-col gap-4'>
       {/* Classroom Information Section */}
       <section className='space-y-6'>
-        <div className='grid grid-cols-2 gap-x-12 gap-y-6 px-1'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-x-6 sm:gap-x-12 gap-y-6 px-1'>
           <DetailBlock
             label='Class Name'
             value={classroom.name}
@@ -68,7 +68,7 @@ export function ClassroomDetails({
           Course Information
         </h3>
 
-        <div className='grid grid-cols-3 gap-x-12 gap-y-6 px-1'>
+        <div className='grid grid-cols-2 sm:grid-cols-3 gap-x-6 sm:gap-x-12 gap-y-6 px-1'>
           <DetailBlock
             label='Course Title'
             value={course.title}
