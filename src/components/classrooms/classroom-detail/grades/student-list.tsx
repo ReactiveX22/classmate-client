@@ -30,7 +30,7 @@ export function StudentList({
 
     // Sort students by name
     const sorted = [...classroom.classroomMembers].sort((a, b) =>
-      (a.student.name || '').localeCompare(b.student.name || '')
+      (a.student.name || '').localeCompare(b.student.name || ''),
     );
 
     if (!searchQuery) return sorted;
@@ -39,13 +39,13 @@ export function StudentList({
     return sorted.filter(
       (member) =>
         member.student.name?.toLowerCase().includes(query) ||
-        member.student.email?.toLowerCase().includes(query)
+        member.student.email?.toLowerCase().includes(query),
     );
   }, [classroom?.classroomMembers, searchQuery]);
 
   if (isLoading) {
     return (
-      <div className='bg-background border-r h-[calc(100vh-12rem)] w-80 shrink-0 flex flex-col'>
+      <div className='bg-background border-b md:border-b-0 md:border-r h-auto max-h-64 md:max-h-none md:h-[calc(100vh-12rem)] w-full md:w-80 md:shrink-0 flex flex-col'>
         <div className='p-4 border-b space-y-4'>
           <Skeleton className='h-8 w-full' />
           <Skeleton className='h-10 w-full' />
@@ -66,7 +66,7 @@ export function StudentList({
   }
 
   return (
-    <div className='bg-background border-r h-[calc(100vh-12rem)] w-80 shrink-0 flex flex-col'>
+    <div className='bg-background border-b md:border-b-0 md:border-r h-auto max-h-64 md:max-h-none md:h-[calc(100vh-12rem)] w-full md:w-80 md:shrink-0 flex flex-col'>
       {/* Header */}
       <div className='p-4 border-b sticky top-0 bg-background z-10'>
         <h3 className='font-semibold mb-4 flex items-center gap-2'>
@@ -98,7 +98,7 @@ export function StudentList({
               className={cn(
                 'w-full flex items-center gap-3 p-2 rounded-md text-left transition-colors hover:bg-muted/50',
                 selectedStudentId === member.studentId &&
-                  'bg-primary/10 text-primary hover:bg-primary/10'
+                  'bg-primary/10 text-primary hover:bg-primary/10',
               )}
             >
               <Avatar className='h-8 w-8'>

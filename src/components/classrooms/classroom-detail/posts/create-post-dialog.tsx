@@ -27,9 +27,9 @@ export function CreatePostDialog({
       <DialogTrigger
         render={
           trigger || (
-            <Button size='sm'>
-              <IconPlus className='mr-2 h-4 w-4' />
-              Create Post
+            <Button size='sm' className='sm:px-3'>
+              <IconPlus className='h-4 w-4 sm:mr-2' />
+              <span className='hidden sm:inline'>Create Post</span>
             </Button>
           )
         }

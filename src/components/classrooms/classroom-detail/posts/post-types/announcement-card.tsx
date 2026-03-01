@@ -32,7 +32,7 @@ export function AnnouncementCard({ post }: AnnouncementCardProps) {
         onSuccess: () => {
           setShowDeleteDialog(false);
         },
-      }
+      },
     );
   };
 
@@ -41,7 +41,7 @@ export function AnnouncementCard({ post }: AnnouncementCardProps) {
       <Card className='overflow-hidden hover:shadow-md transition-shadow'>
         <CardHeader>
           <div className='flex items-start gap-3'>
-            <Avatar>
+            <Avatar className='w-8 h-8 sm:w-10 sm:h-10 shrink-0'>
               <AvatarImage src={post.author?.image || undefined} />
               <AvatarFallback>{getInitials(post.author?.name)}</AvatarFallback>
             </Avatar>

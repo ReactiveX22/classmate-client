@@ -55,7 +55,7 @@ export function StudentWorkTab({
   const { data, isLoading, isPlaceholderData } = useSubmissions(
     classroomId,
     postId,
-    queryParams
+    queryParams,
   );
 
   const submissions = data?.data || [];
@@ -100,9 +100,9 @@ export function StudentWorkTab({
         maxPoints,
         handleGrade,
         handleReturn,
-        dueDate
+        dueDate,
       ),
-    [classroomId, postId, maxPoints, handleGrade, handleReturn, dueDate]
+    [classroomId, postId, maxPoints, handleGrade, handleReturn, dueDate],
   );
 
   const table = useReactTable({

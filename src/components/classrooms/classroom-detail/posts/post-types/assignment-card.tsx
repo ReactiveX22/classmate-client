@@ -35,7 +35,7 @@ export function AssignmentCard({
 
   const handleNavigate = () => {
     router.push(
-      `/dashboard/classrooms/${post.classroomId}/assignments/${post.id}`
+      `/dashboard/classrooms/${post.classroomId}/assignments/${post.id}`,
     );
   };
 
@@ -49,7 +49,7 @@ export function AssignmentCard({
         onSuccess: () => {
           setShowDeleteDialog(false);
         },
-      }
+      },
     );
   };
 
@@ -105,24 +105,23 @@ export function AssignmentCard({
         onClick={handleNavigate}
       >
         <CardHeader>
-          <div className='flex items-start gap-4'>
-            <div className='p-3 bg-blue-500/10 rounded-full'>
-              <IconClipboard size={20} className='text-blue-600' />
+          <div className='flex items-start gap-2.5 sm:gap-4'>
+            <div className='p-2 sm:p-3 bg-blue-500/10 rounded-full shrink-0'>
+              <IconClipboard className='w-4 h-4 sm:w-5 sm:h-5 text-blue-600' />
             </div>
             <div className='flex-1 min-w-0 space-y-2'>
-              <div className='flex items-start justify-between gap-4'>
-                <div className='flex-1'>
-                  <div className='flex items-center gap-2 flex-wrap mb-1'>
-                    <h3 className='font-medium text-sm'>{post.title}</h3>
-                  </div>
-                  <p className='text-xs text-muted-foreground'>
+              <div className='flex items-start justify-between gap-2'>
+                <div className='flex-1 min-w-0'>
+                  <h3 className='font-medium text-sm'>{post.title}</h3>
+                  <p className='text-xs text-muted-foreground mt-1'>
                     Posted by {post.author?.name || 'Unknown'} •{' '}
                     {formatDistanceToNow(new Date(post.createdAt), {
                       addSuffix: true,
                     })}
                   </p>
                 </div>
-                <div className='flex flex-col items-end gap-1.5'>
+                {/* Badges: hidden on mobile, shown on sm+ */}
+                <div className='hidden sm:flex flex-col items-end gap-1.5 shrink-0'>
                   {post.assignmentData?.points && (
                     <Badge
                       variant='outline'
@@ -159,9 +158,45 @@ export function AssignmentCard({
                 </div>
               </div>
 
+              {/* Badges: shown on mobile as a row below title */}
+              <div className='flex sm:hidden flex-wrap items-center gap-1.5'>
+                {post.assignmentData?.points && (
+                  <Badge
+                    variant='outline'
+                    className='bg-blue-500/5 border-blue-200 text-blue-700'
+                  >
+                    {post.assignmentData.points} pts
+                  </Badge>
+                )}
+                {isTeacher && post.submissionStats && (
+                  <Badge
+                    variant='outline'
+                    className={
+                      post.submissionStats.graded === post.submissionStats.total
+                        ? 'bg-green-500/5 border-green-200 text-green-700'
+                        : 'bg-amber-500/5 border-amber-200 text-amber-700'
+                    }
+                  >
+                    {post.submissionStats.graded}/{post.submissionStats.total}{' '}
+                    graded
+                  </Badge>
+                )}
+                {!isTeacher &&
+                  (post.submission ? (
+                    getSubmissionBadge(post.submission)
+                  ) : (
+                    <Badge
+                      variant='outline'
+                      className='text-muted-foreground font-normal bg-transparent border-dashed'
+                    >
+                      Assigned
+                    </Badge>
+                  ))}
+              </div>
+
               {post.assignmentData?.dueDate && (
-                <div className='flex items-center gap-1.5 text-xs mt-2'>
-                  <IconCalendar className='size-4 text-muted-foreground' />
+                <div className='flex items-center gap-1.5 text-xs'>
+                  <IconCalendar className='size-4 text-muted-foreground shrink-0' />
                   <span className='font-medium'>
                     Due {format(new Date(post.assignmentData.dueDate), 'PPp')}
                   </span>

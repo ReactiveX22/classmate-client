@@ -23,7 +23,7 @@ export default function ClassroomsPage() {
   const classrooms = response?.data || [];
 
   return (
-    <div className='flex flex-col gap-6 p-6 max-w-7xl mx-auto w-full'>
+    <div className='flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 max-w-7xl mx-auto w-full'>
       <PageHeader
         title='My Classrooms'
         description='Manage and view all your assigned classrooms'
@@ -39,7 +39,7 @@ export default function ClassroomsPage() {
       {isLoading ? (
         <ClassroomListSkeleton />
       ) : isError ? (
-        <div className='flex items-center justify-center min-h-[400px] border-2 border-dashed rounded-2xl bg-muted/5'>
+        <div className='flex items-center justify-center min-h-[250px] sm:min-h-[400px] border-2 border-dashed rounded-2xl bg-muted/5'>
           <div className='text-center max-w-sm px-4'>
             <div className='bg-destructive/10 size-16 rounded-full flex items-center justify-center mx-auto mb-4'>
               <IconBook className='text-destructive size-8' />
@@ -52,7 +52,7 @@ export default function ClassroomsPage() {
           </div>
         </div>
       ) : classrooms.length === 0 ? (
-        <div className='flex items-center justify-center min-h-[400px] border-2 border-dashed rounded-2xl bg-muted/5'>
+        <div className='flex items-center justify-center min-h-[250px] sm:min-h-[400px] border-2 border-dashed rounded-2xl bg-muted/5'>
           <div className='text-center max-w-sm px-4'>
             <div className='bg-primary/10 size-16 rounded-full flex items-center justify-center mx-auto mb-4'>
               <IconBook className='text-primary size-8' />
@@ -80,7 +80,7 @@ export default function ClassroomsPage() {
           </div>
         </div>
       ) : (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6'>
           {classrooms.map((item) => (
             <ClassroomCard key={item.classroom.id} data={item} />
           ))}

@@ -27,15 +27,15 @@ export function StreamTab({ classroomId, isTeacher }: StreamTabProps) {
 
   return (
     <div className='space-y-4 mt-6'>
-      <div className='flex gap-4 w-full'>
+      <div className='flex flex-col-reverse md:flex-row gap-4 w-full'>
         <UpcomingCard classroomId={classroomId} isTeacher={isTeacher} />
 
         <div className='flex-1 max-w-xl space-y-4'>
           <Card className='py-2'>
             <CardHeader className='py-1 items-center'>
               <div className='flex items-center gap-2'>
-                <div className='rounded-full bg-primary/10 text-primary p-3'>
-                  <IconMessageCircle size={20} />
+                <div className='rounded-full bg-primary/10 text-primary p-2 sm:p-3 shrink-0'>
+                  <IconMessageCircle className='w-4 h-4 sm:w-5 sm:h-5' />
                 </div>
                 <div className='flex flex-col'>
                   <h3 className='font-medium text-sm'>

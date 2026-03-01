@@ -14,12 +14,7 @@ import {
 } from '@/components/ui/table';
 import { useClassroom, useStudentGradeStats } from '@/hooks/use-classrooms';
 import { getInitials } from '@/lib/utils';
-import {
-  IconAlertCircle,
-  IconCheck,
-  IconFileText,
-  IconMail,
-} from '@tabler/icons-react';
+import { IconAlertCircle, IconCheck, IconFileText } from '@tabler/icons-react';
 import { format } from 'date-fns';
 import { CalendarCheck, TrendingUp } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -56,7 +51,7 @@ export function StudentGradeSummary({
 
   return (
     <div className='flex-1'>
-      <div className='p-8 space-y-6'>
+      <div className='p-4 sm:p-8 space-y-4 sm:space-y-6'>
         {/* Student Header */}
         <div className='flex items-start justify-between'>
           <div className='flex items-center gap-4'>
@@ -71,9 +66,6 @@ export function StudentGradeSummary({
               </div>
             </div>
           </div>
-          <Button variant='outline' className='gap-2'>
-            <IconMail size={16} />
-          </Button>
         </div>
 
         {/* Stats Grid */}
@@ -127,14 +119,16 @@ export function StudentGradeSummary({
         </div>
 
         {/* Assignments Table */}
-        <div className='rounded-md border bg-card shadow-sm overflow-hidden'>
+        <div className='rounded-md border bg-card shadow-sm overflow-x-auto'>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Assignment</TableHead>
-                <TableHead>Due Date</TableHead>
+                <TableHead className='hidden sm:table-cell'>Due Date</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Turned In</TableHead>
+                <TableHead className='hidden sm:table-cell'>
+                  Turned In
+                </TableHead>
                 <TableHead className='text-right'>Grade</TableHead>
               </TableRow>
             </TableHeader>
@@ -169,7 +163,7 @@ export function StudentGradeSummary({
                           {post.title}
                         </div>
                       </TableCell>
-                      <TableCell className='text-muted-foreground'>
+                      <TableCell className='text-muted-foreground hidden sm:table-cell'>
                         {post.assignmentData?.dueDate
                           ? format(
                               new Date(post.assignmentData.dueDate),
@@ -234,7 +228,7 @@ export function StudentGradeSummary({
                           }
                         })()}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className='hidden sm:table-cell'>
                         {(() => {
                           const date = submission?.submittedAt;
                           const status = submission?.status;

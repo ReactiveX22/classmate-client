@@ -135,7 +135,7 @@ export function AttachmentDisplay({
               href={getProxiedUrl(attachment.url)}
               target='_blank'
               rel='noopener noreferrer'
-              className='flex items-center gap-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors group'
+              className='flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-lg hover:bg-muted/50 transition-colors group overflow-hidden'
             >
               <div
                 className={cn(
@@ -164,7 +164,7 @@ export function AttachmentDisplay({
               </div>
               <div className='flex-1 min-w-0'>
                 <p
-                  className='text-sm font-medium truncate group-hover:text-primary transition-colors'
+                  className='text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors'
                   title={attachment.name}
                 >
                   {truncateFileName(attachment.name, 28)}
@@ -200,7 +200,7 @@ export function AttachmentDisplay({
               <Button
                 variant='ghost'
                 size='icon-sm'
-                className='opacity-0 group-hover:opacity-100 transition-opacity'
+                className='opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0'
                 onClick={(e) => handleDownload(e, attachment)}
               >
                 {isLink ? (
@@ -329,7 +329,7 @@ export function AttachmentDisplay({
                 href={getProxiedUrl(attachment.url)}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='flex items-center gap-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors group'
+                className='flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-lg hover:bg-muted/50 transition-colors group overflow-hidden'
               >
                 <div
                   className={cn(
@@ -350,7 +350,7 @@ export function AttachmentDisplay({
                 </div>
                 <div className='flex-1 min-w-0'>
                   <p
-                    className='text-sm font-medium truncate group-hover:text-primary transition-colors'
+                    className='text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors'
                     title={attachment.name}
                   >
                     {truncateFileName(attachment.name, 40)}
@@ -376,7 +376,7 @@ export function AttachmentDisplay({
                 <Button
                   variant='ghost'
                   size='icon-sm'
-                  className='opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer'
+                  className='opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity cursor-pointer shrink-0'
                   onClick={(e) => handleDownload(e, attachment)}
                 >
                   {isLink ? (

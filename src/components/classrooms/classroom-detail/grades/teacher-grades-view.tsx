@@ -13,7 +13,7 @@ interface TeacherGradesViewProps {
 export function TeacherGradesView({ classroomId }: TeacherGradesViewProps) {
   const { data: classroom } = useClassroom(classroomId);
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(
-    null
+    null,
   );
 
   // Auto-select first student if none selected
@@ -28,7 +28,7 @@ export function TeacherGradesView({ classroomId }: TeacherGradesViewProps) {
   }, [classroom?.classroomMembers, selectedStudentId]);
 
   return (
-    <div className='flex items-start h-[calc(100vh-12rem)] border rounded-lg bg-card overflow-hidden shadow-sm mt-6'>
+    <div className='flex flex-col md:flex-row md:items-start h-auto md:h-[calc(100vh-12rem)] border rounded-lg bg-card overflow-hidden shadow-sm mt-6'>
       <StudentList
         classroomId={classroomId}
         selectedStudentId={selectedStudentId}

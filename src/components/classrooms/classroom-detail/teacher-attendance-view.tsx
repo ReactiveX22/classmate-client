@@ -315,11 +315,13 @@ export function TeacherAttendanceView({
           </div>
 
           {/* Attendance Table */}
-          <div className='rounded-lg border'>
+          <div className='rounded-lg border overflow-x-auto'>
             <Table>
               <TableHeader>
                 <TableRow className='hover:bg-transparent'>
-                  <TableHead className='w-[100px]'>ID</TableHead>
+                  <TableHead className='w-[100px] hidden sm:table-cell'>
+                    ID
+                  </TableHead>
                   <TableHead className='w-[280px]'>Student</TableHead>
                   <TableHead className='w-[220px]'>Status</TableHead>
                   <TableHead className='text-right'>Note</TableHead>
@@ -328,7 +330,7 @@ export function TeacherAttendanceView({
               <TableBody>
                 {filteredStudents.map((student) => (
                   <TableRow key={student.id} className='group'>
-                    <TableCell className='text-muted-foreground'>
+                    <TableCell className='text-muted-foreground hidden sm:table-cell'>
                       {student.studentId}
                     </TableCell>
                     <TableCell>
@@ -440,8 +442,8 @@ export function TeacherAttendanceView({
         </CardContent>
 
         {/* Footer with stats and actions */}
-        <CardFooter className='border-t flex items-center justify-between'>
-          <div className='flex items-center gap-6 text-sm'>
+        <CardFooter className='border-t flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+          <div className='flex items-center flex-wrap gap-x-4 gap-y-1 text-sm'>
             <div className='flex items-center gap-2'>
               <span className='size-2 rounded-full bg-emerald-500' />
               <span className='text-muted-foreground'>

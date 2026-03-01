@@ -141,13 +141,13 @@ export function StudentGradesView({ classroomId }: StudentGradesViewProps) {
     (a) =>
       a.submission?.status === 'turned_in' ||
       a.submission?.status === 'graded' ||
-      a.submission?.status === 'returned'
+      a.submission?.status === 'returned',
   ).length;
   const overallProgress =
     Math.round((completedAssignments / totalAssignments) * 100) || 0;
 
   return (
-    <div className='flex flex-col md:flex-row gap-4 mt-6 pb-20'>
+    <div className='flex flex-col md:flex-row gap-4 mt-6 pb-12 sm:pb-20'>
       {/* Stats Sidebar */}
       <div className='w-full md:w-64 shrink-0 space-y-4'>
         <Card className='gap-1.5'>
@@ -167,7 +167,7 @@ export function StudentGradesView({ classroomId }: StudentGradesViewProps) {
 
       {/* Main Content */}
       <div className='w-3xl space-y-4'>
-        <div className='rounded-md border bg-card shadow-sm overflow-hidden'>
+        <div className='rounded-md border bg-card shadow-sm overflow-x-auto'>
           <Table>
             <TableHeader>
               <TableRow>
@@ -178,7 +178,7 @@ export function StudentGradesView({ classroomId }: StudentGradesViewProps) {
                   Due Date
                 </TableHead>
                 <TableHead className='text-muted-foreground'>Status</TableHead>
-                <TableHead className='text-muted-foreground'>
+                <TableHead className='text-muted-foreground hidden sm:table-cell'>
                   Submitted
                 </TableHead>
                 <TableHead className='text-right text-muted-foreground'>
@@ -215,12 +215,12 @@ export function StudentGradesView({ classroomId }: StudentGradesViewProps) {
                             'text-sm',
                             isMissing
                               ? 'text-destructive font-medium'
-                              : 'text-muted-foreground'
+                              : 'text-muted-foreground',
                           )}
                         >
                           {format(
                             new Date(post.assignmentData.dueDate),
-                            'MMM d, h:mm a'
+                            'MMM d, h:mm a',
                           )}
                         </div>
                       ) : (
@@ -300,7 +300,7 @@ export function StudentGradesView({ classroomId }: StudentGradesViewProps) {
                         }
                       })()}
                     </TableCell>
-                    <TableCell className='text-muted-foreground text-sm'>
+                    <TableCell className='text-muted-foreground text-sm hidden sm:table-cell'>
                       {post.submission?.submittedAt
                         ? format(new Date(post.submission.submittedAt), 'MMM d')
                         : '-'}

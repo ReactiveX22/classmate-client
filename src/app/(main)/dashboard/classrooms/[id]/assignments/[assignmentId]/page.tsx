@@ -101,17 +101,17 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
         Back to Classwork
       </Button>
 
-      <div className='flex items-start gap-5 mb-6'>
-        <div className='p-3.5 bg-primary/10 rounded-full text-primary mt-1'>
-          <IconClipboard size={24} />
+      <div className='flex items-start gap-3 sm:gap-5 mb-6'>
+        <div className='p-2 sm:p-3.5 bg-primary/10 rounded-full text-primary mt-1 shrink-0'>
+          <IconClipboard className='w-5 h-5 sm:w-6 sm:h-6' />
         </div>
-        <div className='flex-1 space-y-2'>
-          <div className='flex items-start justify-between gap-4'>
-            <div className='flex-1'>
-              <h1 className='text-3xl font-semibold tracking-tight text-foreground'>
+        <div className='flex-1 min-w-0 space-y-2'>
+          <div className='flex items-start justify-between gap-2 sm:gap-4'>
+            <div className='flex-1 min-w-0'>
+              <h1 className='text-xl sm:text-3xl font-semibold tracking-tight text-foreground'>
                 {post.title}
               </h1>
-              <div className='flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground mt-2'>
+              <div className='flex flex-wrap items-center gap-x-2 gap-y-1 text-xs md:text-sm text-muted-foreground mt-1 sm:mt-2'>
                 <span className='font-medium text-foreground'>
                   {post.author?.name}
                 </span>
@@ -120,8 +120,9 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
               </div>
             </div>
 
-            <div className='flex items-start gap-3'>
-              <div className='flex flex-col items-end gap-1.5'>
+            <div className='flex items-start gap-3 shrink-0'>
+              {/* Badges: hidden on mobile, shown on sm+ */}
+              <div className='hidden sm:flex flex-col items-end gap-1.5'>
                 {post.assignmentData?.points && (
                   <Badge
                     variant='outline'
@@ -171,6 +172,26 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
               )}
             </div>
           </div>
+
+          {/* Badges: shown on mobile as a row below title */}
+          <div className='flex sm:hidden flex-wrap items-center gap-1.5 mt-2'>
+            {post.assignmentData?.points && (
+              <Badge
+                variant='outline'
+                className='bg-blue-500/5 border-blue-200 text-blue-700'
+              >
+                {post.assignmentData.points} points
+              </Badge>
+            )}
+            {post.assignmentData?.dueDate && (
+              <Badge
+                variant='outline'
+                className='bg-red-500/5 border-red-200 text-red-700'
+              >
+                Due {format(new Date(post.assignmentData.dueDate), 'PPp')}
+              </Badge>
+            )}
+          </div>
         </div>
       </div>
 
@@ -185,7 +206,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
 
           <TabsContent value='instructions' className='space-y-6'>
             <AssignmentContent
-              post={post}
+              post={post!}
               isAuthor={isAuthor}
               classroomId={classroomId}
               assignmentId={assignmentId}
@@ -204,7 +225,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
       ) : (
         <div className='space-y-6'>
           <AssignmentContent
-            post={post}
+            post={post!}
             isAuthor={isAuthor}
             classroomId={classroomId}
             assignmentId={assignmentId}
@@ -222,11 +243,13 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
         isLoading={deletePost.isPending}
       />
 
-      <EditPostDialog
-        post={post}
-        open={showEditDialog}
-        onOpenChange={setShowEditDialog}
-      />
+      {post && (
+        <EditPostDialog
+          post={post}
+          open={showEditDialog}
+          onOpenChange={setShowEditDialog}
+        />
+      )}
     </div>
   );
 }
@@ -263,13 +286,6 @@ function AssignmentContent({
             />
           </div>
         )}
-
-        <Separator className='my-8 bg-border/60' />
-
-        <div className='flex items-center gap-3 text-muted-foreground text-sm py-4 border-t border-b border-dashed border-border/60'>
-          <IconMessageCircle size={20} />
-          <span>Class comments coming soon</span>
-        </div>
       </div>
 
       {/* Right Column - Your Work (Students only) */}

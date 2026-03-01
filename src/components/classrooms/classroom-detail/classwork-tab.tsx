@@ -29,7 +29,7 @@ export function ClassworkTab({ classroomId, isTeacher }: ClassworkTabProps) {
   const isEmpty = !isLoading && assignments.length === 0;
 
   return (
-    <div className='max-w-3xl mx-auto space-y-4 pb-20'>
+    <div className='max-w-3xl mx-auto space-y-4 pb-12 sm:pb-20'>
       <div className='flex items-center justify-end mb-4'>
         <RoleGuard allowedRoles={[Role.Instructor]}>
           <CreatePostDialog
