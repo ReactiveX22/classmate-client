@@ -49,7 +49,7 @@ export function TeacherSelect({
       if (!value) {
         setSearch('');
       } else {
-        const found = teachers.find((t) => t.teacher.id === value);
+        const found = teachers.find((t) => t.user.id === value);
         if (found) {
           setSearch(found.user.name);
         }
@@ -61,7 +61,7 @@ export function TeacherSelect({
   // Also try to find the name if we have a value but no search string (e.g. on mount with initial value)
   useEffect(() => {
     if (value && !search && !isLoading && !isSelectedRef.current) {
-      const found = teachers.find((t) => t.teacher.id === value);
+      const found = teachers.find((t) => t.user.id === value);
       if (found) {
         setSearch(found.user.name);
       }
@@ -72,7 +72,7 @@ export function TeacherSelect({
     <Combobox
       value={value || ''}
       onValueChange={(val) => {
-        const found = teachers.find((t) => t.teacher.id === val);
+        const found = teachers.find((t) => t.user.id === val);
         if (found) {
           isSelectedRef.current = true;
           setSearch(found.user.name);
@@ -102,8 +102,8 @@ export function TeacherSelect({
           ) : (
             teachers.map((t) => (
               <ComboboxItem
-                key={t.teacher.id}
-                value={t.teacher.id}
+                key={t.user.id}
+                value={t.user.id}
                 className='py-2.5 px-3'
               >
                 <div className='flex flex-col gap-1 w-full'>
