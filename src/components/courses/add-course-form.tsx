@@ -22,7 +22,7 @@ const courseSchema = z.object({
   credits: z.number().min(1, 'Credits must be at least 1'),
   semester: z.string().min(4, 'Semester must be at least 4 characters long'),
   maxStudents: z.number().min(1, 'Must be at least 1 student'),
-  teacherId: z.uuid('Invalid teacher ID').or(z.literal('')),
+  teacherId: z.string().or(z.literal('')),
 });
 
 interface AddCourseFormProps {
