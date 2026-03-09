@@ -1,108 +1,98 @@
 import {
   IconBell,
-  IconCalendar,
   IconChalkboard,
   IconRocket,
   IconSchool,
   IconUserShield,
+  IconUsers,
 } from '@tabler/icons-react';
 
 export function Features() {
+  const features = [
+    {
+      icon: IconChalkboard,
+      title: 'Classroom Management',
+      description:
+        'Manage your virtual classrooms, post assignments, and track attendance seamlessly across all your courses.',
+    },
+    {
+      icon: IconSchool,
+      title: 'Course Materials',
+      description:
+        'Access courses, download reading materials, and submit assignments all in one centralized student portal.',
+    },
+    {
+      icon: IconBell,
+      title: 'Smart Notifications',
+      description:
+        'Never miss a deadline or critical announcement. Real-time updates for important campus notices and results.',
+    },
+    {
+      icon: IconUsers,
+      title: 'User Management',
+      description:
+        'Easily manage students, teachers, and assign course materials from a comprehensive admin dashboard.',
+    },
+    {
+      icon: IconUserShield,
+      title: 'Secure',
+      description: 'Role-based access control protecting sensitive data.',
+    },
+    {
+      icon: IconRocket,
+      title: 'Easy to Use',
+      description:
+        'Intuitive interfaces designed to save time for educators and simplify navigation for students.',
+    },
+  ];
+
   return (
-    <section id='features' className='py-24 px-6 max-w-7xl mx-auto'>
-      <div className='mb-16'>
-        <h2 className='text-3xl md:text-4xl font-bold mb-4'>
-          Everything you need to run your campus
+    <section
+      id='features'
+      className='py-16 md:py-24 px-4 sm:px-6 max-w-7xl mx-auto'
+    >
+      <div className='mb-12 md:mb-16 text-center md:text-left'>
+        <h2 className='text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-balance tracking-tight'>
+          Everything you need to{' '}
+          <span className='text-primary'>run your campus</span>
         </h2>
-        <p className='text-xl text-muted-foreground max-w-2xl'>
-          Powerful features for every role in the university ecosystem.
+        <p className='text-lg sm:text-xl text-muted-foreground max-w-2xl text-balance mx-auto md:mx-0'>
+          Powerful features designed specifically for every role in the modern
+          university ecosystem.
         </p>
       </div>
 
-      <div className='grid md:grid-cols-3 gap-8'>
-        {/* Feature 1 */}
-        <div className='group relative overflow-hidden rounded-2xl border bg-card p-8 hover:shadow-lg transition-all duration-300'>
-          <div className='mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary'>
-            <IconChalkboard size={24} />
-          </div>
-          <h3 className='mb-2 text-xl font-bold'>Teacher Dashboard</h3>
-          <p className='text-muted-foreground'>
-            Manage classes, post assignments, and track attendance seamlessly.
-            grading made easy.
-          </p>
-        </div>
-
-        {/* Feature 2 */}
-        <div className='group relative overflow-hidden rounded-2xl border bg-card p-8 hover:shadow-lg transition-all duration-300'>
-          <div className='mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary'>
-            <IconSchool size={24} />
-          </div>
-          <h3 className='mb-2 text-xl font-bold'>Student Portal</h3>
-          <p className='text-muted-foreground'>
-            A central hub for your academic life. proper schedule, submissions,
-            grades, and resources.
-          </p>
-        </div>
-
-        {/* Feature 3 */}
-        <div className='group relative overflow-hidden rounded-2xl border bg-card p-8 hover:shadow-lg transition-all duration-300'>
-          <div className='mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary'>
-            <IconBell size={24} />
-          </div>
-          <h3 className='mb-2 text-xl font-bold'>Smart Notifications</h3>
-          <p className='text-muted-foreground'>
-            Never miss a deadline or announcement. Real-time updates for notices
-            and results.
-          </p>
-        </div>
-      </div>
-
-      {/* Bento Grid Concept for more features */}
-      <div className='mt-8 grid md:grid-cols-4 md:grid-rows-2 gap-4 h-150'>
-        <div className='md:col-span-2 md:row-span-2 rounded-2xl border bg-card p-8 flex flex-col justify-between hover:border-primary/50 transition-colors'>
-          <div>
-            <div className='mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary'>
-              <IconCalendar size={24} />
-            </div>
-            <h3 className='text-2xl font-bold mb-2'>Academic Calendar</h3>
-            <p className='text-muted-foreground'>
-              Keep track of exams, holidays, and events.
-            </p>
-          </div>
-          <div className='w-full h-48 bg-muted/50 rounded-xl border border-dashed flex items-center justify-center text-muted-foreground/30'>
-            <IconCalendar size={48} stroke={1} />
-          </div>
-        </div>
-        <div className='md:col-span-2 md:row-span-1 rounded-2xl border bg-card p-8 flex items-center justify-between hover:border-primary/50 transition-colors'>
-          <div>
-            <div className='mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary'>
-              <IconUserShield size={24} />
-            </div>
-            <h3 className='text-xl font-bold mb-2'>Admin Controls</h3>
-            <p className='text-muted-foreground'>
-              Full oversight of the system.
-            </p>
-          </div>
-        </div>
-        <div className='md:col-span-1 md:row-span-1 rounded-2xl border bg-card p-8 hover:border-primary/50 transition-colors'>
-          <div className='mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary'>
-            <IconUserShield size={24} />
-          </div>
-          <h3 className='text-xl font-bold mb-2'>Secure</h3>
-          <p className='text-muted-foreground text-sm'>
-            Role-based access control.
-          </p>
-        </div>
-        <div className='md:col-span-1 md:row-span-1 rounded-2xl border bg-card p-8 hover:border-primary/50 transition-colors'>
-          <div className='mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary'>
-            <IconRocket size={24} />
-          </div>
-          <h3 className='text-xl font-bold mb-2'>Fast</h3>
-          <p className='text-muted-foreground text-sm'>
-            Optimized for performance.
-          </p>
-        </div>
+      <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8'>
+        {features.map((feature, index) => (
+          <FeatureCard key={index} {...feature} />
+        ))}
       </div>
     </section>
+  );
+}
+
+function FeatureCard({
+  icon: Icon,
+  title,
+  description,
+  className,
+}: {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`group relative overflow-hidden rounded-2xl border bg-card p-6 md:p-8 hover:shadow-xl hover:border-primary/20 transition-all duration-300 ${
+        className || ''
+      }`}
+    >
+      <div className='mb-4 md:mb-6 inline-flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm group-hover:-translate-y-1 transition-transform'>
+        <Icon size={20} className='md:w-6 md:h-6' />
+      </div>
+      <h3 className='mb-2 text-xl font-bold tracking-tight'>{title}</h3>
+      <p className='text-muted-foreground leading-relaxed'>{description}</p>
+    </div>
   );
 }
