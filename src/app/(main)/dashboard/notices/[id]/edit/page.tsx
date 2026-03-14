@@ -56,7 +56,7 @@ export default function EditNoticePage() {
       />
       <div className='flex-1 max-w-6xl p-6'>
         <NoticeForm
-          initialData={data.notice}
+          initialData={data}
           onSubmit={onSubmit}
           isSubmitting={isUpdating}
           submitLabel='Save Changes'
