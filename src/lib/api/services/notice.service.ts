@@ -67,8 +67,8 @@ export const noticeService = {
     return response.data;
   },
 
-  getNotice: async (id: string): Promise<NoticeData> => {
-    const response = await apiClient.get<NoticeData>(`/api/v1/notices/${id}`);
+  getNotice: async (id: string): Promise<Notice> => {
+    const response = await apiClient.get<Notice>(`/api/v1/notices/${id}`);
     return response.data;
   },
 
