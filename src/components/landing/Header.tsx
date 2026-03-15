@@ -73,10 +73,6 @@ export default function Header({
     //   ],
     // },
     {
-      title: 'Pricing',
-      url: '/pricing',
-    },
-    {
       title: 'Contact',
       url: '#contact',
     },
