@@ -1,9 +1,13 @@
 import { Hero } from '@/components/landing/Hero';
 import { Features } from '@/components/landing/Features';
-import { Contact } from '@/components/landing/Contact';
 import { CTA } from '@/components/landing/CTA';
 import { Footer } from '@/components/landing/Footer';
 import Header from '@/components/landing/Header';
+import dynamic from 'next/dynamic';
+
+const Contact = dynamic(() =>
+  import('@/components/landing/Contact').then((mod) => mod.Contact)
+);
 
 export default function Home() {
   return (

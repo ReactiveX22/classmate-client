@@ -141,7 +141,7 @@ export default function Header({
             <Sheet>
               <SheetTrigger
                 render={
-                  <Button variant='outline' size='icon'>
+                  <Button variant='outline' size='icon' aria-label='Open menu'>
                     <IconMenu2 className='size-4' />
                   </Button>
                 }
