@@ -41,7 +41,11 @@ export default function NoticesPage() {
     enabled: !foundInList,
   });
 
-  const selectedNotice = foundInList || individualNotice || null;
+  const selectedNotice =
+    foundInList ||
+    (individualNotice
+      ? { notice: individualNotice, author: null as any }
+      : null);
 
   const showDetail = isMobile && selectedId;
   const showList = !isMobile || !selectedId;
