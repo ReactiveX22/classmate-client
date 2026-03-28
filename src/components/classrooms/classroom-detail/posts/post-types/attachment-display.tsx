@@ -6,10 +6,14 @@ import {
   IconDownload,
   IconExternalLink,
   IconFile,
+  IconFileDescription,
   IconFileText,
   IconLink,
   IconPhoto,
+  IconPresentation,
+  IconFileSpreadsheet,
   IconVideo,
+  IconFileZip,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -51,12 +55,112 @@ const truncateFileName = (name: string, maxLength: number = 30): string => {
   return name.slice(0, maxLength - 3) + '...';
 };
 
-const getAttachmentIcon = (type: string, mimeType?: string) => {
-  if (type === 'image') return IconPhoto;
-  if (type === 'video') return IconVideo;
-  if (type === 'link') return IconLink;
-  if (mimeType?.includes('pdf')) return IconFileText;
-  return IconFile;
+const getAttachmentTypeInfo = (type: string, mimeType?: string) => {
+  if (type === 'link')
+    return {
+      Icon: IconLink,
+      color: 'blue',
+      label: 'Link',
+      bg: 'bg-blue-100 dark:bg-blue-950',
+      text: 'text-blue-600 dark:text-blue-400',
+    };
+
+  if (type === 'image' || mimeType?.startsWith('image/'))
+    return {
+      Icon: IconPhoto,
+      color: 'purple',
+      label: 'Image',
+      bg: 'bg-purple-100 dark:bg-purple-950',
+      text: 'text-purple-600 dark:text-purple-400',
+    };
+
+  if (type === 'video' || mimeType?.startsWith('video/'))
+    return {
+      Icon: IconVideo,
+      color: 'pink',
+      label: 'Video',
+      bg: 'bg-pink-100 dark:bg-pink-950',
+      text: 'text-pink-600 dark:text-pink-400',
+    };
+
+  if (mimeType?.includes('pdf'))
+    return {
+      Icon: IconFileText,
+      color: 'red',
+      label: 'PDF',
+      bg: 'bg-red-100 dark:bg-red-950',
+      text: 'text-red-600 dark:text-red-400',
+    };
+
+  // Word
+  if (
+    mimeType?.includes('wordprocessingml') ||
+    mimeType?.includes('msword') ||
+    mimeType?.includes('doc')
+  )
+    return {
+      Icon: IconFileDescription,
+      color: 'indigo',
+      label: 'Word',
+      bg: 'bg-indigo-100 dark:bg-indigo-950',
+      text: 'text-indigo-600 dark:text-indigo-400',
+    };
+
+  // Excel
+  if (
+    mimeType?.includes('spreadsheetml') ||
+    mimeType?.includes('ms-excel') ||
+    mimeType?.includes('xls')
+  )
+    return {
+      Icon: IconFileSpreadsheet,
+      color: 'emerald',
+      label: 'Excel',
+      bg: 'bg-emerald-100 dark:bg-emerald-950',
+      text: 'text-emerald-600 dark:text-emerald-400',
+    };
+
+  // PowerPoint
+  if (
+    mimeType?.includes('presentationml') ||
+    mimeType?.includes('ms-powerpoint') ||
+    mimeType?.includes('ppt')
+  )
+    return {
+      Icon: IconPresentation,
+      color: 'orange',
+      label: 'PPTX',
+      bg: 'bg-orange-100 dark:bg-orange-950',
+      text: 'text-orange-600 dark:text-orange-400',
+    };
+
+  // ZIP
+  if (mimeType?.includes('zip') || mimeType?.includes('compressed'))
+    return {
+      Icon: IconFileZip,
+      color: 'amber',
+      label: 'Archive',
+      bg: 'bg-amber-100 dark:bg-amber-950',
+      text: 'text-amber-600 dark:text-amber-400',
+    };
+
+  // Text
+  if (mimeType?.includes('text/plain') || mimeType?.includes('txt'))
+    return {
+      Icon: IconFileText,
+      color: 'gray',
+      label: 'Text',
+      bg: 'bg-gray-100 dark:bg-gray-950',
+      text: 'text-gray-600 dark:text-gray-400',
+    };
+
+  return {
+    Icon: IconFile,
+    color: 'muted',
+    label: 'File',
+    bg: 'bg-muted',
+    text: 'text-muted-foreground',
+  };
 };
 
 const isImageFile = (attachment: Attachment) => {
@@ -123,11 +227,10 @@ export function AttachmentDisplay({
     return (
       <div className='grid gap-2'>
         {attachments.map((attachment) => {
-          const Icon = getAttachmentIcon(attachment.type, attachment.mimeType);
-          const isLink = attachment.type === 'link';
-          const isImage = isImageFile(attachment);
-          const isVideo = isVideoFile(attachment);
-          const isPdf = attachment.mimeType?.includes('pdf');
+          const { Icon, bg, text, label } = getAttachmentTypeInfo(
+            attachment.type,
+            attachment.mimeType,
+          );
 
           return (
             <a
@@ -137,30 +240,8 @@ export function AttachmentDisplay({
               rel='noopener noreferrer'
               className='flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-lg hover:bg-muted/50 transition-colors group overflow-hidden'
             >
-              <div
-                className={cn(
-                  'p-2 rounded-md transition-transform',
-                  isLink && 'bg-blue-100 dark:bg-blue-950',
-                  isPdf && 'bg-red-100 dark:bg-red-950',
-                  isImage && 'bg-purple-100 dark:bg-purple-950',
-                  isVideo && 'bg-pink-100 dark:bg-pink-950',
-                  !isLink && !isPdf && !isImage && !isVideo && 'bg-muted',
-                )}
-              >
-                <Icon
-                  size={20}
-                  className={cn(
-                    isLink && 'text-blue-600 dark:text-blue-400',
-                    isPdf && 'text-red-600 dark:text-red-400',
-                    isImage && 'text-purple-600 dark:text-purple-400',
-                    isVideo && 'text-pink-600 dark:text-pink-400',
-                    !isLink &&
-                      !isPdf &&
-                      !isImage &&
-                      !isVideo &&
-                      'text-muted-foreground',
-                  )}
-                />
+              <div className={cn('p-2 rounded-md transition-transform', bg)}>
+                <Icon size={20} className={text} />
               </div>
               <div className='flex-1 min-w-0'>
                 <p
@@ -175,26 +256,9 @@ export function AttachmentDisplay({
                       {formatFileSize(attachment.size)}
                     </p>
                   )}
-                  {isLink && (
-                    <Badge variant='secondary' className='text-[10px]'>
-                      Link
-                    </Badge>
-                  )}
-                  {isPdf && (
-                    <Badge variant='secondary' className='text-[10px]'>
-                      PDF
-                    </Badge>
-                  )}
-                  {isImage && (
-                    <Badge variant='secondary' className='text-[10px]'>
-                      Image
-                    </Badge>
-                  )}
-                  {isVideo && (
-                    <Badge variant='secondary' className='text-[10px]'>
-                      Video
-                    </Badge>
-                  )}
+                  <Badge variant='secondary' className='text-[10px]'>
+                    {label}
+                  </Badge>
                 </div>
               </div>
               <Button
@@ -203,7 +267,7 @@ export function AttachmentDisplay({
                 className='opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0'
                 onClick={(e) => handleDownload(e, attachment)}
               >
-                {isLink ? (
+                {label === 'Link' ? (
                   <IconExternalLink className='h-4 w-4' />
                 ) : (
                   <IconDownload className='h-4 w-4' />
@@ -316,12 +380,10 @@ export function AttachmentDisplay({
       {otherFiles.length > 0 && (
         <div className='grid gap-2'>
           {otherFiles.map((attachment) => {
-            const Icon = getAttachmentIcon(
+            const { Icon, bg, text, label } = getAttachmentTypeInfo(
               attachment.type,
               attachment.mimeType,
             );
-            const isLink = attachment.type === 'link';
-            const isPdf = attachment.mimeType?.includes('pdf');
 
             return (
               <a
@@ -334,19 +396,10 @@ export function AttachmentDisplay({
                 <div
                   className={cn(
                     'p-2 rounded-md group-hover:scale-105 transition-transform',
-                    isLink && 'bg-blue-100 dark:bg-blue-950',
-                    isPdf && 'bg-red-100 dark:bg-red-950',
-                    !isLink && !isPdf && 'bg-muted',
+                    bg,
                   )}
                 >
-                  <Icon
-                    size={20}
-                    className={cn(
-                      isLink && 'text-blue-600 dark:text-blue-400',
-                      isPdf && 'text-red-600 dark:text-red-400',
-                      !isLink && !isPdf && 'text-muted-foreground',
-                    )}
-                  />
+                  <Icon size={20} className={text} />
                 </div>
                 <div className='flex-1 min-w-0'>
                   <p
@@ -361,16 +414,9 @@ export function AttachmentDisplay({
                         {formatFileSize(attachment.size)}
                       </p>
                     )}
-                    {isLink && (
-                      <Badge variant='secondary' className='text-[10px]'>
-                        Link
-                      </Badge>
-                    )}
-                    {isPdf && (
-                      <Badge variant='secondary' className='text-[10px]'>
-                        PDF
-                      </Badge>
-                    )}
+                    <Badge variant='secondary' className='text-[10px]'>
+                      {label}
+                    </Badge>
                   </div>
                 </div>
                 <Button
@@ -379,7 +425,7 @@ export function AttachmentDisplay({
                   className='opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity cursor-pointer shrink-0'
                   onClick={(e) => handleDownload(e, attachment)}
                 >
-                  {isLink ? (
+                  {label === 'Link' ? (
                     <IconExternalLink className='h-4 w-4' />
                   ) : (
                     <IconDownload className='h-4 w-4' />
