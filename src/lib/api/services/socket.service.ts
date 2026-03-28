@@ -6,7 +6,8 @@ export const socketService = {
   connect: () => {
     if (socket) return;
 
-    socket = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000', {
+    const url = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? '' : 'http://localhost:3000');
+    socket = io(url, {
       transports: ['websocket'],
       withCredentials: true,
     });

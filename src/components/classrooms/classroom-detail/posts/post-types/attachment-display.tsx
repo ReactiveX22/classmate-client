@@ -95,8 +95,7 @@ const getAttachmentTypeInfo = (type: string, mimeType?: string) => {
   // Word
   if (
     mimeType?.includes('wordprocessingml') ||
-    mimeType?.includes('msword') ||
-    mimeType?.includes('doc')
+    mimeType?.includes('msword')
   )
     return {
       Icon: IconFileDescription,

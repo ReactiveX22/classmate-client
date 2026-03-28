@@ -247,8 +247,7 @@ export function AttachmentUpload({
     const isPdf = mimeType.includes('pdf');
     const isWord =
       mimeType.includes('wordprocessingml') ||
-      mimeType.includes('msword') ||
-      mimeType.includes('doc');
+      mimeType.includes('msword');
     const isExcel =
       mimeType.includes('spreadsheetml') ||
       mimeType.includes('ms-excel') ||
