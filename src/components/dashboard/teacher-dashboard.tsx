@@ -135,10 +135,7 @@ function EmptyState() {
         <p className='text-sm text-muted-foreground max-w-sm mt-1 mb-4'>
           Get started by creating your first class.
         </p>
-        <Button
-          render={<Link href='/dashboard/classrooms/new'>Create Class</Link>}
-          nativeButton={false}
-        />
+        <CreateClassroomDialog />
       </CardContent>
     </Card>
   );
