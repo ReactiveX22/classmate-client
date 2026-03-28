@@ -5,10 +5,14 @@ import { UploadResult } from '@/hooks/use-upload-attachment';
 import { cn } from '@/lib/utils';
 import {
   IconFile,
+  IconFileDescription,
+  IconFileSpreadsheet,
   IconFileText,
+  IconFileZip,
   IconLink,
   IconPaperclip,
   IconPhoto,
+  IconPresentation,
   IconTrash,
   IconVideo,
   IconX,
@@ -54,6 +58,7 @@ const ALLOWED_TYPES = [
   'application/vnd.openxmlformats-officedocument.presentationml.presentation',
   'text/plain',
   'application/zip',
+  'application/x-zip-compressed',
 ];
 
 export function AttachmentUpload({
@@ -238,40 +243,68 @@ export function AttachmentUpload({
   const getFileIcon = (mimeType: string, type?: string) => {
     const isImage = type === 'image' || mimeType.startsWith('image/');
     const isVideo = type === 'video' || mimeType.startsWith('video/');
-    const isPdf = mimeType === 'application/pdf' || mimeType.includes('pdf');
     const isLink = type === 'link' || mimeType === 'text/uri-list';
+    const isPdf = mimeType.includes('pdf');
+    const isWord =
+      mimeType.includes('wordprocessingml') ||
+      mimeType.includes('msword') ||
+      mimeType.includes('doc');
+    const isExcel =
+      mimeType.includes('spreadsheetml') ||
+      mimeType.includes('ms-excel') ||
+      mimeType.includes('xls');
+    const isPpt =
+      mimeType.includes('presentationml') ||
+      mimeType.includes('ms-powerpoint') ||
+      mimeType.includes('ppt');
+    const isZip = mimeType.includes('zip') || mimeType.includes('compressed');
+    const isText = mimeType.includes('text/plain') || mimeType.includes('txt');
 
     let Icon = IconFile;
-    if (isImage) Icon = IconPhoto;
-    else if (isVideo) Icon = IconVideo;
-    else if (isLink) Icon = IconLink;
-    else if (isPdf) Icon = IconFileText;
+    let bg = 'bg-muted';
+    let text = 'text-muted-foreground';
+
+    if (isImage) {
+      Icon = IconPhoto;
+      bg = 'bg-purple-100 dark:bg-purple-950';
+      text = 'text-purple-600 dark:text-purple-400';
+    } else if (isVideo) {
+      Icon = IconVideo;
+      bg = 'bg-pink-100 dark:bg-pink-950';
+      text = 'text-pink-600 dark:text-pink-400';
+    } else if (isLink) {
+      Icon = IconLink;
+      bg = 'bg-blue-100 dark:bg-blue-950';
+      text = 'text-blue-600 dark:text-blue-400';
+    } else if (isPdf) {
+      Icon = IconFileText;
+      bg = 'bg-red-100 dark:bg-red-950';
+      text = 'text-red-600 dark:text-red-400';
+    } else if (isWord) {
+      Icon = IconFileDescription;
+      bg = 'bg-indigo-100 dark:bg-indigo-950';
+      text = 'text-indigo-600 dark:text-indigo-400';
+    } else if (isExcel) {
+      Icon = IconFileSpreadsheet;
+      bg = 'bg-emerald-100 dark:bg-emerald-950';
+      text = 'text-emerald-600 dark:text-emerald-400';
+    } else if (isPpt) {
+      Icon = IconPresentation;
+      bg = 'bg-orange-100 dark:bg-orange-950';
+      text = 'text-orange-600 dark:text-orange-400';
+    } else if (isZip) {
+      Icon = IconFileZip;
+      bg = 'bg-amber-100 dark:bg-amber-950';
+      text = 'text-amber-600 dark:text-amber-400';
+    } else if (isText) {
+      Icon = IconFileText;
+      bg = 'bg-gray-100 dark:bg-gray-950';
+      text = 'text-gray-600 dark:text-gray-400';
+    }
 
     return (
-      <div
-        className={cn(
-          'p-2 rounded-md transition-transform',
-          isLink && 'bg-blue-100 dark:bg-blue-950',
-          isPdf && 'bg-red-100 dark:bg-red-950',
-          isImage && 'bg-purple-100 dark:bg-purple-950',
-          isVideo && 'bg-pink-100 dark:bg-pink-950',
-          !isLink && !isPdf && !isImage && !isVideo && 'bg-muted',
-        )}
-      >
-        <Icon
-          size={18}
-          className={cn(
-            isLink && 'text-blue-600 dark:text-blue-400',
-            isPdf && 'text-red-600 dark:text-red-400',
-            isImage && 'text-purple-600 dark:text-purple-400',
-            isVideo && 'text-pink-600 dark:text-pink-400',
-            !isLink &&
-              !isPdf &&
-              !isImage &&
-              !isVideo &&
-              'text-muted-foreground',
-          )}
-        />
+      <div className={cn('p-2 rounded-md transition-transform', bg)}>
+        <Icon size={18} className={text} />
       </div>
     );
   };
