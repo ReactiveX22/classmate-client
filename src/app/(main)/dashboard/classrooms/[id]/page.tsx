@@ -169,7 +169,7 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
           onOpenChange={setAddStudentsOpen}
           classroomId={data.id}
           classroomName={data.name}
-          existingStudentIds={data.classroomMembers.map((m) => m.studentId)}
+          existingStudentIds={classroomMembers.map((m) => m.studentId)}
         />
       </RoleGuard>
     </div>
