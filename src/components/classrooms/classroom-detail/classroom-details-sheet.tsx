@@ -6,7 +6,7 @@ import { IconCopy } from '@tabler/icons-react';
 
 interface ClassroomDetailsProps {
   classroom: ClassroomDetail;
-  course: Course;
+  course?: Course;
   onCopyClassCode: (code: string) => void;
 }
 
@@ -62,34 +62,35 @@ export function ClassroomDetails({
 
       <Separator />
 
-      {/* Course Information Section */}
-      <section className='space-y-6'>
-        <h3 className='text-sm font-semibold text-muted-foreground px-1'>
-          Course Information
-        </h3>
+      {course && (
+        <section className='space-y-6'>
+          <h3 className='text-sm font-semibold text-muted-foreground px-1'>
+            Course Information
+          </h3>
 
-        <div className='grid grid-cols-2 sm:grid-cols-3 gap-x-6 sm:gap-x-12 gap-y-6 px-1'>
-          <DetailBlock
-            label='Course Title'
-            value={course.title}
-            className='col-span-full'
-          />
-          <DetailBlock label='Course Code' value={course.code} />
-          <DetailBlock label='Credits' value={course.credits.toString()} />
-          <DetailBlock label='Semester' value={course.semester} />
-        </div>
-
-        {course.description && (
-          <div className='space-y-2 px-1'>
-            <p className='text-[12px] font-medium text-muted-foreground/70'>
-              Course Description
-            </p>
-            <p className='text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap border-l-2 border-muted pl-4 py-1'>
-              {course.description}
-            </p>
+          <div className='grid grid-cols-2 sm:grid-cols-3 gap-x-6 sm:gap-x-12 gap-y-6 px-1'>
+            <DetailBlock
+              label='Course Title'
+              value={course.title}
+              className='col-span-full'
+            />
+            <DetailBlock label='Course Code' value={course.code} />
+            <DetailBlock label='Credits' value={course.credits.toString()} />
+            <DetailBlock label='Semester' value={course.semester} />
           </div>
-        )}
-      </section>
+
+          {course.description && (
+            <div className='space-y-2 px-1'>
+              <p className='text-[12px] font-medium text-muted-foreground/70'>
+                Course Description
+              </p>
+              <p className='text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap border-l-2 border-muted pl-4 py-1'>
+                {course.description}
+              </p>
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }
