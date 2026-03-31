@@ -29,7 +29,7 @@ interface ClassroomHeaderProps {
     section: string;
     classCode: string;
   };
-  course: {
+  course?: {
     code: string;
     maxStudents: number;
     credits: number;
@@ -82,7 +82,7 @@ export function ClassroomHeader({
               {classroom.name}
             </h1>
             <p className='text-sm text-muted-foreground'>
-              {course.code} • Section {classroom.section}
+              {course?.code ? `${course.code} • ` : ''}Section {classroom.section}
             </p>
           </div>
         </div>
@@ -145,12 +145,12 @@ export function ClassroomHeader({
         <div className='flex items-center gap-2'>
           <IconUsers size={16} className='text-muted-foreground' />
           <span>
-            <strong>{enrolledCount}</strong> / {course.maxStudents} students
+            <strong>{enrolledCount}</strong> / {course?.maxStudents || 0} students
           </span>
         </div>
         <div className='flex items-center gap-2'>
           <IconBook size={16} className='text-muted-foreground' />
-          <span>{course.credits} credits</span>
+          <span>{course?.credits || 0} credits</span>
         </div>
         <div className='flex items-center gap-2'>
           <code className='font-mono'>{classroom.classCode}</code>

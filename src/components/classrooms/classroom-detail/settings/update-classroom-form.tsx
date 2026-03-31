@@ -37,7 +37,7 @@ export function UpdateClassroomForm({
 
   const form = useForm({
     defaultValues: {
-      courseId: classroom.course.id,
+      courseId: classroom.course?.id || '',
       name: classroom.name,
       section: classroom.section,
       description: classroom.description || '',
