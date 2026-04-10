@@ -315,7 +315,7 @@ export function AttachmentDisplay({
               >
                 {!hasError ? (
                   <Image
-                    src={image.url}
+                    src={getProxiedUrl(image.url)}
                     alt={image.name}
                     fill
                     unoptimized

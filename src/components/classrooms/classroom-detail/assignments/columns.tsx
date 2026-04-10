@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Submission } from '@/lib/api/services/submission.service';
+import { getProxiedUrl } from '@/lib/utils';
 import {
   IconArrowBackUp,
   IconCheck,
@@ -228,7 +229,7 @@ export const getColumns = (
               {attachments.map((file) => (
                 <DropdownMenuItem
                   key={file.id}
-                  onClick={() => window.open(file.url, '_blank')}
+                  onClick={() => window.open(getProxiedUrl(file.url), '_blank')}
                   className='cursor-pointer'
                 >
                   <EyeIcon size={14} />
