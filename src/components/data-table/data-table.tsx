@@ -2,6 +2,7 @@ import { flexRender, type Table as TanstackTable } from '@tanstack/react-table';
 import type * as React from 'react';
 
 import { DataTablePagination } from '@/components/data-table/data-table-pagination';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -16,6 +17,7 @@ import { cn } from '@/lib/utils';
 interface DataTableProps<TData> extends React.ComponentProps<'div'> {
   table: TanstackTable<TData>;
   actionBar?: React.ReactNode;
+  isFetching?: boolean;
 }
 
 export function DataTable<TData>({
@@ -23,6 +25,7 @@ export function DataTable<TData>({
   actionBar,
   children,
   className,
+  isFetching,
   ...props
 }: DataTableProps<TData>) {
   return (
@@ -56,7 +59,19 @@ export function DataTable<TData>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isFetching ? (
+              Array.from({ length: table.getState().pagination.pageSize }).map(
+                (_, index) => (
+                  <TableRow key={`skeleton-${index}`}>
+                    {table.getAllColumns().map((column) => (
+                      <TableCell key={column.id} className='h-12'>
+                        <Skeleton className='h-4 w-full' />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                )
+              )
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}

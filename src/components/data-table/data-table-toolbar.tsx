@@ -14,10 +14,12 @@ import { cn } from '@/lib/utils';
 
 interface DataTableToolbarProps<TData> extends React.ComponentProps<'div'> {
   table: Table<TData>;
+  searchInput?: React.ReactNode;
 }
 
 export function DataTableToolbar<TData>({
   table,
+  searchInput,
   children,
   className,
   ...props
@@ -44,6 +46,7 @@ export function DataTableToolbar<TData>({
       {...props}
     >
       <div className='flex flex-1 flex-wrap items-center gap-2'>
+        {searchInput}
         {columns.map((column) => (
           <DataTableToolbarFilter key={column.id} column={column} />
         ))}

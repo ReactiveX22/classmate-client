@@ -8,13 +8,16 @@ import {
   getCourseQueryOptions,
 } from '@/lib/queryOptions/courseQueryOptions';
 import { PaginationParams } from '@/types/pagination';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import { ApiError } from '@/types/errors';
 
 export const useCourses = (params?: PaginationParams) => {
-  return useQuery(createCourseQueryOptions(params));
+  return useQuery({
+    ...createCourseQueryOptions(params),
+    placeholderData: keepPreviousData,
+  });
 };
 
 export const useCourse = (id: string) => {
