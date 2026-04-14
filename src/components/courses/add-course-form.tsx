@@ -14,15 +14,17 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { TeacherSelect } from './teacher-select';
 import { ErrorCode } from '@/types/errors';
+import { useState } from 'react';
 
 const courseSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters long'),
   code: z.string().min(2, 'Course code must be at least 2 characters long'),
   description: z.string(),
   credits: z.number().min(1, 'Credits must be at least 1'),
-  semester: z.string().min(4, 'Semester must be at least 4 characters long'),
+  semester: z.string().min(1, 'Semester must be at least 1 characters long'),
+  session: z.string(),
   maxStudents: z.number().min(1, 'Must be at least 1 student'),
-  teacherId: z.string().or(z.literal('')),
+  teacherId: z.string(),
 });
 
 interface AddCourseFormProps {
@@ -37,6 +39,7 @@ export function AddCourseForm({
   onSubmittingChange,
 }: AddCourseFormProps) {
   const createCourseMutation = useCreateCourse();
+  const [globalError, setGlobalError] = useState('');
 
   const form = useForm({
     defaultValues: {
@@ -45,13 +48,25 @@ export function AddCourseForm({
       description: '',
       credits: 3,
       semester: '',
+      session: '',
       maxStudents: 50,
       teacherId: '',
     },
     validators: {
-      onChange: courseSchema,
+      onSubmit: ({ value }) => {
+        const result = courseSchema.safeParse(value);
+        if (result.success) return undefined;
+
+        const errors: Record<string, string> = {};
+        result.error.issues.forEach((issue) => {
+          const path = issue.path.join('.');
+          errors[path] = issue.message;
+        });
+        return errors;
+      },
     },
     onSubmit: async ({ value }) => {
+      setGlobalError('');
       onSubmittingChange?.(true);
       try {
         await createCourseMutation.mutateAsync({
@@ -60,6 +75,7 @@ export function AddCourseForm({
           description: value.description || undefined,
           credits: value.credits,
           semester: value.semester,
+          session: value.session || undefined,
           maxStudents: value.maxStudents,
           teacherId: value.teacherId || undefined,
         });
@@ -76,6 +92,12 @@ export function AddCourseForm({
               description: err.issue,
             });
           });
+        } else {
+          setGlobalError(
+            error.response?.data?.message ||
+              error.message ||
+              'Failed to create course'
+          );
         }
       } finally {
         onSubmittingChange?.(false);
@@ -96,8 +118,7 @@ export function AddCourseForm({
       <div className='grid gap-4 sm:grid-cols-4'>
         <form.Field name='title'>
           {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            const isInvalid = field.state.meta.errors.length > 0;
             return (
               <Field data-invalid={isInvalid} className='sm:col-span-3'>
                 <FieldLabel htmlFor={field.name}>Course Title</FieldLabel>
@@ -117,8 +138,7 @@ export function AddCourseForm({
 
         <form.Field name='code'>
           {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            const isInvalid = field.state.meta.errors.length > 0;
             return (
               <Field data-invalid={isInvalid} className='sm:col-span-1'>
                 <FieldLabel htmlFor={field.name}>Code</FieldLabel>
@@ -138,8 +158,7 @@ export function AddCourseForm({
 
         <form.Field name='semester'>
           {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            const isInvalid = field.state.meta.errors.length > 0;
             return (
               <Field data-invalid={isInvalid} className='sm:col-span-2'>
                 <FieldLabel htmlFor={field.name}>Semester</FieldLabel>
@@ -149,7 +168,29 @@ export function AddCourseForm({
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. Fall 2024 - Sem 1'
+                  placeholder='e.g. 8th'
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name='session'>
+          {(field) => {
+            const isInvalid = field.state.meta.errors.length > 0;
+            return (
+              <Field data-invalid={isInvalid} className='sm:col-span-2'>
+                <FieldLabel htmlFor={field.name}>
+                  Session (Optional)
+                </FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder='e.g. Spring 2025'
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
@@ -159,8 +200,7 @@ export function AddCourseForm({
 
         <form.Field name='credits'>
           {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            const isInvalid = field.state.meta.errors.length > 0;
             return (
               <Field data-invalid={isInvalid} className='sm:col-span-1'>
                 <FieldLabel htmlFor={field.name}>Credits</FieldLabel>
@@ -181,8 +221,7 @@ export function AddCourseForm({
 
         <form.Field name='maxStudents'>
           {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            const isInvalid = field.state.meta.errors.length > 0;
             return (
               <Field data-invalid={isInvalid} className='sm:col-span-1'>
                 <FieldLabel htmlFor={field.name}>Capacity</FieldLabel>
@@ -203,8 +242,7 @@ export function AddCourseForm({
 
         <form.Field name='teacherId'>
           {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            const isInvalid = field.state.meta.errors.length > 0;
             return (
               <Field data-invalid={isInvalid} className='sm:col-span-4'>
                 <FieldLabel htmlFor={field.name}>
@@ -243,14 +281,11 @@ export function AddCourseForm({
         </form.Field>
       </div>
 
-      {createCourseMutation.error &&
-        !createCourseMutation.error.response?.data?.errors && (
-          <div className='text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3 mt-2'>
-            {createCourseMutation.error.response?.data?.message ||
-              createCourseMutation.error.message ||
-              'Failed to create course'}
-          </div>
-        )}
+      {globalError && (
+        <div className='text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3 mt-2'>
+          {globalError}
+        </div>
+      )}
     </form>
   );
 }

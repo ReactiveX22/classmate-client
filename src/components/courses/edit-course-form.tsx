@@ -16,15 +16,17 @@ import { z } from 'zod';
 import { ErrorCode } from '@/types/errors';
 import { toast } from 'sonner';
 import { TeacherSelect } from './teacher-select';
+import { useState } from 'react';
 
 const editCourseSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters long'),
   code: z.string().min(2, 'Course code must be at least 2 characters long'),
   description: z.string(),
   credits: z.number().min(1, 'Credits must be at least 1'),
-  semester: z.string().min(4, 'Semester must be at least 4 characters long'),
+  semester: z.string().min(1, 'Semester must be at least 1 characters long'),
+  session: z.string(),
   maxStudents: z.number().min(1, 'Must be at least 1 student'),
-  teacherId: z.string().uuid('Invalid teacher ID').or(z.literal('')),
+  teacherId: z.string(),
 });
 
 interface EditCourseFormProps {
@@ -34,6 +36,7 @@ interface EditCourseFormProps {
 
 export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
   const updateCourseMutation = useUpdateCourse();
+  const [globalError, setGlobalError] = useState('');
 
   const form = useForm({
     defaultValues: {
@@ -42,13 +45,29 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
       description: course.description || '',
       credits: course.credits,
       semester: course.semester,
+      session: course.session || '',
       maxStudents: course.maxStudents,
       teacherId: course.teacherId || '',
     },
     validators: {
-      onChange: editCourseSchema,
+      onSubmit: ({ value }) => {
+        console.log('Form values:', value);
+        const result = editCourseSchema.safeParse(value);
+        console.log('Validation result:', result);
+        if (result.success) return undefined;
+
+        const errors: Record<string, string> = {};
+        result.error.issues.forEach((issue) => {
+          const path = issue.path.join('.');
+          errors[path] = issue.message;
+        });
+        console.log('Validation errors:', errors);
+        return errors;
+      },
     },
     onSubmit: async ({ value }) => {
+      console.log('onSubmit called with:', value);
+      setGlobalError('');
       try {
         await updateCourseMutation.mutateAsync(
           {
@@ -59,6 +78,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
               description: value.description || undefined,
               credits: value.credits,
               semester: value.semester,
+              session: value.session || undefined,
               maxStudents: value.maxStudents,
               teacherId: value.teacherId || undefined,
             },
@@ -80,6 +100,12 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
               description: err.issue,
             });
           });
+        } else {
+          setGlobalError(
+            error.response?.data?.message ||
+              error.message ||
+              'Failed to update course'
+          );
         }
       }
     },
@@ -97,8 +123,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
       <FieldGroup>
         <form.Field name='title'>
           {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            const isInvalid = field.state.meta.errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>Course Title</FieldLabel>
@@ -119,8 +144,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
 
         <form.Field name='code'>
           {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            const isInvalid = field.state.meta.errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>Course Code</FieldLabel>
@@ -142,9 +166,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
         <div className='grid grid-cols-2 gap-4'>
           <form.Field name='credits'>
             {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched &&
-                field.state.meta.errors.length > 0;
+              const isInvalid = field.state.meta.errors.length > 0;
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>Credits</FieldLabel>
@@ -166,9 +188,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
 
           <form.Field name='maxStudents'>
             {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched &&
-                field.state.meta.errors.length > 0;
+              const isInvalid = field.state.meta.errors.length > 0;
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>Max Students</FieldLabel>
@@ -191,8 +211,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
 
         <form.Field name='semester'>
           {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            const isInvalid = field.state.meta.errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>Semester</FieldLabel>
@@ -202,7 +221,30 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. Fall 2024 - Sem 1'
+                  placeholder='e.g. 8th'
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name='session'>
+          {(field) => {
+            const isInvalid = field.state.meta.errors.length > 0;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>
+                  Session (Optional)
+                </FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder='e.g. Spring 2025'
                   aria-invalid={isInvalid}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -213,8 +255,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
 
         <form.Field name='teacherId'>
           {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            const isInvalid = field.state.meta.errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>
@@ -253,30 +294,24 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
         </form.Field>
       </FieldGroup>
 
-      {updateCourseMutation.error &&
-        !updateCourseMutation.error.response?.data?.errors && (
-          <div className='text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3'>
-            {updateCourseMutation.error.response?.data?.message ||
-              updateCourseMutation.error.message ||
-              'Failed to update course'}
-          </div>
-        )}
+      {globalError && (
+        <div className='text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3'>
+          {globalError}
+        </div>
+      )}
 
       <form.Subscribe
         selector={(state) => [state.canSubmit, state.isSubmitting]}
-      >
-        {([canSubmit, isSubmitting]) => (
+        children={([canSubmit, isSubmitting]) => (
           <Button
             type='submit'
             className='w-full mt-2'
-            disabled={!canSubmit || updateCourseMutation.isPending}
+            disabled={!canSubmit || isSubmitting}
           >
-            {updateCourseMutation.isPending || isSubmitting
-              ? 'Updating...'
-              : 'Save Changes'}
+            {isSubmitting ? 'Saving...' : 'Save Changes'}
           </Button>
         )}
-      </form.Subscribe>
+      />
     </form>
   );
 }

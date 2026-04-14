@@ -25,6 +25,7 @@ export interface Course {
   description: string | null;
   credits: number;
   semester: string;
+  session: string | null;
   status: string;
   maxStudents: number;
   createdAt: string;
@@ -40,6 +41,7 @@ export interface CreateCourseInput {
   description?: string;
   credits?: number;
   semester: string;
+  session?: string;
   maxStudents?: number;
 }
 
@@ -50,6 +52,7 @@ export interface UpdateCourseInput {
   description?: string;
   credits?: number;
   semester?: string;
+  session?: string;
   maxStudents?: number;
 }
 

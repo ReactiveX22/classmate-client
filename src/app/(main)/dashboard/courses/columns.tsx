@@ -97,6 +97,25 @@ export const columns: ColumnDef<Course>[] = [
     enableSorting: true,
   },
   {
+    accessorKey: 'session',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label='Session' />
+    ),
+    meta: {
+      label: 'Session',
+      placeholder: 'Filter by session...',
+      variant: 'text',
+    },
+    cell: ({ row }) => {
+      return row.original.session ? (
+        <div>{row.original.session}</div>
+      ) : (
+        <span className='text-muted-foreground'>—</span>
+      );
+    },
+    enableSorting: true,
+  },
+  {
     accessorKey: 'credits',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} label='Credits' />

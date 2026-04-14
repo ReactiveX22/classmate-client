@@ -5,6 +5,8 @@ import { DataTableToolbar } from '@/components/data-table/data-table-toolbar';
 import { useDataTable } from '@/hooks/use-data-table';
 import { useTableQueryState } from '@/hooks/use-table-query';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
 import Link from 'next/link';
 import { columns } from './columns';
 import { Course } from '@/lib/api/services/course.service';
@@ -13,6 +15,9 @@ import { useCourses } from '@/hooks/use-courses';
 import { PageHeader } from '@/components/common/page-header';
 import { PlusIcon } from 'lucide-react';
 import { CoursesTableActionBar } from '@/components/courses/courses-table-action-bar';
+import { useQueryState } from 'nuqs';
+import { useCallback, useEffect, useState } from 'react';
+import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 
 const DEFAULT_SORTING: ExtendedColumnSort<Course>[] = [
   { id: 'createdAt', desc: true },
@@ -22,15 +27,41 @@ export default function CoursesPage() {
   const { page, perPage, sorting } =
     useTableQueryState<Course>(DEFAULT_SORTING);
 
+  const [search, setSearch] = useQueryState('search', {
+    defaultValue: '',
+    clearOnDefault: true,
+    history: 'replace',
+    shallow: true,
+  });
+
+  const [localSearch, setLocalSearch] = useState(search);
+
+  useEffect(() => {
+    setLocalSearch(search);
+  }, [search]);
+
+  const debouncedSetSearch = useDebouncedCallback((value: string) => {
+    setSearch(value || null);
+  }, 400);
+
+  const onSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setLocalSearch(e.target.value);
+      debouncedSetSearch(e.target.value);
+    },
+    [debouncedSetSearch]
+  );
+
   const {
     data: response,
-    isLoading,
+    isFetching,
     isError,
   } = useCourses({
     page,
     limit: perPage,
     sortBy: sorting[0]?.id as any,
     sortOrder: sorting[0]?.desc ? 'desc' : 'asc',
+    search: search || undefined,
   });
 
   const courses = response?.data || [];
@@ -60,17 +91,26 @@ export default function CoursesPage() {
         </Button>
       </PageHeader>
 
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : isError ? (
+      {isError ? (
         <div className='text-red-500'>Error loading courses.</div>
       ) : (
         <DataTable
           table={table}
           className='w-fit'
+          isFetching={isFetching}
           actionBar={<CoursesTableActionBar table={table} />}
         >
-          <DataTableToolbar table={table} />
+          <DataTableToolbar table={table} searchInput={
+            <div className='relative w-64'>
+              <Search className='absolute top-2.5 left-2 h-4 w-4 text-muted-foreground' />
+              <Input
+                placeholder='Search courses...'
+                value={localSearch}
+                onChange={onSearchChange}
+                className='h-8 pl-8'
+              />
+            </div>
+          } />
         </DataTable>
       )}
     </div>
