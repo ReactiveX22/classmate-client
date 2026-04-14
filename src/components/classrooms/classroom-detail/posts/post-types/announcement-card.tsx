@@ -10,6 +10,7 @@ import { formatDistanceToNow, parseISO } from 'date-fns';
 import { useState } from 'react';
 import { AttachmentDisplay } from './attachment-display';
 import { PostCardActions } from './post-card-actions';
+import { CommentSection } from '../comment-section';
 
 interface AnnouncementCardProps {
   post: Post;
@@ -75,6 +76,10 @@ export function AnnouncementCard({ post }: AnnouncementCardProps) {
 
           {post.attachments && post.attachments.length > 0 && (
             <AttachmentDisplay attachments={post.attachments} />
+          )}
+
+          {post.commentsEnabled && (
+            <CommentSection postId={post.id} />
           )}
         </CardContent>
       </Card>
