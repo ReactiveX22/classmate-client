@@ -33,12 +33,6 @@ export function useCreateCourse() {
       queryClient.invalidateQueries({ queryKey: ['courses'] });
       toast.success('Course created successfully');
     },
-    onError: (error: AxiosError<ApiError>) => {
-      const apiError = error.response?.data;
-      toast.error('Creation Failed', {
-        description: apiError?.message || 'An unexpected error occurred.',
-      });
-    },
   });
 }
 
@@ -50,12 +44,6 @@ export function useUpdateCourse() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['courses'] });
       toast.success('Course updated successfully');
-    },
-    onError: (error: AxiosError<ApiError>) => {
-      const apiError = error.response?.data;
-      toast.error('Update Failed', {
-        description: apiError?.message || 'An unexpected error occurred.',
-      });
     },
   });
 }

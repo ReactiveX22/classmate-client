@@ -7,27 +7,15 @@ import {
   FieldGroup,
   FieldLabel,
 } from '@/components/ui/field';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useUpdateCourse } from '@/hooks/use-courses';
+import { useFormErrorHandler } from '@/hooks/use-form-handler';
 import { Course } from '@/lib/api/services/course.service';
 import { useForm } from '@tanstack/react-form';
-import { z } from 'zod';
-import { ErrorCode } from '@/types/errors';
-import { toast } from 'sonner';
+import { courseSchema } from '@/lib/schemas/course-schema';
 import { TeacherSelect } from './teacher-select';
-import { useState } from 'react';
-
-const editCourseSchema = z.object({
-  title: z.string().min(2, 'Title must be at least 2 characters long'),
-  code: z.string().min(2, 'Course code must be at least 2 characters long'),
-  description: z.string(),
-  credits: z.number().min(1, 'Credits must be at least 1'),
-  semester: z.string().min(1, 'Semester must be at least 1 characters long'),
-  session: z.string(),
-  maxStudents: z.number().min(1, 'Must be at least 1 student'),
-  teacherId: z.string(),
-});
 
 interface EditCourseFormProps {
   course: Course;
@@ -36,7 +24,7 @@ interface EditCourseFormProps {
 
 export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
   const updateCourseMutation = useUpdateCourse();
-  const [globalError, setGlobalError] = useState('');
+  const { fieldErrors, globalErrors, handleError } = useFormErrorHandler();
 
   const form = useForm({
     defaultValues: {
@@ -50,66 +38,35 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
       teacherId: course.teacherId || '',
     },
     validators: {
-      onSubmit: ({ value }) => {
-        console.log('Form values:', value);
-        const result = editCourseSchema.safeParse(value);
-        console.log('Validation result:', result);
-        if (result.success) return undefined;
-
-        const errors: Record<string, string> = {};
-        result.error.issues.forEach((issue) => {
-          const path = issue.path.join('.');
-          errors[path] = issue.message;
-        });
-        console.log('Validation errors:', errors);
-        return errors;
-      },
+      onSubmit: courseSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log('onSubmit called with:', value);
-      setGlobalError('');
       try {
-        await updateCourseMutation.mutateAsync(
-          {
-            id: course.id,
-            data: {
-              title: value.title,
-              code: value.code,
-              description: value.description || undefined,
-              credits: value.credits,
-              semester: value.semester,
-              session: value.session || undefined,
-              maxStudents: value.maxStudents,
-              teacherId: value.teacherId || undefined,
-            },
+        await updateCourseMutation.mutateAsync({
+          id: course.id,
+          data: {
+            title: value.title,
+            code: value.code,
+            description: value.description || undefined,
+            credits: value.credits,
+            semester: value.semester,
+            session: value.session || undefined,
+            maxStudents: value.maxStudents,
+            teacherId: value.teacherId || undefined,
           },
-          {
-            onSuccess: () => {
-              onSuccess?.();
-            },
-          }
-        );
+        });
+        onSuccess?.();
       } catch (error: any) {
-        const apiError = error.response?.data;
-        if (
-          apiError?.errorCode === ErrorCode.VALIDATION_FAILED &&
-          apiError.errors
-        ) {
-          apiError.errors.forEach((err: any) => {
-            toast.error(`Validation Error: ${err.field}`, {
-              description: err.issue,
-            });
-          });
-        } else {
-          setGlobalError(
-            error.response?.data?.message ||
-              error.message ||
-              'Failed to update course'
-          );
-        }
+        handleError(error, value);
       }
     },
   });
+
+  const getFieldError = (fieldName: string, fieldErrorsState: any[]) => {
+    if (fieldErrorsState.length > 0) return fieldErrorsState;
+    if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
+    return [];
+  };
 
   return (
     <form
@@ -123,10 +80,13 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
       <FieldGroup>
         <form.Field name='title'>
           {(field) => {
-            const isInvalid = field.state.meta.errors.length > 0;
+            const errors = getFieldError(field.name, field.state.meta.errors);
+            const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Course Title</FieldLabel>
+                <FieldLabel htmlFor={field.name}>
+                  Course Title <span className='text-destructive'>*</span>
+                </FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -136,7 +96,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
                   placeholder='e.g. Introduction to Physics'
                   aria-invalid={isInvalid}
                 />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                {isInvalid && <FieldError errors={errors} />}
               </Field>
             );
           }}
@@ -144,10 +104,13 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
 
         <form.Field name='code'>
           {(field) => {
-            const isInvalid = field.state.meta.errors.length > 0;
+            const errors = getFieldError(field.name, field.state.meta.errors);
+            const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Course Code</FieldLabel>
+                <FieldLabel htmlFor={field.name}>
+                  Course Code <span className='text-destructive'>*</span>
+                </FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -157,7 +120,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
                   placeholder='e.g. PHY101'
                   aria-invalid={isInvalid}
                 />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                {isInvalid && <FieldError errors={errors} />}
               </Field>
             );
           }}
@@ -166,10 +129,13 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
         <div className='grid grid-cols-2 gap-4'>
           <form.Field name='credits'>
             {(field) => {
-              const isInvalid = field.state.meta.errors.length > 0;
+              const errors = getFieldError(field.name, field.state.meta.errors);
+              const isInvalid = errors.length > 0;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Credits</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>
+                    Credits <span className='text-destructive'>*</span>
+                  </FieldLabel>
                   <Input
                     id={field.name}
                     name={field.name}
@@ -180,7 +146,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
                     placeholder='3'
                     aria-invalid={isInvalid}
                   />
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                  {isInvalid && <FieldError errors={errors} />}
                 </Field>
               );
             }}
@@ -188,10 +154,13 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
 
           <form.Field name='maxStudents'>
             {(field) => {
-              const isInvalid = field.state.meta.errors.length > 0;
+              const errors = getFieldError(field.name, field.state.meta.errors);
+              const isInvalid = errors.length > 0;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Max Students</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>
+                    Max Students <span className='text-destructive'>*</span>
+                  </FieldLabel>
                   <Input
                     id={field.name}
                     name={field.name}
@@ -202,7 +171,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
                     placeholder='50'
                     aria-invalid={isInvalid}
                   />
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                  {isInvalid && <FieldError errors={errors} />}
                 </Field>
               );
             }}
@@ -211,10 +180,13 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
 
         <form.Field name='semester'>
           {(field) => {
-            const isInvalid = field.state.meta.errors.length > 0;
+            const errors = getFieldError(field.name, field.state.meta.errors);
+            const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Semester</FieldLabel>
+                <FieldLabel htmlFor={field.name}>
+                  Semester <span className='text-destructive'>*</span>
+                </FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -224,7 +196,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
                   placeholder='e.g. 8th'
                   aria-invalid={isInvalid}
                 />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                {isInvalid && <FieldError errors={errors} />}
               </Field>
             );
           }}
@@ -232,12 +204,11 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
 
         <form.Field name='session'>
           {(field) => {
-            const isInvalid = field.state.meta.errors.length > 0;
+            const errors = getFieldError(field.name, field.state.meta.errors);
+            const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>
-                  Session (Optional)
-                </FieldLabel>
+                <FieldLabel htmlFor={field.name}>Session</FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -247,7 +218,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
                   placeholder='e.g. Spring 2025'
                   aria-invalid={isInvalid}
                 />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                {isInvalid && <FieldError errors={errors} />}
               </Field>
             );
           }}
@@ -255,18 +226,17 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
 
         <form.Field name='teacherId'>
           {(field) => {
-            const isInvalid = field.state.meta.errors.length > 0;
+            const errors = getFieldError(field.name, field.state.meta.errors);
+            const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>
-                  Assign Teacher (Optional)
-                </FieldLabel>
+                <FieldLabel htmlFor={field.name}>Assign Teacher</FieldLabel>
                 <TeacherSelect
                   value={field.state.value}
                   onValueChange={(val) => field.handleChange(val || '')}
                   error={isInvalid}
                 />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                {isInvalid && <FieldError errors={errors} />}
               </Field>
             );
           }}
@@ -276,9 +246,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
           {(field) => {
             return (
               <Field>
-                <FieldLabel htmlFor={field.name}>
-                  Description (Optional)
-                </FieldLabel>
+                <FieldLabel htmlFor={field.name}>Description</FieldLabel>
                 <Textarea
                   id={field.name}
                   name={field.name}
@@ -294,10 +262,15 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
         </form.Field>
       </FieldGroup>
 
-      {globalError && (
-        <div className='text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3'>
-          {globalError}
-        </div>
+      {globalErrors.length > 0 && (
+        <Alert variant="destructive" className="mt-4">
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            {globalErrors.map((err, i) => (
+              <p key={i}>{err.message}</p>
+            ))}
+          </AlertDescription>
+        </Alert>
       )}
 
       <form.Subscribe
@@ -306,7 +279,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
           <Button
             type='submit'
             className='w-full mt-2'
-            disabled={!canSubmit || isSubmitting}
+            disabled={isSubmitting}
           >
             {isSubmitting ? 'Saving...' : 'Save Changes'}
           </Button>
