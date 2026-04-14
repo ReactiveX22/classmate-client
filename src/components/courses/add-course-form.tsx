@@ -1,73 +1,57 @@
-'use client';
+"use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useCreateCourse } from '@/hooks/use-courses';
-import { useForm } from '@tanstack/react-form';
-import { z } from 'zod';
-import { toast } from 'sonner';
-import { TeacherSelect } from './teacher-select';
-import { ErrorCode } from '@/types/errors';
-import { useState } from 'react';
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useCreateCourse } from "@/hooks/use-courses";
+import { ErrorCode } from "@/types/errors";
+import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
+import { TeacherSelect } from "./teacher-select";
 
 const courseSchema = z.object({
-  title: z.string().min(2, 'Title must be at least 2 characters long'),
-  code: z.string().min(2, 'Course code must be at least 2 characters long'),
-  description: z.string(),
-  credits: z.number().min(1, 'Credits must be at least 1'),
-  semester: z.string().min(1, 'Semester must be at least 1 characters long'),
-  session: z.string(),
-  maxStudents: z.number().min(1, 'Must be at least 1 student'),
-  teacherId: z.string(),
+  title: z.string().min(2, "Title must be at least 2 characters long"),
+  code: z.string().min(2, "Course code must be at least 2 characters long"),
+  description: z.string().optional(),
+  credits: z.number().min(1, "Credits must be at least 1"),
+  semester: z.string().min(1, "Semester must be at least 1 characters long"),
+  session: z.string().optional(),
+  maxStudents: z.number().min(1, "Must be at least 1 student"),
+  teacherId: z.string().optional(),
 });
 
 interface AddCourseFormProps {
   onSuccess?: () => void;
-  formId?: string;
-  onSubmittingChange?: (isSubmitting: boolean) => void;
 }
 
-export function AddCourseForm({
-  onSuccess,
-  formId = 'add-course-form',
-  onSubmittingChange,
-}: AddCourseFormProps) {
+export function AddCourseForm({ onSuccess }: AddCourseFormProps) {
   const createCourseMutation = useCreateCourse();
-  const [globalError, setGlobalError] = useState('');
+  const [globalError, setGlobalError] = useState("");
 
   const form = useForm({
     defaultValues: {
-      title: '',
-      code: '',
-      description: '',
+      title: "",
+      code: "",
+      description: "",
       credits: 3,
-      semester: '',
-      session: '',
+      semester: "",
+      session: "",
       maxStudents: 50,
-      teacherId: '',
+      teacherId: "",
     },
     validators: {
-      onSubmit: ({ value }) => {
-        const result = courseSchema.safeParse(value);
-        if (result.success) return undefined;
-
-        const errors: Record<string, string> = {};
-        result.error.issues.forEach((issue) => {
-          const path = issue.path.join('.');
-          errors[path] = issue.message;
-        });
-        return errors;
-      },
+      onSubmit: courseSchema,
     },
     onSubmit: async ({ value }) => {
-      setGlobalError('');
-      onSubmittingChange?.(true);
+      setGlobalError("");
       try {
         await createCourseMutation.mutateAsync({
           title: value.title,
@@ -96,196 +80,243 @@ export function AddCourseForm({
           setGlobalError(
             error.response?.data?.message ||
               error.message ||
-              'Failed to create course'
+              "Failed to create course",
           );
         }
-      } finally {
-        onSubmittingChange?.(false);
       }
     },
   });
 
   return (
     <form
-      id={formId}
+      id="add-course-form"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className='flex flex-col gap-4'
+      className="flex flex-col gap-6"
     >
-      <div className='grid gap-4 sm:grid-cols-4'>
-        <form.Field name='title'>
-          {(field) => {
-            const isInvalid = field.state.meta.errors.length > 0;
-            return (
-              <Field data-invalid={isInvalid} className='sm:col-span-3'>
-                <FieldLabel htmlFor={field.name}>Course Title</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. Introduction to Computer Science'
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
+      <FieldGroup>
+        <div className="grid gap-4 sm:grid-cols-4">
+          <form.Field
+            name="title"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched &&
+                field.state.meta.errors.length > 0;
+              return (
+                <Field data-invalid={isInvalid} className="sm:col-span-3">
+                  <FieldLabel htmlFor={field.name}>Course Title</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="e.g. Introduction to Computer Science"
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
 
-        <form.Field name='code'>
-          {(field) => {
-            const isInvalid = field.state.meta.errors.length > 0;
-            return (
-              <Field data-invalid={isInvalid} className='sm:col-span-1'>
-                <FieldLabel htmlFor={field.name}>Code</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='CS101'
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
+          <form.Field
+            name="code"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched &&
+                field.state.meta.errors.length > 0;
+              return (
+                <Field data-invalid={isInvalid} className="sm:col-span-1">
+                  <FieldLabel htmlFor={field.name}>Code</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="CS101"
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
 
-        <form.Field name='semester'>
-          {(field) => {
-            const isInvalid = field.state.meta.errors.length > 0;
-            return (
-              <Field data-invalid={isInvalid} className='sm:col-span-2'>
-                <FieldLabel htmlFor={field.name}>Semester</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. 8th'
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
+          <form.Field
+            name="semester"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched &&
+                field.state.meta.errors.length > 0;
+              return (
+                <Field data-invalid={isInvalid} className="sm:col-span-2">
+                  <FieldLabel htmlFor={field.name}>Semester</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="e.g. 8th"
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
 
-        <form.Field name='session'>
-          {(field) => {
-            const isInvalid = field.state.meta.errors.length > 0;
-            return (
-              <Field data-invalid={isInvalid} className='sm:col-span-2'>
-                <FieldLabel htmlFor={field.name}>
-                  Session (Optional)
-                </FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. Spring 2025'
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
+          <form.Field
+            name="session"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched &&
+                field.state.meta.errors.length > 0;
+              return (
+                <Field data-invalid={isInvalid} className="sm:col-span-2">
+                  <FieldLabel htmlFor={field.name}>Session</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="e.g. Spring 2025"
+                    aria-invalid={isInvalid}
+                  />
 
-        <form.Field name='credits'>
-          {(field) => {
-            const isInvalid = field.state.meta.errors.length > 0;
-            return (
-              <Field data-invalid={isInvalid} className='sm:col-span-1'>
-                <FieldLabel htmlFor={field.name}>Credits</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type='number'
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(Number(e.target.value))}
-                  placeholder='3'
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
 
-        <form.Field name='maxStudents'>
-          {(field) => {
-            const isInvalid = field.state.meta.errors.length > 0;
-            return (
-              <Field data-invalid={isInvalid} className='sm:col-span-1'>
-                <FieldLabel htmlFor={field.name}>Capacity</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type='number'
-                  value={field.state.value ?? ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(Number(e.target.value))}
-                  placeholder='50'
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
+          <form.Field
+            name="credits"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched &&
+                field.state.meta.errors.length > 0;
+              return (
+                <Field data-invalid={isInvalid} className="sm:col-span-1">
+                  <FieldLabel htmlFor={field.name}>Credits</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="number"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(Number(e.target.value))}
+                    placeholder="3"
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
 
-        <form.Field name='teacherId'>
-          {(field) => {
-            const isInvalid = field.state.meta.errors.length > 0;
-            return (
-              <Field data-invalid={isInvalid} className='sm:col-span-4'>
-                <FieldLabel htmlFor={field.name}>
-                  Assign Teacher (Optional)
-                </FieldLabel>
-                <TeacherSelect
-                  value={field.state.value}
-                  onValueChange={(val) => field.handleChange(val || '')}
-                  error={isInvalid}
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        </form.Field>
+          <form.Field
+            name="maxStudents"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched &&
+                field.state.meta.errors.length > 0;
+              return (
+                <Field data-invalid={isInvalid} className="sm:col-span-1">
+                  <FieldLabel htmlFor={field.name}>Capacity</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="number"
+                    value={field.state.value ?? ""}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(Number(e.target.value))}
+                    placeholder="50"
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
 
-        <form.Field name='description'>
-          {(field) => {
-            return (
-              <Field className='sm:col-span-4'>
-                <FieldLabel htmlFor={field.name}>
-                  Description (Optional)
-                </FieldLabel>
-                <Textarea
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='Brief description of the course'
-                  className='min-h-[80px]'
-                />
-              </Field>
-            );
-          }}
-        </form.Field>
-      </div>
+          <form.Field
+            name="teacherId"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched &&
+                field.state.meta.errors.length > 0;
+              return (
+                <Field data-invalid={isInvalid} className="sm:col-span-4">
+                  <FieldLabel htmlFor={field.name}>Assign Teacher</FieldLabel>
+                  <TeacherSelect
+                    value={field.state.value}
+                    onValueChange={(val) => field.handleChange(val || "")}
+                    error={isInvalid}
+                  />
 
-      {globalError && (
-        <div className='text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3 mt-2'>
-          {globalError}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
+
+          <form.Field
+            name="description"
+            children={(field) => {
+              return (
+                <Field className="sm:col-span-4">
+                  <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+                  <Textarea
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Brief description of the course"
+                    className="min-h-[80px]"
+                  />
+                </Field>
+              );
+            }}
+          />
         </div>
-      )}
+
+        {globalError && (
+          <div className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3 mt-2">
+            {globalError}
+          </div>
+        )}
+
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting]}
+          children={([canSubmit, isSubmitting]) => (
+            <div className="flex items-center justify-end gap-3 mt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => form.reset()}
+                disabled={isSubmitting}
+              >
+                Reset
+              </Button>
+              <Button
+                type="submit"
+                disabled={!canSubmit || isSubmitting}
+                className="min-w-[120px]"
+              >
+                {isSubmitting ? "Creating..." : "Create Course"}
+              </Button>
+            </div>
+          )}
+        />
+      </FieldGroup>
     </form>
   );
 }
