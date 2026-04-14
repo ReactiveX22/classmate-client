@@ -23,6 +23,7 @@ import { z } from 'zod';
 const editStudentSchema = z.object({
   name: z.string().min(1, 'Name is required e.g. "John Doe"'),
   studentId: z.string(),
+  phone: z.string(),
 });
 
 interface EditStudentFormProps {
@@ -37,6 +38,7 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
     defaultValues: {
       name: student.user.name || '',
       studentId: student.student?.studentId || '',
+      phone: (student as any).user_profile?.phone || '',
     },
     validators: {
       onChange: editStudentSchema,
@@ -52,6 +54,7 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
           data: {
             name: value.name,
             studentId: value.studentId || undefined,
+            phone: value.phone || undefined,
           },
         },
         {
@@ -109,6 +112,29 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder='e.g. ST-2023-001'
+                />
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name='phone'>
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>
+                  Phone (Optional)
+                </FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder='e.g. +1 (555) 123-4567'
+                  aria-invalid={isInvalid}
                 />
               </Field>
             );

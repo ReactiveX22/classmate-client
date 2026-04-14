@@ -35,6 +35,7 @@ const editTeacherSchema = z.object({
   name: z.string().min(1, 'Name is required e.g. "John Doe"'),
   title: z.string(),
   joinDate: z.string(),
+  phone: z.string(),
 });
 
 interface EditTeacherFormProps {
@@ -52,6 +53,7 @@ export function EditTeacherForm({ teacher, onSuccess }: EditTeacherFormProps) {
       joinDate: teacher.teacher.joinDate
         ? new Date(teacher.teacher.joinDate).toISOString().split('T')[0]
         : '',
+      phone: (teacher as any).user_profile?.phone || '',
     },
     validators: {
       onChange: editTeacherSchema,
@@ -64,6 +66,7 @@ export function EditTeacherForm({ teacher, onSuccess }: EditTeacherFormProps) {
             name: value.name,
             title: value.title || undefined,
             joinDate: value.joinDate || undefined,
+            phone: value.phone || undefined,
           },
         },
         {
@@ -172,6 +175,29 @@ export function EditTeacherForm({ teacher, onSuccess }: EditTeacherFormProps) {
                     />
                   </PopoverContent>
                 </Popover>
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name='phone'>
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>
+                  Phone (Optional)
+                </FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder='e.g. +1 (555) 123-4567'
+                  aria-invalid={isInvalid}
+                />
               </Field>
             );
           }}
