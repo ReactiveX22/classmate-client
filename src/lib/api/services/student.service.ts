@@ -8,12 +8,14 @@ export interface CreateStudentInput {
   password: string;
   name: string;
   studentId?: string;
+  phone?: string;
 }
 
 export interface UpdateStudentInput {
   name?: string;
   studentId?: string;
   status?: string;
+  phone?: string;
 }
 
 export interface Student {

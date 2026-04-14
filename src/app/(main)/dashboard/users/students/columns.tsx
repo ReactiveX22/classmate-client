@@ -93,6 +93,21 @@ export const columns: ColumnDef<StudentData>[] = [
     },
     enableSorting: true,
   },
+  {
+    accessorKey: 'user_profile.phone',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label='Phone' />
+    ),
+    meta: {
+      label: 'Phone',
+      placeholder: 'Filter by phone...',
+      variant: 'text',
+    },
+    cell: ({ row }) => {
+      const phone = (row.original as any).user_profile?.phone;
+      return <div className='truncate'>{phone || '-'}</div>;
+    },
+  },
 
   {
     accessorKey: 'user.createdAt',

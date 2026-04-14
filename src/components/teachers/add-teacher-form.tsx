@@ -29,6 +29,7 @@ const teacherSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters long'),
   title: z.string(),
   joinDate: z.string(),
+  phone: z.string(),
 });
 
 interface AddTeacherFormProps {
@@ -46,6 +47,7 @@ export function AddTeacherForm({ onSuccess }: AddTeacherFormProps) {
       password: '',
       title: '',
       joinDate: new Date().toISOString().split('T')[0], // Default to today
+      phone: '',
     },
     validators: {
       onChange: teacherSchema,
@@ -59,6 +61,7 @@ export function AddTeacherForm({ onSuccess }: AddTeacherFormProps) {
           password: value.password,
           title: value.title || undefined,
           joinDate: value.joinDate || undefined,
+          phone: value.phone || undefined,
         });
         toast.success('Teacher added successfully');
         form.reset();
@@ -218,6 +221,29 @@ export function AddTeacherForm({ onSuccess }: AddTeacherFormProps) {
                     />
                   </PopoverContent>
                 </Popover>
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name='phone'>
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>
+                  Phone (Optional)
+                </FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder='e.g. +1 (555) 123-4567'
+                  aria-invalid={isInvalid}
+                />
               </Field>
             );
           }}

@@ -19,6 +19,7 @@ const studentSchema = z.object({
   email: z.email('Please provide a valid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters long'),
   studentId: z.string(),
+  phone: z.string(),
 });
 
 interface AddStudentFormProps {
@@ -34,6 +35,7 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
       email: '',
       password: '',
       studentId: '',
+      phone: '',
     },
     validators: {
       onChange: studentSchema,
@@ -44,6 +46,7 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
         email: value.email,
         password: value.password,
         studentId: value.studentId || undefined,
+        phone: value.phone || undefined,
       });
       toast.success('Student added successfully');
       form.reset();
@@ -146,6 +149,29 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder='e.g. STU12345'
+                />
+              </Field>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name='phone'>
+          {(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>
+                  Phone (Optional)
+                </FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder='e.g. +1 (555) 123-4567'
+                  aria-invalid={isInvalid}
                 />
               </Field>
             );

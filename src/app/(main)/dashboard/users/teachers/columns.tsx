@@ -78,6 +78,21 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
     },
   },
   {
+    accessorKey: 'user_profile.phone',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label='Phone' />
+    ),
+    meta: {
+      label: 'Phone',
+      placeholder: 'Filter by phone...',
+      variant: 'text',
+    },
+    cell: ({ row }) => {
+      const phone = (row.original as any).user_profile?.phone;
+      return <div className='truncate'>{phone || '-'}</div>;
+    },
+  },
+  {
     accessorKey: 'teacher.title',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} label='Title' />

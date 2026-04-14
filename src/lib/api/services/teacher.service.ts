@@ -9,6 +9,7 @@ export interface CreateTeacherInput {
   name: string;
   title?: string;
   joinDate?: string;
+  phone?: string;
 }
 
 export interface UpdateTeacherInput {
@@ -16,6 +17,7 @@ export interface UpdateTeacherInput {
   title?: string;
   joinDate?: string;
   status?: string;
+  phone?: string;
 }
 
 export interface Teacher {
