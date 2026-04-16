@@ -14,7 +14,7 @@ import { useUpdateCourse } from '@/hooks/use-courses';
 import { useFormErrorHandler } from '@/hooks/use-form-handler';
 import { Course } from '@/lib/api/services/course.service';
 import { useForm } from '@tanstack/react-form';
-import { courseSchema } from '@/lib/schemas/course-schema';
+import { courseSchema, type CourseFormValues } from '@/lib/schemas/course-schema';
 import { TeacherSelect } from './teacher-select';
 
 interface EditCourseFormProps {
@@ -36,7 +36,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
       session: course.session || '',
       maxStudents: course.maxStudents,
       teacherId: course.teacherId || '',
-    },
+    } as CourseFormValues,
     validators: {
       onSubmit: courseSchema,
     },
@@ -140,7 +140,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
                     id={field.name}
                     name={field.name}
                     type='number'
-                    value={field.state.value}
+                    value={field.state.value ?? ''}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(Number(e.target.value))}
                     placeholder='3'
@@ -212,7 +212,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
                 <Input
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
+                  value={field.state.value ?? ''}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder='e.g. Spring 2025'
@@ -233,7 +233,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
                 <FieldLabel htmlFor={field.name}>Assign Teacher</FieldLabel>
                 <TeacherSelect
                   value={field.state.value}
-                  onValueChange={(val) => field.handleChange(val || '')}
+                  onValueChange={field.handleChange}
                   error={isInvalid}
                 />
                 {isInvalid && <FieldError errors={errors} />}
@@ -250,7 +250,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
                 <Textarea
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
+                  value={field.state.value ?? ''}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder='Brief description'
