@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCreateCourse } from "@/hooks/use-courses";
 import { useFormErrorHandler } from "@/hooks/use-form-handler";
 import { useForm } from "@tanstack/react-form";
-import { courseSchema } from "@/lib/schemas/course-schema";
+import { courseSchema, type CourseFormValues } from "@/lib/schemas/course-schema";
 import { TeacherSelect } from "./teacher-select";
 
 interface AddCourseFormProps {
@@ -34,7 +34,7 @@ export function AddCourseForm({ onSuccess }: AddCourseFormProps) {
       session: "",
       maxStudents: 50,
       teacherId: "",
-    },
+    } as CourseFormValues,
     validators: {
       onSubmit: courseSchema,
     },
@@ -162,7 +162,7 @@ export function AddCourseForm({ onSuccess }: AddCourseFormProps) {
                   <Input
                     id={field.name}
                     name={field.name}
-                    value={field.state.value}
+                    value={field.state.value ?? ""}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder="e.g. Spring 2025"
@@ -236,7 +236,7 @@ export function AddCourseForm({ onSuccess }: AddCourseFormProps) {
                   <FieldLabel htmlFor={field.name}>Assign Teacher</FieldLabel>
                   <TeacherSelect
                     value={field.state.value}
-                    onValueChange={(val) => field.handleChange(val || "")}
+                    onValueChange={field.handleChange}
                     error={isInvalid}
                   />
                   {isInvalid && <FieldError errors={errors} />}
@@ -254,7 +254,7 @@ export function AddCourseForm({ onSuccess }: AddCourseFormProps) {
                   <Textarea
                     id={field.name}
                     name={field.name}
-                    value={field.state.value}
+                    value={field.state.value ?? ""}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder="Brief description of the course"
