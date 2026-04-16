@@ -7,24 +7,13 @@ import {
   FieldGroup,
   FieldLabel,
 } from '@/components/ui/field';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { useUpdateStudent } from '@/hooks/use-students';
 import { StudentData } from '@/lib/api/services/student.service';
+import { useFormErrorHandler } from '@/hooks/use-form-handler';
 import { useForm } from '@tanstack/react-form';
-import { z } from 'zod';
-
-const editStudentSchema = z.object({
-  name: z.string().min(1, 'Name is required e.g. "John Doe"'),
-  studentId: z.string(),
-  phone: z.string(),
-});
+import { editStudentSchema, type EditStudentFormValues } from '@/lib/schemas/student-schema';
 
 interface EditStudentFormProps {
   student: StudentData;
@@ -33,38 +22,43 @@ interface EditStudentFormProps {
 
 export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
   const updateStudentMutation = useUpdateStudent();
+  const { fieldErrors, globalErrors, handleError } = useFormErrorHandler();
 
   const form = useForm({
     defaultValues: {
       name: student.user.name || '',
       studentId: student.student?.studentId || '',
       phone: (student as any).user_profile?.phone || '',
-    },
+    } as EditStudentFormValues,
     validators: {
-      onChange: editStudentSchema,
+      onSubmit: editStudentSchema,
     },
     onSubmit: async ({ value }) => {
       if (!student.user?.id) {
         return;
       }
 
-      await updateStudentMutation.mutateAsync(
-        {
+      try {
+        await updateStudentMutation.mutateAsync({
           id: student.user.id,
           data: {
             name: value.name,
             studentId: value.studentId || undefined,
             phone: value.phone || undefined,
           },
-        },
-        {
-          onSuccess: () => {
-            onSuccess?.();
-          },
-        },
-      );
+        });
+        onSuccess?.();
+      } catch (error: any) {
+        handleError(error, value);
+      }
     },
   });
+
+  const getFieldError = (fieldName: string, fieldErrorsState: any[]) => {
+    if (fieldErrorsState.length > 0) return fieldErrorsState;
+    if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
+    return [];
+  };
 
   return (
     <form
@@ -76,13 +70,16 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
       className='flex flex-col gap-4 p-1'
     >
       <FieldGroup>
-        <form.Field name='name'>
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+        <form.Field
+          name='name'
+          children={(field) => {
+            const errors = getFieldError(field.name, field.state.meta.errors);
+            const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
+                <FieldLabel htmlFor={field.name}>
+                  Full Name <span className='text-destructive'>*</span>
+                </FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
@@ -92,16 +89,19 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
                   placeholder='e.g. John Doe'
                   aria-invalid={isInvalid}
                 />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                {isInvalid && <FieldError errors={errors} />}
               </Field>
             );
           }}
-        </form.Field>
+        />
 
-        <form.Field name='studentId'>
-          {(field) => {
+        <form.Field
+          name='studentId'
+          children={(field) => {
+            const errors = getFieldError(field.name, field.state.meta.errors);
+            const isInvalid = errors.length > 0;
             return (
-              <Field>
+              <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>
                   Student ID (Optional)
                 </FieldLabel>
@@ -112,16 +112,19 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder='e.g. ST-2023-001'
+                  aria-invalid={isInvalid}
                 />
+                {isInvalid && <FieldError errors={errors} />}
               </Field>
             );
           }}
-        </form.Field>
+        />
 
-        <form.Field name='phone'>
-          {(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && field.state.meta.errors.length > 0;
+        <form.Field
+          name='phone'
+          children={(field) => {
+            const errors = getFieldError(field.name, field.state.meta.errors);
+            const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>
@@ -136,35 +139,46 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
                   placeholder='e.g. +1 (555) 123-4567'
                   aria-invalid={isInvalid}
                 />
+                {isInvalid && <FieldError errors={errors} />}
               </Field>
             );
           }}
-        </form.Field>
+        />
       </FieldGroup>
 
-      {updateStudentMutation.error && (
-        <div className='text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3'>
-          {updateStudentMutation.error.response?.data?.message ||
-            updateStudentMutation.error.message ||
-            'Failed to update student'}
-        </div>
+      {globalErrors.length > 0 && (
+        <Alert variant='destructive' className='mt-4'>
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            {globalErrors.map((err, i) => (
+              <p key={i}>{err.message}</p>
+            ))}
+          </AlertDescription>
+        </Alert>
       )}
 
       <form.Subscribe
         selector={(state) => [state.canSubmit, state.isSubmitting]}
-      >
-        {([canSubmit, isSubmitting]) => (
-          <Button
-            type='submit'
-            className='w-full mt-2'
-            disabled={!canSubmit || updateStudentMutation.isPending}
-          >
-            {updateStudentMutation.isPending || isSubmitting
-              ? 'Updating...'
-              : 'Save Changes'}
-          </Button>
+        children={([canSubmit, isSubmitting]) => (
+          <div className='flex items-center justify-end gap-3 mt-4'>
+            <Button
+              type='button'
+              variant='outline'
+              onClick={() => form.reset()}
+              disabled={isSubmitting}
+            >
+              Reset
+            </Button>
+            <Button
+              type='submit'
+              disabled={isSubmitting}
+              className='min-w-[120px]'
+            >
+              {isSubmitting ? 'Updating...' : 'Save Changes'}
+            </Button>
+          </div>
         )}
-      </form.Subscribe>
+      />
     </form>
   );
 }
