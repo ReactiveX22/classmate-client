@@ -10,6 +10,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useState } from 'react';
 import { AttachmentDisplay } from './attachment-display';
 import { PostCardActions } from './post-card-actions';
+import { CommentSection } from '../comment-section';
 
 interface QuestionCardProps {
   post: Post;
@@ -77,6 +78,10 @@ export function QuestionCard({ post }: QuestionCardProps) {
 
           {post.attachments && post.attachments.length > 0 && (
             <AttachmentDisplay attachments={post.attachments} />
+          )}
+
+          {post.commentsEnabled && (
+            <CommentSection postId={post.id} classroomId={post.classroomId} />
           )}
         </CardContent>
       </Card>

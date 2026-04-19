@@ -9,6 +9,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useState } from 'react';
 import { AttachmentDisplay } from './attachment-display';
 import { PostCardActions } from './post-card-actions';
+import { CommentSection } from '../comment-section';
 
 interface MaterialCardProps {
   post: Post;
@@ -81,6 +82,10 @@ export function MaterialCard({ post }: MaterialCardProps) {
               attachments={post.attachments}
               variant='compact'
             />
+          )}
+
+          {post.commentsEnabled && (
+            <CommentSection postId={post.id} classroomId={post.classroomId} />
           )}
         </CardContent>
       </Card>
