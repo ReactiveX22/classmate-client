@@ -18,6 +18,7 @@ import { useState } from 'react';
 import { EditPostDialog } from '../edit-post-dialog';
 import { AttachmentDisplay } from './attachment-display';
 import { PostCardActions } from './post-card-actions';
+import { CommentSection } from '../comment-section';
 
 interface AssignmentCardProps {
   post: Post;
@@ -242,6 +243,12 @@ export function AssignmentCard({
                 </Badge>
               )}
           </div>
+
+          {post.commentsEnabled && (
+            <div onClick={(e) => e.stopPropagation()}>
+              <CommentSection postId={post.id} classroomId={post.classroomId} />
+            </div>
+          )}
         </CardContent>
       </Card>
 
