@@ -1,13 +1,10 @@
-import { Hero } from '@/components/landing/Hero';
-import { Features } from '@/components/landing/Features';
 import { CTA } from '@/components/landing/CTA';
+import { Features } from '@/components/landing/Features';
 import { Footer } from '@/components/landing/Footer';
 import Header from '@/components/landing/Header';
-import dynamic from 'next/dynamic';
-
-const Contact = dynamic(() =>
-  import('@/components/landing/Contact').then((mod) => mod.Contact)
-);
+import { Hero } from '@/components/landing/Hero';
+import { NoticeBoard } from '@/components/landing/NoticeBoard';
+import { RoleTabs } from '@/components/landing/RoleTabs';
 
 export default function Home() {
   return (
@@ -16,8 +13,9 @@ export default function Home() {
       <main className='flex-1'>
         <Hero />
         <Features />
+        <RoleTabs />
+        <NoticeBoard />
         <CTA />
-        <Contact />
       </main>
       <Footer />
     </div>
