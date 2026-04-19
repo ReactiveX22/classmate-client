@@ -1,4 +1,6 @@
 'use client';
+
+import { ModeToggle } from '@/components/mode-toggle';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 
@@ -25,7 +27,10 @@ export function DashboardHeader({
       <div className='flex items-center gap-2'>
         <SidebarTrigger className='-ml-1' />
       </div>
-      <div className='flex items-center gap-2 ml-auto'>{children}</div>
+      <div className='flex items-center gap-2 ml-auto'>
+        <ModeToggle />
+        {children}
+      </div>
     </header>
   );
 }
