@@ -11,6 +11,11 @@ import { columns } from './columns';
 import { StudentData } from '@/lib/api/services/student.service';
 import { ExtendedColumnSort } from '@/types/data-table';
 import { PageHeader } from '@/components/common/page-header';
+import { useQueryState } from 'nuqs';
+import { useCallback, useEffect, useState } from 'react';
+import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
+import { Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 const DEFAULT_SORTING: ExtendedColumnSort<StudentData>[] = [
   { id: 'createdAt', desc: true },
@@ -19,6 +24,31 @@ const DEFAULT_SORTING: ExtendedColumnSort<StudentData>[] = [
 export default function StudentsPage() {
   const { page, perPage, sorting } =
     useTableQueryState<StudentData>(DEFAULT_SORTING);
+
+  const [search, setSearch] = useQueryState('search', {
+    defaultValue: '',
+    clearOnDefault: true,
+    history: 'replace',
+    shallow: true,
+  });
+
+  const [localSearch, setLocalSearch] = useState(search);
+
+  useEffect(() => {
+    setLocalSearch(search);
+  }, [search]);
+
+  const debouncedSetSearch = useDebouncedCallback((value: string) => {
+    setSearch(value || null);
+  }, 400);
+
+  const onSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setLocalSearch(e.target.value);
+      debouncedSetSearch(e.target.value);
+    },
+    [debouncedSetSearch]
+  );
 
   const {
     data: response,
@@ -29,6 +59,7 @@ export default function StudentsPage() {
     limit: perPage,
     sortBy: sorting[0]?.id as any,
     sortOrder: sorting[0]?.desc ? 'desc' : 'asc',
+    search: search || undefined,
   });
 
   const students = response?.data || [];
@@ -62,7 +93,17 @@ export default function StudentsPage() {
           isFetching={isFetching}
           actionBar={<StudentsTableActionBar table={table} />}
         >
-          <DataTableToolbar table={table} />
+          <DataTableToolbar table={table} searchInput={
+            <div className='relative w-64'>
+              <Search className='absolute top-2.5 left-2 h-4 w-4 text-muted-foreground' />
+              <Input
+                placeholder='Search students...'
+                value={localSearch}
+                onChange={onSearchChange}
+                className='h-8 pl-8'
+              />
+            </div>
+          } />
         </DataTable>
       )}
     </div>
