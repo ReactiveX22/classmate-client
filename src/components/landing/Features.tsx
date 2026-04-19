@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'motion/react';
+
 import {
   IconChalkboard,
   IconBell,
@@ -43,30 +43,12 @@ const features = [
   },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
 
 export function Features() {
   return (
     <section id='features' className='py-24 md:py-32 px-4 sm:px-6 bg-muted/30'>
       <div className='max-w-7xl mx-auto'>
-        <motion.div
-          className='mb-16 text-center max-w-3xl mx-auto'
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className='mb-16 text-center max-w-3xl mx-auto'>
           <h2 className='text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4'>
             Everything you need to{' '}
             <span className='text-transparent bg-clip-text bg-gradient-to-r from-primary to-chart-2'>
@@ -76,29 +58,23 @@ export function Features() {
           <p className='text-lg sm:text-xl text-muted-foreground'>
             Powerful features designed specifically for every role in the modern university ecosystem.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          className='grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8'
-          variants={containerVariants}
-          initial='hidden'
-          whileInView='visible'
-          viewport={{ once: true }}
-        >
-          {features.map((feature) => (
-            <motion.div
-              key={feature.title}
-              variants={itemVariants}
-              className='group relative overflow-hidden rounded-2xl border bg-card/60 backdrop-blur-sm p-6 md:p-8 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300'
+        <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8'>
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className='group relative rounded-2xl border bg-card p-6 md:p-8 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1 transform-gpu'
+              style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
             >
-              <div className='mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-sm group-hover:scale-110 transition-transform'>
+              <div className='mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-sm group-hover:scale-110 transition-transform duration-300'>
                 <feature.icon size={24} stroke={1.5} />
               </div>
               <h3 className='mb-2 text-xl font-semibold tracking-tight'>{feature.title}</h3>
               <p className='text-muted-foreground leading-relaxed'>{feature.description}</p>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

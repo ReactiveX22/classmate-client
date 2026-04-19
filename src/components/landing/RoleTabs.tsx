@@ -52,7 +52,7 @@ export function RoleTabs() {
                             <button
                                 key={role.id}
                                 onClick={() => setActiveRole(role.id)}
-                                className={`relative flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-colors z-10 ${activeRole === role.id ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+                                className={`cursor-pointer relative flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-colors z-10 ${activeRole === role.id ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
                                     }`}
                             >
                                 {activeRole === role.id && (
