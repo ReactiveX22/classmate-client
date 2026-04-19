@@ -19,7 +19,7 @@ import { z } from 'zod';
 
 const noticeSchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  content: z.string(),
+  content: z.string().min(1, 'Content is required'),
   tags: z.array(z.string()),
 });
 
@@ -114,7 +114,7 @@ export function NoticeForm({
                   field.state.meta.errors.length > 0;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Title</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Title *</FieldLabel>
                     <Input
                       id={field.name}
                       name={field.name}
@@ -200,7 +200,7 @@ export function NoticeForm({
                   field.state.meta.errors.length > 0;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Content</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Content *</FieldLabel>
                     <Textarea
                       id={field.name}
                       name={field.name}

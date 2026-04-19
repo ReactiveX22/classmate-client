@@ -48,6 +48,7 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
   },
   {
     accessorKey: 'user.name',
+    id: 'name',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} label='Name' />
     ),
@@ -64,6 +65,7 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
   },
   {
     accessorKey: 'user.email',
+    id: 'email',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} label='Email' />
     ),
@@ -94,6 +96,7 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
   },
   {
     accessorKey: 'teacher.title',
+    id: 'title',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} label='Title' />
     ),

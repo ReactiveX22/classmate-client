@@ -48,6 +48,7 @@ export const columns: ColumnDef<StudentData>[] = [
   },
   {
     accessorKey: 'user.name',
+    id: 'name',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} label='Name' />
     ),
@@ -64,6 +65,7 @@ export const columns: ColumnDef<StudentData>[] = [
   },
   {
     accessorKey: 'student.studentId',
+    id: 'studentId',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} label='Student ID' />
     ),
@@ -79,6 +81,7 @@ export const columns: ColumnDef<StudentData>[] = [
   },
   {
     accessorKey: 'user.email',
+    id: 'email',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} label='Email' />
     ),
@@ -111,6 +114,7 @@ export const columns: ColumnDef<StudentData>[] = [
 
   {
     accessorKey: 'user.createdAt',
+    id: 'createdAt',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} label='Joined' />
     ),

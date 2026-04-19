@@ -77,6 +77,7 @@ export default function NoticesPage() {
               <NoticeDetail
                 data={selectedNotice}
                 onBack={isMobile ? () => setSelectedId(null) : undefined}
+                onDeleted={() => setSelectedId(null)}
               />
             </div>
           )}

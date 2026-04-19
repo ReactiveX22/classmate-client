@@ -13,7 +13,7 @@ import { ExtendedColumnSort } from '@/types/data-table';
 import { PageHeader } from '@/components/common/page-header';
 
 const DEFAULT_SORTING: ExtendedColumnSort<StudentData>[] = [
-  { id: 'user.createdAt', desc: true },
+  { id: 'createdAt', desc: true },
 ];
 
 export default function StudentsPage() {
@@ -22,12 +22,12 @@ export default function StudentsPage() {
 
   const {
     data: response,
-    isLoading,
+    isFetching,
     isError,
   } = useStudents({
     page,
     limit: perPage,
-    sortBy: sorting[0]?.id,
+    sortBy: sorting[0]?.id as any,
     sortOrder: sorting[0]?.desc ? 'desc' : 'asc',
   });
 
@@ -53,14 +53,13 @@ export default function StudentsPage() {
         <AddStudentDialog />
       </PageHeader>
 
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : isError ? (
+      {isError ? (
         <div className='text-red-500'>Error loading students.</div>
       ) : (
         <DataTable
           table={table}
           className='w-fit'
+          isFetching={isFetching}
           actionBar={<StudentsTableActionBar table={table} />}
         >
           <DataTableToolbar table={table} />
