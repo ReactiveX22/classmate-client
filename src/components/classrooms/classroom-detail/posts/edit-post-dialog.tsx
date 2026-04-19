@@ -55,6 +55,7 @@ export function EditPostDialog({
         <PostForm
           classroomId={post.classroomId}
           initialValues={initialValues}
+          hideTypeSelection={true}
           initialAttachments={post.attachments.map((att) => ({
             id: att.id,
             name: att.name,

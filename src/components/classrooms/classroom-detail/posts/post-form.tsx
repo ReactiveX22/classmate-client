@@ -87,19 +87,23 @@ export type PostFormData = z.infer<typeof postSchema>;
 interface PostFormProps {
   classroomId: string;
   initialValues?: PostFormData;
+  defaultType?: PostType;
   initialAttachments?: UploadResult[];
   onSubmit: (data: CreatePostDto) => Promise<void>;
   submitLabel?: string;
   isSubmitting?: boolean;
+  hideTypeSelection?: boolean;
 }
 
 export function PostForm({
   classroomId,
   initialValues,
+  defaultType,
   initialAttachments = [],
   onSubmit,
   submitLabel = 'Post',
   isSubmitting = false,
+  hideTypeSelection = false,
 }: PostFormProps) {
   const [globalError, setGlobalError] = useState('');
   const [attachments, setAttachments] =
@@ -107,13 +111,13 @@ export function PostForm({
 
   const { mutateAsync: uploadFile } = useUploadAttachment();
 
-  const defaultValues: PostFormData = initialValues || {
-    type: 'announcement',
+  const defaultValues: PostFormData = initialValues || ({
+    type: defaultType || 'announcement',
     content: '',
     isPinned: false,
     commentsEnabled: true,
     title: '',
-  };
+  } as PostFormData);
 
   const form = useForm({
     defaultValues,
@@ -173,38 +177,40 @@ export function PostForm({
     >
       <FieldGroup>
         {/* Post Type Selector */}
-        <form.Field name='type'>
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Post Type</FieldLabel>
-              <Select
-                value={field.state.value || 'announcement'}
-                onValueChange={(val) => {
-                  field.handleChange(val as PostType);
-                  // Set defaults when switching types
-                  if (val === 'assignment') {
-                    form.setFieldValue('assignmentData', {
-                      points: 100,
-                      submissionType: 'file',
-                      allowLateSubmission: true,
-                    });
-                  }
-                }}
-                disabled={!!initialValues}
-              >
-                <SelectTrigger>
-                  <SelectValue className='capitalize' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='announcement'>Announcement</SelectItem>
-                  <SelectItem value='assignment'>Assignment</SelectItem>
-                  <SelectItem value='material'>Material</SelectItem>
-                  <SelectItem value='question'>Question</SelectItem>
-                </SelectContent>
-              </Select>
-            </Field>
-          )}
-        </form.Field>
+        {!hideTypeSelection && (
+          <form.Field name='type'>
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Post Type</FieldLabel>
+                <Select
+                  value={field.state.value || 'announcement'}
+                  onValueChange={(val) => {
+                    field.handleChange(val as PostType);
+                    // Set defaults when switching types
+                    if (val === 'assignment') {
+                      form.setFieldValue('assignmentData', {
+                        points: 100,
+                        submissionType: 'file',
+                        allowLateSubmission: true,
+                      });
+                    }
+                  }}
+                  disabled={!!initialValues}
+                >
+                  <SelectTrigger>
+                    <SelectValue className='capitalize' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='announcement'>Announcement</SelectItem>
+                    <SelectItem value='assignment'>Assignment</SelectItem>
+                    <SelectItem value='material'>Material</SelectItem>
+                    <SelectItem value='question'>Question</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
+            )}
+          </form.Field>
+        )}
 
         {/* Title Field (Conditional) */}
         <form.Subscribe

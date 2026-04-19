@@ -34,10 +34,12 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
         <RoleGuard allowedRoles={[Role.Instructor]}>
           <CreatePostDialog
             classroomId={classroomId}
+            defaultType='material'
+            hideTypeSelection={true}
             trigger={
               <Button className='gap-2 shadow-sm mt-4'>
                 <IconPlus size={18} />
-                <span>Add</span>
+                <span>Upload Resource</span>
               </Button>
             }
           />
@@ -61,6 +63,8 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
             </p>
             <CreatePostDialog
               classroomId={classroomId}
+              defaultType='material'
+              hideTypeSelection={true}
               trigger={<Button variant='outline'>Create material</Button>}
             />
           </CardContent>

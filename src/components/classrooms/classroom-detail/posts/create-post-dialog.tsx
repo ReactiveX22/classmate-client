@@ -10,15 +10,20 @@ import {
 import { IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import { CreatePostForm } from './create-post-form';
+import { PostType } from '@/lib/api/services/post.service';
 
 interface CreatePostDialogProps {
   classroomId: string;
   trigger?: React.ReactElement;
+  defaultType?: PostType;
+  hideTypeSelection?: boolean;
 }
 
 export function CreatePostDialog({
   classroomId,
   trigger,
+  defaultType,
+  hideTypeSelection,
 }: CreatePostDialogProps) {
   const [open, setOpen] = useState(false);
 
@@ -36,14 +41,20 @@ export function CreatePostDialog({
       />
       <DialogContent className='sm:max-w-[600px] max-h-[90vh] overflow-y-auto'>
         <DialogHeader>
-          <DialogTitle>Create New Post</DialogTitle>
+          <DialogTitle>
+            {defaultType ? `Create New ${defaultType.charAt(0).toUpperCase() + defaultType.slice(1)}` : 'Create New Post'}
+          </DialogTitle>
           <DialogDescription>
-            Share information, assignments, or questions with your class.
+            {defaultType === 'material' 
+              ? 'Share learning materials and resources with your class.'
+              : 'Share information, assignments, or questions with your class.'}
           </DialogDescription>
         </DialogHeader>
 
         <CreatePostForm
           classroomId={classroomId}
+          defaultType={defaultType}
+          hideTypeSelection={hideTypeSelection}
           onSuccess={() => {
             setOpen(false);
           }}
