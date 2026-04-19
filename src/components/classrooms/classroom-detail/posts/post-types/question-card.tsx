@@ -81,7 +81,7 @@ export function QuestionCard({ post }: QuestionCardProps) {
           )}
 
           {post.commentsEnabled && (
-            <CommentSection postId={post.id} />
+            <CommentSection postId={post.id} classroomId={post.classroomId} />
           )}
         </CardContent>
       </Card>

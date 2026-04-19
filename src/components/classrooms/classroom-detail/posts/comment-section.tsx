@@ -1,126 +1,111 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { IconMessage, IconSend, IconTrash } from "@tabler/icons-react";
+import { IconMessage, IconSend, IconTrash, IconEdit } from "@tabler/icons-react";
 import { formatDistanceToNow } from "date-fns";
 import { getInitials } from "@/lib/utils";
-import { User } from "@/types/auth";
 import { useUser } from "@/hooks/useAuth";
-
-export interface Comment {
-  id: string;
-  postId: string;
-  content: string;
-  authorId: string;
-  authorName: string;
-  authorImage?: string;
-  createdAt: string;
-}
+import { useComments, useCreateComment, useDeleteComment, useUpdateComment } from "@/hooks/use-comments";
 
 interface CommentSectionProps {
   postId: string;
+  classroomId: string;
 }
 
-const STORAGE_KEY = "classmate_comments";
-
-function getComments(postId: string): Comment[] {
-  if (typeof window === "undefined") return [];
-
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return [];
-
-    const allComments: Record<string, Comment[]> = JSON.parse(stored);
-    return allComments[postId] || [];
-  } catch (error) {
-    console.error("Error loading comments from localStorage:", error);
-    return [];
-  }
-}
-
-function saveComment(postId: string, comment: Comment) {
-  if (typeof window === "undefined") return;
-
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    const allComments: Record<string, Comment[]> = stored
-      ? JSON.parse(stored)
-      : {};
-
-    if (!allComments[postId]) {
-      allComments[postId] = [];
-    }
-
-    allComments[postId].push(comment);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(allComments));
-  } catch (error) {
-    console.error("Error saving comment to localStorage:", error);
-  }
-}
-
-function deleteComment(postId: string, commentId: string) {
-  if (typeof window === "undefined") return;
-
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return;
-
-    const allComments: Record<string, Comment[]> = JSON.parse(stored);
-    if (!allComments[postId]) return;
-
-    allComments[postId] = allComments[postId].filter((c) => c.id !== commentId);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(allComments));
-  } catch (error) {
-    console.error("Error deleting comment from localStorage:", error);
-  }
-}
-
-export function CommentSection({ postId }: CommentSectionProps) {
-  const [comments, setComments] = useState<Comment[]>([]);
+export function CommentSection({ postId, classroomId }: CommentSectionProps) {
   const [newComment, setNewComment] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const user = useUser();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
-  useEffect(() => {
-    const loadedComments = getComments(postId);
-    setComments(loadedComments);
-  }, [postId]);
+  // Edit state
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState("");
+
+  // Use the API hook instead of localStorage
+  const { data: comments = [], isLoading: isLoadingComments } = useComments(classroomId, postId);
+  const createComment = useCreateComment();
+  const deleteComment = useDeleteComment();
+  const updateComment = useUpdateComment();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!newComment.trim() || !user.data) return;
+    if (!newComment.trim() || !user.data || !classroomId) return;
 
-    setIsSubmitting(true);
-
-    const comment: Comment = {
-      id: `comment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      postId,
-      content: newComment.trim(),
-      authorId: user.data.id,
-      authorName: user.data.name,
-      authorImage: user.data.image,
-      createdAt: new Date().toISOString(),
-    };
-
-    // Save to localStorage
-    saveComment(postId, comment);
-
-    // Update UI
-    setComments((prev) => [...prev, comment]);
-    setNewComment("");
-    setIsSubmitting(false);
+    createComment.mutate(
+      {
+        classroomId,
+        postId,
+        data: { content: newComment.trim() },
+      },
+      {
+        onSuccess: () => {
+          setNewComment("");
+        },
+      }
+    );
   };
 
   const handleDelete = (commentId: string) => {
-    deleteComment(postId, commentId);
-    setComments((prev) => prev.filter((c) => c.id !== commentId));
+    if (!classroomId) return;
+    deleteComment.mutate({
+      classroomId,
+      postId,
+      commentId,
+    });
   };
+
+  const handleEditSubmit = (commentId: string) => {
+    if (!editContent.trim() || !classroomId) return;
+    
+    updateComment.mutate(
+      {
+        classroomId,
+        postId,
+        commentId,
+        data: { content: editContent.trim() },
+      },
+      {
+        onSuccess: () => {
+          setEditingCommentId(null);
+          setEditContent("");
+        },
+      }
+    );
+  };
+
+  const startEditing = (comment: any) => {
+    setEditingCommentId(comment.id);
+    setEditContent(comment.content);
+  };
+
+  const cancelEditing = () => {
+    setEditingCommentId(null);
+    setEditContent("");
+  };
+
+  // Helper to extract name safely
+  const getCommentAuthorName = (comment: any) => {
+    if (comment.author?.name) return comment.author.name;
+    if (comment.authorName) return comment.authorName;
+    return "Unknown User";
+  };
+
+  // Helper to extract image safely
+  const getCommentAuthorImage = (comment: any) => {
+    if (comment.author?.image) return comment.author.image;
+    if (comment.authorImage) return comment.authorImage;
+    return undefined;
+  };
+
+  // Safeguard against missing classroomId which would break the API calls
+  if (!classroomId) {
+    return null;
+  }
 
   return (
     <div className="mt-4 border-t pt-4">
@@ -140,44 +125,101 @@ export function CommentSection({ postId }: CommentSectionProps) {
       {/* Comment Section */}
       {isExpanded && (
         <div className="mt-3 space-y-4">
+          {isLoadingComments && (
+            <div className="text-center text-sm text-muted-foreground py-2">
+              Loading comments...
+            </div>
+          )}
+
           {/* Existing Comments */}
-          {comments.length > 0 && (
+          {!isLoadingComments && comments.length > 0 && (
             <div className="space-y-0.5">
-              {comments.map((comment) => (
+              {comments.map((comment: any) => (
                 <Card key={comment.id} className="bg-muted/50 py-2 md:py-3">
                   <CardContent className="px-2 md:px-3">
                     <div className="flex gap-3">
                       <Avatar className="w-5 h-5 shrink-0">
-                        <AvatarImage src={comment.authorImage} />
+                        <AvatarImage src={getCommentAuthorImage(comment)} />
                         <AvatarFallback>
-                          {getInitials(comment.authorName)}
+                          {getInitials(getCommentAuthorName(comment))}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-sm font-medium">
-                            {comment.authorName}
+                            {getCommentAuthorName(comment)}
                           </span>
                           <span className="text-xs text-muted-foreground">
-                            {formatDistanceToNow(new Date(comment.createdAt), {
+                            {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), {
                               addSuffix: true,
-                            })}
+                            }) : ""}
+                            {comment.updatedAt && comment.updatedAt !== comment.createdAt && " (edited)"}
                           </span>
                         </div>
-                        <p className="text-sm text-foreground whitespace-pre-wrap">
-                          {comment.content}
-                        </p>
+                        
+                        {/* Edit Mode vs View Mode */}
+                        {editingCommentId === comment.id ? (
+                          <div className="space-y-2 mt-2 w-full pr-2">
+                            <Textarea
+                              value={editContent}
+                              onChange={(e) => setEditContent(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                  e.preventDefault();
+                                  handleEditSubmit(comment.id);
+                                }
+                              }}
+                              className="resize-none min-h-[60px] bg-background"
+                              rows={2}
+                              disabled={updateComment.isPending}
+                            />
+                            <div className="flex justify-end gap-2">
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={cancelEditing}
+                                disabled={updateComment.isPending}
+                              >
+                                Cancel
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                onClick={() => handleEditSubmit(comment.id)} 
+                                disabled={updateComment.isPending || !editContent.trim()}
+                              >
+                                {updateComment.isPending ? "Saving..." : "Save"}
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-sm text-foreground whitespace-pre-wrap">
+                            {comment.content}
+                          </p>
+                        )}
                       </div>
-                      {/* Delete button - only show if user is the comment author */}
-                      {user.data?.id === comment.authorId && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
-                          onClick={() => handleDelete(comment.id)}
-                        >
-                          <IconTrash size={14} />
-                        </Button>
+                      
+                      {/* Actions - only show if user is author and not currently editing */}
+                      {user.data?.id === comment.authorId && editingCommentId !== comment.id && (
+                        <div className="flex items-start -mt-1 -mr-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
+                            onClick={() => startEditing(comment)}
+                            disabled={deleteComment.isPending}
+                          >
+                            <IconEdit size={14} />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+                            onClick={() => handleDelete(comment.id)}
+                            disabled={deleteComment.isPending}
+                          >
+                            <IconTrash size={14} />
+                          </Button>
+                        </div>
                       )}
                     </div>
                   </CardContent>
@@ -199,18 +241,25 @@ export function CommentSection({ postId }: CommentSectionProps) {
                     placeholder="Add a comment..."
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSubmit(e as any);
+                      }
+                    }}
                     className="resize-none min-h-[60px]"
                     rows={2}
+                    disabled={createComment.isPending}
                   />
                   <div className="flex justify-end">
                     <Button
                       type="submit"
                       size="sm"
-                      disabled={!newComment.trim() || isSubmitting}
+                      disabled={!newComment.trim() || createComment.isPending}
                       className="gap-2"
                     >
                       <IconSend size={14} />
-                      {isSubmitting ? "Posting..." : "Comment"}
+                      {createComment.isPending ? "Posting..." : "Comment"}
                     </Button>
                   </div>
                 </div>

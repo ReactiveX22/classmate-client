@@ -246,7 +246,7 @@ export function AssignmentCard({
 
           {post.commentsEnabled && (
             <div onClick={(e) => e.stopPropagation()}>
-              <CommentSection postId={post.id} />
+              <CommentSection postId={post.id} classroomId={post.classroomId} />
             </div>
           )}
         </CardContent>
