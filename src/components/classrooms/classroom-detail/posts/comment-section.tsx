@@ -20,6 +20,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
   const [newComment, setNewComment] = useState("");
   const user = useUser();
   const [isExpanded, setIsExpanded] = useState(true);
+  const [showAllComments, setShowAllComments] = useState(false);
 
   // Edit state
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
@@ -61,7 +62,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
 
   const handleEditSubmit = (commentId: string) => {
     if (!editContent.trim() || !classroomId) return;
-    
+
     updateComment.mutate(
       {
         classroomId,
@@ -108,7 +109,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
   }
 
   return (
-    <div className="mt-4 border-t pt-4">
+    <div className="mt-2 border-t pt-2">
       {/* Comment Toggle Button */}
       <Button
         variant="ghost"
@@ -124,7 +125,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
 
       {/* Comment Section */}
       {isExpanded && (
-        <div className="mt-3 space-y-4">
+        <div className="mt-1 space-y-2">
           {isLoadingComments && (
             <div className="text-center text-sm text-muted-foreground py-2">
               Loading comments...
@@ -133,9 +134,9 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
 
           {/* Existing Comments */}
           {!isLoadingComments && comments.length > 0 && (
-            <div className="space-y-0.5">
-              {comments.map((comment: any) => (
-                <Card key={comment.id} className="bg-muted/50 py-2 md:py-3">
+            <div>
+              {(showAllComments ? comments : comments.slice(0, 2)).map((comment: any) => (
+                <Card key={comment.id} className="mb-2">
                   <CardContent className="px-2 md:px-3">
                     <div className="flex gap-3">
                       <Avatar className="w-5 h-5 shrink-0">
@@ -147,7 +148,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-sm font-medium">
-                            {getCommentAuthorName(comment)}
+                            {getCommentAuthorName(comment).split(' ')[0]}
                           </span>
                           <span className="text-xs text-muted-foreground">
                             {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), {
@@ -156,7 +157,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
                             {comment.updatedAt && comment.updatedAt !== comment.createdAt && " (edited)"}
                           </span>
                         </div>
-                        
+
                         {/* Edit Mode vs View Mode */}
                         {editingCommentId === comment.id ? (
                           <div className="space-y-2 mt-2 w-full pr-2">
@@ -174,17 +175,17 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
                               disabled={updateComment.isPending}
                             />
                             <div className="flex justify-end gap-2">
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
+                              <Button
+                                variant="outline"
+                                size="sm"
                                 onClick={cancelEditing}
                                 disabled={updateComment.isPending}
                               >
                                 Cancel
                               </Button>
-                              <Button 
-                                size="sm" 
-                                onClick={() => handleEditSubmit(comment.id)} 
+                              <Button
+                                size="sm"
+                                onClick={() => handleEditSubmit(comment.id)}
                                 disabled={updateComment.isPending || !editContent.trim()}
                               >
                                 {updateComment.isPending ? "Saving..." : "Save"}
@@ -197,7 +198,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
                           </p>
                         )}
                       </div>
-                      
+
                       {/* Actions - only show if user is author and not currently editing */}
                       {user.data?.id === comment.authorId && editingCommentId !== comment.id && (
                         <div className="flex items-start -mt-1 -mr-1">
@@ -225,6 +226,20 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
                   </CardContent>
                 </Card>
               ))}
+
+              {/* Show more/less comments button */}
+              {comments.length > 2 && (
+                <div className="pt-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground px-2 h-8 text-xs font-medium"
+                    onClick={() => setShowAllComments(!showAllComments)}
+                  >
+                    {showAllComments ? "Show fewer comments" : `See ${comments.length - 2} more comments`}
+                  </Button>
+                </div>
+              )}
             </div>
           )}
 
@@ -247,7 +262,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
                         handleSubmit(e as any);
                       }
                     }}
-                    className="resize-none min-h-[60px]"
+                    className="resize-none min-h-[40px]"
                     rows={2}
                     disabled={createComment.isPending}
                   />
