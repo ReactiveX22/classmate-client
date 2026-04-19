@@ -1,12 +1,10 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useUser } from '@/hooks/useAuth';
-import { IconCalendar } from '@tabler/icons-react';
 import { format } from 'date-fns';
 import { AddNoticeDialog } from '../notices/add-notice-dialog';
 import { RecentNotices } from './recent-notices';
+import { StatsCards } from './stats-cards';
 
 export function AdminDashboard() {
   const { data: user } = useUser();
@@ -25,8 +23,10 @@ export function AdminDashboard() {
         <AddNoticeDialog />
       </div>
 
+      <StatsCards />
+
       <div className='grid gap-6 lg:grid-cols-3'>
-        <div className='lg:col-span-3 space-y-4'>
+        <div className='lg:col-span-2 space-y-4'>
           <RecentNotices
             emptyAction={<AddNoticeDialog />}
             emptyDescription='Get started by creating your first notice.'

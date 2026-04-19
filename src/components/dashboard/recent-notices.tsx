@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useRecentNotices } from '@/hooks/use-notices';
 import { NoticeData } from '@/lib/api/services/notice.service';
-import { IconBell, IconChevronRight } from '@tabler/icons-react';
+import { Bell, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { ReactNode } from 'react';
@@ -27,14 +27,25 @@ export function RecentNotices({
   return (
     <div className='space-y-4'>
       <div className='flex items-center justify-between'>
-        <h2 className='font-medium tracking-tight'>Latest Notices</h2>
+        <div className='flex items-center gap-3'>
+          <div className='p-2 rounded-xl bg-primary/10 text-primary'>
+            <Bell size={20} />
+          </div>
+          <div className='space-y-0.5'>
+            <h2 className='text-lg font-bold tracking-tight'>Latest Notices</h2>
+            <p className='text-xs text-muted-foreground'>
+              Stay updated with important announcements
+            </p>
+          </div>
+        </div>
         <Button
-          variant='link'
-          className='px-0 h-auto'
+          variant='ghost'
+          size='sm'
+          className='h-8'
           nativeButton={false}
           render={<Link href='/dashboard/notices' />}
         >
-          View All <IconChevronRight className='ml-1 h-4 w-4' />
+          View All <ChevronRight className='ml-1 h-3 w-3' />
         </Button>
       </div>
 
@@ -103,7 +114,7 @@ function NoticeEmptyState({
     <Card className='border-dashed shadow-none'>
       <CardContent className='flex flex-col items-center justify-center py-12 text-center'>
         <div className='p-3 rounded-full bg-primary/10 mb-4'>
-          <IconBell className='h-6 w-6 text-primary' />
+          <Bell className='h-6 w-6 text-primary' />
         </div>
         <h3 className='text-lg font-semibold'>No Notices Yet</h3>
         <p className='text-sm text-muted-foreground max-w-sm mt-1 mb-4'>

@@ -6,12 +6,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useClassrooms } from '@/hooks/use-classrooms';
 import { useUser } from '@/hooks/useAuth';
-import { IconBook, IconChevronRight } from '@tabler/icons-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { ClassroomCard } from './classroom-card';
 import { DashboardSkeleton } from './dashboard-skeleton';
 import { RecentNotices } from './recent-notices';
+import { UpcomingSection } from './upcoming-section';
+import { LayoutGrid, Calendar, ChevronRight, Book } from 'lucide-react';
 
 export function StudentDashboard() {
   const { data: classroomsResponse, isLoading } = useClassrooms({
@@ -55,14 +56,25 @@ export function StudentDashboard() {
         <div className='lg:col-span-2 space-y-8'>
           <div className='space-y-4'>
             <div className='flex items-center justify-between'>
-              <h2 className='font-medium tracking-tight'>Your Classes</h2>
+              <div className='flex items-center gap-3'>
+                <div className='p-2 rounded-xl bg-primary/10 text-primary'>
+                  <LayoutGrid size={20} />
+                </div>
+                <div className='space-y-0.5'>
+                  <h2 className='text-lg font-bold tracking-tight'>Your Classes</h2>
+                  <p className='text-xs text-muted-foreground'>
+                    You are enrolled in {classrooms.length} classes
+                  </p>
+                </div>
+              </div>
               <Button
-                variant='link'
-                className='px-0 h-auto'
+                variant='ghost'
+                size='sm'
+                className='h-8'
                 nativeButton={false}
                 render={<Link href='/dashboard/classrooms' />}
               >
-                View All <IconChevronRight className='ml-1 h-4 w-4' />
+                View All <ChevronRight className='ml-1 h-3 w-3' />
               </Button>
             </div>
 
@@ -80,45 +92,11 @@ export function StudentDashboard() {
           <RecentNotices />
         </div>
 
-        <div className='space-y-4'>
-          <h2 className='font-medium tracking-tight'>Upcoming</h2>
-          <Card className='p-0 md:py-0'>
-            <CardContent className='p-0 md:px-0'>
-              <ScrollArea className='max-h-[400px]'>
-                {upcomingDeadlines.length === 0 ? (
-                  <div className='p-8 text-center text-muted-foreground text-sm'>
-                    No upcoming deadlines.
-                  </div>
-                ) : (
-                  <div className='divide-y'>
-                    {upcomingDeadlines.map((post) => (
-                      <Link
-                        key={post.id}
-                        href={`/dashboard/classrooms/${post.classroomId}/assignments/${post.id}`}
-                        className='group block p-4 hover:bg-muted/50 transition-colors'
-                      >
-                        <div className='space-y-1'>
-                          <div className='flex items-center justify-between gap-2'>
-                            <span className='font-medium text-sm line-clamp-1 group-hover:text-primary transition-colors'>
-                              {post.title}
-                            </span>
-                            <p className='text-xs text-muted-foreground pt-1'>
-                              Due{' '}
-                              {format(new Date(post.dueAt), 'MMM d, h:mm a')}
-                            </p>
-                          </div>
-                          <p className='text-xs text-muted-foreground line-clamp-1'>
-                            {post.classroomName}
-                          </p>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </ScrollArea>
-            </CardContent>
-          </Card>
-        </div>
+
+        <UpcomingSection 
+          items={upcomingDeadlines} 
+          subtext={`${upcomingDeadlines.length} tasks due soon`}
+        />
       </div>
     </div>
   );
@@ -129,7 +107,7 @@ function EmptyState() {
     <Card className='border-dashed shadow-none'>
       <CardContent className='flex flex-col items-center justify-center py-12 text-center'>
         <div className='p-3 rounded-full bg-primary/10 mb-4'>
-          <IconBook className='h-6 w-6 text-primary' />
+          <Book className='h-6 w-6 text-primary' />
         </div>
         <h3 className='text-lg font-semibold'>No Classes Yet</h3>
         <p className='text-sm text-muted-foreground max-w-sm mt-1 mb-4'>
