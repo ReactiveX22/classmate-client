@@ -30,9 +30,10 @@ import { TagBadge } from './tag-badge';
 interface NoticeDetailProps {
   data: NoticeData | null;
   onBack?: () => void;
+  onDeleted?: () => void;
 }
 
-export function NoticeDetail({ data, onBack }: NoticeDetailProps) {
+export function NoticeDetail({ data, onBack, onDeleted }: NoticeDetailProps) {
   const [showDelete, setShowDelete] = useState(false);
 
   const { mutateAsync: deleteNotice, isPending: isDeleting } =
@@ -62,6 +63,7 @@ export function NoticeDetail({ data, onBack }: NoticeDetailProps) {
       await deleteNotice(notice.id);
       setShowDelete(false);
       toast.success('Notice deleted successfully');
+      if (onDeleted) onDeleted();
     } catch (error) {
       console.error(error);
       toast.error('Failed to delete notice');

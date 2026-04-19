@@ -26,25 +26,11 @@ export function AdminDashboard() {
       </div>
 
       <div className='grid gap-6 lg:grid-cols-3'>
-        <div className='lg:col-span-2 space-y-4'>
+        <div className='lg:col-span-3 space-y-4'>
           <RecentNotices
             emptyAction={<AddNoticeDialog />}
             emptyDescription='Get started by creating your first notice.'
           />
-        </div>
-
-        <div className='space-y-4'>
-          <h2 className='font-medium tracking-tight'>Upcoming</h2>
-          <Card className='p-0'>
-            <CardContent className='p-0'>
-              <ScrollArea className='max-h-[400px]'>
-                <div className='p-8 text-center text-muted-foreground text-sm'>
-                  <IconCalendar className='h-8 w-8 mx-auto mb-2 opacity-50' />
-                  No upcoming events.
-                </div>
-              </ScrollArea>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>

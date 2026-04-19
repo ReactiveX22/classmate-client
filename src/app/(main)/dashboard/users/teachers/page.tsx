@@ -22,12 +22,12 @@ export default function TeachersPage() {
 
   const {
     data: response,
-    isLoading,
+    isFetching,
     isError,
   } = useTeachers({
     page,
     limit: perPage,
-    sortBy: sorting[0]?.id,
+    sortBy: sorting[0]?.id as any,
     sortOrder: sorting[0]?.desc ? 'desc' : 'asc',
   });
   const students = response?.data || [];
@@ -52,14 +52,13 @@ export default function TeachersPage() {
         <AddTeacherDialog />
       </PageHeader>
 
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : isError ? (
+      {isError ? (
         <div className='text-red-500'>Error loading teachers.</div>
       ) : (
         <DataTable
           table={table}
           className='w-fit'
+          isFetching={isFetching}
           actionBar={<TeachersTableActionBar table={table} />}
         >
           <DataTableToolbar table={table} />
