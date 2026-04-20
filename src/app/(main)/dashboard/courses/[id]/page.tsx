@@ -17,8 +17,9 @@ import {
 import { FormPageHeader } from '@/components/ui/form-page-header';
 import { useCourse, useUpdateCourse } from '@/hooks/use-courses';
 import { useDeleteEnrollment } from '@/hooks/use-enrollments';
-import { cn } from '@/lib/utils';
+import { cn, getInitials } from '@/lib/utils';
 import { IconUserPlus } from '@tabler/icons-react';
+import { toast } from 'sonner';
 import {
   Book,
   BookOpen,
@@ -30,14 +31,6 @@ import {
 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import * as React from 'react';
-
-const getInitials = (name: string) => {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase();
-};
 
 export default function CourseDetailsPage() {
   const { id } = useParams();
@@ -312,6 +305,7 @@ export default function CourseDetailsPage() {
         open={showAssignTeacher}
         onOpenChange={setShowAssignTeacher}
         courseTitle={course.title}
+        currentTeacherId={course.teacherId || undefined}
       />
 
       <AssignStudentDialog
@@ -341,7 +335,10 @@ export default function CourseDetailsPage() {
                 studentId: studentToDelete.id,
               },
               {
-                onSuccess: () => setStudentToDelete(null),
+                onSuccess: () => {
+                  setStudentToDelete(null);
+                  toast.success('Enrollment removed successfully');
+                },
               },
             );
           }
