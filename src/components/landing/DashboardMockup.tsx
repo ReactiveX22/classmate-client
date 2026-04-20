@@ -6,146 +6,133 @@ import {
   IconBook,
   IconSpeakerphone,
   IconSettings,
-  IconUser,
-  IconCircleCheck,
-  IconClock
+  IconUsers,
+  IconShieldCheck,
+  IconBell,
+  IconAlertCircle,
+  IconCalendar,
 } from '@tabler/icons-react';
 
 export function DashboardMockup() {
   return (
     <motion.div
-      className='mt-16 w-full max-w-5xl'
-      initial={{ opacity: 0, y: 50, rotateX: 10 }}
-      animate={{ opacity: 1, y: 0, rotateX: 0 }}
-      transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
-      style={{ perspective: '1200px' }}
+      className='relative w-full'
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
     >
+      {/* Main window */}
       <div
-        className='relative rounded-xl border bg-card/50 backdrop-blur-md shadow-2xl overflow-hidden aspect-video transition-transform duration-500 hover:rotate-x-0 group'
-        style={{ transformStyle: 'preserve-3d', transform: 'rotateX(5deg)' }}
+        className='relative rounded-2xl overflow-hidden border border-border/[0.06] shadow-2xl shadow-black/30'
+        style={{ transform: 'rotateY(-5deg) rotateX(2deg)', transformStyle: 'preserve-3d', transition: 'transform 0.6s ease' }}
       >
-        {/* Mock UI - Top Bar */}
-        <div className='flex items-center gap-2 px-4 py-3 border-b bg-muted/30'>
-          <div className='flex gap-1.5'>
-            <div className='h-3 w-3 rounded-full bg-red-400/70' />
-            <div className='h-3 w-3 rounded-full bg-yellow-400/70' />
-            <div className='h-3 w-3 rounded-full bg-green-400/70' />
+        {/* Subtle glow behind */}
+        <div className='absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-chart-2/5 pointer-events-none z-10' />
+
+        {/* Title bar */}
+        <div className='flex items-center gap-2 px-3 py-2 bg-card border-b border-border/40'>
+          <div className='flex gap-1'>
+            <div className='w-2 h-2 rounded-full bg-red-400/70' />
+            <div className='w-2 h-2 rounded-full bg-yellow-400/70' />
+            <div className='w-2 h-2 rounded-full bg-green-400/70' />
           </div>
-          <div className='flex-1 mx-4'>
-            <div className='h-6 w-64 rounded-md bg-muted/60 mx-auto flex items-center justify-center text-[10px] text-muted-foreground font-medium'>
+          <div className='flex-1 flex justify-center'>
+            <div className='flex items-center gap-2 px-4 py-1 rounded-lg bg-muted/50 text-xs text-muted-foreground'>
+              <IconShieldCheck size={10} />
               classmate.app/dashboard
             </div>
           </div>
-          <div className='h-8 w-8 rounded-full bg-primary/20 border border-primary/20 flex items-center justify-center text-[10px] font-bold text-primary'>
-            JD
-          </div>
         </div>
 
-        <div className='flex h-full overflow-hidden'>
-          {/* Mock UI - Sidebar */}
-          <div className='hidden md:flex flex-col w-52 border-r p-4 gap-1 bg-muted/10'>
-            <div className='mb-6 flex items-center px-2 gap-2'>
-               <div className='h-6 w-6 rounded bg-primary flex items-center justify-center text-[10px] font-bold text-white'>C</div>
-               <span className='text-sm font-bold tracking-tight'>Classmate</span>
+        {/* App Content */}
+        <div className='bg-background flex min-h-[380px]'>
+          {/* Mini sidebar */}
+          <div className='w-10 flex-shrink-0 flex flex-col items-center gap-2 py-3 border-r border-border/30 bg-card/50'>
+            <div className='w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center'>
+              <IconLayoutDashboard size={13} className='text-primary' />
             </div>
-            
-            <SidebarItem icon={<IconLayoutDashboard size={16} />} label="Dashboard" active />
-            <SidebarItem icon={<IconBook size={16} />} label="My Classes" />
-            <SidebarItem icon={<IconSpeakerphone size={16} />} label="Notices" />
-            
-            <div className='mt-auto pb-12 space-y-1'>
-              <SidebarItem icon={<IconUser size={16} />} label="Profile" />
-              <SidebarItem icon={<IconSettings size={16} />} label="Settings" />
+            <div className='w-7 h-7 rounded-lg hover:bg-muted flex items-center justify-center transition-colors'>
+              <IconBook size={13} className='text-muted-foreground' />
+            </div>
+            <div className='w-7 h-7 rounded-lg hover:bg-muted flex items-center justify-center transition-colors'>
+              <IconSpeakerphone size={13} className='text-muted-foreground' />
+            </div>
+            <div className='w-7 h-7 rounded-lg hover:bg-muted flex items-center justify-center transition-colors'>
+              <IconUsers size={13} className='text-muted-foreground' />
+            </div>
+            <div className='mt-auto w-7 h-7 rounded-lg hover:bg-muted flex items-center justify-center transition-colors'>
+              <IconSettings size={13} className='text-muted-foreground' />
             </div>
           </div>
 
-          {/* Mock UI - Main Content */}
-          <div className='flex-1 p-6 overflow-hidden'>
-            <div className='flex justify-between items-center mb-6'>
-              <div className='space-y-0.5'>
-                <h3 className='text-lg font-semibold tracking-tight'>Welcome back, John!</h3>
-                <p className='text-xs text-muted-foreground'>Here's what's happening today.</p>
-              </div>
-              <button className='h-9 px-4 rounded-lg bg-primary text-primary-foreground text-xs font-medium shadow-sm'>
-                Join Class
-              </button>
+          {/* Main Content */}
+          <div className='flex-1 p-5'>
+            {/* Greeting */}
+            <div className='mb-4'>
+              <p className='text-xs text-muted-foreground mb-0.5'>Good morning,</p>
+              <p className='text-sm font-semibold'>Welcome back, Dean 👋</p>
             </div>
 
-            <div className='grid grid-cols-3 gap-6'>
-              {/* Left Column - Classes */}
-              <div className='col-span-2 space-y-4'>
-                <h4 className='text-xs font-semibold uppercase tracking-wider text-muted-foreground'>Your Classes</h4>
-                <div className='grid grid-cols-2 gap-4'>
-                  <ClassCard title="CS101: Programming" instructor="Dr. Smith" color="bg-blue-500/5" borderColor="border-blue-500/20" />
-                  <ClassCard title="MATH202: Calculus" instructor="Prof. Sarah" color="bg-purple-500/5" borderColor="border-purple-500/20" />
-                  <ClassCard title="PHY101: Physics" instructor="Dr. Brown" color="bg-orange-500/5" borderColor="border-orange-500/20" />
-                  <div className='rounded-xl border border-dashed border-muted-foreground/20 flex flex-col items-center justify-center h-28 gap-2'>
-                    <div className='h-8 w-8 rounded-full bg-muted/20 flex items-center justify-center text-muted-foreground'>+</div>
-                    <span className='text-[10px] text-muted-foreground font-medium'>Add Class</span>
-                  </div>
+            {/* Admin Stats Row */}
+            <div className='grid grid-cols-3 gap-2 mb-4'>
+              {[
+                { label: 'Students', value: '1,248', color: 'text-primary' },
+                { label: 'Faculty', value: '64', color: 'text-emerald-500' },
+                { label: 'Courses', value: '32', color: 'text-chart-2' },
+              ].map((stat) => (
+                <div key={stat.label} className='p-2.5 rounded-xl bg-muted/40 border border-border/30'>
+                  <p className='text-[10px] text-muted-foreground mb-1'>{stat.label}</p>
+                  <p className={`text-base font-bold ${stat.color}`}>{stat.value}</p>
                 </div>
-              </div>
-
-              {/* Right Column - Upcoming */}
-              <div className='space-y-4'>
-                <h4 className='text-xs font-semibold uppercase tracking-wider text-muted-foreground'>Upcoming</h4>
-                <div className='rounded-xl border bg-card/50 p-4 space-y-4'>
-                  <UpcomingItem title="Lab Report 1" subject="Physics" due="Tomorrow" />
-                  <UpcomingItem title="Quiz: Derivatives" subject="Math" due="In 2 days" />
-                  <UpcomingItem title="Project Proposal" subject="CS101" due="In 4 days" />
-                </div>
-              </div>
+              ))}
             </div>
+
+            {/* Recent Notices Feed */}
+            <p className='text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2'>Recent Notices</p>
+            {[
+              { type: 'Urgent', title: 'Final Exam Schedule Released', time: '2h ago', color: 'text-red-500 bg-red-500/10' },
+              { type: 'Event', title: 'Campus Seminar: Future of AI', time: '5h ago', color: 'text-blue-500 bg-blue-500/10' },
+              { type: 'General', title: 'Library Hours Extended for Finals', time: '1d ago', color: 'text-emerald-500 bg-emerald-500/10' },
+            ].map((notice) => (
+              <div key={notice.title} className='flex items-start gap-2.5 p-2.5 rounded-xl bg-muted/30 border border-border/20 mb-2'>
+                <div className={`mt-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold flex-shrink-0 ${notice.color}`}>
+                  {notice.type}
+                </div>
+                <div className='flex-1 min-w-0'>
+                  <p className='text-[11px] font-medium leading-snug truncate'>{notice.title}</p>
+                </div>
+                <span className='text-[9px] text-muted-foreground whitespace-nowrap flex-shrink-0'>{notice.time}</span>
+              </div>
+            ))}
           </div>
         </div>
+      </div>
 
-        {/* Overlay Glow */}
-        <div className='absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-transparent pointer-events-none' />
+      {/* Floating Notification Card */}
+      <div className='absolute -right-6 top-10 animate-float z-20'>
+        <div className='glass rounded-xl p-3 shadow-xl flex items-center gap-3 w-52'>
+          <div className='w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center flex-shrink-0'>
+            <IconBell size={14} className='text-emerald-500' />
+          </div>
+          <div>
+            <p className='text-[11px] font-semibold'>Notice Published!</p>
+            <p className='text-[10px] text-muted-foreground'>Exam schedule updated</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Floating Faculty Card */}
+      <div className='absolute -left-8 bottom-12 animate-float-delayed z-20'>
+        <div className='glass rounded-xl p-3 shadow-xl flex items-center gap-3 w-48'>
+          <div className='w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0'>
+            <IconUsers size={14} className='text-primary' />
+          </div>
+          <div>
+            <p className='text-[11px] font-semibold'>3 New Faculty</p>
+            <p className='text-[10px] text-muted-foreground'>Onboarded today</p>
+          </div>
+        </div>
       </div>
     </motion.div>
-  );
-}
-
-function SidebarItem({ icon, label, active = false }: { icon: React.ReactNode, label: string, active?: boolean }) {
-  return (
-    <div className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors cursor-pointer ${active ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted'}`}>
-      {icon}
-      <span className='text-xs font-medium'>{label}</span>
-    </div>
-  );
-}
-
-function ClassCard({ title, instructor, color, borderColor }: { title: string, instructor: string, color: string, borderColor: string }) {
-  return (
-    <div className={`rounded-xl border ${borderColor} ${color} p-4 space-y-3 cursor-pointer hover:shadow-sm transition-shadow`}>
-      <div className='flex justify-between items-start'>
-        <h5 className='text-xs font-bold leading-tight line-clamp-1'>{title}</h5>
-        <IconCircleCheck size={14} className='text-primary/60 shrink-0' />
-      </div>
-      <div className='space-y-2'>
-        <div className='flex items-center gap-2'>
-          <div className='h-5 w-5 rounded-full bg-muted flex items-center justify-center text-[8px] font-bold text-muted-foreground'>{instructor[0]}</div>
-          <span className='text-[10px] text-muted-foreground font-medium'>{instructor}</span>
-        </div>
-        <div className='h-1.5 w-full bg-muted/30 rounded-full overflow-hidden'>
-          <div className='h-full bg-primary/40 w-2/3' />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function UpcomingItem({ title, subject, due }: { title: string, subject: string, due: string }) {
-  return (
-    <div className='space-y-1.5 group/item cursor-pointer'>
-      <div className='flex justify-between items-center'>
-        <h5 className='text-[11px] font-semibold leading-none'>{title}</h5>
-        <span className='text-[9px] text-primary font-bold px-1.5 py-0.5 rounded-full bg-primary/10'>{due}</span>
-      </div>
-      <div className='flex items-center gap-1.5'>
-        <IconClock size={10} className='text-muted-foreground/60' />
-        <span className='text-[10px] text-muted-foreground'>{subject}</span>
-      </div>
-    </div>
   );
 }
