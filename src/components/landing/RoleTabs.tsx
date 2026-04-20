@@ -38,7 +38,7 @@ export function RoleTabs() {
         <section id='solutions' className='py-24 md:py-32 px-4 sm:px-6'>
             <div className='max-w-7xl mx-auto'>
                 <div className='text-center mb-12'>
-                    <h2 className='text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4'>
+                    <h2 className='text-3xl sm:text-4xl font-bold tracking-tight mb-4'>
                         Personalized for your role
                     </h2>
                     <p className='text-lg text-muted-foreground max-w-2xl mx-auto'>
