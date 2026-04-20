@@ -12,9 +12,8 @@ export function useCreateEnrollment() {
   return useMutation({
     mutationFn: (payload: CreateEnrollmentInput) =>
       enrollmentService.createEnrollment(payload),
-    onSuccess: (_, { courseId }) => {
-      queryClient.invalidateQueries({ queryKey: ['courses', courseId] });
-      toast.success('Student enrolled successfully');
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['courses'] });
     },
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;
@@ -35,9 +34,8 @@ export function useDeleteEnrollment() {
       courseId: string;
       studentId: string;
     }) => enrollmentService.deleteEnrollment(courseId, studentId),
-    onSuccess: (_, { courseId }) => {
-      queryClient.invalidateQueries({ queryKey: ['courses', courseId] });
-      toast.success('Enrollment removed successfully');
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['courses'] });
     },
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;
