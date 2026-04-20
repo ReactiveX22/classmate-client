@@ -49,13 +49,13 @@ export function Features() {
     <section id='features' className='py-24 md:py-32 px-4 sm:px-6 bg-muted/30'>
       <div className='max-w-7xl mx-auto'>
         <div className='mb-16 text-center max-w-3xl mx-auto'>
-          <h2 className='text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4'>
+          <h2 className='text-3xl sm:text-4xl font-bold tracking-tight mb-4'>
             Everything you need to{' '}
             <span className='text-transparent bg-clip-text bg-gradient-to-r from-primary to-chart-2'>
               run your campus
             </span>
           </h2>
-          <p className='text-lg sm:text-xl text-muted-foreground'>
+          <p className='text-lg text-muted-foreground'>
             Powerful features designed specifically for every role in the modern university ecosystem.
           </p>
         </div>
