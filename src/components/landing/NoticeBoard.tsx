@@ -47,13 +47,14 @@ export function NoticeBoard() {
                         transition={{ duration: 0.5 }}
                     >
                         <Badge variant='outline' className='px-3 py-1 border-primary/30 bg-primary/5'>
-                            Communication
+                            Real-time Communication
                         </Badge>
                         <h2 className='text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight'>
-                            Stay in the loop.
+                            Campus-wide notices,{' '}
+                            <span className='text-gradient'>delivered instantly.</span>
                         </h2>
                         <p className='text-lg text-muted-foreground leading-relaxed'>
-                            Communication that actually works. No more missed emails, lost flyers, or outdated information. Reach the entire campus instantly.
+                            Powered by WebSockets, every notice — urgent alerts, department updates, event announcements — reaches students and faculty the moment it's published. No refreshes, no delays.
                         </p>
                     </motion.div>
 
