@@ -18,6 +18,7 @@ interface DataTableProps<TData> extends React.ComponentProps<'div'> {
   table: TanstackTable<TData>;
   actionBar?: React.ReactNode;
   isFetching?: boolean;
+  hidePagination?: boolean;
 }
 
 export function DataTable<TData>({
@@ -26,6 +27,7 @@ export function DataTable<TData>({
   children,
   className,
   isFetching,
+  hidePagination = false,
   ...props
 }: DataTableProps<TData>) {
   return (
@@ -65,7 +67,7 @@ export function DataTable<TData>({
                   <TableRow key={`skeleton-${index}`}>
                     {table.getAllColumns().map((column) => (
                       <TableCell key={column.id} className='h-12'>
-                        <Skeleton className='h-4 w-full' />
+                        <Skeleton className={cn('h-4 w-full', column.id === 'actions' && 'w-8 ml-auto')} />
                       </TableCell>
                     ))}
                   </TableRow>
@@ -106,7 +108,7 @@ export function DataTable<TData>({
         </Table>
       </div>
       <div className='flex flex-col gap-2.5'>
-        <DataTablePagination table={table} />
+        {!hidePagination && <DataTablePagination table={table} />}
         {actionBar &&
           table.getFilteredSelectedRowModel().rows.length > 0 &&
           actionBar}
