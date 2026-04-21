@@ -10,6 +10,7 @@ import {
   Presentation,
   Settings,
   User,
+  CalendarDays,
 } from 'lucide-react';
 import { AppSidebar } from './app-sidebar';
 
@@ -52,6 +53,11 @@ const adminDashboardData: SidebarData = {
           title: 'Courses',
           url: '/dashboard/courses',
           icon: BookOpen,
+        },
+        {
+          title: 'Sessions',
+          url: '/dashboard/academic-sessions',
+          icon: CalendarDays,
         },
       ],
     },
