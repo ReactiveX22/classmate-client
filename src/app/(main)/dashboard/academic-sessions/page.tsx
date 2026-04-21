@@ -22,6 +22,9 @@ import { ExtendedColumnSort } from '@/types/data-table';
 import { useCourseSessions } from '@/hooks/use-course-sessions';
 import { courseSessionColumns } from './course-session-columns';
 import { CourseSession } from '@/lib/api/services/course-session.service';
+import { AddCourseSessionDialog } from '@/components/academic-sessions/add-course-session-dialog';
+import { AddSemesterDialog } from '@/components/academic-sessions/add-semester-dialog';
+
 
 const DEFAULT_SEMESTER_SORTING: ExtendedColumnSort<Semester>[] = [{ id: 'createdAt', desc: true }];
 const DEFAULT_SESSION_SORTING: ExtendedColumnSort<CourseSession>[] = [{ id: 'createdAt', desc: true }];
@@ -103,11 +106,13 @@ function SemestersSection() {
     }
   });
 
+  const [showAddSemesterDialog, setShowAddSemesterDialog] = useState(false);
+
   return (
     <div className='flex flex-col gap-4 border rounded-lg p-4 bg-background w-full overflow-hidden xl:col-span-1'>
       <div className='flex items-center justify-between'>
         <h2 className='text-lg font-semibold'>Semesters</h2>
-        <Button size='sm' onClick={() => { /* TODO: Add Semester Modal */ }}>
+        <Button size='sm' onClick={() => setShowAddSemesterDialog(true)}>
           <PlusIcon className='h-4 w-4 mr-2' /> Add
         </Button>
       </div>
@@ -128,6 +133,7 @@ function SemestersSection() {
           } />
         </DataTable>
       )}
+      <AddSemesterDialog open={showAddSemesterDialog} onOpenChange={setShowAddSemesterDialog} />
     </div>
   );
 }
@@ -177,11 +183,13 @@ function CourseSessionsSection() {
     }
   });
 
+  const [showAddSessionDialog, setShowAddSessionDialog] = useState(false);
+
   return (
     <div className='flex flex-col gap-4 border rounded-lg p-4 bg-background w-full overflow-hidden xl:col-span-2'>
       <div className='flex items-center justify-between'>
         <h2 className='text-lg font-semibold'>Sessions</h2>
-        <Button size='sm' onClick={() => { /* TODO: Add Session Modal */ }}>
+        <Button size='sm' onClick={() => setShowAddSessionDialog(true)}>
           <PlusIcon className='h-4 w-4 mr-2' /> Add
         </Button>
       </div>
@@ -202,6 +210,7 @@ function CourseSessionsSection() {
           } />
         </DataTable>
       )}
+      <AddCourseSessionDialog open={showAddSessionDialog} onOpenChange={setShowAddSessionDialog} />
     </div>
   );
 }
