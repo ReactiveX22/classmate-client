@@ -39,9 +39,15 @@ export function DataTableFacetedFilter<TData, TValue>({
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const [open, setOpen] = React.useState(false);
 
+  console.log(options)
+
   const columnFilterValue = column?.getFilterValue();
   const selectedValues = new Set(
-    Array.isArray(columnFilterValue) ? columnFilterValue : [],
+    Array.isArray(columnFilterValue)
+      ? columnFilterValue
+      : typeof columnFilterValue === 'string'
+        ? [columnFilterValue]
+        : [],
   );
 
   const onItemSelect = React.useCallback(
@@ -80,7 +86,7 @@ export function DataTableFacetedFilter<TData, TValue>({
           <Button
             variant='outline'
             size='sm'
-            className='border-dashed font-normal'
+            className='gap-1.5 border-dashed font-normal'
           >
             {selectedValues?.size > 0 ? (
               <div
