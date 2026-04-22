@@ -82,7 +82,8 @@ export const columns: ColumnDef<Course>[] = [
     enableSorting: true,
   },
   {
-    accessorKey: 'semester',
+    id: 'semester',
+    accessorFn: (row) => row.semester?.ordinal || row.semesterId,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} label='Semester' />
     ),
@@ -92,12 +93,14 @@ export const columns: ColumnDef<Course>[] = [
       variant: 'text',
     },
     cell: ({ row }) => {
-      return <div>{row.original.semester}</div>;
+      const semester = row.original.semester;
+      return <div>{semester ? semester.ordinal : row.original.semesterId || '—'}</div>;
     },
     enableSorting: true,
   },
   {
-    accessorKey: 'session',
+    id: 'session',
+    accessorFn: (row) => row.session?.name || row.sessionId,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} label='Session' />
     ),
@@ -107,10 +110,11 @@ export const columns: ColumnDef<Course>[] = [
       variant: 'text',
     },
     cell: ({ row }) => {
-      return row.original.session ? (
-        <div>{row.original.session}</div>
+      const session = row.original.session;
+      return session ? (
+        <div>{session.name}</div>
       ) : (
-        <span className='text-muted-foreground'>—</span>
+        <span className='text-muted-foreground'>{row.original.sessionId || '—'}</span>
       );
     },
     enableSorting: true,
