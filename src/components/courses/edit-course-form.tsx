@@ -16,6 +16,8 @@ import { Course } from '@/lib/api/services/course.service';
 import { useForm } from '@tanstack/react-form';
 import { courseSchema, type CourseFormValues } from '@/lib/schemas/course-schema';
 import { TeacherSelect } from './teacher-select';
+import { SemesterSelect } from './semester-select';
+import { SessionSelect } from './session-select';
 
 interface EditCourseFormProps {
   course: Course;
@@ -32,8 +34,8 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
       code: course.code,
       description: course.description || '',
       credits: course.credits,
-      semester: course.semester,
-      session: course.session || '',
+      semesterId: course.semesterId || undefined,
+      sessionId: course.sessionId || undefined,
       maxStudents: course.maxStudents,
       teacherId: course.teacherId || '',
     } as CourseFormValues,
@@ -49,8 +51,8 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
             code: value.code,
             description: value.description || undefined,
             credits: value.credits,
-            semester: value.semester,
-            session: value.session || undefined,
+            semesterId: value.semesterId || undefined,
+            sessionId: value.sessionId || undefined,
             maxStudents: value.maxStudents,
             teacherId: value.teacherId || undefined,
           },
@@ -178,23 +180,17 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
           </form.Field>
         </div>
 
-        <form.Field name='semester'>
+        <form.Field name='semesterId'>
           {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>
-                  Semester <span className='text-destructive'>*</span>
-                </FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
+                <FieldLabel htmlFor={field.name}>Semester</FieldLabel>
+                <SemesterSelect
                   value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. 8th'
-                  aria-invalid={isInvalid}
+                  onValueChange={field.handleChange}
+                  error={isInvalid}
                 />
                 {isInvalid && <FieldError errors={errors} />}
               </Field>
@@ -202,21 +198,17 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
           }}
         </form.Field>
 
-        <form.Field name='session'>
+        <form.Field name='sessionId'>
           {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>Session</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value ?? ''}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. Spring 2025'
-                  aria-invalid={isInvalid}
+                <SessionSelect
+                  value={field.state.value}
+                  onValueChange={field.handleChange}
+                  error={isInvalid}
                 />
                 {isInvalid && <FieldError errors={errors} />}
               </Field>
