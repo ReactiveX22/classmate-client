@@ -35,6 +35,12 @@ export const useEditPost = () => {
         refetchType: 'all',
       });
 
+      // Invalidate specific post query
+      queryClient.invalidateQueries({
+        queryKey: ['post', variables.classroomId, variables.postId],
+        refetchType: 'all',
+      });
+
       toast.success('Post updated successfully!');
     },
     onError: (error) => {

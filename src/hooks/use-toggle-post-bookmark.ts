@@ -29,6 +29,12 @@ export const useTogglePostBookmark = () => {
         queryKey: ['posts', variables.classroomId],
         refetchType: 'all',
       });
+
+      // Invalidate specific post query
+      queryClient.invalidateQueries({
+        queryKey: ['post', variables.classroomId, variables.postId],
+        refetchType: 'all',
+      });
     },
     onError: (error) => {
       const message = handleApiError(error);
