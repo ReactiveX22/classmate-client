@@ -21,6 +21,18 @@ export const useCreatePost = () => {
         refetchType: 'all',
       });
 
+      // Invalidate classrooms query to update dashboard and upcoming lists
+      queryClient.invalidateQueries({
+        queryKey: ['classrooms'],
+        refetchType: 'all',
+      });
+
+      // Invalidate specific upcoming posts for this classroom
+      queryClient.invalidateQueries({
+        queryKey: ['classrooms', variables.classroomId, 'upcoming-posts'],
+        refetchType: 'all',
+      });
+
       toast.success('Post created successfully!');
     },
     onError: (error) => {
