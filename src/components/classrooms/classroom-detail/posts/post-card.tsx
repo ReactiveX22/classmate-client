@@ -18,7 +18,7 @@ export function PostCard({ post, isTeacher }: PostCardProps) {
     case 'material':
       return <MaterialCard post={post} />;
     case 'question':
-      return <QuestionCard post={post} />;
+      return <QuestionCard post={post} isTeacher={isTeacher} />;
     default:
       return null;
   }
