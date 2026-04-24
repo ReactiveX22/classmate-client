@@ -250,9 +250,13 @@ export function PostForm({
 
   const getFieldError = (
     fieldName: string,
-    fieldErrorsState: Array<{ message?: string }>,
+    fieldErrorsState: (string | { message?: string } | undefined | null)[],
   ) => {
-    if (fieldErrorsState.length > 0) return fieldErrorsState;
+    const errors = fieldErrorsState
+      .filter((err): err is string | { message?: string } => !!err)
+      .map((err) => (typeof err === 'string' ? { message: err } : err));
+
+    if (errors.length > 0) return errors;
     if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
     return [];
   };
