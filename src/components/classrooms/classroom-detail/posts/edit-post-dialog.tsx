@@ -34,6 +34,22 @@ export function EditPostDialog({
     commentsEnabled: post.commentsEnabled ?? true,
     title: post.title || '',
     tags: post.tags || [],
+    questionData:
+      post.type === 'question'
+        ? post.questionData?.mode === 'poll'
+          ? {
+              mode: 'poll',
+              selectionMode: post.questionData.selectionMode,
+              options: post.questionData.options.map((option) => ({
+                id: option.id,
+                text: option.text,
+                position: option.position,
+              })),
+            }
+          : {
+              mode: 'short_answer',
+            }
+        : undefined,
     assignmentData:
       post.type === 'assignment'
         ? {
@@ -63,6 +79,10 @@ export function EditPostDialog({
             classroomId={post.classroomId}
             initialValues={initialValues}
             hideTypeSelection={true}
+            lockQuestionPollStructure={
+              post.questionData?.mode === 'poll' &&
+              (post.questionData.votes?.length ?? 0) > 0
+            }
             initialAttachments={post.attachments.map((att) => ({
               id: att.id,
               name: att.name,
