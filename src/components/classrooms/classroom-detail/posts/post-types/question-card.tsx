@@ -206,7 +206,7 @@ export function QuestionCard({ post }: QuestionCardProps) {
       <Card className='overflow-hidden transition-shadow hover:shadow-md'>
         <CardHeader>
           <div className='flex items-start gap-3'>
-            <Avatar className='border-2 border-orange-200'>
+            <Avatar className='border-2 border-orange-200 w-8 h-8 sm:w-10 sm:h-10 shrink-0'>
               <AvatarImage src={post.author?.image || undefined} />
               <AvatarFallback className='bg-orange-100 text-orange-700'>
                 {getInitials(post.author?.name)}
