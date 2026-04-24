@@ -24,7 +24,7 @@ export default function Header() {
 
   return (
     <header className='fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass border-b border-border/10'>
-      <div className='container flex h-16 md:h-20 max-w-screen-2xl items-center justify-between mx-auto px-4 sm:px-6 lg:px-8'>
+      <div className='flex h-16 md:h-20 max-w-7xl items-center justify-between mx-auto px-6'>
         {/* Logo */}
         <Link href='/' className='flex items-center gap-2.5 group'>
           <div className='w-9 h-9 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-shadow'>
