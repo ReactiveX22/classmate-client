@@ -31,7 +31,6 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [stableAvailableTags, setStableAvailableTags] = useState<string[]>([]);
   const [visibleBookmarkedCount, setVisibleBookmarkedCount] =
     useState(SIDEBAR_STEP);
   const [visibleInstructorCount, setVisibleInstructorCount] =
@@ -73,6 +72,14 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
     },
   );
 
+  const { data: tagSourceData } = usePosts(classroomId, {
+    limit: 50,
+    type: "material",
+    search: debouncedSearch || undefined,
+    bookmarked: view === "bookmarked" ? true : undefined,
+    fromInstructor: view === "instructor" ? true : undefined,
+  });
+
   const materials = useMemo(() => {
     if (!data) return [];
     return data.pages.flatMap((page) => page.data);
@@ -96,27 +103,20 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
     return instructorData.pages.flatMap((page) => page.data);
   }, [instructorData]);
 
+  const tagSourceMaterials = useMemo(() => {
+    if (!tagSourceData) return [];
+    return tagSourceData.pages.flatMap((page) => page.data);
+  }, [tagSourceData]);
+
   const availableTags = useMemo(() => {
     const tags = new Set<string>();
-    for (const material of materials) {
+    for (const material of tagSourceMaterials) {
       for (const tag of material.tags || []) {
         tags.add(tag);
       }
     }
     return Array.from(tags).sort();
-  }, [materials]);
-
-  useEffect(() => {
-    if (availableTags.length > 0) {
-      setStableAvailableTags((prev) => {
-        const sameLength = prev.length === availableTags.length;
-        const sameValues =
-          sameLength &&
-          prev.every((value, index) => value === availableTags[index]);
-        return sameValues ? prev : availableTags;
-      });
-    }
-  }, [availableTags]);
+  }, [tagSourceMaterials]);
 
   const isEmpty = !isLoading && materials.length === 0;
 
@@ -181,9 +181,9 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
             />
           </div>
 
-          {stableAvailableTags.length > 0 && (
+          {availableTags.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {stableAvailableTags.map((tag) => {
+              {availableTags.map((tag) => {
                 const selected = selectedTags.includes(tag);
                 return (
                   <Button
