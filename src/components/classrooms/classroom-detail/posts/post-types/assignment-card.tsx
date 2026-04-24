@@ -223,7 +223,7 @@ export function AssignmentCard({
 
           <div className='flex flex-wrap gap-2'>
             {post.attachments && post.attachments.length > 0 && (
-              <Badge variant='outline' className='gap-1 text-muted-foreground'>
+              <Badge variant='secondary' className='gap-1 text-muted-foreground bg-muted/60 hover:bg-muted/60'>
                 <IconFile size={12} />
                 {post.attachments.length} attachment
                 {post.attachments.length !== 1 ? 's' : ''}
@@ -233,8 +233,8 @@ export function AssignmentCard({
               post.submission?.attachments &&
               post.submission.attachments.length > 0 && (
                 <Badge
-                  variant='outline'
-                  className='gap-1 text-muted-foreground'
+                  variant='secondary'
+                  className='gap-1 text-muted-foreground bg-muted/60 hover:bg-muted/60'
                 >
                   <IconFile size={12} />
                   {post.submission.attachments.length} attachment
