@@ -139,6 +139,7 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
                 variant={view === "all" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setView("all")}
+                className="cursor-pointer"
               >
                 All
               </Button>
@@ -146,6 +147,7 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
                 variant={view === "bookmarked" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setView("bookmarked")}
+                className="cursor-pointer"
               >
                 Bookmarked
               </Button>
@@ -153,6 +155,7 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
                 variant={view === "instructor" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setView("instructor")}
+                className="cursor-pointer"
               >
                 From Instructor
               </Button>
@@ -163,7 +166,7 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
               defaultType="material"
               hideTypeSelection={true}
               trigger={
-                <Button size="sm">
+                <Button size="sm" className="cursor-pointer">
                   <IconPlus />
                   <span>Upload Resource</span>
                 </Button>
@@ -190,7 +193,7 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
                     key={tag}
                     variant={selected ? "default" : "outline"}
                     size="sm"
-                    className="h-7 px-2 text-xs"
+                    className="h-7 px-2 text-xs cursor-pointer"
                     onClick={() =>
                       setSelectedTags((prev) =>
                         selected
