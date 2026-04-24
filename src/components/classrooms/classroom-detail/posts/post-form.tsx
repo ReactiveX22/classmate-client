@@ -100,6 +100,8 @@ interface PostFormProps {
   submitLabel?: string;
   isSubmitting?: boolean;
   hideTypeSelection?: boolean;
+  id?: string;
+  showFooter?: boolean;
 }
 
 export function PostForm({
@@ -111,6 +113,8 @@ export function PostForm({
   submitLabel = 'Post',
   isSubmitting = false,
   hideTypeSelection = false,
+  id,
+  showFooter = true,
 }: PostFormProps) {
   const { fieldErrors, globalErrors, handleError } = useFormErrorHandler();
   const [attachments, setAttachments] =
@@ -184,6 +188,7 @@ export function PostForm({
 
   return (
     <form
+      id={id}
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -533,16 +538,18 @@ export function PostForm({
         </Alert>
       )}
 
-      <div className='flex justify-end gap-2'>
-        <form.Subscribe
-          selector={(state) => [state.isSubmitting]}
-          children={([isSubmitting]) => (
-            <Button type='submit' disabled={isSubmitting}>
-              {isSubmitting ? 'Saving...' : submitLabel}
-            </Button>
-          )}
-        />
-      </div>
+      {showFooter && (
+        <div className='flex justify-end gap-2'>
+          <form.Subscribe
+            selector={(state) => [state.isSubmitting]}
+            children={([isSubmitting]) => (
+              <Button type='submit' disabled={isSubmitting}>
+                {isSubmitting ? 'Saving...' : submitLabel}
+              </Button>
+            )}
+          />
+        </div>
+      )}
     </form>
   );
 }
