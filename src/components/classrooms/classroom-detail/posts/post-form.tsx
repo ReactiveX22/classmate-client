@@ -1,4 +1,9 @@
 import { AttachmentUpload } from '@/components/common/attachment-upload';
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -23,6 +28,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { useFormErrorHandler } from '@/hooks/use-form-handler';
 import {
   UploadResult,
   useUploadAttachment,
@@ -105,7 +111,7 @@ export function PostForm({
   isSubmitting = false,
   hideTypeSelection = false,
 }: PostFormProps) {
-  const [globalError, setGlobalError] = useState('');
+  const { fieldErrors, globalErrors, handleError } = useFormErrorHandler();
   const [attachments, setAttachments] =
     useState<UploadResult[]>(initialAttachments);
 
@@ -122,20 +128,9 @@ export function PostForm({
   const form = useForm({
     defaultValues,
     validators: {
-      onSubmit: ({ value }) => {
-        const result = postSchema.safeParse(value);
-        if (result.success) return undefined;
-
-        const errors: Record<string, string> = {};
-        result.error.issues.forEach((issue) => {
-          const path = issue.path.join('.');
-          errors[path] = issue.message;
-        });
-        return errors;
-      },
+      onSubmit: postSchema,
     },
     onSubmit: async ({ value }) => {
-      setGlobalError('');
       try {
         const payload: CreatePostDto = {
           type: value.type,
@@ -159,12 +154,18 @@ export function PostForm({
           form.reset();
           setAttachments([]);
         }
-      } catch (error) {
-        setGlobalError('Failed to submit post. Please try again.');
+      } catch (error: any) {
+        handleError(error, value);
         console.error(error);
       }
     },
   });
+
+  const getFieldError = (fieldName: string, fieldErrorsState: any[]) => {
+    if (fieldErrorsState.length > 0) return fieldErrorsState;
+    if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
+    return [];
+  };
 
   return (
     <form
@@ -179,36 +180,43 @@ export function PostForm({
         {/* Post Type Selector */}
         {!hideTypeSelection && (
           <form.Field name='type'>
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Post Type</FieldLabel>
-                <Select
-                  value={field.state.value || 'announcement'}
-                  onValueChange={(val) => {
-                    field.handleChange(val as PostType);
-                    // Set defaults when switching types
-                    if (val === 'assignment') {
-                      form.setFieldValue('assignmentData', {
-                        points: 100,
-                        submissionType: 'file',
-                        allowLateSubmission: true,
-                      });
-                    }
-                  }}
-                  disabled={!!initialValues}
-                >
-                  <SelectTrigger>
-                    <SelectValue className='capitalize' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value='announcement'>Announcement</SelectItem>
-                    <SelectItem value='assignment'>Assignment</SelectItem>
-                    <SelectItem value='material'>Material</SelectItem>
-                    <SelectItem value='question'>Question</SelectItem>
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
+            {(field) => {
+              const errors = getFieldError(field.name, field.state.meta.errors);
+              const isInvalid = errors.length > 0;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Post Type <span className='text-destructive'>*</span>
+                  </FieldLabel>
+                  <Select
+                    value={field.state.value || 'announcement'}
+                    onValueChange={(val) => {
+                      field.handleChange(val as PostType);
+                      // Set defaults when switching types
+                      if (val === 'assignment') {
+                        form.setFieldValue('assignmentData', {
+                          points: 100,
+                          submissionType: 'file',
+                          allowLateSubmission: true,
+                        });
+                      }
+                    }}
+                    disabled={!!initialValues}
+                  >
+                    <SelectTrigger>
+                      <SelectValue className='capitalize' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='announcement'>Announcement</SelectItem>
+                      <SelectItem value='assignment'>Assignment</SelectItem>
+                      <SelectItem value='material'>Material</SelectItem>
+                      <SelectItem value='question'>Question</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {isInvalid && <FieldError errors={errors} />}
+                </Field>
+              );
+            }}
           </form.Field>
         )}
 
@@ -224,22 +232,26 @@ export function PostForm({
 
             return (
               <form.Field name='title'>
-                {(field) => (
-                  <Field data-invalid={field.state.meta.errors.length > 0}>
-                    <FieldLabel htmlFor={field.name}>
-                      Title {isRequired ? '*' : '(Optional)'}
-                    </FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value || ''}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder='Enter title'
-                    />
-                    <FieldError errors={field.state.meta.errors} />
-                  </Field>
-                )}
+                {(field) => {
+                  const errors = getFieldError(field.name, field.state.meta.errors);
+                  const isInvalid = errors.length > 0;
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel htmlFor={field.name}>
+                        Title {isRequired && <span className='text-destructive'>*</span>}
+                      </FieldLabel>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value || ''}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        placeholder='Enter title'
+                      />
+                      {isInvalid && <FieldError errors={errors} />}
+                    </Field>
+                  );
+                }}
               </form.Field>
             );
           }}
@@ -247,21 +259,27 @@ export function PostForm({
 
         {/* Content Field */}
         <form.Field name='content'>
-          {(field) => (
-            <Field data-invalid={field.state.meta.errors.length > 0}>
-              <FieldLabel htmlFor={field.name}>Content</FieldLabel>
-              <Textarea
-                id={field.name}
-                name={field.name}
-                value={field.state.value || ''}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-                className='min-h-[100px]'
-                placeholder='Share with your class...'
-              />
-              <FieldError errors={field.state.meta.errors} />
-            </Field>
-          )}
+          {(field) => {
+            const errors = getFieldError(field.name, field.state.meta.errors);
+            const isInvalid = errors.length > 0;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>
+                  Content <span className='text-destructive'>*</span>
+                </FieldLabel>
+                <Textarea
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value || ''}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className='min-h-[100px]'
+                  placeholder='Share with your class...'
+                />
+                {isInvalid && <FieldError errors={errors} />}
+              </Field>
+            );
+          }}
         </form.Field>
 
         {/* Assignment Specific Fields */}
@@ -431,17 +449,22 @@ export function PostForm({
         </div>
       </FieldGroup>
 
-      {globalError && (
-        <div className='text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3'>
-          {globalError}
-        </div>
+      {globalErrors.length > 0 && (
+        <Alert variant='destructive'>
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            {globalErrors.map((err, i) => (
+              <p key={i}>{err.message}</p>
+            ))}
+          </AlertDescription>
+        </Alert>
       )}
 
       <div className='flex justify-end gap-2'>
         <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isSubmitting]}
-          children={([canSubmit]) => (
-            <Button type='submit' disabled={!canSubmit || isSubmitting}>
+          selector={(state) => [state.isSubmitting]}
+          children={([isSubmitting]) => (
+            <Button type='submit' disabled={isSubmitting}>
               {isSubmitting ? 'Saving...' : submitLabel}
             </Button>
           )}
