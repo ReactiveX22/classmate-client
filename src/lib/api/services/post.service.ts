@@ -39,6 +39,8 @@ export interface Post {
   assignmentData: AssignmentData | null;
   isPinned: boolean;
   commentsEnabled: boolean;
+  tags: string[];
+  isBookmarked?: boolean;
   createdAt: string;
   updatedAt: string;
   author?: User;
@@ -49,6 +51,13 @@ export interface Post {
 export interface PostsResponse {
   data: Post[];
   meta: PaginationMeta;
+}
+
+export interface PostsQueryParams extends PaginationParams {
+  type?: PostType;
+  tags?: string[];
+  bookmarked?: boolean;
+  fromInstructor?: boolean;
 }
 
 // DTO for creating a post
@@ -75,12 +84,13 @@ export interface CreatePostDto {
   assignmentData?: AssignmentDataDto;
   isPinned?: boolean;
   commentsEnabled?: boolean;
+  tags?: string[];
 }
 
 export const postService = {
   getPosts: async (
     classroomId: string,
-    params?: PaginationParams
+    params?: PostsQueryParams
   ): Promise<PostsResponse> => {
     const response = await apiClient.get<PostsResponse>(
       `/api/v1/classrooms/${classroomId}/posts`,
@@ -132,5 +142,18 @@ export const postService = {
       `/api/v1/classrooms/${classroomId}/posts/${postId}`
     );
     return response.data;
+  },
+
+  bookmarkPost: async (classroomId: string, postId: string): Promise<void> => {
+    await apiClient.post(`/api/v1/classrooms/${classroomId}/posts/${postId}/bookmark`);
+  },
+
+  unbookmarkPost: async (
+    classroomId: string,
+    postId: string
+  ): Promise<void> => {
+    await apiClient.delete(
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/bookmark`
+    );
   },
 };

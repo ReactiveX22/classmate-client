@@ -30,6 +30,7 @@ export function EditPostDialog({
     isPinned: !!post.isPinned,
     commentsEnabled: post.commentsEnabled ?? true,
     title: post.title || '',
+    tags: post.tags || [],
     assignmentData:
       post.type === 'assignment'
         ? {

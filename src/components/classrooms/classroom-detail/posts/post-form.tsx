@@ -4,6 +4,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -43,14 +44,16 @@ import { cn } from '@/lib/utils';
 import { IconCalendar } from '@tabler/icons-react';
 import { useForm } from '@tanstack/react-form';
 import { format } from 'date-fns';
+import { Plus, X } from 'lucide-react';
 import { useState } from 'react';
 import { z } from 'zod';
 
 // Zod Schemas
 const baseSchema = z.object({
   content: z.string().min(1, 'Content is required'),
-  isPinned: z.boolean().default(false),
-  commentsEnabled: z.boolean().default(true),
+  isPinned: z.boolean(),
+  commentsEnabled: z.boolean(),
+  tags: z.array(z.string()),
 });
 
 const assignmentSchema = baseSchema.extend({
@@ -58,11 +61,9 @@ const assignmentSchema = baseSchema.extend({
   title: z.string().min(1, 'Title is required'),
   assignmentData: z.object({
     dueDate: z.date().optional(),
-    points: z.number().min(0).max(1000).default(100),
-    submissionType: z
-      .enum(['file', 'text', 'link', 'multiple'] as const)
-      .default('file'),
-    allowLateSubmission: z.boolean().default(true),
+    points: z.number().min(0).max(1000),
+    submissionType: z.enum(['file', 'text', 'link', 'multiple'] as const),
+    allowLateSubmission: z.boolean(),
   }),
 });
 
@@ -114,6 +115,7 @@ export function PostForm({
   const { fieldErrors, globalErrors, handleError } = useFormErrorHandler();
   const [attachments, setAttachments] =
     useState<UploadResult[]>(initialAttachments);
+  const [currentTag, setCurrentTag] = useState('');
 
   const { mutateAsync: uploadFile } = useUploadAttachment();
 
@@ -123,6 +125,7 @@ export function PostForm({
     isPinned: false,
     commentsEnabled: true,
     title: '',
+    tags: [],
   } as PostFormData);
 
   const form = useForm({
@@ -139,6 +142,7 @@ export function PostForm({
           commentsEnabled: value.commentsEnabled,
           title: value.title?.trim() || undefined,
           attachments: attachments.length > 0 ? attachments : undefined,
+          tags: value.tags || [],
         };
 
         if (value.type === 'assignment') {
@@ -165,6 +169,17 @@ export function PostForm({
     if (fieldErrorsState.length > 0) return fieldErrorsState;
     if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
     return [];
+  };
+
+  const handleAddTag = (
+    pushValue: (value: string) => void,
+    currentTags: string[],
+  ) => {
+    const normalized = currentTag.trim().replace(/^#/, '').toLowerCase();
+    if (normalized && !currentTags.includes(normalized)) {
+      pushValue(normalized);
+    }
+    setCurrentTag('');
   };
 
   return (
@@ -281,6 +296,64 @@ export function PostForm({
             );
           }}
         </form.Field>
+
+        <form.Subscribe
+          selector={(state) => state.values.type}
+          children={(type) =>
+            type === 'material' ? (
+              <form.Field name='tags' mode='array'>
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor='resource-tag-input'>Tags</FieldLabel>
+                    <div className='space-y-3'>
+                      <div className='flex gap-2'>
+                        <Input
+                          id='resource-tag-input'
+                          value={currentTag}
+                          placeholder='Add tag and press Enter'
+                          onChange={(e) => setCurrentTag(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              handleAddTag(field.pushValue, field.state.value);
+                            }
+                          }}
+                        />
+                        <Button
+                          type='button'
+                          variant='outline'
+                          size='icon'
+                          onClick={() =>
+                            handleAddTag(field.pushValue, field.state.value)
+                          }
+                        >
+                          <Plus className='h-4 w-4' />
+                        </Button>
+                      </div>
+
+                      {field.state.value.length > 0 && (
+                        <div className='flex flex-wrap gap-2'>
+                          {field.state.value.map((tag, index) => (
+                            <Badge key={`${tag}-${index}`} variant='secondary'>
+                              #{tag}
+                              <button
+                                type='button'
+                                className='ml-1 rounded-full p-0.5 hover:bg-muted-foreground/20'
+                                onClick={() => field.removeValue(index)}
+                              >
+                                <X className='h-3 w-3' />
+                              </button>
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </Field>
+                )}
+              </form.Field>
+            ) : null
+          }
+        />
 
         {/* Assignment Specific Fields */}
         <form.Subscribe
