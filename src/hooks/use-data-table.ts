@@ -190,7 +190,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     return filterableColumns.reduce<
       Record<string, SingleParser<string> | SingleParser<string[]>>
     >((acc, column) => {
-      if (column.meta?.options) {
+      if (column.meta?.variant === 'multiSelect') {
         acc[column.id ?? ''] = parseAsArrayOf(
           parseAsString,
           ARRAY_SEPARATOR
@@ -220,8 +220,8 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
         if (value !== null) {
           const processedValue = Array.isArray(value)
             ? value
-            : typeof value === 'string' && /[^a-zA-Z0-9]/.test(value)
-            ? value.split(/[^a-zA-Z0-9]+/).filter(Boolean)
+            : typeof value === 'string' && value.includes(ARRAY_SEPARATOR)
+            ? value.split(ARRAY_SEPARATOR).filter(Boolean)
             : [value];
 
           filters.push({

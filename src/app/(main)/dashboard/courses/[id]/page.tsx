@@ -19,11 +19,13 @@ import { useCourse, useUpdateCourse } from '@/hooks/use-courses';
 import { useDeleteEnrollment } from '@/hooks/use-enrollments';
 import { cn, getInitials } from '@/lib/utils';
 import { IconUserPlus } from '@tabler/icons-react';
-import { toast } from 'sonner';
 import {
   Book,
   BookOpen,
+  Calendar,
   GraduationCap,
+  History,
+  LucideIcon,
   Plus,
   UserPen,
   Users,
@@ -31,6 +33,28 @@ import {
 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import * as React from 'react';
+import { toast } from 'sonner';
+
+interface CourseStatProps {
+  label: string;
+  value: string | number;
+  icon: LucideIcon;
+  className?: string;
+}
+
+function CourseStat({ label, value, icon: Icon, className }: CourseStatProps) {
+  return (
+    <div className='space-y-1'>
+      <p className='text-xs font-medium text-muted-foreground'>
+        {label}
+      </p>
+      <div className='flex items-center gap-2'>
+        <Icon className='size-4 text-primary' />
+        <span className={cn('font-semibold', className)}>{value}</span>
+      </div>
+    </div >
+  );
+}
 
 export default function CourseDetailsPage() {
   const { id } = useParams();
@@ -84,7 +108,7 @@ export default function CourseDetailsPage() {
     <div className='flex flex-col min-h-screen bg-muted/30'>
       <FormPageHeader
         title={course.title}
-        description={`${course.code} • ${course.semester}`}
+        description={`${course.code} • ${course.semester?.ordinal || 'N/A'} Semester • ${course.session?.name || 'No Session'}`}
         icon={<BookOpen className='size-4' />}
         backLink='/dashboard/courses'
       ></FormPageHeader>
@@ -92,7 +116,7 @@ export default function CourseDetailsPage() {
       <main className='flex-1 p-4 md:p-6 lg:p-8 space-y-8 max-w-7xl mx-auto w-full'>
         {/* Course Overview Grid */}
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-          <Card className='md:col-span-2 shadow-sm border-none ring-1 ring-border'>
+          <Card className='md:col-span-2 shadow-sm border-none ring-1 ring-border gap-4'>
             <CardHeader>
               <div className='flex justify-between items-start'>
                 <div className='space-y-1'>
@@ -113,43 +137,34 @@ export default function CourseDetailsPage() {
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent className='grid grid-cols-2 lg:grid-cols-4 gap-6'>
-              <div className='space-y-1'>
-                <p className='text-xs font-medium text-muted-foreground uppercase tracking-wider'>
-                  Code
-                </p>
-                <div className='flex items-center gap-2'>
-                  <Book className='size-4 text-primary' />
-                  <span className='font-semibold text-lg'>{course.code}</span>
-                </div>
-              </div>
-              <div className='space-y-1'>
-                <p className='text-xs font-medium text-muted-foreground uppercase tracking-wider'>
-                  Credits
-                </p>
-                <div className='flex items-center gap-2'>
-                  <GraduationCap className='size-4 text-primary' />
-                  <span className='font-semibold text-lg'>
-                    {course.credits} Units
-                  </span>
-                </div>
-              </div>
-              <div className='space-y-1'>
-                <p className='text-xs font-medium text-muted-foreground uppercase tracking-wider'>
-                  Capacity
-                </p>
-                <div className='flex items-center gap-2'>
-                  <Users className='size-4 text-primary' />
-                  <span className='font-semibold text-lg'>
-                    {enrollments.length}/{course.maxStudents} Students
-                  </span>
-                </div>
-              </div>
+            <CardContent className=' grid grid-cols-3 lg:grid-cols-5 gap-4'>
+              <CourseStat
+                label='Credits'
+                value={`${course.credits} Units`}
+                icon={GraduationCap}
+              />
+              <CourseStat label='Code' value={course.code} icon={Book} />
+              <CourseStat
+                label='Semester'
+                value={course.semester?.ordinal || 'N/A'}
+                icon={Calendar}
+              />
+              <CourseStat
+                label='Session'
+                value={course.session?.name || 'N/A'}
+                icon={History}
+                className='whitespace-nowrap'
+              />
+              <CourseStat
+                label='Capacity'
+                value={`${enrollments.length}/${course.maxStudents} Students`}
+                icon={Users}
+              />
             </CardContent>
           </Card>
 
           {/* Assigned Teacher Card */}
-          <Card className='border-none shadow-sm ring-1 ring-border flex flex-col'>
+          <Card className='border-none shadow-sm ring-1 ring-border flex flex-col gap-4'>
             <CardHeader>
               <CardTitle className='text-base'>Instructor</CardTitle>
               <CardAction>

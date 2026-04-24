@@ -1,6 +1,8 @@
 import { User } from '@/types/auth';
 import apiClient from '../index';
 import { PaginationMeta, PaginationParams } from '@/types/pagination';
+import { Semester } from './semester.service';
+import { CourseSession } from './course-session.service';
 
 export interface Enrollment {
   studentId: string;
@@ -24,13 +26,15 @@ export interface Course {
   title: string;
   description: string | null;
   credits: number;
-  semester: string;
-  session: string | null;
+  semesterId: string | null;
+  sessionId: string | null;
   status: string;
   maxStudents: number;
   createdAt: string;
   updatedAt: string;
   teacher?: User;
+  semester?: Semester;
+  session?: CourseSession;
   enrollment?: Enrollment[];
 }
 
@@ -40,8 +44,8 @@ export interface CreateCourseInput {
   title: string;
   description?: string;
   credits?: number;
-  semester: string;
-  session?: string;
+  semesterId?: string;
+  sessionId?: string;
   maxStudents?: number;
 }
 
@@ -51,8 +55,8 @@ export interface UpdateCourseInput {
   title?: string;
   description?: string;
   credits?: number;
-  semester?: string;
-  session?: string;
+  semesterId?: string;
+  sessionId?: string;
   maxStudents?: number;
 }
 

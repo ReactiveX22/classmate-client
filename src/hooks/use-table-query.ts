@@ -1,9 +1,10 @@
 import { ExtendedColumnSort } from '@/types/data-table';
-import { useQueryState, parseAsInteger } from 'nuqs';
+import { useQueryState, parseAsInteger, useQueryStates, ParserMap } from 'nuqs';
 import { getSortingStateParser } from '@/lib/parsers';
 
-export function useTableQueryState<TData>(
-  defaultSorting: ExtendedColumnSort<TData>[] = []
+export function useTableQueryState<TData, TFilters extends ParserMap>(
+  defaultSorting: ExtendedColumnSort<TData>[] = [],
+  filterConfig?: TFilters
 ) {
   const [page, setPage] = useQueryState(
     'page',
@@ -22,6 +23,10 @@ export function useTableQueryState<TData>(
       .withOptions({ clearOnDefault: true })
   );
 
+  const [filters, setFilters] = useQueryStates(
+    filterConfig || ({} as TFilters)
+  );
+
   return {
     page,
     setPage,
@@ -29,6 +34,8 @@ export function useTableQueryState<TData>(
     setPerPage,
     sorting,
     setSorting,
+    filters: filters as { [K in keyof TFilters]: any },
+    setFilters,
     resetPagination: () => setPage(1),
   };
 }

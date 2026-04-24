@@ -54,7 +54,7 @@
   --muted-foreground: oklch(0.7155 0.0288 285.6486);
   --accent: oklch(0.2793 0.0598 283.1864);
   --accent-foreground: oklch(0.8201 0.0997 293.7767);
-  --destructive: oklch(0.6370 0.2370 25.3310);
+  --destructive: oklch(.704 .191 22.216);
   --border: oklch(0.2897 0.0199 285.0881);
   --input: oklch(0.2897 0.0199 285.0881);
   --ring: oklch(0.6449 0.2024 288.1131);
@@ -137,6 +137,23 @@
   }
 }
 
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+
 .glowing-button {
   animation: glow-pulse 2s infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
