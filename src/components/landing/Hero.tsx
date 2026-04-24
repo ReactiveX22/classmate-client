@@ -15,12 +15,12 @@ export function Hero() {
       <div className='absolute inset-0 hero-radial' />
 
       {/* Floating Particles */}
-      <div className='absolute top-[15%] left-[10%] w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse-glow' />
-      <div className='absolute top-[25%] right-[15%] w-2 h-2 rounded-full bg-chart-2/30 animate-pulse-glow' style={{ animationDelay: '1s' }} />
-      <div className='absolute top-[60%] left-[5%] w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse-glow' style={{ animationDelay: '2s' }} />
-      <div className='absolute top-[70%] right-[10%] w-2 h-2 rounded-full bg-primary/30 animate-pulse-glow' style={{ animationDelay: '0.5s' }} />
-      <div className='absolute top-[40%] left-[50%] w-1 h-1 rounded-full bg-chart-2/40 animate-pulse-glow' style={{ animationDelay: '1.5s' }} />
-      <div className='absolute top-[80%] left-[30%] w-1.5 h-1.5 rounded-full bg-primary/30 animate-pulse-glow' style={{ animationDelay: '3s' }} />
+      <div className='absolute top-[15%] left-[10%] w-1.5 h-1.5 rounded-full bg-primary/40 animate-[float_4s_ease-in-out_infinite,pulse-glow_2s_ease-in-out_infinite]' />
+      <div className='absolute top-[25%] right-[15%] w-2 h-2 rounded-full bg-chart-2/30 animate-[float_4s_ease-in-out_infinite,pulse-glow_2s_ease-in-out_infinite] [animation-delay:1s]' />
+      <div className='absolute top-[60%] left-[5%] w-1.5 h-1.5 rounded-full bg-primary/40 animate-[float_4s_ease-in-out_infinite,pulse-glow_2s_ease-in-out_infinite] [animation-delay:2s]' />
+      <div className='absolute top-[70%] right-[10%] w-2 h-2 rounded-full bg-primary/30 animate-[float_4s_ease-in-out_infinite,pulse-glow_2s_ease-in-out_infinite] [animation-delay:0.5s]' />
+      <div className='absolute top-[40%] left-[50%] w-1 h-1 rounded-full bg-chart-2/40 animate-[float_4s_ease-in-out_infinite,pulse-glow_2s_ease-in-out_infinite] [animation-delay:1.5s]' />
+      <div className='absolute top-[80%] left-[30%] w-1.5 h-1.5 rounded-full bg-primary/30 animate-[float_4s_ease-in-out_infinite,pulse-glow_2s_ease-in-out_infinite] [animation-delay:3s]' />
 
       <div className='relative max-w-7xl mx-auto px-6 w-full py-12'>
         <div className='grid lg:grid-cols-2 gap-12 lg:gap-8 items-center'>

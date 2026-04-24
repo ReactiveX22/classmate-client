@@ -8,31 +8,43 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import Link from 'next/link';
-import { columns } from './columns';
+import { getColumns } from './columns';
 import { Course } from '@/lib/api/services/course.service';
 import { ExtendedColumnSort } from '@/types/data-table';
 import { useCourses } from '@/hooks/use-courses';
 import { PageHeader } from '@/components/common/page-header';
 import { PlusIcon } from 'lucide-react';
 import { CoursesTableActionBar } from '@/components/courses/courses-table-action-bar';
-import { useQueryState } from 'nuqs';
-import { useCallback, useEffect, useState } from 'react';
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
+import { useSemesters } from '@/hooks/use-semesters';
+import { useCourseSessions } from '@/hooks/use-course-sessions';
+import { useQueryStates, parseAsString, parseAsArrayOf } from 'nuqs';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
+const toOptions = (data: any[], labelKey: string | ((item: any) => string)) =>
+  data.map((item) => ({
+    label: typeof labelKey === 'function' ? labelKey(item) : item[labelKey],
+    value: item.id,
+  }));
 
 const DEFAULT_SORTING: ExtendedColumnSort<Course>[] = [
   { id: 'createdAt', desc: true },
 ];
 
 export default function CoursesPage() {
-  const { page, perPage, sorting } =
-    useTableQueryState<Course>(DEFAULT_SORTING);
-
-  const [search, setSearch] = useQueryState('search', {
-    defaultValue: '',
-    clearOnDefault: true,
-    history: 'replace',
-    shallow: true,
+  const {
+    page,
+    perPage,
+    sorting,
+    filters,
+    setFilters
+  } = useTableQueryState<Course, any>(DEFAULT_SORTING, {
+    search: parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
+    semesterId: parseAsArrayOf(parseAsString).withDefault([]).withOptions({ clearOnDefault: true }),
+    sessionId: parseAsArrayOf(parseAsString).withDefault([]).withOptions({ clearOnDefault: true }),
   });
+
+  const { search, semesterId, sessionId } = filters;
 
   const [localSearch, setLocalSearch] = useState(search);
 
@@ -41,7 +53,7 @@ export default function CoursesPage() {
   }, [search]);
 
   const debouncedSetSearch = useDebouncedCallback((value: string) => {
-    setSearch(value || null);
+    setFilters({ search: value || null });
   }, 400);
 
   const onSearchChange = useCallback(
@@ -52,6 +64,22 @@ export default function CoursesPage() {
     [debouncedSetSearch]
   );
 
+  const { data: semesterResponse } = useSemesters({ limit: 100 });
+  const { data: sessionResponse } = useCourseSessions({ limit: 100 });
+
+  const semesters = semesterResponse?.data || [];
+  const sessions = sessionResponse?.data || [];
+
+  const semesterOptions = useMemo(
+    () => toOptions(semesters, (s) => `Semester ${s.ordinal}`),
+    [semesters]
+  );
+
+  const sessionOptions = useMemo(
+    () => toOptions(sessions, 'name'),
+    [sessions]
+  );
+
   const {
     data: response,
     isFetching,
@@ -59,13 +87,20 @@ export default function CoursesPage() {
   } = useCourses({
     page,
     limit: perPage,
-    sortBy: sorting[0]?.id as any,
+    sortBy: sorting[0]?.id as keyof Course,
     sortOrder: sorting[0]?.desc ? 'desc' : 'asc',
     search: search || undefined,
+    semesterId: semesterId.length > 0 ? semesterId : undefined,
+    sessionId: sessionId.length > 0 ? sessionId : undefined,
   });
 
   const courses = response?.data || [];
   const pageCount = response?.meta?.totalPages || 1;
+
+  const columns = useMemo(
+    () => getColumns(semesterOptions, sessionOptions),
+    [semesterOptions, sessionOptions]
+  );
 
   const { table } = useDataTable({
     data: courses,

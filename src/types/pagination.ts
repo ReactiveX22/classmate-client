@@ -4,6 +4,8 @@ export interface PaginationParams {
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   search?: string;
+  semesterId?: string;
+  sessionId?: string;
 }
 
 export interface PaginationMeta {

@@ -5,8 +5,8 @@ export const courseSchema = z.object({
   code: z.string().min(2, "Course code must be at least 2 characters long"),
   description: z.string().optional(),
   credits: z.number().min(1, "Credits must be at least 1"),
-  semester: z.string().min(1, "Semester must be at least 1 characters long"),
-  session: z.string().optional(),
+  semesterId: z.string().optional(),
+  sessionId: z.string().optional(),
   maxStudents: z.number().min(1, "Must be at least 1 student"),
   teacherId: z.string().optional(),
 });

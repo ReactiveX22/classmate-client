@@ -15,6 +15,8 @@ import { useFormErrorHandler } from "@/hooks/use-form-handler";
 import { useForm } from "@tanstack/react-form";
 import { courseSchema, type CourseFormValues } from "@/lib/schemas/course-schema";
 import { TeacherSelect } from "./teacher-select";
+import { SemesterSelect } from "./semester-select";
+import { SessionSelect } from "./session-select";
 
 interface AddCourseFormProps {
   onSuccess?: () => void;
@@ -30,8 +32,8 @@ export function AddCourseForm({ onSuccess }: AddCourseFormProps) {
       code: "",
       description: "",
       credits: 3,
-      semester: "",
-      session: "",
+      semesterId: undefined,
+      sessionId: undefined,
       maxStudents: 50,
       teacherId: "",
     } as CourseFormValues,
@@ -45,8 +47,8 @@ export function AddCourseForm({ onSuccess }: AddCourseFormProps) {
           code: value.code,
           description: value.description || undefined,
           credits: value.credits,
-          semester: value.semester,
-          session: value.session || undefined,
+          semesterId: value.semesterId,
+          sessionId: value.sessionId || undefined,
           maxStudents: value.maxStudents,
           teacherId: value.teacherId || undefined,
         });
@@ -127,23 +129,17 @@ export function AddCourseForm({ onSuccess }: AddCourseFormProps) {
           />
 
           <form.Field
-            name="semester"
+            name="semesterId"
             children={(field) => {
               const errors = getFieldError(field.name, field.state.meta.errors);
               const isInvalid = errors.length > 0;
               return (
                 <Field data-invalid={isInvalid} className="sm:col-span-2">
-                  <FieldLabel htmlFor={field.name}>
-                    Semester <span className="text-destructive">*</span>
-                  </FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
+                  <FieldLabel htmlFor={field.name}>Semester</FieldLabel>
+                  <SemesterSelect
                     value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="e.g. 8th"
-                    aria-invalid={isInvalid}
+                    onValueChange={field.handleChange}
+                    error={isInvalid}
                   />
                   {isInvalid && <FieldError errors={errors} />}
                 </Field>
@@ -152,21 +148,17 @@ export function AddCourseForm({ onSuccess }: AddCourseFormProps) {
           />
 
           <form.Field
-            name="session"
+            name="sessionId"
             children={(field) => {
               const errors = getFieldError(field.name, field.state.meta.errors);
               const isInvalid = errors.length > 0;
               return (
                 <Field data-invalid={isInvalid} className="sm:col-span-2">
                   <FieldLabel htmlFor={field.name}>Session</FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value ?? ""}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="e.g. Spring 2025"
-                    aria-invalid={isInvalid}
+                  <SessionSelect
+                    value={field.state.value}
+                    onValueChange={field.handleChange}
+                    error={isInvalid}
                   />
                   {isInvalid && <FieldError errors={errors} />}
                 </Field>
