@@ -1,14 +1,18 @@
-'use client';
+"use client";
+import { useEffect } from "react";
 
-import { useCreatePost } from '@/hooks/use-create-post';
-import { PostForm } from './post-form';
-import { PostType } from '@/lib/api/services/post.service';
+import { useCreatePost } from "@/hooks/use-create-post";
+import { PostType } from "@/lib/api/services/post.service";
+import { PostForm } from "./post-form";
 
 interface CreatePostFormProps {
   classroomId: string;
   onSuccess?: () => void;
   defaultType?: PostType;
   hideTypeSelection?: boolean;
+  id?: string;
+  showFooter?: boolean;
+  onPendingChange?: (isPending: boolean) => void;
 }
 
 export function CreatePostForm({
@@ -16,8 +20,15 @@ export function CreatePostForm({
   onSuccess,
   defaultType,
   hideTypeSelection,
+  id,
+  showFooter,
+  onPendingChange,
 }: CreatePostFormProps) {
   const { mutateAsync: createPost, isPending } = useCreatePost();
+  
+  useEffect(() => {
+    onPendingChange?.(isPending);
+  }, [isPending, onPendingChange]);
 
   return (
     <PostForm
@@ -29,7 +40,9 @@ export function CreatePostForm({
         onSuccess?.();
       }}
       isSubmitting={isPending}
-      submitLabel='Post'
+      submitLabel="Post"
+      id={id}
+      showFooter={showFooter}
     />
   );
 }
