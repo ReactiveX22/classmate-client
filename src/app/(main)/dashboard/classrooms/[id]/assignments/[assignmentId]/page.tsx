@@ -1,11 +1,13 @@
 'use client';
 
 import { StudentWorkCard } from '@/components/classrooms/classroom-detail/assignments/student-work-card';
+import { CommentSection } from '@/components/classrooms/classroom-detail/posts/comment-section';
 import { EditPostDialog } from '@/components/classrooms/classroom-detail/posts/edit-post-dialog';
 import { AttachmentDisplay } from '@/components/classrooms/classroom-detail/posts/post-types/attachment-display';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -266,39 +268,56 @@ function AssignmentContent({
   assignmentId: string;
 }) {
   return (
-    <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-      {/* Left Column - Assignment Details */}
-      <div className='lg:col-span-2 space-y-6'>
-        <div className='prose prose-zinc dark:prose-invert max-w-none'>
-          <p className='whitespace-pre-wrap leading-relaxed text-base'>
-            {post.content}
-          </p>
+    <div className='space-y-6'>
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+        {/* Left Column - Assignment Details */}
+        <div className='lg:col-span-2 space-y-6'>
+          <div className='prose prose-zinc dark:prose-invert max-w-none'>
+            <p className='whitespace-pre-wrap leading-relaxed text-base'>
+              {post.content}
+            </p>
+          </div>
+
+          {post.attachments && post.attachments.length > 0 && (
+            <div className='space-y-4 pt-2'>
+              <h3 className='font-medium text-muted-foreground text-xs'>
+                Attachments
+              </h3>
+              <AttachmentDisplay
+                attachments={post.attachments}
+                variant='default'
+              />
+            </div>
+          )}
         </div>
 
-        {post.attachments && post.attachments.length > 0 && (
-          <div className='space-y-4 pt-2'>
-            <h3 className='font-medium text-muted-foreground text-xs'>
-              Attachments
-            </h3>
-            <AttachmentDisplay
-              attachments={post.attachments}
-              variant='default'
+        {/* Right Column - Your Work (Students only) */}
+        {!isAuthor && (
+          <div className='lg:col-span-1 space-y-6'>
+            <StudentWorkCard
+              classroomId={classroomId}
+              postId={assignmentId}
+              assignmentData={post.assignmentData}
+              submission={post.submission}
             />
           </div>
         )}
       </div>
 
-      {/* Right Column - Your Work (Students only) */}
-      {!isAuthor && (
-        <div className='lg:col-span-1 space-y-6'>
-          <StudentWorkCard
-            classroomId={classroomId}
-            postId={assignmentId}
-            assignmentData={post.assignmentData}
-            submission={post.submission}
-          />
-        </div>
-      )}
+      <Card className='mt-6 gap-2'>
+        <CardHeader>
+          <CardTitle>Discussion</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {post.commentsEnabled ? (
+            <CommentSection postId={assignmentId} classroomId={classroomId} />
+          ) : (
+            <p className='text-sm text-muted-foreground'>
+              Comments are disabled for this assignment.
+            </p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
