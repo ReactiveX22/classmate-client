@@ -374,12 +374,6 @@ export function PostForm({
                   const errors = getFieldError(field.name, field.state.meta.errors);
                   const isInvalid = errors.length > 0;
                   const value = field.state.value || { mode: 'short_answer' };
-                  const questionType =
-                    value.mode === 'poll'
-                      ? value.selectionMode === 'multiple'
-                        ? 'poll_multiple'
-                        : 'poll_single'
-                      : 'short_answer';
 
                   const updatePollOptions = (options: PollOption[]) => {
                     if (value.mode !== 'poll') return;
@@ -394,138 +388,141 @@ export function PostForm({
                       <FieldLabel>
                         Response Type <span className='text-destructive'>*</span>
                       </FieldLabel>
-                      <div className='space-y-4 rounded-lg border bg-muted/20 p-4'>
-                        <Select
-                          value={questionType}
-                          disabled={lockQuestionPollStructure && value.mode === 'poll'}
-                          onValueChange={(nextValue) => {
-                            if (nextValue === 'short_answer') {
-                              field.handleChange({ mode: 'short_answer' });
-                              return;
-                            }
+                      <Select
+                        value={value.mode}
+                        disabled={lockQuestionPollStructure && value.mode === 'poll'}
+                        onValueChange={(nextValue) => {
+                          if (nextValue === 'short_answer') {
+                            field.handleChange({ mode: 'short_answer' });
+                            return;
+                          }
 
-                            const selectionMode =
-                              nextValue === 'poll_multiple'
-                                ? 'multiple'
-                                : 'single';
+                          field.handleChange(
+                            createDefaultPollQuestionData('single'),
+                          );
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue>
+                            {value.mode === 'short_answer' ? 'Short Answer' : 'Poll'}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value='short_answer'>
+                            Short Answer
+                          </SelectItem>
+                          <SelectItem value='poll'>Poll</SelectItem>
+                        </SelectContent>
+                      </Select>
 
-                            if (value.mode === 'poll') {
-                              field.handleChange({
-                                ...value,
-                                selectionMode,
-                              });
-                              return;
-                            }
-
-                            field.handleChange(
-                              createDefaultPollQuestionData(selectionMode),
-                            );
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value='short_answer'>
-                              Short Answer
-                            </SelectItem>
-                            <SelectItem value='poll_single'>
-                              Single Choice Poll
-                            </SelectItem>
-                            <SelectItem value='poll_multiple'>
-                              Multiple Choice Poll
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-
-                        {value.mode === 'poll' && (
-                          <div className='space-y-3'>
-                            <div className='flex items-center justify-between gap-3'>
-                              <div>
-                                <p className='text-sm font-medium'>Poll Options</p>
-                                <p className='text-xs text-muted-foreground'>
-                                  Drag by the handle to reorder options.
-                                </p>
-                              </div>
-                              <Button
-                                type='button'
-                                variant='outline'
-                                size='sm'
-                                disabled={lockQuestionPollStructure}
-                                onClick={() =>
-                                  updatePollOptions([
-                                    ...value.options,
-                                    createPollOption(value.options.length),
-                                  ])
-                                }
-                              >
-                                <Plus className='mr-2 h-4 w-4' />
-                                Add Option
-                              </Button>
+                      {value.mode === 'poll' && (
+                        <div className='mt-4 space-y-3'>
+                          <div className='flex items-center justify-between gap-3'>
+                            <div>
+                              <p className='text-sm font-medium'>Poll Options</p>
+                              <p className='text-xs text-muted-foreground'>
+                                Drag by the handle to reorder options.
+                              </p>
                             </div>
-
-                            <Sortable
-                              value={value.options}
-                              getItemValue={(option) => option.id}
-                              onValueChange={updatePollOptions}
+                            <Button
+                              type='button'
+                              variant='outline'
+                              size='sm'
+                              disabled={lockQuestionPollStructure}
+                              onClick={() =>
+                                updatePollOptions([
+                                  ...value.options,
+                                  createPollOption(value.options.length),
+                                ])
+                              }
                             >
-                              <SortableContent className='space-y-2'>
-                                {value.options.map((option, index) => (
-                                  <SortableItem
-                                    key={option.id}
-                                    value={option.id}
-                                    className='flex items-center gap-2 rounded-md border bg-background p-2'
-                                  >
-                                    <SortableItemHandle
-                                      className='rounded-md border p-2 text-muted-foreground hover:text-foreground'
-                                      aria-label={`Reorder option ${index + 1}`}
-                                    >
-                                      <GripVertical className='h-4 w-4' />
-                                    </SortableItemHandle>
-                                    <Input
-                                      value={option.text}
-                                      disabled={lockQuestionPollStructure}
-                                      onChange={(e) => {
-                                        const nextOptions = value.options.map(
-                                          (currentOption) =>
-                                            currentOption.id === option.id
-                                              ? {
-                                                  ...currentOption,
-                                                  text: e.target.value,
-                                                }
-                                              : currentOption,
-                                        );
-                                        updatePollOptions(nextOptions);
-                                      }}
-                                      placeholder={`Option ${index + 1}`}
-                                    />
-                                    <Button
-                                      type='button'
-                                      variant='ghost'
-                                      size='icon'
-                                      disabled={
-                                        lockQuestionPollStructure ||
-                                        value.options.length <= 2
-                                      }
-                                      onClick={() =>
-                                        updatePollOptions(
-                                          value.options.filter(
-                                            (currentOption) =>
-                                              currentOption.id !== option.id,
-                                          ),
-                                        )
-                                      }
-                                    >
-                                      <X className='h-4 w-4' />
-                                    </Button>
-                                  </SortableItem>
-                                ))}
-                              </SortableContent>
-                            </Sortable>
+                              <Plus className='mr-2 h-4 w-4' />
+                              Add Option
+                            </Button>
                           </div>
-                        )}
-                      </div>
+
+                          <Sortable
+                            value={value.options}
+                            getItemValue={(option) => option.id}
+                            onValueChange={updatePollOptions}
+                          >
+                            <SortableContent className='space-y-2'>
+                              {value.options.map((option, index) => (
+                                <SortableItem
+                                  key={option.id}
+                                  value={option.id}
+                                  className='flex items-center gap-2 rounded-md border bg-background p-2'
+                                >
+                                  <SortableItemHandle
+                                    className='rounded-md border p-2 text-muted-foreground hover:text-foreground'
+                                    aria-label={`Reorder option ${index + 1}`}
+                                  >
+                                    <GripVertical className='h-4 w-4' />
+                                  </SortableItemHandle>
+                                  <Input
+                                    value={option.text}
+                                    disabled={lockQuestionPollStructure}
+                                    onChange={(e) => {
+                                      const nextOptions = value.options.map(
+                                        (currentOption) =>
+                                          currentOption.id === option.id
+                                            ? {
+                                                ...currentOption,
+                                                text: e.target.value,
+                                              }
+                                            : currentOption,
+                                      );
+                                      updatePollOptions(nextOptions);
+                                    }}
+                                    placeholder={`Option ${index + 1}`}
+                                  />
+                                  <Button
+                                    type='button'
+                                    variant='ghost'
+                                    size='icon'
+                                    disabled={
+                                      lockQuestionPollStructure ||
+                                      value.options.length <= 2
+                                    }
+                                    onClick={() =>
+                                      updatePollOptions(
+                                        value.options.filter(
+                                          (currentOption) =>
+                                            currentOption.id !== option.id,
+                                        ),
+                                      )
+                                    }
+                                  >
+                                    <X className='h-4 w-4' />
+                                  </Button>
+                                </SortableItem>
+                              ))}
+                            </SortableContent>
+                          </Sortable>
+
+                          <div className='flex items-center space-x-2 pt-2'>
+                            <Checkbox
+                              id='poll-multi-choice'
+                              checked={value.selectionMode === 'multiple'}
+                              onCheckedChange={(checked) => {
+                                field.handleChange({
+                                  ...value,
+                                  selectionMode: checked ? 'multiple' : 'single',
+                                });
+                              }}
+                            />
+                            <Label
+                              htmlFor='poll-multi-choice'
+                              className='text-sm font-normal'
+                            >
+                              Allow multiple choices
+                            </Label>
+                          </div>
+                        </div>
+                      )}
+
                       {isInvalid && <FieldError errors={errors} />}
+
                     </Field>
                   );
                 }}
