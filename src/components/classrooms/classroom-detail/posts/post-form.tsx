@@ -507,6 +507,7 @@ export function PostForm({
                           <div className='flex items-center space-x-2 pt-2'>
                             <Checkbox
                               id='poll-multi-choice'
+                              className='group-has-disabled/field:opacity-100'
                               checked={value.selectionMode === 'multiple'}
                               onCheckedChange={(checked) => {
                                 field.handleChange({
