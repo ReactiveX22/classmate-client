@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { StudentData } from "@/lib/api/services/student.service";
-import { IconAlignRight, IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconTrash, IconUserShare } from "@tabler/icons-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
@@ -192,7 +192,7 @@ const ActionCell = ({ student }: { student: StudentData }) => {
             onClick={handleImpersonate}
             disabled={isImpersonating}
           >
-            <IconAlignRight /> Login As
+            <IconUserShare /> Login As
           </DropdownMenuItem>
           <DropdownMenuItem
             variant="destructive"
