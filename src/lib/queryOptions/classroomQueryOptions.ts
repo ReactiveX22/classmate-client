@@ -5,6 +5,7 @@ import {
   ClassroomDetail,
   classroomService,
   ClassroomsResponse,
+  StudentAttendanceStats,
   UpcomingPost,
 } from '../api/services/classroom.service';
 

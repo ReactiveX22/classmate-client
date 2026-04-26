@@ -35,19 +35,13 @@ const DEFAULT_SORTING: ExtendedColumnSort<Course>[] = [
 ];
 
 export default function CoursesPage() {
-  interface CourseFilters {
-    search: string;
-    semesterId: string[];
-    sessionId: string[];
-  }
-
   const {
     page,
     perPage,
     sorting,
     filters,
     setFilters
-  } = useTableQueryState<Course, CourseFilters>(DEFAULT_SORTING, {
+  } = useTableQueryState(DEFAULT_SORTING, {
     search: parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
     semesterId: parseAsArrayOf(parseAsString).withDefault([]).withOptions({ clearOnDefault: true }),
     sessionId: parseAsArrayOf(parseAsString).withDefault([]).withOptions({ clearOnDefault: true }),

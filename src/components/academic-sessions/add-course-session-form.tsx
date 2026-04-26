@@ -61,8 +61,25 @@ export function AddCourseSessionForm({ onSuccess }: AddCourseSessionFormProps) {
   });
 
   const getFieldError = (fieldName: string, fieldErrorsState: ValidationError[]) => {
-    if (fieldErrorsState.length > 0) return fieldErrorsState;
-    if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
+    const errors: Array<{ message?: string } | undefined> = [];
+    
+    if (fieldErrorsState.length > 0) {
+      fieldErrorsState.forEach(err => {
+        if (typeof err === 'string') {
+          errors.push({ message: err });
+        } else if (err && typeof err === 'object' && 'message' in err) {
+          errors.push({ message: (err as any).message });
+        } else {
+          errors.push({ message: String(err) });
+        }
+      });
+      return errors;
+    }
+    
+    if (fieldErrors[fieldName]) {
+      return [{ message: fieldErrors[fieldName] }];
+    }
+    
     return [];
   };
 

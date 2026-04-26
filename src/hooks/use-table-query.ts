@@ -2,7 +2,7 @@ import { ExtendedColumnSort } from '@/types/data-table';
 import { useQueryState, parseAsInteger, useQueryStates, ParserMap } from 'nuqs';
 import { getSortingStateParser } from '@/lib/parsers';
 
-export function useTableQueryState<TData, TFilters extends ParserMap>(
+export function useTableQueryState<TData, TFilters extends ParserMap = ParserMap>(
   defaultSorting: ExtendedColumnSort<TData>[] = [],
   filterConfig?: TFilters
 ) {
@@ -34,7 +34,7 @@ export function useTableQueryState<TData, TFilters extends ParserMap>(
     setPerPage,
     sorting,
     setSorting,
-    filters: filters as { [K in keyof TFilters]: unknown },
+    filters,
     setFilters,
     resetPagination: () => setPage(1),
   };

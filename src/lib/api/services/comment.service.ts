@@ -10,6 +10,7 @@ export interface Comment {
   authorImage?: string;
   author?: User;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface CreateCommentDto {

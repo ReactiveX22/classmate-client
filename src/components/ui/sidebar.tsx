@@ -517,7 +517,7 @@ function SidebarMenuButton({
         className: cn(sidebarMenuButtonVariants({ variant, size }), className),
       },
       props,
-      tooltip ? { render } : {}
+      (tooltip ? { render } : {}) as any
     ),
     render: !tooltip ? render : TooltipTrigger,
     state: {
