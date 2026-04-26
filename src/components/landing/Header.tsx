@@ -9,7 +9,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { ModeToggle } from '@/components/mode-toggle';
-import { IconMenu2, IconSchool, IconX } from '@tabler/icons-react';
+import { IconMenu2, IconSchool } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useState } from 'react';
 

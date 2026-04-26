@@ -1,9 +1,7 @@
 'use client';
 
 import { ChangePasswordForm } from '@/components/settings/change-password-form';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { IconLock, IconUser } from '@tabler/icons-react';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 
 export default function SettingsPage() {
   return (

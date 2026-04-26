@@ -333,9 +333,8 @@ export function PostForm({
         )}
 
         {/* Title Field (Conditional) */}
-        <form.Subscribe
-          selector={(state) => state.values.type}
-          children={(type) => {
+        <form.Subscribe selector={(state) => state.values.type}>
+          {(type) => {
             const isRequired = type === 'assignment' || type === 'material';
             if (!isRequired && type !== 'question' && type !== 'announcement')
               return null;
@@ -367,11 +366,10 @@ export function PostForm({
               </form.Field>
             );
           }}
-        />
+        </form.Subscribe>
 
-        <form.Subscribe
-          selector={(state) => state.values.type}
-          children={(type) =>
+        <form.Subscribe selector={(state) => state.values.type}>
+          {(type) =>
             type === 'question' ? (
               <form.Field name='questionData'>
                 {(field) => {
@@ -534,7 +532,7 @@ export function PostForm({
               </form.Field>
             ) : null
           }
-        />
+        </form.Subscribe>
 
         {/* Content Field */}
         <form.Field name='content'>
@@ -561,9 +559,8 @@ export function PostForm({
           }}
         </form.Field>
 
-        <form.Subscribe
-          selector={(state) => state.values.type}
-          children={(type) =>
+        <form.Subscribe selector={(state) => state.values.type}>
+          {(type) =>
             type === 'material' ? (
               <form.Field name='tags' mode='array'>
                 {(field) => (
@@ -617,12 +614,11 @@ export function PostForm({
               </form.Field>
             ) : null
           }
-        />
+        </form.Subscribe>
 
         {/* Assignment Specific Fields */}
-        <form.Subscribe
-          selector={(state) => state.values.type}
-          children={(type) =>
+        <form.Subscribe selector={(state) => state.values.type}>
+          {(type) =>
             type === 'assignment' ? (
               <div className='space-y-4 border rounded-lg p-4 bg-muted/20'>
                 <h4 className='font-medium text-sm'>Assignment Details</h4>
@@ -734,7 +730,7 @@ export function PostForm({
               </div>
             ) : null
           }
-        />
+        </form.Subscribe>
 
         {/* Attachments Upload */}
         <AttachmentUpload
@@ -799,14 +795,13 @@ export function PostForm({
 
       {showFooter && (
         <div className='flex justify-end gap-2'>
-          <form.Subscribe
-            selector={(state) => [state.isSubmitting]}
-            children={([formIsSubmitting]) => (
+          <form.Subscribe selector={(state) => [state.isSubmitting]}>
+            {([formIsSubmitting]) => (
               <Button type='submit' disabled={formIsSubmitting || isSubmitting}>
                 {formIsSubmitting || isSubmitting ? 'Saving...' : submitLabel}
               </Button>
             )}
-          />
+          </form.Subscribe>
         </div>
       )}
     </form>

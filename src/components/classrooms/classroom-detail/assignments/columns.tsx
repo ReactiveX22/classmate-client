@@ -38,7 +38,9 @@ export const getColumns = (
       <Checkbox
         checked={
           (table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')) as any
+            (table.getIsSomePageRowsSelected() && 'indeterminate')) as
+            | boolean
+            | 'indeterminate'
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label='Select all'
@@ -182,7 +184,8 @@ export const getColumns = (
     ),
     cell: ({ row, table }) => {
       const isSaving =
-        (table.options.meta as any)?.isSavingRow === row.original.studentId;
+        (table.options.meta as { isSavingRow?: string })?.isSavingRow ===
+        row.original.studentId;
       return (
         <EditableGradeCell
           initialGrade={row.original.grade}

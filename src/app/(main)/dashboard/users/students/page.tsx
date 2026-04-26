@@ -57,7 +57,7 @@ export default function StudentsPage() {
   } = useStudents({
     page,
     limit: perPage,
-    sortBy: sorting[0]?.id as any,
+    sortBy: (sorting[0]?.id as string) || undefined,
     sortOrder: sorting[0]?.desc ? 'desc' : 'asc',
     search: search || undefined,
   });

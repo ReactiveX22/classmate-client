@@ -42,13 +42,15 @@ export function DataTableFacetedFilter<TData, TValue>({
   console.log(options)
 
   const columnFilterValue = column?.getFilterValue();
-  const selectedValues = new Set(
-    Array.isArray(columnFilterValue)
-      ? columnFilterValue
-      : typeof columnFilterValue === 'string'
-        ? [columnFilterValue]
-        : [],
-  );
+  const selectedValues = React.useMemo(() => {
+    return new Set(
+      Array.isArray(columnFilterValue)
+        ? columnFilterValue
+        : typeof columnFilterValue === 'string'
+          ? [columnFilterValue]
+          : [],
+    );
+  }, [columnFilterValue]);
 
   const onItemSelect = React.useCallback(
     (option: Option, isSelected: boolean) => {

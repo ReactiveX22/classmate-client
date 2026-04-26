@@ -70,7 +70,7 @@ export function AddStudentsToClassroomDialog({
       onOpenChange(false);
       setSelectedIds([]);
       setSearch('');
-    } catch (error) {
+    } catch {
       // Errors are already toasted by the mutation onError handler
     } finally {
       setIsSubmitting(false);

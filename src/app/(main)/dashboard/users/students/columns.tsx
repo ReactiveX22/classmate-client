@@ -1,28 +1,27 @@
-'use client';
+"use client";
 
-import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { DeleteStudentDialog } from "@/components/students/delete-student-dialog";
+import { EditStudentDialog } from "@/components/students/edit-student-dialog";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import type { StudentData } from '@/lib/api/services/student.service';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
-import type { ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
-import { MoreHorizontal } from 'lucide-react';
-import { useState } from 'react';
-import { EditStudentDialog } from '@/components/students/edit-student-dialog';
-import { DeleteStudentDialog } from '@/components/students/delete-student-dialog';
+} from "@/components/ui/dropdown-menu";
+import type { StudentData } from "@/lib/api/services/student.service";
+import { IconAlignRight, IconEdit, IconTrash } from "@tabler/icons-react";
+import type { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
+import { MoreHorizontal } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const columns: ColumnDef<StudentData>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) => (
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
@@ -30,16 +29,16 @@ export const columns: ColumnDef<StudentData>[] = [
           table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
-        className='translate-y-0.5'
+        aria-label="Select all"
+        className="translate-y-0.5"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
-        className='translate-y-0.5'
+        aria-label="Select row"
+        className="translate-y-0.5"
       />
     ),
     enableSorting: false,
@@ -47,138 +46,175 @@ export const columns: ColumnDef<StudentData>[] = [
     size: 40,
   },
   {
-    accessorKey: 'user.name',
-    id: 'name',
+    accessorKey: "user.name",
+    id: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} label='Name' />
+      <DataTableColumnHeader column={column} label="Name" />
     ),
     meta: {
-      label: 'Name',
-      placeholder: 'Filter by name...',
-      variant: 'text',
+      label: "Name",
+      placeholder: "Filter by name...",
+      variant: "text",
     },
     cell: ({ row }) => {
       const name = row.original.user.name;
-      return <div className='font-medium'>{name}</div>;
+      return <div className="font-medium">{name}</div>;
     },
     enableSorting: true,
   },
   {
-    accessorKey: 'student.studentId',
-    id: 'studentId',
+    accessorKey: "student.studentId",
+    id: "studentId",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} label='Student ID' />
+      <DataTableColumnHeader column={column} label="Student ID" />
     ),
     meta: {
-      label: 'Student ID',
-      placeholder: 'Filter by ID...',
-      variant: 'text',
+      label: "Student ID",
+      placeholder: "Filter by ID...",
+      variant: "text",
     },
     cell: ({ row }) => {
       const studentId = row.original.student?.studentId;
-      return <div className='truncate'>{studentId || '-'}</div>;
+      return <div className="truncate">{studentId || "-"}</div>;
     },
   },
   {
-    accessorKey: 'user.email',
-    id: 'email',
+    accessorKey: "user.email",
+    id: "email",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} label='Email' />
+      <DataTableColumnHeader column={column} label="Email" />
     ),
     meta: {
-      label: 'Email',
-      placeholder: 'Filter by email...',
-      variant: 'text',
+      label: "Email",
+      placeholder: "Filter by email...",
+      variant: "text",
     },
     cell: ({ row }) => {
       const email = row.original.user.email;
-      return <div className='truncate'>{email}</div>;
+      return <div className="truncate">{email}</div>;
     },
     enableSorting: true,
   },
   {
-    accessorKey: 'user_profile.phone',
+    accessorKey: "user_profile.phone",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} label='Phone' />
+      <DataTableColumnHeader column={column} label="Phone" />
     ),
     meta: {
-      label: 'Phone',
-      placeholder: 'Filter by phone...',
-      variant: 'text',
+      label: "Phone",
+      placeholder: "Filter by phone...",
+      variant: "text",
     },
     cell: ({ row }) => {
-      const phone = (row.original as any).user_profile?.phone;
-      return <div className='truncate'>{phone || '-'}</div>;
+      const phone = row.original.userProfile?.phone;
+      return <div className="truncate">{phone || "-"}</div>;
     },
   },
 
   {
-    accessorKey: 'user.createdAt',
-    id: 'createdAt',
+    accessorKey: "user.createdAt",
+    id: "createdAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} label='Joined' />
+      <DataTableColumnHeader column={column} label="Joined" />
     ),
     meta: {
-      label: 'Joined',
-      variant: 'date',
+      label: "Joined",
+      variant: "date",
     },
     cell: ({ row }) => {
       const date = new Date(row.original.user.createdAt);
       return (
-        <span className='font-medium'>{format(date, 'MMM dd, yyyy')}</span>
+        <span className="font-medium">{format(date, "MMM dd, yyyy")}</span>
       );
     },
     enableSorting: true,
   },
   {
-    id: 'actions',
-    cell: ({ row }) => {
-      const student = row.original;
-      const [showEditDialog, setShowEditDialog] = useState(false);
-      const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-
-      return (
-        <>
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button
-                  variant='ghost'
-                  className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
-                >
-                  <MoreHorizontal className='h-4 w-4' />
-                  <span className='sr-only'>Open menu</span>
-                </Button>
-              }
-            ></DropdownMenuTrigger>
-            <DropdownMenuContent align='end' className='w-40'>
-              <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-                <IconEdit /> Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                variant='destructive'
-                onClick={() => setShowDeleteDialog(true)}
-              >
-                <IconTrash />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <EditStudentDialog
-            student={student}
-            open={showEditDialog}
-            onOpenChange={setShowEditDialog}
-          />
-
-          <DeleteStudentDialog
-            student={student}
-            open={showDeleteDialog}
-            onOpenChange={setShowDeleteDialog}
-          />
-        </>
-      );
-    },
+    id: "actions",
+    cell: ({ row }) => <ActionCell student={row.original} />,
     size: 40,
   },
 ];
+
+const ActionCell = ({ student }: { student: StudentData }) => {
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isImpersonating, setIsImpersonating] = useState(false);
+
+  const handleImpersonate = async () => {
+    setIsImpersonating(true);
+    const loadingId = toast.loading(`Logging in as ${student.user.name}...`);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/v1/impersonation/start`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ userId: student.user.id }),
+        },
+      );
+      if (res.ok) {
+        toast.success("Logged in successfully", { id: loadingId });
+        window.location.href = "/dashboard";
+      } else {
+        const data = await res.json().catch(() => ({}));
+        toast.error(data.message || "Failed to log in", {
+          id: loadingId,
+        });
+        setIsImpersonating(false);
+      }
+    } catch {
+      toast.error("An error occurred", { id: loadingId });
+      setIsImpersonating(false);
+    }
+  };
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          }
+        ></DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+            <IconEdit /> Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={handleImpersonate}
+            disabled={isImpersonating}
+          >
+            <IconAlignRight /> Login As
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={() => setShowDeleteDialog(true)}
+          >
+            <IconTrash />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <EditStudentDialog
+        student={student}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+      />
+
+      <DeleteStudentDialog
+        student={student}
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+      />
+    </>
+  );
+};

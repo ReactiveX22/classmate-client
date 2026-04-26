@@ -34,7 +34,7 @@ export function useTableQueryState<TData, TFilters extends ParserMap>(
     setPerPage,
     sorting,
     setSorting,
-    filters: filters as { [K in keyof TFilters]: any },
+    filters: filters as { [K in keyof TFilters]: unknown },
     setFilters,
     resetPagination: () => setPage(1),
   };

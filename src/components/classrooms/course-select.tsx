@@ -40,7 +40,7 @@ export function CourseSelect({
     search: debouncedSearch,
   });
 
-  const courses = response?.data || [];
+  const courses = React.useMemo(() => response?.data || [], [response?.data]);
 
   // Sync search input with value when value changes externally
   useEffect(() => {

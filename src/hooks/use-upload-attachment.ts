@@ -42,7 +42,7 @@ export function useUploadAttachment() {
             try {
               const response = JSON.parse(xhr.responseText);
               resolve(response);
-            } catch (error) {
+            } catch {
               reject(new Error('Failed to parse response'));
             }
           } else {

@@ -28,7 +28,7 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
     defaultValues: {
       name: student.user.name || '',
       studentId: student.student?.studentId || '',
-      phone: (student as any).user_profile?.phone || '',
+      phone: student.userProfile?.phone || '',
     } as EditStudentFormValues,
     validators: {
       onSubmit: editStudentSchema,
@@ -48,14 +48,14 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
           },
         });
         onSuccess?.();
-      } catch (error: any) {
+      } catch (error: unknown) {
         handleError(error, value);
       }
     },
   });
 
-  const getFieldError = (fieldName: string, fieldErrorsState: any[]) => {
-    if (fieldErrorsState.length > 0) return fieldErrorsState;
+  const getFieldError = (fieldName: string, fieldErrorsState: unknown[]) => {
+    if (fieldErrorsState.length > 0) return fieldErrorsState as { message: string }[];
     if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
     return [];
   };
@@ -70,9 +70,8 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
       className='flex flex-col gap-4 p-1'
     >
       <FieldGroup>
-        <form.Field
-          name='name'
-          children={(field) => {
+        <form.Field name='name'>
+          {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
@@ -93,11 +92,10 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
               </Field>
             );
           }}
-        />
+        </form.Field>
 
-        <form.Field
-          name='studentId'
-          children={(field) => {
+        <form.Field name='studentId'>
+          {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
@@ -118,11 +116,10 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
               </Field>
             );
           }}
-        />
+        </form.Field>
 
-        <form.Field
-          name='phone'
-          children={(field) => {
+        <form.Field name='phone'>
+          {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
@@ -143,7 +140,7 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
               </Field>
             );
           }}
-        />
+        </form.Field>
       </FieldGroup>
 
       {globalErrors.length > 0 && (
@@ -157,9 +154,8 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
         </Alert>
       )}
 
-      <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
-        children={([canSubmit, isSubmitting]) => (
+      <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+        {([, isSubmitting]) => (
           <div className='flex items-center justify-end gap-3 mt-4'>
             <Button
               type='button'
@@ -178,7 +174,7 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
             </Button>
           </div>
         )}
-      />
+      </form.Subscribe>
     </form>
   );
 }

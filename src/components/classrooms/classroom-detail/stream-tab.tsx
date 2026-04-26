@@ -2,9 +2,7 @@ import {
   Card,
   CardAction,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { usePosts } from "@/hooks/use-posts";
 import { IconMessageCircle } from "@tabler/icons-react";

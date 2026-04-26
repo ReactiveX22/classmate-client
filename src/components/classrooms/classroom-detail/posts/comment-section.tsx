@@ -10,6 +10,7 @@ import { formatDistanceToNow } from "date-fns";
 import { getInitials } from "@/lib/utils";
 import { useUser } from "@/hooks/useAuth";
 import { useComments, useCreateComment, useDeleteComment, useUpdateComment } from "@/hooks/use-comments";
+import type { Comment as PostComment } from "@/lib/api/services/comment.service";
 
 interface CommentSectionProps {
   postId: string;
@@ -79,7 +80,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
     );
   };
 
-  const startEditing = (comment: any) => {
+  const startEditing = (comment: PostComment) => {
     setEditingCommentId(comment.id);
     setEditContent(comment.content);
   };
@@ -90,14 +91,14 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
   };
 
   // Helper to extract name safely
-  const getCommentAuthorName = (comment: any) => {
+  const getCommentAuthorName = (comment: PostComment) => {
     if (comment.author?.name) return comment.author.name;
     if (comment.authorName) return comment.authorName;
     return "Unknown User";
   };
 
   // Helper to extract image safely
-  const getCommentAuthorImage = (comment: any) => {
+  const getCommentAuthorImage = (comment: PostComment) => {
     if (comment.author?.image) return comment.author.image;
     if (comment.authorImage) return comment.authorImage;
     return undefined;
@@ -135,7 +136,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
           {/* Existing Comments */}
           {!isLoadingComments && comments.length > 0 && (
             <div>
-              {(showAllComments ? comments : comments.slice(0, 2)).map((comment: any) => (
+              {(showAllComments ? (comments as PostComment[]) : (comments as PostComment[]).slice(0, 2)).map((comment) => (
                 <Card key={comment.id} className="mb-2">
                   <CardContent className="px-2 md:px-3">
                     <div className="flex gap-3">
@@ -259,7 +260,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
-                        handleSubmit(e as any);
+                        handleSubmit(e);
                       }
                     }}
                     className="resize-none min-h-[40px]"

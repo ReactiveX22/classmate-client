@@ -1,5 +1,4 @@
 import { LucideIcon } from 'lucide-react';
-import { User } from './auth';
 
 export type BaseNavItem = {
   title: string;

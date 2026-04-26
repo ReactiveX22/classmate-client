@@ -8,7 +8,7 @@ export const userService = {
   },
 
   updateProfile: async (data: UpdateProfileInput) => {
-    let payload: any = data;
+    let payload: UpdateProfileInput | FormData = data;
 
     if (data.image instanceof File) {
       const formData = new FormData();

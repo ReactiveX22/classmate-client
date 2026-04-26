@@ -28,7 +28,6 @@ import {
 import { formatDistanceToNow } from 'date-fns';
 import { Bell } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -144,10 +143,9 @@ export function NotificationPopover() {
 
 function NotificationItemRow({ item }: { item: NotificationItem }) {
   const { notification } = item;
-  const router = useRouter();
   const { mutate: markAsRead } = useMarkAsRead();
 
-  const handleNotificationClick = (e: React.MouseEvent) => {
+  const handleNotificationClick = () => {
     if (!item.isRead) {
       markAsRead(notification.id);
     }

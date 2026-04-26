@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { submissionService } from '@/lib/api/services/submission.service';
 import { toast } from 'sonner';
+import { handleApiError } from '@/lib/api';
 
 export const useReturnSubmission = () => {
   const queryClient = useQueryClient();
@@ -21,10 +22,8 @@ export const useReturnSubmission = () => {
       });
       toast.success('Assignment returned successfully');
     },
-    onError: (error: any) => {
-      toast.error(
-        error?.response?.data?.message || 'Failed to return assignment'
-      );
+    onError: (error: unknown) => {
+      toast.error(handleApiError(error));
     },
   });
 };

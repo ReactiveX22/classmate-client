@@ -5,15 +5,14 @@ import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { NotificationPopover } from '@/components/dashboard/notification-popover';
 import { StudentSidebar } from '@/components/dashboard/student-sidebar';
 import { TeacherSidebar } from '@/components/dashboard/teacher-sidebar';
-import { Button } from '@/components/ui/button';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { ImpersonationBanner } from '@/components/common/impersonation-banner';
 import { ProfileDropdown } from '@/components/dashboard/profile-dropdown';
 import { useNotificationSocket } from '@/hooks/use-notification-socket';
 import { useUser } from '@/hooks/useAuth';
 import { socketService } from '@/lib/api/services/socket.service';
-import { IconSettings } from '@tabler/icons-react';
 import { useEffect } from 'react';
 
 export default function DashboardLayout({
@@ -50,6 +49,7 @@ export default function DashboardLayout({
       <SidebarProvider>
         {getSidebar()}
         <SidebarInset>
+          <ImpersonationBanner />
           <DashboardHeader>
             <NotificationPopover />
             <ProfileDropdown />

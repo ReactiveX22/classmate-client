@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useUpdateCourseSession } from '@/hooks/use-course-sessions';
 import { CourseSession } from '@/lib/api/services/course-session.service';
-import { useForm } from '@tanstack/react-form';
+import { useForm, type ValidationError } from '@tanstack/react-form';
 import { courseSessionSchema, type CourseSessionFormValues } from '@/lib/schemas/course-session-schema';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -59,13 +59,13 @@ export function EditCourseSessionForm({ session, onSuccess }: EditCourseSessionF
           },
         });
         onSuccess?.();
-      } catch (error: any) {
+      } catch (error) {
         handleError(error, value);
       }
     },
   });
 
-  const getFieldError = (fieldName: string, fieldErrorsState: any[]) => {
+  const getFieldError = (fieldName: string, fieldErrorsState: ValidationError[]) => {
     if (fieldErrorsState.length > 0) return fieldErrorsState;
     if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
     return [];
@@ -228,7 +228,8 @@ export function EditCourseSessionForm({ session, onSuccess }: EditCourseSessionF
 
       <form.Subscribe
         selector={(state) => [state.canSubmit, state.isSubmitting]}
-        children={([canSubmit, isSubmitting]) => (
+      >
+        {([, isSubmitting]) => (
           <Button
             type='submit'
             className='w-full mt-2'
@@ -237,7 +238,7 @@ export function EditCourseSessionForm({ session, onSuccess }: EditCourseSessionF
             {isSubmitting ? 'Saving...' : 'Save Changes'}
           </Button>
         )}
-      />
+      </form.Subscribe>
     </form>
   );
 }

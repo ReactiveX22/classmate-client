@@ -431,7 +431,7 @@ export function AttachmentUpload({
       {allItems.length > 0 && (
         <div className='space-y-2'>
           <Label className='text-sm'>Attached ({allItems.length})</Label>
-          {allItems.map((item, idx) => {
+          {allItems.map((item) => {
             if (item.type === 'upload') {
               const { upload, index } = item;
               return (

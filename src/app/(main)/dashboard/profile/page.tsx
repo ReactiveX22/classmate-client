@@ -49,7 +49,7 @@ import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function ProfilePage() {
-  const { data: userAuth, isLoading: isAuthLoading } = useUser();
+  const { data: userAuth } = useUser();
   const { data: userProfileData, isLoading: isProfileLoading } =
     useUserProfile();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();

@@ -3,7 +3,6 @@
 import { JoinClassroomDialog } from '@/components/classrooms/join-classroom-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useClassrooms } from '@/hooks/use-classrooms';
 import { useUser } from '@/hooks/useAuth';
 import { format } from 'date-fns';
@@ -12,7 +11,7 @@ import { ClassroomCard } from './classroom-card';
 import { DashboardSkeleton } from './dashboard-skeleton';
 import { RecentNotices } from './recent-notices';
 import { UpcomingSection } from './upcoming-section';
-import { LayoutGrid, Calendar, ChevronRight, Book } from 'lucide-react';
+import { LayoutGrid, ChevronRight, Book } from 'lucide-react';
 
 export function StudentDashboard() {
   const { data: classroomsResponse, isLoading } = useClassrooms({
@@ -111,7 +110,7 @@ function EmptyState() {
         </div>
         <h3 className='text-lg font-semibold'>No Classes Yet</h3>
         <p className='text-sm text-muted-foreground max-w-sm mt-1 mb-4'>
-          You aren't enrolled in any classes yet.
+          You aren&apos;t enrolled in any classes yet.
         </p>
         <Button
           render={<Link href='/dashboard/classrooms/join'>Join Class</Link>}
