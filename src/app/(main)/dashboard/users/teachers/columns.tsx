@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useImpersonate } from "@/hooks/useAuth";
 import { TeacherData } from "@/lib/api/services/teacher.service";
 import { IconEdit, IconTrash, IconUserShare } from "@tabler/icons-react";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -145,35 +146,20 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
 const ActionCell = ({ teacher }: { teacher: TeacherData }) => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [isImpersonating, setIsImpersonating] = useState(false);
+  const { mutate: impersonate, isPending: isImpersonating } = useImpersonate();
 
-  const handleImpersonate = async () => {
-    setIsImpersonating(true);
+  const handleImpersonate = () => {
     const loadingId = toast.loading(`Logging in as ${teacher.user.name}...`);
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/v1/impersonation/start`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ userId: teacher.user.id }),
-        },
-      );
-      if (res.ok) {
+    impersonate(teacher.user.id, {
+      onSuccess: () => {
         toast.success("Logged in successfully", { id: loadingId });
-        window.location.href = "/dashboard";
-      } else {
-        const data = await res.json().catch(() => ({}));
-        toast.error(data.message || "Failed to log in", {
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to log in", {
           id: loadingId,
         });
-        setIsImpersonating(false);
-      }
-    } catch {
-      toast.error("An error occurred", { id: loadingId });
-      setIsImpersonating(false);
-    }
+      },
+    });
   };
 
   return (

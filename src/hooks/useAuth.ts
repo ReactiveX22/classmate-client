@@ -58,6 +58,21 @@ export function useLogout() {
   });
 }
 
+export function useImpersonate() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userId: string) => authService.impersonate(userId),
+    onSuccess: () => {
+      queryClient.clear();
+      window.location.href = '/dashboard';
+    },
+    onError: (error: Error) => {
+      console.error('Impersonation failed:', error.message);
+    },
+  });
+}
+
 export function useUser() {
   const { data: session, isPending, error, refetch } = useSession();
   return {

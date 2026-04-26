@@ -1,6 +1,6 @@
 import { authClient } from '@/lib/auth-client';
 import type { LoginCredentials, SignupCredentials } from '@/types/auth';
-import { handleApiError } from '../index';
+import apiClient, { handleApiError } from '../index';
 
 export const authService = {
   async login(credentials: LoginCredentials) {
@@ -42,6 +42,17 @@ export const authService = {
   async logout() {
     try {
       await authClient.signOut();
+    } catch (error) {
+      throw new Error(handleApiError(error));
+    }
+  },
+
+  async impersonate(userId: string) {
+    try {
+      const response = await apiClient.post('/api/v1/impersonation/start', {
+        userId,
+      });
+      return response.data;
     } catch (error) {
       throw new Error(handleApiError(error));
     }
