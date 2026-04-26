@@ -47,7 +47,7 @@ export function StudentsTableActionBar({ table }: StudentsTableActionBarProps) {
       );
       toast.success(`Deleted ${rows.length} student(s)`);
       table.toggleAllRowsSelected(false);
-    } catch (error) {
+    } catch {
       // Error handled by hook
     }
   }, [rows, table, deleteStudentMutation]);

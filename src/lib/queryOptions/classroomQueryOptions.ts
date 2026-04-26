@@ -1,12 +1,13 @@
+import { PaginationParams } from '@/types/pagination';
 import { queryOptions, UseQueryOptions } from '@tanstack/react-query';
 import {
+  AttendanceChecklistItem,
+  ClassroomDetail,
   classroomService,
   ClassroomsResponse,
-  ClassroomDetail,
-  AttendanceChecklistItem,
+  StudentAttendanceStats,
   UpcomingPost,
 } from '../api/services/classroom.service';
-import { PaginationParams } from '@/types/pagination';
 
 export function createClassroomQueryOptions<
   TData = ClassroomsResponse,
@@ -61,12 +62,15 @@ export function getAttendanceChecklistQueryOptions<
 }
 
 export function getStudentAttendanceStatsQueryOptions<
-  TData = any, // Using any for TData to allow for flexibility, but could be StudentAttendanceStats
+  TData = StudentAttendanceStats,
   TError = Error,
 >(
   classroomId: string,
   studentId: string,
-  options?: Omit<UseQueryOptions<any, TError, TData>, 'queryKey' | 'queryFn'>,
+  options?: Omit<
+    UseQueryOptions<StudentAttendanceStats, TError, TData>,
+    'queryKey' | 'queryFn'
+  >,
 ) {
   return queryOptions({
     ...options,

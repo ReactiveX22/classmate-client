@@ -4,6 +4,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -27,6 +28,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Sortable,
+  SortableContent,
+  SortableItem,
+  SortableItemHandle,
+} from '@/components/ui/sortable';
 import { Textarea } from '@/components/ui/textarea';
 import { useFormErrorHandler } from '@/hooks/use-form-handler';
 import {
@@ -35,22 +42,26 @@ import {
 } from '@/hooks/use-upload-attachment';
 import {
   CreatePostDto,
+  PollOption,
   postService,
   PostType,
+  QuestionData,
   SubmissionType,
 } from '@/lib/api/services/post.service';
 import { cn } from '@/lib/utils';
 import { IconCalendar } from '@tabler/icons-react';
 import { useForm } from '@tanstack/react-form';
 import { format } from 'date-fns';
+import { GripVertical, Plus, X } from 'lucide-react';
 import { useState } from 'react';
 import { z } from 'zod';
 
 // Zod Schemas
 const baseSchema = z.object({
   content: z.string().min(1, 'Content is required'),
-  isPinned: z.boolean().default(false),
-  commentsEnabled: z.boolean().default(true),
+  isPinned: z.boolean(),
+  commentsEnabled: z.boolean(),
+  tags: z.array(z.string()),
 });
 
 const assignmentSchema = baseSchema.extend({
@@ -76,9 +87,42 @@ const announcementSchema = baseSchema.extend({
   title: z.string().optional(),
 });
 
+const questionShortAnswerSchema = z.object({
+  mode: z.literal('short_answer'),
+});
+
+const pollOptionSchema = z.object({
+  id: z.string().min(1),
+  text: z.string().trim().min(1, 'Poll options cannot be empty'),
+  position: z.number(),
+});
+
+const questionPollSchema = z
+  .object({
+    mode: z.literal('poll'),
+    selectionMode: z.enum(['single', 'multiple'] as const),
+    options: z
+      .array(pollOptionSchema)
+      .min(2, 'Polls must have at least 2 options'),
+  })
+  .superRefine((value, ctx) => {
+    const ids = value.options.map((option) => option.id);
+    if (new Set(ids).size !== ids.length) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Poll options must be unique',
+        path: ['options'],
+      });
+    }
+  });
+
 const questionSchema = baseSchema.extend({
   type: z.literal('question'),
   title: z.string().optional(),
+  questionData: z.discriminatedUnion('mode', [
+    questionShortAnswerSchema,
+    questionPollSchema,
+  ]),
 });
 
 const postSchema = z.discriminatedUnion('type', [
@@ -90,6 +134,26 @@ const postSchema = z.discriminatedUnion('type', [
 
 export type PostFormData = z.infer<typeof postSchema>;
 
+const createPollOption = (index: number): PollOption => ({
+  id: crypto.randomUUID(),
+  text: '',
+  position: index,
+});
+
+const createDefaultPollQuestionData = (
+  selectionMode: 'single' | 'multiple',
+): QuestionData => ({
+  mode: 'poll',
+  selectionMode,
+  options: [createPollOption(0), createPollOption(1)],
+});
+
+const reorderPollOptions = (options: PollOption[]) =>
+  options.map((option, index) => ({
+    ...option,
+    position: index,
+  }));
+
 interface PostFormProps {
   classroomId: string;
   initialValues?: PostFormData;
@@ -99,6 +163,9 @@ interface PostFormProps {
   submitLabel?: string;
   isSubmitting?: boolean;
   hideTypeSelection?: boolean;
+  lockQuestionPollStructure?: boolean;
+  id?: string;
+  showFooter?: boolean;
 }
 
 export function PostForm({
@@ -110,10 +177,14 @@ export function PostForm({
   submitLabel = 'Post',
   isSubmitting = false,
   hideTypeSelection = false,
+  lockQuestionPollStructure = false,
+  id,
+  showFooter = true,
 }: PostFormProps) {
   const { fieldErrors, globalErrors, handleError } = useFormErrorHandler();
   const [attachments, setAttachments] =
     useState<UploadResult[]>(initialAttachments);
+  const [currentTag, setCurrentTag] = useState('');
 
   const { mutateAsync: uploadFile } = useUploadAttachment();
 
@@ -123,6 +194,10 @@ export function PostForm({
     isPinned: false,
     commentsEnabled: true,
     title: '',
+    tags: [],
+    questionData: {
+      mode: 'short_answer',
+    },
   } as PostFormData);
 
   const form = useForm({
@@ -139,6 +214,7 @@ export function PostForm({
           commentsEnabled: value.commentsEnabled,
           title: value.title?.trim() || undefined,
           attachments: attachments.length > 0 ? attachments : undefined,
+          tags: value.tags || [],
         };
 
         if (value.type === 'assignment') {
@@ -148,27 +224,58 @@ export function PostForm({
           };
         }
 
+        if (value.type === 'question') {
+          payload.questionData =
+            value.questionData.mode === 'poll'
+              ? {
+                  mode: 'poll',
+                  selectionMode: value.questionData.selectionMode,
+                  options: reorderPollOptions(value.questionData.options),
+                }
+              : {
+                  mode: 'short_answer',
+                };
+        }
+
         await onSubmit(payload);
 
         if (!initialValues) {
           form.reset();
           setAttachments([]);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         handleError(error, value);
         console.error(error);
       }
     },
   });
 
-  const getFieldError = (fieldName: string, fieldErrorsState: any[]) => {
-    if (fieldErrorsState.length > 0) return fieldErrorsState;
+  const getFieldError = (
+    fieldName: string,
+    fieldErrorsState: (string | { message?: string } | undefined | null)[],
+  ) => {
+    const errors = fieldErrorsState
+      .filter((err): err is string | { message?: string } => !!err)
+      .map((err) => (typeof err === 'string' ? { message: err } : err));
+
+    if (errors.length > 0) return errors;
     if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
     return [];
   };
 
+  const handleAddTag = (
+    pushValue: (value: string) => void,
+    currentTags: string[],
+  ) => {
+    const normalized = currentTag.trim().replace(/^#/, '').toLowerCase();
+    if (normalized && !currentTags.includes(normalized)) {
+      pushValue(normalized);
+    }
+    setCurrentTag('');
+  };
   return (
     <form
+      id={id}
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -200,6 +307,11 @@ export function PostForm({
                           allowLateSubmission: true,
                         });
                       }
+                      if (val === 'question') {
+                        form.setFieldValue('questionData', {
+                          mode: 'short_answer',
+                        });
+                      }
                     }}
                     disabled={!!initialValues}
                   >
@@ -221,9 +333,8 @@ export function PostForm({
         )}
 
         {/* Title Field (Conditional) */}
-        <form.Subscribe
-          selector={(state) => state.values.type}
-          children={(type) => {
+        <form.Subscribe selector={(state) => state.values.type}>
+          {(type) => {
             const isRequired = type === 'assignment' || type === 'material';
             if (!isRequired && type !== 'question' && type !== 'announcement')
               return null;
@@ -255,7 +366,173 @@ export function PostForm({
               </form.Field>
             );
           }}
-        />
+        </form.Subscribe>
+
+        <form.Subscribe selector={(state) => state.values.type}>
+          {(type) =>
+            type === 'question' ? (
+              <form.Field name='questionData'>
+                {(field) => {
+                  const errors = getFieldError(field.name, field.state.meta.errors);
+                  const isInvalid = errors.length > 0;
+                  const value = field.state.value || { mode: 'short_answer' };
+
+                  const updatePollOptions = (options: PollOption[]) => {
+                    if (value.mode !== 'poll') return;
+                    field.handleChange({
+                      ...value,
+                      options: reorderPollOptions(options),
+                    });
+                  };
+
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel>
+                        Response Type <span className='text-destructive'>*</span>
+                      </FieldLabel>
+                      <Select
+                        value={value.mode}
+                        disabled={lockQuestionPollStructure && value.mode === 'poll'}
+                        onValueChange={(nextValue) => {
+                          if (nextValue === 'short_answer') {
+                            field.handleChange({ mode: 'short_answer' });
+                            return;
+                          }
+
+                          field.handleChange(
+                            createDefaultPollQuestionData('single'),
+                          );
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue>
+                            {value.mode === 'short_answer' ? 'Short Answer' : 'Poll'}
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value='short_answer'>
+                            Short Answer
+                          </SelectItem>
+                          <SelectItem value='poll'>Poll</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      {value.mode === 'poll' && (
+                        <div className='mt-4 space-y-3'>
+                          <div className='flex items-center justify-between gap-3'>
+                            <div>
+                              <p className='text-sm font-medium'>Poll Options</p>
+                              <p className='text-xs text-muted-foreground'>
+                                Drag by the handle to reorder options.
+                              </p>
+                            </div>
+                            <Button
+                              type='button'
+                              variant='outline'
+                              size='sm'
+                              disabled={lockQuestionPollStructure}
+                              onClick={() =>
+                                updatePollOptions([
+                                  ...value.options,
+                                  createPollOption(value.options.length),
+                                ])
+                              }
+                            >
+                              <Plus className='mr-2 h-4 w-4' />
+                              Add Option
+                            </Button>
+                          </div>
+
+                          <Sortable
+                            value={value.options}
+                            getItemValue={(option) => option.id}
+                            onValueChange={updatePollOptions}
+                          >
+                            <SortableContent className='space-y-2'>
+                              {value.options.map((option, index) => (
+                                <SortableItem
+                                  key={option.id}
+                                  value={option.id}
+                                  className='flex items-center gap-2 rounded-md border bg-background p-2'
+                                >
+                                  <SortableItemHandle
+                                    className='rounded-md border p-2 text-muted-foreground hover:text-foreground'
+                                    aria-label={`Reorder option ${index + 1}`}
+                                  >
+                                    <GripVertical className='h-4 w-4' />
+                                  </SortableItemHandle>
+                                  <Input
+                                    value={option.text}
+                                    disabled={lockQuestionPollStructure}
+                                    onChange={(e) => {
+                                      const nextOptions = value.options.map(
+                                        (currentOption) =>
+                                          currentOption.id === option.id
+                                            ? {
+                                                ...currentOption,
+                                                text: e.target.value,
+                                              }
+                                            : currentOption,
+                                      );
+                                      updatePollOptions(nextOptions);
+                                    }}
+                                    placeholder={`Option ${index + 1}`}
+                                  />
+                                  <Button
+                                    type='button'
+                                    variant='ghost'
+                                    size='icon'
+                                    disabled={
+                                      lockQuestionPollStructure ||
+                                      value.options.length <= 2
+                                    }
+                                    onClick={() =>
+                                      updatePollOptions(
+                                        value.options.filter(
+                                          (currentOption) =>
+                                            currentOption.id !== option.id,
+                                        ),
+                                      )
+                                    }
+                                  >
+                                    <X className='h-4 w-4' />
+                                  </Button>
+                                </SortableItem>
+                              ))}
+                            </SortableContent>
+                          </Sortable>
+
+                          <div className='flex items-center space-x-2 pt-2'>
+                            <Checkbox
+                              id='poll-multi-choice'
+                              className='group-has-disabled/field:opacity-100'
+                              checked={value.selectionMode === 'multiple'}
+                              onCheckedChange={(checked) => {
+                                field.handleChange({
+                                  ...value,
+                                  selectionMode: checked ? 'multiple' : 'single',
+                                });
+                              }}
+                            />
+                            <Label
+                              htmlFor='poll-multi-choice'
+                              className='text-sm font-normal'
+                            >
+                              Allow multiple choices
+                            </Label>
+                          </div>
+                        </div>
+                      )}
+
+                      {isInvalid && <FieldError errors={errors} />}
+
+                    </Field>
+                  );
+                }}
+              </form.Field>
+            ) : null
+          }
+        </form.Subscribe>
 
         {/* Content Field */}
         <form.Field name='content'>
@@ -282,10 +559,66 @@ export function PostForm({
           }}
         </form.Field>
 
+        <form.Subscribe selector={(state) => state.values.type}>
+          {(type) =>
+            type === 'material' ? (
+              <form.Field name='tags' mode='array'>
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor='resource-tag-input'>Tags</FieldLabel>
+                    <div className='space-y-3'>
+                      <div className='flex gap-2'>
+                        <Input
+                          id='resource-tag-input'
+                          value={currentTag}
+                          placeholder='Add tag and press Enter'
+                          onChange={(e) => setCurrentTag(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              handleAddTag(field.pushValue, field.state.value);
+                            }
+                          }}
+                        />
+                        <Button
+                          type='button'
+                          variant='outline'
+                          size='icon'
+                          onClick={() =>
+                            handleAddTag(field.pushValue, field.state.value)
+                          }
+                        >
+                          <Plus className='h-4 w-4' />
+                        </Button>
+                      </div>
+
+                      {field.state.value.length > 0 && (
+                        <div className='flex flex-wrap gap-2'>
+                          {field.state.value.map((tag, index) => (
+                            <Badge key={`${tag}-${index}`} variant='secondary'>
+                              #{tag}
+                              <button
+                                type='button'
+                                className='ml-1 rounded-full p-0.5 hover:bg-muted-foreground/20'
+                                onClick={() => field.removeValue(index)}
+                              >
+                                <X className='h-3 w-3' />
+                              </button>
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </Field>
+                )}
+              </form.Field>
+            ) : null
+          }
+        </form.Subscribe>
+
         {/* Assignment Specific Fields */}
-        <form.Subscribe
-          selector={(state) => state.values.type}
-          children={(type) =>
+        <form.Subscribe selector={(state) => state.values.type}>
+          {(type) =>
             type === 'assignment' ? (
               <div className='space-y-4 border rounded-lg p-4 bg-muted/20'>
                 <h4 className='font-medium text-sm'>Assignment Details</h4>
@@ -397,7 +730,7 @@ export function PostForm({
               </div>
             ) : null
           }
-        />
+        </form.Subscribe>
 
         {/* Attachments Upload */}
         <AttachmentUpload
@@ -460,16 +793,17 @@ export function PostForm({
         </Alert>
       )}
 
-      <div className='flex justify-end gap-2'>
-        <form.Subscribe
-          selector={(state) => [state.isSubmitting]}
-          children={([isSubmitting]) => (
-            <Button type='submit' disabled={isSubmitting}>
-              {isSubmitting ? 'Saving...' : submitLabel}
-            </Button>
-          )}
-        />
-      </div>
+      {showFooter && (
+        <div className='flex justify-end gap-2'>
+          <form.Subscribe selector={(state) => [state.isSubmitting]}>
+            {([formIsSubmitting]) => (
+              <Button type='submit' disabled={formIsSubmitting || isSubmitting}>
+                {formIsSubmitting || isSubmitting ? 'Saving...' : submitLabel}
+              </Button>
+            )}
+          </form.Subscribe>
+        </div>
+      )}
     </form>
   );
 }

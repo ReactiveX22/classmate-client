@@ -1,14 +1,19 @@
-'use client';
+"use client";
 
-import { RoleGuard } from '@/components/common/role-guard';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { usePosts } from '@/hooks/use-posts';
-import { Role } from '@/types/auth';
-import { IconClipboardList, IconLoader2, IconPlus } from '@tabler/icons-react';
-import { useMemo } from 'react';
-import { CreatePostDialog } from './posts/create-post-dialog';
-import { AssignmentCard } from './posts/post-types/assignment-card';
+import { RoleGuard } from "@/components/common/role-guard";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+} from "@/components/ui/card";
+import { usePosts } from "@/hooks/use-posts";
+import { Role } from "@/types/auth";
+import { IconClipboardList, IconLoader2 } from "@tabler/icons-react";
+import { useMemo } from "react";
+import { CreatePostDialog } from "./posts/create-post-dialog";
+import { AssignmentCard } from "./posts/post-types/assignment-card";
 
 interface ClassworkTabProps {
   classroomId: string;
@@ -23,7 +28,7 @@ export function ClassworkTab({ classroomId, isTeacher }: ClassworkTabProps) {
     if (!data) return [];
     return data.pages
       .flatMap((page) => page.data)
-      .filter((post) => post.type === 'assignment');
+      .filter((post) => post.type === "assignment");
   }, [data]);
 
   const isEmpty = !isLoading && assignments.length === 0;
@@ -45,46 +50,46 @@ export function ClassworkTab({ classroomId, isTeacher }: ClassworkTabProps) {
       </div>
 
       {isLoading ? (
-        <div className='flex justify-center py-12'>
-          <IconLoader2 className='animate-spin text-muted-foreground' />
+        <div className="flex justify-center py-12">
+          <IconLoader2 className="animate-spin text-muted-foreground" />
         </div>
       ) : isEmpty ? (
-        <Card className='border-dashed shadow-none bg-muted/30'>
-          <CardContent className='flex flex-col items-center justify-center py-16 text-center'>
-            <div className='p-4 bg-background rounded-full mb-4 shadow-sm'>
-              <IconClipboardList className='w-8 h-8 text-muted-foreground' />
+        <Card className="border-dashed shadow-none bg-muted/30">
+          <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="p-4 bg-background rounded-full mb-4 shadow-sm">
+              <IconClipboardList className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h3 className='text-lg font-medium mb-1'>No assignments yet</h3>
-            <p className='text-muted-foreground text-sm max-w-sm mx-auto mb-6'>
+            <h3 className="text-lg font-medium mb-1">No assignments yet</h3>
+            <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-6">
               Assignments you create will appear here. Students can view details
               and submit their work.
             </p>
             <CreatePostDialog
               classroomId={classroomId}
-              trigger={<Button variant='outline'>Create assignment</Button>}
+              trigger={<Button variant="outline">Create assignment</Button>}
             />
           </CardContent>
         </Card>
       ) : (
-        <div className='space-y-4'>
+        <div className="space-y-4">
           {assignments.map((post) => (
             <AssignmentCard key={post.id} post={post} isTeacher={isTeacher} />
           ))}
 
           {hasNextPage && (
-            <div className='flex justify-center pt-6'>
+            <div className="flex justify-center pt-6">
               <Button
-                variant='ghost'
+                variant="ghost"
                 onClick={() => fetchNextPage()}
                 disabled={isFetchingNextPage}
               >
                 {isFetchingNextPage ? (
                   <>
-                    <IconLoader2 className='mr-2 h-4 w-4 animate-spin' />
+                    <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
                     Loading...
                   </>
                 ) : (
-                  'Load more'
+                  "Load more"
                 )}
               </Button>
             </div>

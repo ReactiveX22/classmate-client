@@ -1,6 +1,7 @@
 import {
   CreateTeacherInput,
   teacherService,
+  UpdateTeacherInput,
 } from '@/lib/api/services/teacher.service';
 import { createTeacherQueryOptions } from '@/lib/queryOptions/usersQueryOptions';
 import { ApiError, ErrorCode } from '@/types/errors';
@@ -48,7 +49,7 @@ export function useDeleteTeacher() {
 export function useUpdateTeacher() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
+    mutationFn: ({ id, data }: { id: string; data: UpdateTeacherInput }) =>
       teacherService.updateTeacher(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['teachers'] });

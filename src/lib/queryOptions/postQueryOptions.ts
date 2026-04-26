@@ -1,10 +1,13 @@
 import { infiniteQueryOptions } from '@tanstack/react-query';
-import { postService, PostsResponse } from '../api/services/post.service';
-import { PaginationParams } from '@/types/pagination';
+import {
+  postService,
+  PostsQueryParams,
+  PostsResponse,
+} from '../api/services/post.service';
 
 export function infinitePostsQueryOptions(
   classroomId: string,
-  params?: Omit<PaginationParams, 'page'>,
+  params?: Omit<PostsQueryParams, 'page'>,
 ) {
   return infiniteQueryOptions({
     queryKey: ['posts', classroomId, params],

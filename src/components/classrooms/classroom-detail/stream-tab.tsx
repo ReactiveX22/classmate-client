@@ -2,15 +2,13 @@ import {
   Card,
   CardAction,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { usePosts } from '@/hooks/use-posts';
-import { IconMessageCircle } from '@tabler/icons-react';
-import { CreatePostDialog } from './posts/create-post-dialog';
-import { PostList } from './posts/post-list';
-import { UpcomingCard } from './upcoming-card';
+} from "@/components/ui/card";
+import { usePosts } from "@/hooks/use-posts";
+import { IconMessageCircle } from "@tabler/icons-react";
+import { CreatePostDialog } from "./posts/create-post-dialog";
+import { PostList } from "./posts/post-list";
+import { UpcomingCard } from "./upcoming-card";
 
 interface StreamTabProps {
   classroomId: string;
@@ -37,17 +35,17 @@ export function StreamTab({ classroomId, isTeacher }: StreamTabProps) {
                 <div className='rounded-full bg-primary/10 text-primary p-2 sm:p-3 shrink-0'>
                   <IconMessageCircle className='w-4 h-4 sm:w-5 sm:h-5' />
                 </div>
-                <div className='flex flex-col'>
-                  <h3 className='font-medium text-sm'>
+                <div className="flex flex-col">
+                  <h3 className="font-medium text-sm">
                     Announce something to your class
                   </h3>
-                  <p className='text-xs text-muted-foreground'>
+                  <p className="text-xs text-muted-foreground">
                     Share updates, assignments, and materials
                   </p>
                 </div>
               </div>
 
-              <CardAction className='my-auto'>
+              <CardAction className="my-auto">
                 <CreatePostDialog classroomId={classroomId} />
               </CardAction>
             </CardHeader>
@@ -56,15 +54,15 @@ export function StreamTab({ classroomId, isTeacher }: StreamTabProps) {
           {showEmptyState ? (
             <Card>
               <CardContent>
-                <div className='flex flex-col items-center justify-center py-12 px-4 border-2 border-dashed rounded-lg border-muted'>
+                <div className="flex flex-col items-center justify-center py-12 px-4 border-2 border-dashed rounded-lg border-muted">
                   <IconMessageCircle
                     size={48}
-                    className='text-muted-foreground mb-4'
+                    className="text-muted-foreground mb-4"
                   />
-                  <h3 className='text-lg font-semibold mb-2'>
+                  <h3 className="text-lg font-semibold mb-2">
                     No announcements yet
                   </h3>
-                  <p className='text-sm text-muted-foreground text-center'>
+                  <p className="text-sm text-muted-foreground text-center">
                     Share announcements, assignments, and materials with your
                     class
                   </p>

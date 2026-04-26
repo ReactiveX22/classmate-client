@@ -40,7 +40,7 @@ export function CoursesTableActionBar({ table }: CoursesTableActionBarProps) {
       );
       toast.success(`Deleted ${rows.length} course(s)`);
       table.toggleAllRowsSelected(false);
-    } catch (error) {
+    } catch {
       // Error handled by hook
     }
   }, [rows, table, deleteCourseMutation]);

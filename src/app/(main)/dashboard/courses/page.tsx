@@ -18,12 +18,15 @@ import { CoursesTableActionBar } from '@/components/courses/courses-table-action
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 import { useSemesters } from '@/hooks/use-semesters';
 import { useCourseSessions } from '@/hooks/use-course-sessions';
-import { useQueryStates, parseAsString, parseAsArrayOf } from 'nuqs';
+import { parseAsString, parseAsArrayOf } from 'nuqs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-const toOptions = (data: any[], labelKey: string | ((item: any) => string)) =>
+const toOptions = <T extends { id: string }>(
+  data: T[],
+  labelKey: keyof T | ((item: T) => string)
+) =>
   data.map((item) => ({
-    label: typeof labelKey === 'function' ? labelKey(item) : item[labelKey],
+    label: typeof labelKey === 'function' ? labelKey(item) : (item[labelKey] as string),
     value: item.id,
   }));
 
@@ -38,7 +41,7 @@ export default function CoursesPage() {
     sorting,
     filters,
     setFilters
-  } = useTableQueryState<Course, any>(DEFAULT_SORTING, {
+  } = useTableQueryState(DEFAULT_SORTING, {
     search: parseAsString.withDefault('').withOptions({ clearOnDefault: true }),
     semesterId: parseAsArrayOf(parseAsString).withDefault([]).withOptions({ clearOnDefault: true }),
     sessionId: parseAsArrayOf(parseAsString).withDefault([]).withOptions({ clearOnDefault: true }),
@@ -67,17 +70,14 @@ export default function CoursesPage() {
   const { data: semesterResponse } = useSemesters({ limit: 100 });
   const { data: sessionResponse } = useCourseSessions({ limit: 100 });
 
-  const semesters = semesterResponse?.data || [];
-  const sessions = sessionResponse?.data || [];
-
   const semesterOptions = useMemo(
-    () => toOptions(semesters, (s) => `Semester ${s.ordinal}`),
-    [semesters]
+    () => toOptions(semesterResponse?.data || [], (s) => `Semester ${s.ordinal}`),
+    [semesterResponse]
   );
 
   const sessionOptions = useMemo(
-    () => toOptions(sessions, 'name'),
-    [sessions]
+    () => toOptions(sessionResponse?.data || [], 'name'),
+    [sessionResponse]
   );
 
   const {

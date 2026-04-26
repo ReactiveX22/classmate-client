@@ -10,7 +10,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useUpdateSemester } from '@/hooks/use-semesters';
 import { Semester } from '@/lib/api/services/semester.service';
-import { useForm } from '@tanstack/react-form';
+import { useForm, type ValidationError } from '@tanstack/react-form';
 import { semesterSchema, type SemesterFormValues } from '@/lib/schemas/semester-schema';
 import { useFormErrorHandler } from '@/hooks/use-form-handler';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -40,15 +40,32 @@ export function EditSemesterForm({ semester, onSuccess }: EditSemesterFormProps)
           },
         });
         onSuccess?.();
-      } catch (error: any) {
+      } catch (error) {
         handleError(error, value);
       }
     },
   });
 
-  const getFieldError = (fieldName: string, fieldErrorsState: any[]) => {
-    if (fieldErrorsState.length > 0) return fieldErrorsState;
-    if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
+  const getFieldError = (fieldName: string, fieldErrorsState: ValidationError[]) => {
+    const errors: Array<{ message?: string } | undefined> = [];
+    
+    if (fieldErrorsState.length > 0) {
+      fieldErrorsState.forEach(err => {
+        if (typeof err === 'string') {
+          errors.push({ message: err });
+        } else if (err && typeof err === 'object' && 'message' in err) {
+          errors.push({ message: (err as any).message });
+        } else {
+          errors.push({ message: String(err) });
+        }
+      });
+      return errors;
+    }
+    
+    if (fieldErrors[fieldName]) {
+      return [{ message: fieldErrors[fieldName] }];
+    }
+    
     return [];
   };
 
@@ -99,7 +116,8 @@ export function EditSemesterForm({ semester, onSuccess }: EditSemesterFormProps)
 
       <form.Subscribe
         selector={(state) => [state.canSubmit, state.isSubmitting]}
-        children={([canSubmit, isSubmitting]) => (
+      >
+        {([, isSubmitting]) => (
           <Button
             type='submit'
             className='w-full mt-2'
@@ -108,7 +126,7 @@ export function EditSemesterForm({ semester, onSuccess }: EditSemesterFormProps)
             {isSubmitting ? 'Saving...' : 'Save Changes'}
           </Button>
         )}
-      />
+      </form.Subscribe>
     </form>
   );
 }

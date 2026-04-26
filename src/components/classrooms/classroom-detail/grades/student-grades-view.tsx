@@ -190,7 +190,6 @@ export function StudentGradesView({ classroomId }: StudentGradesViewProps) {
               {assignments.map((post) => {
                 const status = getStatusDetails(post);
                 const isMissing = status.label === 'Missing';
-                const StatusIcon = status.icon;
 
                 return (
                   <TableRow

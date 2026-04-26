@@ -3,7 +3,6 @@
 import { DataTable } from '@/components/data-table/data-table';
 import { DataTableToolbar } from '@/components/data-table/data-table-toolbar';
 import { useDataTable } from '@/hooks/use-data-table';
-import { useTableQueryState } from '@/hooks/use-table-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
@@ -85,7 +84,7 @@ function SemestersSection() {
   const { data: response, isFetching, isError } = useSemesters({
     page,
     limit: perPage,
-    sortBy: sorting[0]?.id as any,
+    sortBy: (sorting[0]?.id as string) || undefined,
     sortOrder: sorting[0]?.desc ? 'desc' : 'asc',
     search: search || undefined,
   });
@@ -162,7 +161,7 @@ function CourseSessionsSection() {
   const { data: response, isFetching, isError } = useCourseSessions({
     page,
     limit: perPage,
-    sortBy: sorting[0]?.id as any,
+    sortBy: (sorting[0]?.id as string) || undefined,
     sortOrder: sorting[0]?.desc ? 'desc' : 'asc',
     search: search || undefined,
   });

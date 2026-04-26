@@ -1,7 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
 import { getAttendanceChecklistQueryOptions } from '@/lib/queryOptions/classroomQueryOptions';
-import { AttendanceChecklistItem } from '@/lib/api/services/classroom.service';
 import { useBulkCreateAttendance } from '@/hooks/use-attendance';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -93,7 +92,6 @@ const statusConfig: Record<
 
 export function TeacherAttendanceView({
   classroomId,
-  isTeacher = true,
 }: AttendanceTabProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const formattedDate = format(selectedDate, 'yyyy-MM-dd');

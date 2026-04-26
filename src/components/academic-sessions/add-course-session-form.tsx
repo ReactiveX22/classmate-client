@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useCreateCourseSession } from '@/hooks/use-course-sessions';
-import { useForm } from '@tanstack/react-form';
+import { useForm, type ValidationError } from '@tanstack/react-form';
 import { courseSessionSchema, type CourseSessionFormValues } from '@/lib/schemas/course-session-schema';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -54,15 +54,32 @@ export function AddCourseSessionForm({ onSuccess }: AddCourseSessionFormProps) {
           isCurrent: value.isCurrent,
         });
         onSuccess?.();
-      } catch (error: any) {
+      } catch (error) {
         handleError(error, value);
       }
     },
   });
 
-  const getFieldError = (fieldName: string, fieldErrorsState: any[]) => {
-    if (fieldErrorsState.length > 0) return fieldErrorsState;
-    if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
+  const getFieldError = (fieldName: string, fieldErrorsState: ValidationError[]) => {
+    const errors: Array<{ message?: string } | undefined> = [];
+    
+    if (fieldErrorsState.length > 0) {
+      fieldErrorsState.forEach(err => {
+        if (typeof err === 'string') {
+          errors.push({ message: err });
+        } else if (err && typeof err === 'object' && 'message' in err) {
+          errors.push({ message: (err as any).message });
+        } else {
+          errors.push({ message: String(err) });
+        }
+      });
+      return errors;
+    }
+    
+    if (fieldErrors[fieldName]) {
+      return [{ message: fieldErrors[fieldName] }];
+    }
+    
     return [];
   };
 
@@ -223,7 +240,8 @@ export function AddCourseSessionForm({ onSuccess }: AddCourseSessionFormProps) {
 
       <form.Subscribe
         selector={(state) => [state.canSubmit, state.isSubmitting]}
-        children={([canSubmit, isSubmitting]) => (
+      >
+        {([, isSubmitting]) => (
           <Button
             type='submit'
             className='w-full mt-2'
@@ -232,7 +250,7 @@ export function AddCourseSessionForm({ onSuccess }: AddCourseSessionFormProps) {
             {isSubmitting ? 'Creating...' : 'Create Session'}
           </Button>
         )}
-      />
+      </form.Subscribe>
     </form>
   );
 }

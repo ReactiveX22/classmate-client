@@ -6,7 +6,7 @@ export function useFormErrorHandler() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [globalErrors, setGlobalErrors] = useState<{ message: string }[]>([]);
 
-  const handleError = (error: any, formValues: Record<string, any>) => {
+  const handleError = (error: unknown, formValues: Record<string, unknown>) => {
     setFieldErrors({});
     setGlobalErrors([]);
     

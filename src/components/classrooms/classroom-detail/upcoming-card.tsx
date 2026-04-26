@@ -1,9 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useUpcomingPosts } from '@/hooks/use-classrooms';
-import { format } from 'date-fns';
-import { useRouter } from 'next/navigation';
-import { parseAsString, useQueryState } from 'nuqs';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useUpcomingPosts } from "@/hooks/use-classrooms";
+import { format } from "date-fns";
+import { useRouter } from "next/navigation";
+import { parseAsString, useQueryState } from "nuqs";
 
 interface UpcomingCardProps {
   classroomId: string;
@@ -12,7 +12,7 @@ interface UpcomingCardProps {
 
 export function UpcomingCard({ classroomId }: UpcomingCardProps) {
   const router = useRouter();
-  const [, setTab] = useQueryState('tab', parseAsString.withDefault('stream'));
+  const [, setTab] = useQueryState("tab", parseAsString.withDefault("stream"));
   const {
     data: upcomingPosts,
     isLoading,
@@ -30,9 +30,9 @@ export function UpcomingCard({ classroomId }: UpcomingCardProps) {
             <Skeleton className='h-3 w-3/4' />
             <Skeleton className='h-2 w-1/2' />
           </div>
-          <div className='space-y-2'>
-            <Skeleton className='h-3 w-3/4' />
-            <Skeleton className='h-2 w-1/2' />
+          <div className="space-y-2">
+            <Skeleton className="h-3 w-3/4" />
+            <Skeleton className="h-2 w-1/2" />
           </div>
         </CardContent>
       </Card>
@@ -50,32 +50,32 @@ export function UpcomingCard({ classroomId }: UpcomingCardProps) {
       </CardHeader>
       <CardContent className='text-xs px-4 pb-4 pt-0'>
         {!hasUpcoming ? (
-          <p className='text-muted-foreground'>No work due soon</p>
+          <p className="text-muted-foreground">No work due soon</p>
         ) : (
-          <div className='space-y-3'>
-            <ul className='space-y-3'>
+          <div className="space-y-3">
+            <ul className="space-y-3">
               {upcomingPosts.map((post) => (
-                <li key={post.id} className='flex flex-col gap-0.5'>
+                <li key={post.id} className="flex flex-col gap-0.5">
                   <span
                     onClick={() =>
                       router.push(
                         `/dashboard/classrooms/${classroomId}/assignments/${post.id}`,
                       )
                     }
-                    className='font-medium line-clamp-1 hover:underline cursor-pointer'
+                    className="font-medium line-clamp-1 hover:underline cursor-pointer"
                   >
                     {post.title}
                   </span>
-                  <span className='text-muted-foreground text-[10px]'>
-                    Due {format(new Date(post.dueAt), 'EEEE, d MMM yyyy')}
+                  <span className="text-muted-foreground text-[10px]">
+                    Due {format(new Date(post.dueAt), "EEEE, d MMM yyyy")}
                   </span>
                 </li>
               ))}
             </ul>
-            <div className='flex justify-end pt-1'>
+            <div className="flex justify-end pt-1">
               <button
-                onClick={() => setTab('classwork')}
-                className='text-primary font-medium hover:underline text-[11px] cursor-pointer'
+                onClick={() => setTab("classwork")}
+                className="text-primary font-medium hover:underline text-[11px] cursor-pointer"
               >
                 View all
               </button>

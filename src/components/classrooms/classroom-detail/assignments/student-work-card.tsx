@@ -317,11 +317,11 @@ export function StudentWorkCard({
   // Default empty state (No submission, start fresh)
   return (
     <Card className='shadow-sm'>
-      <CardHeader className='flex flex-col gap-2 items-start sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 pb-2'>
-        <CardTitle className='text-base'>Your work</CardTitle>
-        {getStatusBadge(submission)}
-      </CardHeader>
-      <CardContent className='space-y-3 p-3 sm:p-4 pt-0'>
+        <CardHeader className='flex flex-col gap-2 items-start sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 pb-2'>
+          <CardTitle className='text-base'>Your work</CardTitle>
+          {getStatusBadge(submission)}
+        </CardHeader>
+        <CardContent className='space-y-3 p-3 sm:p-4 pt-0'>
         <div className='flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted-foreground/20 rounded-lg bg-muted/5 text-muted-foreground text-sm transition-colors hover:bg-muted/10'>
           <IconFilePlus className='mb-3 opacity-40' stroke={1.5} size={40} />
           <span>No work attached</span>

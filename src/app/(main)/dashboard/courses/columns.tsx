@@ -19,7 +19,6 @@ import { useState } from 'react';
 import { EditCourseDialog } from '@/components/courses/edit-course-dialog';
 import { DeleteCourseDialog } from '@/components/courses/delete-course-dialog';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 
 import type { Option } from '@/types/data-table';
 
@@ -159,58 +158,59 @@ export const getColumns = (
     },
     {
       id: 'actions',
-      cell: ({ row }) => {
-        const course = row.original;
-        const [showEditDialog, setShowEditDialog] = useState(false);
-        const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-
-        return (
-          <>
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={
-                  <Button
-                    variant='ghost'
-                    className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
-                  >
-                    <MoreHorizontal className='h-4 w-4' />
-                    <span className='sr-only'>Open menu</span>
-                  </Button>
-                }
-              ></DropdownMenuTrigger>
-              <DropdownMenuContent align='end' className='w-44'>
-                <DropdownMenuItem
-                  render={<Link href={`/dashboard/courses/${course.id}`} />}
-                >
-                  <IconEye /> View Details
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-                  <IconEdit /> Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  variant='destructive'
-                  onClick={() => setShowDeleteDialog(true)}
-                >
-                  <IconTrash />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <EditCourseDialog
-              course={course}
-              open={showEditDialog}
-              onOpenChange={setShowEditDialog}
-            />
-
-            <DeleteCourseDialog
-              course={course}
-              open={showDeleteDialog}
-              onOpenChange={setShowDeleteDialog}
-            />
-          </>
-        );
-      },
+      cell: ({ row }) => <ActionCell course={row.original} />,
       size: 40,
     },
   ];
+
+const ActionCell = ({ course }: { course: Course }) => {
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant='ghost'
+              className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
+            >
+              <MoreHorizontal className='h-4 w-4' />
+              <span className='sr-only'>Open menu</span>
+            </Button>
+          }
+        ></DropdownMenuTrigger>
+        <DropdownMenuContent align='end' className='w-44'>
+          <DropdownMenuItem
+            render={<Link href={`/dashboard/courses/${course.id}`} />}
+          >
+            <IconEye /> View Details
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+            <IconEdit /> Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            variant='destructive'
+            onClick={() => setShowDeleteDialog(true)}
+          >
+            <IconTrash />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <EditCourseDialog
+        course={course}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+      />
+
+      <DeleteCourseDialog
+        course={course}
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+      />
+    </>
+  );
+};

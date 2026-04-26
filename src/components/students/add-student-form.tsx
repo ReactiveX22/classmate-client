@@ -44,14 +44,14 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
         });
         form.reset();
         onSuccess?.();
-      } catch (error: any) {
+      } catch (error: unknown) {
         handleError(error, value);
       }
     },
   });
 
-  const getFieldError = (fieldName: string, fieldErrorsState: any[]) => {
-    if (fieldErrorsState.length > 0) return fieldErrorsState;
+  const getFieldError = (fieldName: string, fieldErrorsState: unknown[]) => {
+    if (fieldErrorsState.length > 0) return fieldErrorsState as { message: string }[];
     if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
     return [];
   };
@@ -66,9 +66,8 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
       className='flex flex-col gap-4 p-1'
     >
       <FieldGroup>
-        <form.Field
-          name='name'
-          children={(field) => {
+        <form.Field name='name'>
+          {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
@@ -89,11 +88,10 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
               </Field>
             );
           }}
-        />
+        </form.Field>
 
-        <form.Field
-          name='email'
-          children={(field) => {
+        <form.Field name='email'>
+          {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
@@ -115,11 +113,10 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
               </Field>
             );
           }}
-        />
+        </form.Field>
 
-        <form.Field
-          name='password'
-          children={(field) => {
+        <form.Field name='password'>
+          {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
@@ -144,11 +141,10 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
               </Field>
             );
           }}
-        />
+        </form.Field>
 
-        <form.Field
-          name='studentId'
-          children={(field) => {
+        <form.Field name='studentId'>
+          {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
@@ -169,11 +165,10 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
               </Field>
             );
           }}
-        />
+        </form.Field>
 
-        <form.Field
-          name='phone'
-          children={(field) => {
+        <form.Field name='phone'>
+          {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
@@ -194,7 +189,7 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
               </Field>
             );
           }}
-        />
+        </form.Field>
       </FieldGroup>
 
       {globalErrors.length > 0 && (
@@ -208,9 +203,8 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
         </Alert>
       )}
 
-      <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
-        children={([canSubmit, isSubmitting]) => (
+      <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+        {([, isSubmitting]) => (
           <div className='flex items-center justify-end gap-3 mt-4'>
             <Button
               type='button'
@@ -229,7 +223,7 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
             </Button>
           </div>
         )}
-      />
+      </form.Subscribe>
     </form>
   );
 }

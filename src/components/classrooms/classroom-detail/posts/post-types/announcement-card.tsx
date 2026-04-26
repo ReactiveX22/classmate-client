@@ -44,7 +44,9 @@ export function AnnouncementCard({ post }: AnnouncementCardProps) {
           <div className='flex items-start gap-3'>
             <Avatar className='w-8 h-8 sm:w-10 sm:h-10 shrink-0'>
               <AvatarImage src={post.author?.image || undefined} />
-              <AvatarFallback>{getInitials(post.author?.name)}</AvatarFallback>
+              <AvatarFallback className='bg-indigo-100 text-indigo-700'>
+                {getInitials(post.author?.name)}
+              </AvatarFallback>
             </Avatar>
             <div className='flex-1 min-w-0'>
               <div className='flex items-center gap-2 flex-wrap'>

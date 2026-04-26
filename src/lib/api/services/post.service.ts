@@ -6,6 +6,7 @@ import { Submission } from './submission.service';
 export type PostType = 'announcement' | 'assignment' | 'material' | 'question';
 export type AttachmentType = 'file' | 'link' | 'video' | 'image';
 export type SubmissionType = 'file' | 'text' | 'link' | 'multiple';
+export type PollSelectionMode = 'single' | 'multiple';
 
 export type Attachment = {
   id: string;
@@ -28,6 +29,48 @@ export type SubmissionStats = {
   graded: number;
 };
 
+export type PollOption = {
+  id: string;
+  text: string;
+  position: number;
+};
+
+export type PollVote = {
+  userId: string;
+  optionIds: string[];
+  votedAt: string;
+};
+
+export type PollViewer = {
+  id: string;
+  name: string | null;
+  image: string | null;
+};
+
+export type PollResult = {
+  optionId: string;
+  voteCount: number;
+  percentage: number;
+  voters?: PollViewer[];
+};
+
+export type ShortAnswerQuestionData = {
+  mode: 'short_answer';
+};
+
+export type PollQuestionData = {
+  mode: 'poll';
+  selectionMode: PollSelectionMode;
+  options: PollOption[];
+  votes?: PollVote[];
+  viewerVoteOptionIds?: string[];
+  totalVotes?: number;
+  results?: PollResult[];
+  canViewVoters?: boolean;
+};
+
+export type QuestionData = ShortAnswerQuestionData | PollQuestionData;
+
 export interface Post {
   id: string;
   classroomId: string;
@@ -37,8 +80,11 @@ export interface Post {
   content: string;
   attachments: Attachment[];
   assignmentData: AssignmentData | null;
+  questionData?: QuestionData | null;
   isPinned: boolean;
   commentsEnabled: boolean;
+  tags: string[];
+  isBookmarked?: boolean;
   createdAt: string;
   updatedAt: string;
   author?: User;
@@ -49,6 +95,13 @@ export interface Post {
 export interface PostsResponse {
   data: Post[];
   meta: PaginationMeta;
+}
+
+export interface PostsQueryParams extends PaginationParams {
+  type?: PostType;
+  tags?: string[];
+  bookmarked?: boolean;
+  fromInstructor?: boolean;
 }
 
 // DTO for creating a post
@@ -73,14 +126,20 @@ export interface CreatePostDto {
   content: string;
   attachments?: AttachmentDto[];
   assignmentData?: AssignmentDataDto;
+  questionData?: QuestionData;
   isPinned?: boolean;
   commentsEnabled?: boolean;
+  tags?: string[];
+}
+
+export interface VotePollDto {
+  optionIds: string[];
 }
 
 export const postService = {
   getPosts: async (
     classroomId: string,
-    params?: PaginationParams
+    params?: PostsQueryParams
   ): Promise<PostsResponse> => {
     const response = await apiClient.get<PostsResponse>(
       `/api/v1/classrooms/${classroomId}/posts`,
@@ -132,5 +191,30 @@ export const postService = {
       `/api/v1/classrooms/${classroomId}/posts/${postId}`
     );
     return response.data;
+  },
+
+  voteOnPoll: async (
+    classroomId: string,
+    postId: string,
+    data: VotePollDto
+  ): Promise<Post> => {
+    const response = await apiClient.put<Post>(
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/poll-vote`,
+      data
+    );
+    return response.data;
+  },
+
+  bookmarkPost: async (classroomId: string, postId: string): Promise<void> => {
+    await apiClient.post(`/api/v1/classrooms/${classroomId}/posts/${postId}/bookmark`);
+  },
+
+  unbookmarkPost: async (
+    classroomId: string,
+    postId: string
+  ): Promise<void> => {
+    await apiClient.delete(
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/bookmark`
+    );
   },
 };

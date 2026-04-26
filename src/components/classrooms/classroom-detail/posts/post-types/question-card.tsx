@@ -1,6 +1,7 @@
+'use client';
+
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useDeletePost } from '@/hooks/use-delete-post';
 import { Post } from '@/lib/api/services/post.service';
@@ -8,15 +9,16 @@ import { getInitials } from '@/lib/utils';
 import { IconPin } from '@tabler/icons-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useState } from 'react';
-import { AttachmentDisplay } from './attachment-display';
-import { PostCardActions } from './post-card-actions';
 import { CommentSection } from '../comment-section';
+import { EditPostDialog } from '../edit-post-dialog';
+import { AttachmentDisplay } from './attachment-display';
+import { PollCard } from './poll-card';
+import { PostCardActions } from './post-card-actions';
 
 interface QuestionCardProps {
   post: Post;
+  isTeacher?: boolean;
 }
-
-import { EditPostDialog } from '../edit-post-dialog';
 
 export function QuestionCard({ post }: QuestionCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -33,13 +35,16 @@ export function QuestionCard({ post }: QuestionCardProps) {
         onSuccess: () => {
           setShowDeleteDialog(false);
         },
-      }
+      },
     );
   };
 
+  const questionData = post.questionData;
+  const isPoll = questionData?.mode === 'poll';
+
   return (
     <>
-      <Card className='overflow-hidden hover:shadow-md transition-shadow'>
+      <Card className='overflow-hidden transition-shadow hover:shadow-md'>
         <CardHeader>
           <div className='flex items-start gap-3'>
             <Avatar className='w-8 h-8 sm:w-10 sm:h-10 shrink-0'>
@@ -48,9 +53,9 @@ export function QuestionCard({ post }: QuestionCardProps) {
                 {getInitials(post.author?.name)}
               </AvatarFallback>
             </Avatar>
-            <div className='flex-1 min-w-0'>
-              <div className='flex gap-2 items-center'>
-                <p className='font-medium text-sm'>
+            <div className='min-w-0 flex-1'>
+              <div className='flex items-center gap-2'>
+                <p className='text-sm font-medium'>
                   {post.author?.name || 'Unknown'}
                 </p>
                 {post.isPinned && (
@@ -72,9 +77,13 @@ export function QuestionCard({ post }: QuestionCardProps) {
         </CardHeader>
 
         <CardContent className='space-y-4'>
-          <p className='text-sm text-foreground leading-relaxed whitespace-pre-wrap'>
+          {post.title && <h3 className='text-base font-semibold'>{post.title}</h3>}
+
+          <p className='whitespace-pre-wrap text-sm leading-relaxed text-foreground'>
             {post.content}
           </p>
+
+          {isPoll && <PollCard post={post} poll={questionData} />}
 
           {post.attachments && post.attachments.length > 0 && (
             <AttachmentDisplay attachments={post.attachments} />

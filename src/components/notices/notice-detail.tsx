@@ -11,6 +11,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useDeleteNotice } from '@/hooks/use-notices';
 import { NoticeData } from '@/lib/api/services/notice.service';
+import { Attachment as PostAttachment } from '@/lib/api/services/post.service';
 import { Role } from '@/types/auth';
 import { format } from 'date-fns';
 import {
@@ -150,7 +151,7 @@ export function NoticeDetail({ data, onBack, onDeleted }: NoticeDetailProps) {
           {notice.attachments && notice.attachments.length > 0 && (
             <div className='pt-6'>
               <h4 className='text-sm font-medium mb-3'>Attachments</h4>
-              <AttachmentDisplay attachments={notice.attachments as any} />
+              <AttachmentDisplay attachments={notice.attachments as unknown as PostAttachment[]} />
             </div>
           )}
         </div>
@@ -165,7 +166,7 @@ export function NoticeDetail({ data, onBack, onDeleted }: NoticeDetailProps) {
           description={
             <span>
               Are you sure you want to delete{' '}
-              <span className='font-semibold'>"{notice.title}"</span>? This
+              <span className='font-semibold'>&quot;{notice.title}&quot;</span>? This
               action cannot be undone.
             </span>
           }

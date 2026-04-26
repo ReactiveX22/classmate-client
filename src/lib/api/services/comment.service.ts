@@ -10,6 +10,7 @@ export interface Comment {
   authorImage?: string;
   author?: User;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface CreateCommentDto {
@@ -18,10 +19,10 @@ export interface CreateCommentDto {
 
 export const commentService = {
   getComments: async (classroomId: string, postId: string): Promise<Comment[]> => {
-    const response = await apiClient.get<Comment[] | { data: Comment[] }>(
+    const { data } = await apiClient.get<Comment[] | { data: Comment[] }>(
       `/api/v1/classrooms/${classroomId}/posts/${postId}/comments`
     );
-    return Array.isArray(response.data) ? response.data : (response.data as any).data || [];
+    return Array.isArray(data) ? data : data.data;
   },
 
   createComment: async (
@@ -29,11 +30,11 @@ export const commentService = {
     postId: string,
     data: CreateCommentDto
   ): Promise<Comment> => {
-    const response = await apiClient.post<Comment>(
+    const response = await apiClient.post<Comment | { data: Comment }>(
       `/api/v1/classrooms/${classroomId}/posts/${postId}/comments`,
       data
     );
-    return (response.data as any).data || response.data;
+    return 'data' in response.data ? response.data.data : response.data;
   },
 
   updateComment: async (
@@ -42,11 +43,11 @@ export const commentService = {
     commentId: string,
     data: CreateCommentDto
   ): Promise<Comment> => {
-    const response = await apiClient.patch<Comment>(
+    const response = await apiClient.patch<Comment | { data: Comment }>(
       `/api/v1/classrooms/${classroomId}/posts/${postId}/comments/${commentId}`,
       data
     );
-    return (response.data as any).data || response.data;
+    return 'data' in response.data ? response.data.data : response.data;
   },
 
   deleteComment: async (
