@@ -13,7 +13,7 @@ import {
 import { useCourseSessions } from '@/hooks/use-course-sessions';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
-import { IconSearch, IconCalendarEvent } from '@tabler/icons-react';
+import { IconCalendarEvent } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 
@@ -44,7 +44,7 @@ export function SessionSelect({
     search: debouncedSearch,
   });
 
-  const sessions = response?.data || [];
+  const sessions = useMemo(() => response?.data || [], [response?.data]);
 
   const selectedSession = useMemo(() => {
     return sessions.find((s) => s.id === value);

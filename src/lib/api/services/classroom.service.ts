@@ -1,6 +1,7 @@
 import { User } from '@/types/auth';
 import apiClient from '../index';
 import { PaginationMeta, PaginationParams } from '@/types/pagination';
+import { Attachment } from './post.service';
 
 export interface Classroom {
   id: string;
@@ -91,7 +92,7 @@ export interface AssignmentSubmission {
   postId: string;
   studentId: string;
   content: string | null;
-  attachments: any[] | null;
+  attachments: Attachment[] | null;
   status: string;
   grade: number | null;
   feedback: string | null;
@@ -108,7 +109,7 @@ export interface AssignmentWithSubmission {
   type: 'assignment' | 'announcement' | 'material';
   title: string;
   content: string;
-  attachments: any[];
+  attachments: Attachment[];
   assignmentData: {
     points: number;
     dueDate: string | null;

@@ -483,7 +483,7 @@ function ActionBarItem(props: ActionBarItemProps) {
   }, [focusContext, itemId, disabled]);
 
   const onClick = React.useCallback(
-    (event: any) => {
+    (event: React.MouseEvent<ItemElement>) => {
       onClickProp?.(event);
       if (event.defaultPrevented) return;
 
@@ -509,7 +509,7 @@ function ActionBarItem(props: ActionBarItemProps) {
   );
 
   const onFocus = React.useCallback(
-    (event: any) => {
+    (event: React.FocusEvent<ItemElement>) => {
       onFocusProp?.(event);
       if (event.defaultPrevented) return;
 
@@ -520,7 +520,7 @@ function ActionBarItem(props: ActionBarItemProps) {
   );
 
   const onKeyDown = React.useCallback(
-    (event: any) => {
+    (event: React.KeyboardEvent<ItemElement>) => {
       onKeyDownProp?.(event);
       if (event.defaultPrevented) return;
 
@@ -573,7 +573,7 @@ function ActionBarItem(props: ActionBarItemProps) {
   );
 
   const onMouseDown = React.useCallback(
-    (event: any) => {
+    (event: React.MouseEvent<ItemElement>) => {
       onMouseDownProp?.(event);
       if (event.defaultPrevented) return;
 

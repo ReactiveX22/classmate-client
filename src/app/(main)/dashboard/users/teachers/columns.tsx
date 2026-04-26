@@ -89,7 +89,7 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
       variant: "text",
     },
     cell: ({ row }) => {
-      const phone = (row.original as any).user_profile?.phone;
+      const phone = row.original.userProfile?.phone;
       return <div className="truncate">{phone || "-"}</div>;
     },
   },
@@ -137,91 +137,90 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
 
   {
     id: "actions",
-    cell: ({ row }) => {
-      const teacher = row.original;
-      const [showEditDialog, setShowEditDialog] = useState(false);
-      const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-      const [isImpersonating, setIsImpersonating] = useState(false);
-
-      const handleImpersonate = async () => {
-        setIsImpersonating(true);
-        const loadingId = toast.loading(
-          `Logging in as ${teacher.user.name}...`,
-        );
-        try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/v1/impersonation/start`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-              body: JSON.stringify({ userId: teacher.user.id }),
-            },
-          );
-          if (res.ok) {
-            toast.success("Impersonation started", { id: loadingId });
-            window.location.href = "/";
-          } else {
-            const data = await res.json().catch(() => ({}));
-            toast.error(data.message || "Failed to start impersonation", {
-              id: loadingId,
-            });
-            setIsImpersonating(false);
-          }
-        } catch (error) {
-          toast.error("An error occurred", { id: loadingId });
-          setIsImpersonating(false);
-        }
-      };
-
-      return (
-        <>
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button
-                  variant="ghost"
-                  className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-                >
-                  <MoreHorizontal className="h-4 w-4" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
-              }
-            ></DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-                <IconEdit /> Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={handleImpersonate}
-                disabled={isImpersonating}
-              >
-                <IconArrowRight /> Login As
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => setShowDeleteDialog(true)}
-              >
-                <IconTrash />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <EditTeacherDialog
-            teacher={teacher}
-            open={showEditDialog}
-            onOpenChange={setShowEditDialog}
-          />
-
-          <DeleteTeacherDialog
-            teacher={teacher}
-            open={showDeleteDialog}
-            onOpenChange={setShowDeleteDialog}
-          />
-        </>
-      );
-    },
+    cell: ({ row }) => <ActionCell teacher={row.original} />,
     size: 40,
   },
 ];
+
+const ActionCell = ({ teacher }: { teacher: TeacherData }) => {
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isImpersonating, setIsImpersonating] = useState(false);
+
+  const handleImpersonate = async () => {
+    setIsImpersonating(true);
+    const loadingId = toast.loading(`Logging in as ${teacher.user.name}...`);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/v1/impersonation/start`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ userId: teacher.user.id }),
+        },
+      );
+      if (res.ok) {
+        toast.success("Logged in successfully", { id: loadingId });
+        window.location.href = "/dashboard";
+      } else {
+        const data = await res.json().catch(() => ({}));
+        toast.error(data.message || "Failed to log in", {
+          id: loadingId,
+        });
+        setIsImpersonating(false);
+      }
+    } catch {
+      toast.error("An error occurred", { id: loadingId });
+      setIsImpersonating(false);
+    }
+  };
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          }
+        ></DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+            <IconEdit /> Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={handleImpersonate}
+            disabled={isImpersonating}
+          >
+            <IconArrowRight /> Login As
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={() => setShowDeleteDialog(true)}
+          >
+            <IconTrash />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <EditTeacherDialog
+        teacher={teacher}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+      />
+
+      <DeleteTeacherDialog
+        teacher={teacher}
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+      />
+    </>
+  );
+};

@@ -1,8 +1,5 @@
 import { Button } from '@/components/ui/button';
 import {
-  IconBook,
-  IconUsers,
-  IconCopy,
   IconDotsVertical,
   IconPencil,
   IconInfoCircle,
@@ -34,9 +31,9 @@ interface ClassroomHeaderProps {
     maxStudents: number;
     credits: number;
   };
-  enrolledCount: number;
+  enrolledCount?: number;
   isTeacher: boolean;
-  onCopyClassCode: (code: string) => void;
+  onCopyClassCode?: (code: string) => void;
   onEditClick?: () => void;
   onDetailsClick?: () => void;
 }
@@ -44,9 +41,7 @@ interface ClassroomHeaderProps {
 export function ClassroomHeader({
   classroom,
   course,
-  enrolledCount,
   isTeacher,
-  onCopyClassCode,
   onEditClick,
   onDetailsClick,
 }: ClassroomHeaderProps) {

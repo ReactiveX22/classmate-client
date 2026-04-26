@@ -42,7 +42,7 @@ export function TeachersTableActionBar({ table }: TeachersTableActionBarProps) {
       );
       toast.success(`Deleted ${rows.length} teacher(s)`);
       table.toggleAllRowsSelected(false);
-    } catch (error) {
+    } catch {
       // Error handled by hook
     }
   }, [rows, table, deleteTeacherMutation]);

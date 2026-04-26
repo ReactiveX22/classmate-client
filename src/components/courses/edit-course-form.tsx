@@ -58,14 +58,14 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
           },
         });
         onSuccess?.();
-      } catch (error: any) {
+      } catch (error: unknown) {
         handleError(error, value);
       }
     },
   });
 
-  const getFieldError = (fieldName: string, fieldErrorsState: any[]) => {
-    if (fieldErrorsState.length > 0) return fieldErrorsState;
+  const getFieldError = (fieldName: string, fieldErrorsState: unknown[]) => {
+    if (fieldErrorsState.length > 0) return fieldErrorsState as { message: string }[];
     if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
     return [];
   };
@@ -265,9 +265,8 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
         </Alert>
       )}
 
-      <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
-        children={([canSubmit, isSubmitting]) => (
+      <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+        {([, isSubmitting]) => (
           <Button
             type='submit'
             className='w-full mt-2'
@@ -276,7 +275,7 @@ export function EditCourseForm({ course, onSuccess }: EditCourseFormProps) {
             {isSubmitting ? 'Saving...' : 'Save Changes'}
           </Button>
         )}
-      />
+      </form.Subscribe>
     </form>
   );
 }

@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { FormPageHeader } from '@/components/ui/form-page-header';
-import { useCourse, useUpdateCourse } from '@/hooks/use-courses';
+import { useCourse } from '@/hooks/use-courses';
 import { useDeleteEnrollment } from '@/hooks/use-enrollments';
 import { cn, getInitials } from '@/lib/utils';
 import { IconUserPlus } from '@tabler/icons-react';
@@ -59,7 +59,6 @@ function CourseStat({ label, value, icon: Icon, className }: CourseStatProps) {
 export default function CourseDetailsPage() {
   const { id } = useParams();
   const { data: course, isLoading, isError } = useCourse(id as string);
-  const updateCourseMutation = useUpdateCourse();
   const deleteEnrollmentMutation = useDeleteEnrollment();
 
   const [showAssignTeacher, setShowAssignTeacher] = React.useState(false);

@@ -12,7 +12,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useDeleteCourse } from '@/hooks/use-courses';
 import { Course } from '@/lib/api/services/course.service';
-import { toast } from 'sonner';
 
 interface DeleteCourseDialogProps {
   course: Course;

@@ -53,5 +53,11 @@ export const useNotificationSocket = () => {
     return () => {
       socket.off('notification');
     };
-  }, [queryClient, queryKey]);
+  }, [
+    queryClient,
+    queryKey,
+    requestPermission,
+    sendBrowserNotification,
+    user?.id,
+  ]);
 };

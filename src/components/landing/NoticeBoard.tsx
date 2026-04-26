@@ -54,7 +54,7 @@ export function NoticeBoard() {
                             <span className='text-gradient'>delivered instantly.</span>
                         </h2>
                         <p className='text-lg text-muted-foreground leading-relaxed'>
-                            Powered by WebSockets, every notice — urgent alerts, department updates, event announcements — reaches students and faculty the moment it's published. No refreshes, no delays.
+                            Powered by WebSockets, every notice — urgent alerts, department updates, event announcements — reaches students and faculty the moment it&apos;s published. No refreshes, no delays.
                         </p>
                     </motion.div>
 

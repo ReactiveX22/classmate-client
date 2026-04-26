@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { usePosts } from "@/hooks/use-posts";
 import { Role } from "@/types/auth";
-import { IconClipboardList, IconLoader2, IconPlus } from "@tabler/icons-react";
+import { IconClipboardList, IconLoader2 } from "@tabler/icons-react";
 import { useMemo } from "react";
 import { CreatePostDialog } from "./posts/create-post-dialog";
 import { AssignmentCard } from "./posts/post-types/assignment-card";

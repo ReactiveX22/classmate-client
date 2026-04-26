@@ -2,7 +2,6 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
@@ -19,6 +18,7 @@ import { format } from 'date-fns';
 import { CalendarCheck, TrendingUp } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
+import type { AssignmentWithSubmission } from '@/lib/api/services/classroom.service';
 
 interface StudentGradeSummaryProps {
   classroomId: string;
@@ -29,6 +29,7 @@ export function StudentGradeSummary({
   classroomId,
   studentId,
 }: StudentGradeSummaryProps) {
+  const router = useRouter();
   const { data: classroom } = useClassroom(classroomId);
   const { data: gradeStatsData, isLoading } = useStudentGradeStats(
     classroomId,
@@ -47,7 +48,6 @@ export function StudentGradeSummary({
     gradeStats: { overall_grade: 0, missing_work: 0, attendance: 0 },
   };
 
-  const router = useRouter();
 
   return (
     <div className='flex-1'>
@@ -143,7 +143,7 @@ export function StudentGradeSummary({
                   </TableCell>
                 </TableRow>
               ) : (
-                assignments.map((post: any) => {
+                assignments.map((post: AssignmentWithSubmission) => {
                   const submission = post.submissions?.[0];
                   return (
                     <TableRow

@@ -42,7 +42,6 @@ export function useClassroomTabs({
   classroomMembers,
   enrolledCount,
   onAddStudents,
-  onCopyClassCode,
 }: UseClassroomTabsProps) {
   const { data: user } = useUser();
   const isTeacher = user?.id === classroom?.teacherId;
@@ -107,7 +106,6 @@ export function useClassroomTabs({
     classroomMembers,
     enrolledCount,
     onAddStudents,
-    onCopyClassCode,
     isTeacher,
   ]);
 }

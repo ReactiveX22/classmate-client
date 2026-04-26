@@ -8,15 +8,12 @@ import {
   IconCalendar,
   IconCheck,
   IconClipboard,
-  IconClock,
   IconFile,
-  IconPin,
 } from '@tabler/icons-react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { EditPostDialog } from '../edit-post-dialog';
-import { AttachmentDisplay } from './attachment-display';
 import { PostCardActions } from './post-card-actions';
 import { CommentSection } from '../comment-section';
 

@@ -9,8 +9,6 @@ import {
   IconUsers,
   IconShieldCheck,
   IconBell,
-  IconAlertCircle,
-  IconCalendar,
 } from '@tabler/icons-react';
 
 export function DashboardMockup() {

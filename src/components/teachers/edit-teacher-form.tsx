@@ -8,19 +8,10 @@ import {
   FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { useUpdateTeacher } from '@/hooks/use-teachers';
 import { TeacherData } from '@/lib/api/services/teacher.service';
 import { useForm } from '@tanstack/react-form';
-import { useState } from 'react';
 import { z } from 'zod';
-import { toast } from 'sonner';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
@@ -53,7 +44,7 @@ export function EditTeacherForm({ teacher, onSuccess }: EditTeacherFormProps) {
       joinDate: teacher.teacher.joinDate
         ? new Date(teacher.teacher.joinDate).toISOString().split('T')[0]
         : '',
-      phone: (teacher as any).user_profile?.phone || '',
+      phone: teacher.userProfile?.phone || '',
     },
     validators: {
       onChange: editTeacherSchema,

@@ -13,7 +13,6 @@ import {
 import { useTeachers } from '@/hooks/use-teachers';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { IconSearch } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
@@ -55,7 +54,7 @@ export function TeacherSelect({
     search: debouncedSearch,
   });
 
-  const teachers = response?.data || [];
+  const teachers = useMemo(() => response?.data || [], [response?.data]);
 
   const sortedTeachers = useMemo(() => {
     if (!currentTeacherId) return teachers;

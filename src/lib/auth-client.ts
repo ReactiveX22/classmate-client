@@ -31,6 +31,14 @@ export const authClient = createAuthClient({
       },
     },
   },
+  session: {
+    additionalFields: {
+      impersonatedBy: {
+        type: 'string',
+        required: false,
+      },
+    },
+  },
   plugins: [
     adminClient(),
     {
@@ -40,17 +48,18 @@ export const authClient = createAuthClient({
           id: 'next-cookies-request-plugin',
           name: 'next-cookies-request-plugin',
           hooks: {
-            async onRequest(ctx: any) {
+            async onRequest(ctx) {
               if (typeof window === 'undefined') {
                 const { cookies } = await import('next/headers');
                 const headerList = await cookies();
                 ctx.headers.set('cookie', headerList.toString());
               }
+              return ctx;
             },
           },
         },
       ],
-    } as any,
+    },
   ],
 });
 

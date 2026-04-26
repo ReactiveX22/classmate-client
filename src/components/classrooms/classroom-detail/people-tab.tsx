@@ -67,7 +67,7 @@ export function PeopleTab({
         studentIds: [studentToRemove.studentId],
       });
       setStudentToRemove(null);
-    } catch (error) {
+    } catch {
       // Error handled by mutation
     }
   };

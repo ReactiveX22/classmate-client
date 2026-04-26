@@ -23,7 +23,6 @@ import {
   IconArrowLeft,
   IconClipboard,
   IconDotsVertical,
-  IconMessageCircle,
   IconPencil,
   IconTrash,
 } from '@tabler/icons-react';
@@ -32,6 +31,7 @@ import { useRouter } from 'next/navigation';
 import { use, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { StudentWorkTab } from '@/components/classrooms/classroom-detail/assignments/student-work-tab';
+import { Post } from '@/lib/api/services/post.service';
 
 interface AssignmentPageProps {
   params: Promise<{ id: string; assignmentId: string }>;
@@ -262,7 +262,7 @@ function AssignmentContent({
   classroomId,
   assignmentId,
 }: {
-  post: any;
+  post: Post;
   isAuthor: boolean;
   classroomId: string;
   assignmentId: string;

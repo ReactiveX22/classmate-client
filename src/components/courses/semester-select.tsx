@@ -13,7 +13,7 @@ import {
 import { useSemesters } from '@/hooks/use-semesters';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
-import { IconSearch, IconCalendar } from '@tabler/icons-react';
+import { IconCalendar } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 
 interface SemesterSelectProps {
@@ -43,7 +43,7 @@ export function SemesterSelect({
     search: debouncedSearch,
   });
 
-  const semesters = response?.data || [];
+  const semesters = useMemo(() => response?.data || [], [response?.data]);
 
   const selectedSemester = useMemo(() => {
     return semesters.find((s) => s.id === value);

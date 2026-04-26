@@ -1,12 +1,9 @@
 'use client';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useClassroom } from '@/hooks/use-classrooms';
-import { ClassroomMember } from '@/lib/api/services/classroom.service';
 import { cn } from '@/lib/utils';
 import { IconSearch, IconUser } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';

@@ -2,14 +2,12 @@
 
 import { useSession } from "@/lib/auth-client";
 import { Loader2, XCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
 
 export function ImpersonationBanner() {
   const { data: session, isPending } = useSession();
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   if (isPending) return null;
 
@@ -34,7 +32,7 @@ export function ImpersonationBanner() {
 
       if (res.ok) {
         // Hard refresh to clear client-side state and reload with the original admin session
-        window.location.href = "/";
+        window.location.href = "/dashboard";
       } else {
         console.error("Failed to stop impersonation");
         setIsLoading(false);

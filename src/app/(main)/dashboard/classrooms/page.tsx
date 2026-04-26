@@ -2,8 +2,7 @@
 
 import { useClassrooms } from '@/hooks/use-classrooms';
 import { PageHeader } from '@/components/common/page-header';
-import { Button } from '@/components/ui/button';
-import { IconBook, IconPlus } from '@tabler/icons-react';
+import { IconBook } from '@tabler/icons-react';
 import { ClassroomCard } from '@/components/classrooms/classroom-card';
 import { ClassroomListSkeleton } from '@/components/classrooms/classroom-list-skeleton';
 import { CreateClassroomDialog } from '@/components/classrooms/create-classroom-dialog';
@@ -46,7 +45,7 @@ export default function ClassroomsPage() {
             </div>
             <h3 className='text-xl font-bold mb-2'>Error loading classrooms</h3>
             <p className='text-muted-foreground'>
-              We couldn't fetch your classrooms. Please try refreshing the page
+              We couldn&apos;t fetch your classrooms. Please try refreshing the page
               or contact support.
             </p>
           </div>
@@ -63,12 +62,12 @@ export default function ClassroomsPage() {
                 allowedRoles={[Role.Student]}
                 fallback={
                   <p>
-                    You haven't created any classrooms yet. Start by creating a
+                    You haven&apos;t created any classrooms yet. Start by creating a
                     new one for your students.
                   </p>
                 }
               >
-                <p>You haven't joined any classrooms yet.</p>
+                <p>You haven&apos;t joined any classrooms yet.</p>
               </RoleGuard>
             </div>
             <RoleGuard allowedRoles={[Role.Instructor, Role.Admin]}>

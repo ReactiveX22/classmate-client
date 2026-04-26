@@ -9,7 +9,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Label } from "@/components/ui/label";
-import { Progress, ProgressLabel } from "@/components/ui/progress";
+import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useVoteOnPoll } from "@/hooks/use-vote-on-poll";
 import { useUser } from "@/hooks/useAuth";

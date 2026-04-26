@@ -6,7 +6,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -79,7 +78,7 @@ export function AssignStudentDialog({
       );
       onOpenChange(false);
       setSelectedIds([]);
-    } catch (error) {
+    } catch {
       // Errors are already toasted by the mutation onError handler
       // but we can add more context if needed
     } finally {

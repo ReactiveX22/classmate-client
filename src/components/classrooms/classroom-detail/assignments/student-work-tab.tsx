@@ -1,7 +1,7 @@
 'use client';
 
 import { useSubmissions } from '@/hooks/use-submissions';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { DataTable } from '@/components/data-table/data-table';
 import {
   getCoreRowModel,
@@ -11,13 +11,13 @@ import {
   RowData,
 } from '@tanstack/react-table';
 import { getColumns } from './columns';
-import { Submission } from '@/lib/api/services/submission.service';
 import { PaginationParams } from '@/types/pagination';
 import { useGradeSubmission } from '@/hooks/use-grade-submission';
 import { useReturnSubmission } from '@/hooks/use-return-submission';
 import { StudentWorkActionBar } from './student-work-action-bar';
 
 declare module '@tanstack/react-table' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface TableMeta<TData extends RowData> {
     isSavingRow?: string | null;
   }
@@ -52,7 +52,7 @@ export function StudentWorkTab({
       sorting.length > 0 ? (sorting[0].desc ? 'desc' : 'asc') : undefined,
   };
 
-  const { data, isLoading, isPlaceholderData } = useSubmissions(
+  const { data, isLoading } = useSubmissions(
     classroomId,
     postId,
     queryParams,
@@ -61,23 +61,29 @@ export function StudentWorkTab({
   const submissions = data?.data || [];
   const meta = data?.meta;
 
-  const handleGrade = (studentId: string, grade: number, feedback?: string) => {
-    gradeMutation.mutate({
-      classroomId,
-      postId,
-      studentId,
-      grade,
-      feedback,
-    });
-  };
-
-  const handleReturn = (submissionId: string) => {
-    returnMutation.mutate({
-      classroomId,
-      postId,
-      submissionId,
-    });
-  };
+  const handleGrade = useCallback(
+    (studentId: string, grade: number, feedback?: string) => {
+      gradeMutation.mutate({
+        classroomId,
+        postId,
+        studentId,
+        grade,
+        feedback,
+      });
+    },
+    [classroomId, postId, gradeMutation],
+  );
+  
+  const handleReturn = useCallback(
+    (submissionId: string) => {
+      returnMutation.mutate({
+        classroomId,
+        postId,
+        submissionId,
+      });
+    },
+    [classroomId, postId, returnMutation],
+  );
 
   const handleBulkReturn = () => {
     const selectedRows = table.getFilteredSelectedRowModel().rows;

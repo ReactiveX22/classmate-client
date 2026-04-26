@@ -20,7 +20,6 @@ function ShowcaseSection({
   pill,
   pillColor,
   title,
-  gradient,
   description,
   bullets,
   bulletColor,
@@ -31,7 +30,6 @@ function ShowcaseSection({
   pill: string;
   pillColor: string;
   title: React.ReactNode;
-  gradient?: string;
   description: string;
   bullets: { label: string; sub: string }[];
   bulletColor: string;

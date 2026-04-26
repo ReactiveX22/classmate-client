@@ -2,6 +2,7 @@ import {
   CreateStudentInput,
   GetStudentsParams,
   studentService,
+  UpdateStudentInput,
 } from '@/lib/api/services/student.service';
 import { createStudentQueryOptions } from '@/lib/queryOptions/usersQueryOptions';
 import { ApiError, ErrorCode } from '@/types/errors';
@@ -62,7 +63,7 @@ export function useDeleteStudent() {
 export function useUpdateStudent() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
+    mutationFn: ({ id, data }: { id: string; data: UpdateStudentInput }) =>
       studentService.updateStudent(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['students'] });

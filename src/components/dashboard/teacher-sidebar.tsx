@@ -7,7 +7,6 @@ import {
   BookOpenIcon,
   LayoutDashboard,
   Megaphone,
-  School,
   Settings,
   User,
 } from 'lucide-react';
