@@ -13,7 +13,6 @@ import { EditPostDialog } from '../edit-post-dialog';
 import { CommentSection } from '../comment-section';
 import { AttachmentDisplay } from './attachment-display';
 import { PostCardActions } from './post-card-actions';
-import { CommentSection } from '../comment-section';
 
 interface MaterialCardProps {
   post: Post;

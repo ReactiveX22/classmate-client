@@ -132,7 +132,7 @@ const postSchema = z.discriminatedUnion('type', [
   questionSchema,
 ]);
 
-export type PostFormData = z.infer<typeof postSchema>;
+export type PostFormData = z.input<typeof postSchema>;
 
 const createPollOption = (index: number): PollOption => ({
   id: crypto.randomUUID(),

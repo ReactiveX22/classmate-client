@@ -190,15 +190,17 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
                   {/* Three-dot menu — only for author, only in view mode */}
                   {user.data?.id === comment.authorId && editingCommentId !== comment.id && (
                     <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground"
-                        >
-                          <IconDotsVertical size={14} />
-                        </Button>
-                      </DropdownMenuTrigger>
+                      <DropdownMenuTrigger
+                        render={
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground"
+                          >
+                            <IconDotsVertical size={14} />
+                          </Button>
+                        }
+                      />
                       <DropdownMenuContent align="end" className="w-32">
                         <DropdownMenuItem
                           className="gap-2 text-xs cursor-pointer"
