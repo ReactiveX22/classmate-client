@@ -59,7 +59,7 @@ export default function NoticesPage() {
         <div className="flex flex-1 overflow-hidden">
           {/* Left Column: List */}
           {showList && (
-            <div className="w-full md:w-[380px] md:border-r bg-muted/10 flex flex-col">
+            <div className="w-full md:w-[400px] md:border-r bg-muted/10 flex flex-col">
               <NoticeList
                 notices={notices}
                 isLoading={isLoading}

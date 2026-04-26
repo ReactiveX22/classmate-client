@@ -1,8 +1,10 @@
 "use client";
 
 import { useSession } from "@/lib/auth-client";
-import { Loader2, XCircle } from "lucide-react";
+import { getInitials } from "@/lib/utils";
+import { Loader2, X } from "lucide-react";
 import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 
 export function ImpersonationBanner() {
@@ -44,22 +46,24 @@ export function ImpersonationBanner() {
   };
 
   return (
-    <div className="sticky top-0 z-[100] flex w-full items-center justify-center gap-4 bg-orange-600 px-4 py-2 text-sm font-medium text-white shadow-md">
-      <span>
-        Logged in as <strong>{session?.user?.name}</strong>
+    <div className="sticky top-0 z-[100] flex w-full items-center justify-center gap-4 bg-rose-500/85 px-4 py-2 text-sm font-medium text-white shadow-md">
+      <span className="flex items-center gap-2">
+        Logged in as
+        <span className="flex items-center gap-2">
+          <Avatar className="size-6">
+            <AvatarImage src={session?.user?.image || ""} />
+            <AvatarFallback>{getInitials(session?.user?.name)}</AvatarFallback>
+          </Avatar>
+          <strong>{session?.user?.name}</strong>
+        </span>
       </span>
       <Button
         variant="secondary"
         size="sm"
         onClick={handleExit}
         disabled={isLoading}
-        className="h-8 shadow-sm"
       >
-        {isLoading ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <XCircle className="mr-2 h-4 w-4" />
-        )}
+        {isLoading ? <Loader2 className="animate-spin" /> : <X />}
         Exit
       </Button>
     </div>
