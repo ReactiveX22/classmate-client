@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { ImpersonationBanner } from '@/components/common/impersonation-banner';
 import { ProfileDropdown } from '@/components/dashboard/profile-dropdown';
 import { useNotificationSocket } from '@/hooks/use-notification-socket';
 import { useUser } from '@/hooks/useAuth';
@@ -50,6 +51,7 @@ export default function DashboardLayout({
       <SidebarProvider>
         {getSidebar()}
         <SidebarInset>
+          <ImpersonationBanner />
           <DashboardHeader>
             <NotificationPopover />
             <ProfileDropdown />

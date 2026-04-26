@@ -46,9 +46,9 @@ export function ImpersonationBanner() {
   };
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-4 bg-orange-600 px-4 py-2 text-sm font-medium text-white shadow-md">
+    <div className="sticky top-0 z-[100] flex w-full items-center justify-center gap-4 bg-orange-600 px-4 py-2 text-sm font-medium text-white shadow-md">
       <span>
-        You are currently impersonating <strong>{session?.user?.name}</strong>
+        Logged in as <strong>{session?.user?.name}</strong>
       </span>
       <Button
         variant="secondary"
@@ -62,7 +62,7 @@ export function ImpersonationBanner() {
         ) : (
           <XCircle className="mr-2 h-4 w-4" />
         )}
-        Exit Impersonation
+        Exit
       </Button>
     </div>
   );

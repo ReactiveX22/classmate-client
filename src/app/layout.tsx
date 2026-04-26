@@ -14,7 +14,6 @@ export const metadata: Metadata = {
   description: "The Operating System for Modern Education",
 };
 
-import { ImpersonationBanner } from "@/components/common/impersonation-banner";
 import { ThemeProvider } from "@/components/theme-provider";
 
 export default function RootLayout({
@@ -31,7 +30,6 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ImpersonationBanner />
           {children}
           <Toaster />
         </ThemeProvider>
