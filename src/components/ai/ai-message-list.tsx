@@ -10,8 +10,10 @@ import {
   MessageContent,
 } from "@/components/ui/chat/message";
 import type { AiMessage } from "@/lib/api/services/ai.service";
-import { cn } from "@/lib/utils";
+import { cn, copyToClipboard } from "@/lib/utils";
 import { Copy, Pencil } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface AiMessageListProps {
   messages: AiMessage[];
@@ -26,6 +28,25 @@ export function AiMessageList({
   activeTools,
   isStreaming,
 }: AiMessageListProps) {
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+
+  async function handleCopy(content: string, messageId: string) {
+    try {
+      await copyToClipboard(content);
+      setCopiedMessageId(messageId);
+      toast.success("Message copied");
+      window.setTimeout(
+        () =>
+          setCopiedMessageId((current) =>
+            current === messageId ? null : current,
+          ),
+        1500,
+      );
+    } catch {
+      toast.error("Could not copy message");
+    }
+  }
+
   if (messages.length === 0 && !isStreaming) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center px-4 text-center">
@@ -50,7 +71,7 @@ export function AiMessageList({
           >
             {isAssistant ? (
               <div className="flex w-full items-start gap-4">
-                <MessageAvatar fallback="AI" role="assistant" />
+                <MessageAvatar fallback="AI" />
                 <div className="group flex flex-1 flex-col gap-0">
                   <MessageContent
                     markdown
@@ -69,8 +90,14 @@ export function AiMessageList({
                         variant="ghost"
                         size="icon"
                         className="rounded-full"
+                        onClick={() => handleCopy(message.content, message.id)}
+                        aria-label="Copy message"
                       >
-                        <Copy />
+                        {copiedMessageId === message.id ? (
+                          <Copy className="text-emerald-500" />
+                        ) : (
+                          <Copy />
+                        )}
                       </Button>
                     </MessageAction>
                   </MessageActions>
@@ -96,8 +123,14 @@ export function AiMessageList({
                       variant="ghost"
                       size="icon"
                       className="rounded-full"
+                      onClick={() => handleCopy(message.content, message.id)}
+                      aria-label="Copy message"
                     >
-                      <Copy />
+                      {copiedMessageId === message.id ? (
+                        <Copy className="text-emerald-500" />
+                      ) : (
+                        <Copy />
+                      )}
                     </Button>
                   </MessageAction>
                 </MessageActions>

@@ -30,7 +30,7 @@ export function AiStreamingBubble({
       role="assistant"
     >
       <div className="flex w-full items-start gap-4">
-        <MessageAvatar fallback="AI" role="assistant" />
+        <MessageAvatar fallback="AI" />
         <MessageContent
           className="w-full max-w-none border-0 bg-transparent p-0 shadow-none"
         >

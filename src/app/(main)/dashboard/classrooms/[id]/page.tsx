@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useClassroomTabs } from '@/hooks/use-classroom-tabs';
 import { useClassroom } from '@/hooks/use-classrooms';
 import { useUser } from '@/hooks/useAuth';
+import { copyToClipboard } from '@/lib/utils';
 import { Role } from '@/types/auth';
 import { parseAsString, useQueryState } from 'nuqs';
 import { use, useState } from 'react';
@@ -42,8 +43,9 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
   );
 
   const copyClassCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-    toast.success('Class code copied to clipboard!');
+    copyToClipboard(code)
+      .then(() => toast.success('Class code copied to clipboard!'))
+      .catch(() => toast.error('Could not copy class code'));
   };
 
   const classroom = data;
