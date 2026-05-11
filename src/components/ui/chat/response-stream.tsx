@@ -1,19 +1,19 @@
 "use client";
 
 import { motion, type HTMLMotionProps } from "motion/react";
-import ReactMarkdown from "react-markdown";
-import rehypeHighlight from "rehype-highlight";
-import remarkGfm from "remark-gfm";
 
+import { Markdown } from "@/components/ui/chat/markdown";
 import { cn } from "@/lib/utils";
 
 interface ResponseStreamProps extends HTMLMotionProps<"div"> {
   textStream: string;
+  id?: string;
 }
 
 function ResponseStream({
   className,
   textStream,
+  id,
   ...props
 }: ResponseStreamProps) {
   return (
@@ -30,12 +30,9 @@ function ResponseStream({
       )}
       {...props}
     >
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight]}
-      >
+      <Markdown id={id} className="chat-markdown">
         {textStream}
-      </ReactMarkdown>
+      </Markdown>
     </motion.div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, AnimatePresence } from "motion/react";
 import { AiStreamingBubble } from "@/components/ai/ai-streaming-bubble";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +19,7 @@ import { toast } from "sonner";
 interface AiMessageListProps {
   messages: AiMessage[];
   streamingContent: string;
-  activeTools: string[];
+  activeTools: { name: string; status: "running" | "finishing" }[];
   isStreaming: boolean;
 }
 
@@ -58,17 +59,22 @@ export function AiMessageList({
   }
 
   return (
-    <div className="flex w-full flex-col space-y-12">
+    <div className="flex w-full flex-col space-y-10">
       {messages.map((message, index) => {
         const isAssistant = message.role === "assistant";
         const isLastMessage = index === messages.length - 1;
 
         return (
-          <Message
-            className="group/message mx-auto flex w-full max-w-4xl px-0 md:px-6"
+          <motion.div
             key={message.id}
-            role={message.role}
+            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
           >
+            <Message
+              className="group/message mx-auto flex w-full max-w-4xl px-0 md:px-6"
+              role={message.role}
+            >
             {isAssistant ? (
               <div className="flex w-full items-start gap-4">
                 <MessageAvatar fallback="AI" />
@@ -136,14 +142,19 @@ export function AiMessageList({
                 </MessageActions>
               </div>
             )}
-          </Message>
+            </Message>
+          </motion.div>
         );
       })}
-      <AiStreamingBubble
-        activeTools={activeTools}
-        content={streamingContent}
-        isStreaming={isStreaming}
-      />
+      <AnimatePresence initial={false} mode="popLayout">
+        {(isStreaming || streamingContent || activeTools.length > 0) && (
+          <AiStreamingBubble
+            activeTools={activeTools}
+            content={streamingContent}
+            isStreaming={isStreaming}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
