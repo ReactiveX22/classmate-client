@@ -1,9 +1,11 @@
 'use client';
 
 import { Sidebar } from '@/components/ui/sidebar';
+import { useAiConversationsForClassrooms } from '@/hooks/use-ai-conversations-for-classrooms';
 import { useClassrooms } from '@/hooks/use-classrooms';
 import { SidebarData } from '@/types/sidebar-types';
 import {
+  Bot,
   BookOpen,
   LayoutDashboard,
   Megaphone,
@@ -19,6 +21,10 @@ export function StudentSidebar({
   const { data: classroomsResponse, isLoading } = useClassrooms({
     limit: 50,
   });
+  const classroomIds =
+    classroomsResponse?.data?.map((item) => item.classroom.id) ?? [];
+  const { conversations, isLoading: isConversationsLoading } =
+    useAiConversationsForClassrooms(classroomIds);
 
   const studentDashboardData: SidebarData = useMemo(() => {
     const classroomItems =
@@ -26,6 +32,31 @@ export function StudentSidebar({
         title: item.classroom.name,
         url: `/dashboard/classrooms/${item.classroom.id}`,
       })) || [];
+
+    const conversationItems = conversations.map((conversation) => ({
+      title: conversation.title || 'Untitled chat',
+      url: `/dashboard/classrooms/${conversation.classroomId}/ai/${conversation.id}`,
+    }));
+
+    const conversationsNavItems =
+      conversationItems.length > 0
+        ? [
+            {
+              title: 'New Chat',
+              url: classroomItems[0]?.url
+                ? `${classroomItems[0].url}/ai`
+                : '/dashboard/classrooms',
+            },
+            ...conversationItems,
+          ]
+        : [
+            {
+              title: isConversationsLoading ? 'Loading...' : 'No chats yet',
+              url: classroomItems[0]?.url
+                ? `${classroomItems[0].url}/ai`
+                : '/dashboard/classrooms',
+            },
+          ];
 
     const myClassesItems = [
       {
@@ -71,6 +102,16 @@ export function StudentSidebar({
           ],
         },
         {
+          title: 'AI Chats',
+          items: [
+            {
+              title: 'Conversations',
+              icon: Bot,
+              items: conversationsNavItems,
+            },
+          ],
+        },
+        {
           title: 'Account',
           items: [
             {
@@ -87,7 +128,7 @@ export function StudentSidebar({
         },
       ],
     };
-  }, [classroomsResponse, isLoading]);
+  }, [classroomsResponse, conversations, isLoading, isConversationsLoading]);
 
   return <AppSidebar data={studentDashboardData} {...props} />;
 }
