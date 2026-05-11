@@ -53,6 +53,10 @@ export const aiService = {
 
     return response.data;
   },
+
+  async deleteConversation(id: string): Promise<void> {
+    await apiClient.delete(`/api/v1/ai/conversations/${id}`);
+  },
 };
 
 export async function* streamChat(

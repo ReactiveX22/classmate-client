@@ -65,7 +65,7 @@ export function AiMessageList({
 
         return (
           <Message
-            className="mx-auto flex w-full max-w-4xl px-0 md:px-6"
+            className="group/message mx-auto flex w-full max-w-4xl px-0 md:px-6"
             key={message.id}
             role={message.role}
           >

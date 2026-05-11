@@ -130,7 +130,7 @@ function SidebarMenuCollapsible({
           <CollapsibleContent className='CollapsibleContent'>
             <SidebarMenuSub>
               {item.items.map((subItem) => (
-                <SidebarMenuSubItem key={subItem.title}>
+                <SidebarMenuSubItem key={`${subItem.title}-${subItem.url}`}>
                   <SidebarMenuSubButton
                     isActive={checkIsActive(href, subItem)}
                     render={

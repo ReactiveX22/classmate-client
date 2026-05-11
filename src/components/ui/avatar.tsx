@@ -40,11 +40,13 @@ function AvatarImage({ className, ...props }: AvatarPrimitive.Image.Props) {
 
 function AvatarFallback({
   className,
+  delayMs,
   ...props
-}: AvatarPrimitive.Fallback.Props) {
+}: AvatarPrimitive.Fallback.Props & { delayMs?: number }) {
   return (
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
+      delay={delayMs}
       className={cn(
         "bg-muted text-muted-foreground rounded-full flex size-full items-center justify-center text-sm group-data-[size=sm]/avatar:text-xs",
         className
