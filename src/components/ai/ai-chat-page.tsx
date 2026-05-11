@@ -1,8 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 import { AiInputBar } from "@/components/ai/ai-input-bar";
 import { AiMessageList } from "@/components/ai/ai-message-list";
@@ -14,7 +14,7 @@ import { Loader } from "@/components/ui/chat/loader";
 import { ScrollButton } from "@/components/ui/chat/scroll-button";
 import { useAiChat } from "@/hooks/use-ai-chat";
 import { useAiConversation } from "@/hooks/use-ai-conversation";
-
+import { ScrollArea } from "../ui/scroll-area";
 interface AiChatPageProps {
   initialConvId?: string;
 }
@@ -49,7 +49,12 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
       conversationQuery.data.conversation,
       conversationQuery.data.messages,
     );
-  }, [activeConvId, conversationQuery.data, loadConversation, resetConversation]);
+  }, [
+    activeConvId,
+    conversationQuery.data,
+    loadConversation,
+    resetConversation,
+  ]);
 
   useEffect(() => {
     if (!conversation?.id || initialConvId) {
@@ -80,31 +85,33 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-background">
-      <div className="relative min-h-0 flex-1">
-        <ChatContainerRoot className="h-full overflow-y-auto">
-          <ChatContainerContent className="px-4 py-12">
-            {conversationQuery.isLoading ? (
-              <div className="flex min-h-[40vh] items-center justify-center px-4 text-center">
-                <Loader variant="text-shimmer" />
-              </div>
-            ) : (
-              <AiMessageList
-                activeTools={activeTools}
-                isStreaming={isStreaming}
-                messages={messages}
-                streamingContent={streamingContent}
-              />
-            )}
-          </ChatContainerContent>
-          <div className="absolute bottom-4 left-1/2 flex w-full max-w-4xl -translate-x-1/2 justify-end px-5">
-            <ScrollButton className="shadow-sm" />
-          </div>
-        </ChatContainerRoot>
-      </div>
+    <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
+      <ScrollArea className="h-[calc(100vh-56px)]">
+        <div className="relative min-h-0 flex-1">
+          <ChatContainerRoot className="min-h-0 flex-1 overflow-y-auto pb-28">
+            <ChatContainerContent className="px-4 py-12">
+              {conversationQuery.isLoading ? (
+                <div className="flex min-h-[40vh] items-center justify-center px-4 text-center">
+                  <Loader variant="text-shimmer" />
+                </div>
+              ) : (
+                <AiMessageList
+                  activeTools={activeTools}
+                  isStreaming={isStreaming}
+                  messages={messages}
+                  streamingContent={streamingContent}
+                />
+              )}
+            </ChatContainerContent>
+            <div className="absolute bottom-4 left-1/2 flex w-full max-w-4xl -translate-x-1/2 justify-end px-5">
+              <ScrollButton className="shadow-sm" />
+            </div>
+          </ChatContainerRoot>
+        </div>
+      </ScrollArea>
 
-      <div className="shrink-0 bg-background px-3 pb-3 md:px-5 md:pb-5">
-        <div className="mx-auto max-w-4xl">
+      <div className="pointer-events-none absolute left-1/2 bottom-5 z-10 w-full max-w-3xl -translate-x-1/2 px-3 md:px-5">
+        <div className="pointer-events-auto">
           <AiInputBar
             isStreaming={isStreaming}
             onSend={handleSend}
