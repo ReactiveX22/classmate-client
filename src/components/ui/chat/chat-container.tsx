@@ -1,76 +1,67 @@
-'use client';
+"use client"
 
-import * as React from 'react';
-import {
-  StickToBottom,
-  useStickToBottomContext,
-  type StickToBottomContext,
-} from 'use-stick-to-bottom';
-import { ArrowDown } from 'lucide-react';
+import { cn } from "@/lib/utils"
+import { StickToBottom } from "use-stick-to-bottom"
 
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+export type ChatContainerRootProps = {
+  children: React.ReactNode
+  className?: string
+} & React.HTMLAttributes<HTMLDivElement>
 
-type ChatContainerProps = Omit<
-  React.ComponentProps<typeof StickToBottom>,
-  'children'
-> & {
-  children: React.ReactNode | ((context: StickToBottomContext) => React.ReactNode);
-};
+export type ChatContainerContentProps = {
+  children: React.ReactNode
+  className?: string
+} & React.HTMLAttributes<HTMLDivElement>
 
-function ChatContainer({ className, children, ...props }: ChatContainerProps) {
+export type ChatContainerScrollAnchorProps = {
+  className?: string
+  ref?: React.RefObject<HTMLDivElement>
+} & React.HTMLAttributes<HTMLDivElement>
+
+function ChatContainerRoot({
+  children,
+  className,
+  ...props
+}: ChatContainerRootProps) {
   return (
     <StickToBottom
-      className={cn('relative flex min-h-0 flex-1 flex-col overflow-y-auto', className)}
+      className={cn("flex overflow-y-auto", className)}
       resize="smooth"
-      initial="smooth"
+      initial="instant"
+      role="log"
       {...props}
     >
       {children}
     </StickToBottom>
-  );
+  )
 }
 
 function ChatContainerContent({
+  children,
   className,
-  scrollClassName,
   ...props
-}: React.ComponentProps<typeof StickToBottom.Content>) {
+}: ChatContainerContentProps) {
   return (
     <StickToBottom.Content
-      className={cn('flex min-h-full flex-col gap-4 px-4 py-6', className)}
-      scrollClassName={cn('scroll-pb-6', scrollClassName)}
-      {...props}
-    />
-  );
-}
-
-function ChatScrollButton({
-  className,
-  ...props
-}: React.ComponentProps<typeof Button>) {
-  const { isAtBottom, scrollToBottom } = useStickToBottomContext();
-
-  if (isAtBottom) {
-    return null;
-  }
-
-  return (
-    <Button
-      aria-label="Scroll to latest message"
-      className={cn(
-        'absolute right-4 bottom-4 z-10 rounded-full shadow-md',
-        className,
-      )}
-      onClick={() => scrollToBottom({ animation: 'smooth' })}
-      size="icon-sm"
-      type="button"
-      variant="secondary"
+      className={cn("flex w-full flex-col", className)}
       {...props}
     >
-      <ArrowDown />
-    </Button>
-  );
+      {children}
+    </StickToBottom.Content>
+  )
 }
 
-export { ChatContainer, ChatContainerContent, ChatScrollButton };
+function ChatContainerScrollAnchor({
+  className,
+  ...props
+}: ChatContainerScrollAnchorProps) {
+  return (
+    <div
+      className={cn("h-px w-full shrink-0 scroll-mt-4", className)}
+      aria-hidden="true"
+      {...props}
+    />
+  )
+}
+
+export { ChatContainerRoot, ChatContainerContent, ChatContainerScrollAnchor }

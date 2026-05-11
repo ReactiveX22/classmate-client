@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
 import {
   Message,
   MessageAvatar,
   MessageContent,
-} from '@/components/ui/chat/message';
-import { Loader } from '@/components/ui/chat/loader';
-import { ResponseStream } from '@/components/ui/chat/response-stream';
-import { AiToolIndicator } from '@/components/ai/ai-tool-indicator';
+} from "@/components/ui/chat/message";
+import { Loader } from "@/components/ui/chat/loader";
+import { ResponseStream } from "@/components/ui/chat/response-stream";
+import { AiToolIndicator } from "@/components/ai/ai-tool-indicator";
 
 interface AiStreamingBubbleProps {
   content: string;
@@ -25,10 +25,17 @@ export function AiStreamingBubble({
   }
 
   return (
-    <Message role="assistant">
-      <MessageAvatar role="assistant" />
-      <MessageContent>
-        {content ? <ResponseStream content={content} /> : <Loader />}
+    <Message
+      className="mx-auto flex w-full max-w-3xl flex-col items-start gap-2 px-0 md:px-6"
+      role="assistant"
+    >
+      <MessageAvatar fallback="AI" role="assistant" />
+      <MessageContent className="w-full max-w-none border-0 bg-transparent p-0 shadow-none">
+        {content ? (
+          <ResponseStream textStream={content} />
+        ) : (
+          <Loader variant="typing" size="sm" />
+        )}
         <AiToolIndicator className="mt-3" tools={activeTools} />
       </MessageContent>
     </Message>

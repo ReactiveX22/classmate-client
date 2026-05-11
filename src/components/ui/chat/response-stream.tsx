@@ -1,18 +1,21 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { motion, type HTMLMotionProps } from 'motion/react';
-import ReactMarkdown from 'react-markdown';
-import rehypeHighlight from 'rehype-highlight';
-import remarkGfm from 'remark-gfm';
+import { motion, type HTMLMotionProps } from "motion/react";
+import ReactMarkdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
-interface ResponseStreamProps extends HTMLMotionProps<'div'> {
-  content: string;
+interface ResponseStreamProps extends HTMLMotionProps<"div"> {
+  textStream: string;
 }
 
-function ResponseStream({ className, content, ...props }: ResponseStreamProps) {
+function ResponseStream({
+  className,
+  textStream,
+  ...props
+}: ResponseStreamProps) {
   return (
     <motion.div
       data-slot="response-stream"
@@ -20,15 +23,18 @@ function ResponseStream({ className, content, ...props }: ResponseStreamProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.16 }}
       className={cn(
-        'prose prose-sm dark:prose-invert max-w-none break-words',
-        'prose-p:my-2 prose-pre:my-3 prose-pre:overflow-x-auto prose-code:break-words',
-        'prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5',
+        "prose prose-sm dark:prose-invert max-w-none wrap-break-word",
+        "prose-p:my-2 prose-pre:my-3 prose-pre:overflow-x-auto prose-code:break-words",
+        "prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5",
         className,
       )}
       {...props}
     >
-      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
-        {content}
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeHighlight]}
+      >
+        {textStream}
       </ReactMarkdown>
     </motion.div>
   );

@@ -1,19 +1,15 @@
-'use client';
+"use client";
 
-import { FormEvent, KeyboardEvent, useState } from 'react';
-import { Send, Square } from 'lucide-react';
+import { useState } from "react";
+import { ArrowUp, Ellipsis, Globe, Plus, Square } from "lucide-react";
 
 import {
+  PromptInputAction,
   PromptInput,
   PromptInputActions,
   PromptInputTextarea,
-} from '@/components/ui/chat/prompt-input';
-import { Button } from '@/components/ui/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from "@/components/ui/chat/prompt-input";
+import { Button } from "@/components/ui/button";
 
 interface AiInputBarProps {
   isStreaming: boolean;
@@ -22,61 +18,71 @@ interface AiInputBarProps {
 }
 
 export function AiInputBar({ isStreaming, onSend, onStop }: AiInputBarProps) {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const canSend = message.trim().length > 0 && !isStreaming;
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const handleSubmit = async () => {
     if (!canSend) {
       return;
     }
 
     const nextMessage = message.trim();
-    setMessage('');
+    setMessage("");
     await onSend(nextMessage);
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      event.currentTarget.form?.requestSubmit();
-    }
-  };
-
   return (
-    <PromptInput onSubmit={handleSubmit}>
-      <PromptInputTextarea
-        disabled={isStreaming}
-        onChange={(event) => setMessage(event.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Ask about this classroom..."
-        value={message}
-      />
-      <PromptInputActions>
-        <span className="text-xs text-muted-foreground">
-          Enter to send, Shift+Enter for a new line
-        </span>
-        {isStreaming ? (
-          <Tooltip>
-            <TooltipTrigger render={<Button size="icon-sm" type="button" />} onClick={onStop}>
-              <Square />
-            </TooltipTrigger>
-            <TooltipContent>Stop response</TooltipContent>
-          </Tooltip>
-        ) : (
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <Button disabled={!canSend} size="icon-sm" type="submit" />
-              }
+    <PromptInput
+      className="border-input bg-popover relative z-10 w-full rounded-3xl border p-0 pt-1 shadow-xs"
+      isLoading={isStreaming}
+      onSubmit={handleSubmit}
+      value={message}
+      onValueChange={setMessage}
+    >
+      <div className="flex flex-col">
+        <PromptInputTextarea
+          className="min-h-[44px] px-4 pt-3 pl-4 text-base leading-[1.3]"
+          disabled={isStreaming}
+          placeholder="Ask anything"
+        />
+
+        <PromptInputActions className="mt-5 flex w-full items-center justify-between gap-2 px-3 pb-3">
+          <div className="flex items-center gap-2">
+            <PromptInputAction tooltip="Add a new action">
+              <Button variant="outline" size="icon" className="rounded-full">
+                <Plus size={18} />
+              </Button>
+            </PromptInputAction>
+
+            <PromptInputAction tooltip="Search">
+              <Button variant="outline" className="rounded-full">
+                <Globe size={18} />
+                Search
+              </Button>
+            </PromptInputAction>
+
+            <PromptInputAction tooltip="More actions">
+              <Button variant="outline" size="icon" className="rounded-full">
+                <Ellipsis size={18} />
+              </Button>
+            </PromptInputAction>
+          </div>
+
+          <PromptInputAction
+            tooltip={isStreaming ? "Stop generation" : "Send message"}
+          >
+            <Button
+              className="size-9 rounded-full"
+              disabled={!canSend && !isStreaming}
+              onClick={isStreaming ? onStop : handleSubmit}
+              size="icon"
+              type="button"
             >
-              <Send />
-            </TooltipTrigger>
-            <TooltipContent>Send message</TooltipContent>
-          </Tooltip>
-        )}
-      </PromptInputActions>
+              {isStreaming ? <Square /> : <ArrowUp />}
+            </Button>
+          </PromptInputAction>
+        </PromptInputActions>
+      </div>
     </PromptInput>
   );
 }
