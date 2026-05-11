@@ -26,18 +26,22 @@ export function AiStreamingBubble({
 
   return (
     <Message
-      className="mx-auto flex w-full max-w-3xl flex-col items-start gap-2 px-0 md:px-6"
+      className="mx-auto flex w-full max-w-4xl px-0 md:px-6"
       role="assistant"
     >
-      <MessageAvatar fallback="AI" role="assistant" />
-      <MessageContent className="w-full max-w-none border-0 bg-transparent p-0 shadow-none">
-        {content ? (
-          <ResponseStream textStream={content} />
-        ) : (
-          <Loader variant="typing" size="sm" />
-        )}
-        <AiToolIndicator className="mt-3" tools={activeTools} />
-      </MessageContent>
+      <div className="flex w-full items-start gap-4">
+        <MessageAvatar fallback="AI" role="assistant" />
+        <MessageContent
+          className="w-full max-w-none border-0 bg-transparent p-0 shadow-none"
+        >
+          {content ? (
+            <ResponseStream textStream={content} />
+          ) : (
+            <Loader variant="typing" size="sm" />
+          )}
+          <AiToolIndicator className="mt-3" tools={activeTools} />
+        </MessageContent>
+      </div>
     </Message>
   );
 }

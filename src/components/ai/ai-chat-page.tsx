@@ -1,18 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
 import { useQueryState } from "nuqs";
+import { useEffect } from "react";
 import { toast } from "sonner";
 
 import { AiInputBar } from "@/components/ai/ai-input-bar";
 import { AiMessageList } from "@/components/ai/ai-message-list";
 import {
-  ChatContainerRoot,
   ChatContainerContent,
+  ChatContainerRoot,
 } from "@/components/ui/chat/chat-container";
 import { Loader } from "@/components/ui/chat/loader";
 import { ScrollButton } from "@/components/ui/chat/scroll-button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAiChat } from "@/hooks/use-ai-chat";
 import { useAiConversation } from "@/hooks/use-ai-conversation";
 
@@ -88,14 +87,14 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
               />
             )}
           </ChatContainerContent>
-          <div className="absolute bottom-4 left-1/2 flex w-full max-w-3xl -translate-x-1/2 justify-end px-5">
+          <div className="absolute bottom-4 left-1/2 flex w-full max-w-4xl -translate-x-1/2 justify-end px-5">
             <ScrollButton className="shadow-sm" />
           </div>
         </ChatContainerRoot>
       </div>
 
       <div className="shrink-0 bg-background px-3 pb-3 md:px-5 md:pb-5">
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-4xl">
           <AiInputBar
             isStreaming={isStreaming}
             onSend={handleSend}

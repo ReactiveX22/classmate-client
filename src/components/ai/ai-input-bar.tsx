@@ -1,15 +1,15 @@
 "use client";
 
+import { ArrowUp, Plus, Square } from "lucide-react";
 import { useState } from "react";
-import { ArrowUp, Ellipsis, Globe, Plus, Square } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import {
-  PromptInputAction,
   PromptInput,
+  PromptInputAction,
   PromptInputActions,
   PromptInputTextarea,
 } from "@/components/ui/chat/prompt-input";
-import { Button } from "@/components/ui/button";
 
 interface AiInputBarProps {
   isStreaming: boolean;
@@ -33,7 +33,7 @@ export function AiInputBar({ isStreaming, onSend, onStop }: AiInputBarProps) {
 
   return (
     <PromptInput
-      className="border-input bg-popover relative z-10 w-full rounded-3xl border p-0 pt-1 shadow-xs"
+      className="border-input bg-popover relative z-10 w-full rounded-3xl border p-0 shadow-xs"
       isLoading={isStreaming}
       onSubmit={handleSubmit}
       value={message}
@@ -41,7 +41,7 @@ export function AiInputBar({ isStreaming, onSend, onStop }: AiInputBarProps) {
     >
       <div className="flex flex-col">
         <PromptInputTextarea
-          className="min-h-[44px] px-4 pt-3 pl-4 text-base leading-[1.3]"
+          className="min-h-[44px] rounded-none rounded-t-3xl px-4 pt-3 pl-4 text-base text-primary-foreground leading-[1.3]"
           disabled={isStreaming}
           placeholder="Ask anything"
         />
@@ -54,7 +54,7 @@ export function AiInputBar({ isStreaming, onSend, onStop }: AiInputBarProps) {
               </Button>
             </PromptInputAction>
 
-            <PromptInputAction tooltip="Search">
+            {/* <PromptInputAction tooltip="Search">
               <Button variant="outline" className="rounded-full">
                 <Globe size={18} />
                 Search
@@ -65,7 +65,7 @@ export function AiInputBar({ isStreaming, onSend, onStop }: AiInputBarProps) {
               <Button variant="outline" size="icon" className="rounded-full">
                 <Ellipsis size={18} />
               </Button>
-            </PromptInputAction>
+            </PromptInputAction>  */}
           </div>
 
           <PromptInputAction

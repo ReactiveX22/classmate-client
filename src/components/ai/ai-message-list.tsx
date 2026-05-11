@@ -1,6 +1,7 @@
 "use client";
 
-import type { AiMessage } from "@/lib/api/services/ai.service";
+import { AiStreamingBubble } from "@/components/ai/ai-streaming-bubble";
+import { Button } from "@/components/ui/button";
 import {
   Message,
   MessageAction,
@@ -8,11 +9,9 @@ import {
   MessageAvatar,
   MessageContent,
 } from "@/components/ui/chat/message";
-import { ResponseStream } from "@/components/ui/chat/response-stream";
-import { AiStreamingBubble } from "@/components/ai/ai-streaming-bubble";
-import { Copy, Pencil, ThumbsDown, ThumbsUp, Trash } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import type { AiMessage } from "@/lib/api/services/ai.service";
 import { cn } from "@/lib/utils";
+import { Copy, Pencil } from "lucide-react";
 
 interface AiMessageListProps {
   messages: AiMessage[];
@@ -45,19 +44,19 @@ export function AiMessageList({
 
         return (
           <Message
-            className={cn(
-              "mx-auto flex w-full max-w-3xl flex-col gap-2 px-0 md:px-6",
-              isAssistant ? "items-start" : "items-end",
-            )}
+            className="mx-auto flex w-full max-w-4xl px-0 md:px-6"
             key={message.id}
             role={message.role}
           >
             {isAssistant ? (
-              <>
+              <div className="flex w-full items-start gap-4">
                 <MessageAvatar fallback="AI" role="assistant" />
-                <div className="group flex w-full flex-col gap-0">
-                  <MessageContent className="text-foreground prose flex-1 rounded-lg bg-transparent p-0">
-                    <ResponseStream textStream={message.content} />
+                <div className="group flex flex-1 flex-col gap-0">
+                  <MessageContent
+                    markdown
+                    className="chat-markdown text-foreground flex-1 max-w-none rounded-lg bg-transparent p-0"
+                  >
+                    {message.content}
                   </MessageContent>
                   <MessageActions
                     className={cn(
@@ -74,29 +73,11 @@ export function AiMessageList({
                         <Copy />
                       </Button>
                     </MessageAction>
-                    <MessageAction tooltip="Upvote" delayDuration={100}>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-full"
-                      >
-                        <ThumbsUp />
-                      </Button>
-                    </MessageAction>
-                    <MessageAction tooltip="Downvote" delayDuration={100}>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-full"
-                      >
-                        <ThumbsDown />
-                      </Button>
-                    </MessageAction>
                   </MessageActions>
                 </div>
-              </>
+              </div>
             ) : (
-              <div className="group flex flex-col items-end gap-1">
+              <div className="group flex w-full flex-col items-end gap-1">
                 <MessageContent className="max-w-[85%] rounded-3xl bg-primary px-5 py-2.5 text-primary-foreground shadow-none sm:max-w-[75%]">
                   {message.content}
                 </MessageContent>
@@ -108,15 +89,6 @@ export function AiMessageList({
                       className="rounded-full"
                     >
                       <Pencil />
-                    </Button>
-                  </MessageAction>
-                  <MessageAction tooltip="Delete" delayDuration={100}>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full"
-                    >
-                      <Trash />
                     </Button>
                   </MessageAction>
                   <MessageAction tooltip="Copy" delayDuration={100}>

@@ -125,6 +125,100 @@
   }
 }
 
+@layer components {
+  .chat-markdown {
+    @apply text-sm leading-7 break-words whitespace-normal;
+  }
+
+  .chat-markdown > * + * {
+    @apply mt-3;
+  }
+
+  .chat-markdown h1,
+  .chat-markdown h2,
+  .chat-markdown h3,
+  .chat-markdown h4,
+  .chat-markdown h5,
+  .chat-markdown h6 {
+    @apply font-semibold tracking-tight text-foreground;
+  }
+
+  .chat-markdown h1 {
+    @apply text-2xl;
+  }
+
+  .chat-markdown h2 {
+    @apply text-xl;
+  }
+
+  .chat-markdown h3 {
+    @apply text-lg;
+  }
+
+  .chat-markdown p,
+  .chat-markdown ul,
+  .chat-markdown ol,
+  .chat-markdown blockquote,
+  .chat-markdown pre,
+  .chat-markdown table {
+    @apply my-0;
+  }
+
+  .chat-markdown ul,
+  .chat-markdown ol {
+    @apply pl-6;
+  }
+
+  .chat-markdown ul {
+    list-style: disc;
+  }
+
+  .chat-markdown ol {
+    list-style: decimal;
+  }
+
+  .chat-markdown li + li {
+    @apply mt-1;
+  }
+
+  .chat-markdown a {
+    @apply font-medium text-primary underline underline-offset-4;
+  }
+
+  .chat-markdown code {
+    @apply rounded bg-muted px-1 py-0.5 font-mono text-[0.875em];
+  }
+
+  .chat-markdown pre {
+    @apply overflow-x-auto rounded-xl border border-border bg-card p-4;
+  }
+
+  .chat-markdown pre code {
+    @apply rounded-none bg-transparent p-0 text-inherit;
+  }
+
+  .chat-markdown blockquote {
+    @apply border-l-2 border-border pl-4 text-muted-foreground;
+  }
+
+  .chat-markdown hr {
+    @apply border-border;
+  }
+
+  .chat-markdown table {
+    @apply w-full border-collapse overflow-hidden rounded-xl border border-border;
+  }
+
+  .chat-markdown th,
+  .chat-markdown td {
+    @apply border-b border-border px-3 py-2 text-left align-top;
+  }
+
+  .chat-markdown th {
+    @apply bg-muted font-semibold;
+  }
+}
+
 @keyframes glow-pulse {
 
   0%,

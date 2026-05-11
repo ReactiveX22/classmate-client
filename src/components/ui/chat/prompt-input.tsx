@@ -198,7 +198,6 @@ export type PromptInputActionProps = {
   tooltip: React.ReactNode
   children: React.ReactNode
   side?: "top" | "bottom" | "left" | "right"
-  delayDuration?: number
 } & React.ComponentProps<typeof Tooltip>
 
 function PromptInputAction({
@@ -206,24 +205,23 @@ function PromptInputAction({
   children,
   className,
   side = "top",
-  delayDuration,
   ...props
 }: PromptInputActionProps) {
   const { disabled } = usePromptInput()
 
   return (
-    <TooltipProvider delay={delayDuration ?? 0}>
-      <Tooltip {...props}>
+    <Tooltip {...props}>
       <TooltipTrigger
+        asChild
         disabled={disabled}
         onClick={(event) => event.stopPropagation()}
-        render={children as React.ReactElement}
-      />
+      >
+        {children}
+      </TooltipTrigger>
       <TooltipContent side={side} className={className}>
         {tooltip}
       </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    </Tooltip>
   )
 }
 
