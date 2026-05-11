@@ -75,7 +75,6 @@ export function AiInputBar({
     if (!conversationId) {
       return;
     }
-    // Navigate away first to avoid 404 refetch
     router.push("/dashboard/ai");
     await deleteConversation.mutateAsync(conversationId);
     setIsDeleteDialogOpen(false);

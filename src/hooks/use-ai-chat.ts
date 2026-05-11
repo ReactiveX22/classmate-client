@@ -64,6 +64,26 @@ export function useAiChat() {
                 ...current,
                 conversation: event.payload,
               }));
+              queryClient.setQueryData(
+                ['ai', 'conversations'],
+                (currentData: { conversations: AiConversation[] } | undefined) => {
+                  const conversations = currentData?.conversations ?? [];
+                  const nextConversation = event.payload;
+                  const exists = conversations.some(
+                    (conversation) => conversation.id === nextConversation.id,
+                  );
+
+                  return {
+                    conversations: exists
+                      ? conversations.map((conversation) =>
+                          conversation.id === nextConversation.id
+                            ? nextConversation
+                            : conversation,
+                        )
+                      : [nextConversation, ...conversations],
+                  };
+                },
+              );
               break;
 
             case 'user_message':
@@ -164,10 +184,18 @@ export function useAiChat() {
     [],
   );
 
+  const resetConversation = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+
+    setState(initialState);
+  }, []);
+
   return {
     ...state,
     sendMessage,
     abort,
     loadConversation,
+    resetConversation,
   };
 }

@@ -1,8 +1,8 @@
 "use client";
 
-import { useQueryState } from "nuqs";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { AiInputBar } from "@/components/ai/ai-input-bar";
 import { AiMessageList } from "@/components/ai/ai-message-list";
@@ -20,8 +20,8 @@ interface AiChatPageProps {
 }
 
 export function AiChatPage({ initialConvId }: AiChatPageProps) {
-  const [queryConvId, setQueryConvId] = useQueryState("convId");
-  const activeConvId = initialConvId ?? queryConvId ?? "";
+  const router = useRouter();
+  const activeConvId = initialConvId ?? "";
   const {
     conversation,
     messages,
@@ -31,10 +31,16 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
     sendMessage,
     abort,
     loadConversation,
+    resetConversation,
   } = useAiChat();
   const conversationQuery = useAiConversation(activeConvId);
 
   useEffect(() => {
+    if (!activeConvId) {
+      resetConversation();
+      return;
+    }
+
     if (!conversationQuery.data) {
       return;
     }
@@ -43,25 +49,29 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
       conversationQuery.data.conversation,
       conversationQuery.data.messages,
     );
-  }, [conversationQuery.data, loadConversation]);
+  }, [activeConvId, conversationQuery.data, loadConversation, resetConversation]);
 
   useEffect(() => {
-    if (!conversation?.id || initialConvId || queryConvId === conversation.id) {
+    if (!conversation?.id || initialConvId) {
       return;
     }
 
-    void setQueryConvId(conversation.id);
-  }, [conversation?.id, initialConvId, queryConvId, setQueryConvId]);
+    router.replace(`/dashboard/ai/${conversation.id}`);
+  }, [conversation?.id, initialConvId, router]);
 
   useEffect(() => {
     if (!conversationQuery.error) {
       return;
     }
 
+    if (initialConvId) {
+      router.replace("/dashboard/ai");
+    }
+
     toast.error("Unable to load conversation", {
       description: "Please try opening the chat again.",
     });
-  }, [conversationQuery.error]);
+  }, [conversationQuery.error, initialConvId, router]);
 
   const handleSend = (message: string) => {
     const conversationId = conversation?.id ?? activeConvId;

@@ -36,14 +36,18 @@ import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 
-export function NavGroup({ title, items }: NavGroupProps) {
+export function NavGroup({ title, items, action }: NavGroupProps) {
   const { state, isMobile } = useSidebar();
   const pathname = usePathname();
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{title}</SidebarGroupLabel>
+      <SidebarGroupLabel className='flex items-center justify-between gap-2'>
+        <span>{title}</span>
+        {action as ReactNode}
+      </SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
           const key = `${item.title}-${item.url || 'collapsible'}`;

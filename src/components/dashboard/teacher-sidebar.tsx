@@ -9,10 +9,12 @@ import {
   Bot,
   LayoutDashboard,
   Megaphone,
+  Plus,
   Settings,
   User,
 } from 'lucide-react';
 import { useMemo } from 'react';
+import Link from 'next/link';
 import { AppSidebar } from './app-sidebar';
 
 export function TeacherSidebar({
@@ -41,13 +43,7 @@ export function TeacherSidebar({
 
     const conversationsNavItems =
       conversationItems.length > 0
-        ? [
-            {
-              title: 'New Chat',
-              url: '/dashboard/ai',
-            },
-            ...conversationItems,
-          ]
+        ? conversationItems
         : [
             {
               title: isConversationsLoading ? 'Loading...' : 'No chats yet',
@@ -101,6 +97,16 @@ export function TeacherSidebar({
         },
         {
           title: 'AI Chats',
+          action: (
+            <Link
+              className='text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground inline-flex size-7 items-center justify-center rounded-md transition-colors'
+              href='/dashboard/ai'
+              aria-label='New chat'
+              title='New chat'
+            >
+              <Plus className='size-4' />
+            </Link>
+          ),
           items: [
             {
               title: 'Conversations',
