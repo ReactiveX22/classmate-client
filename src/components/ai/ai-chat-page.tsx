@@ -99,6 +99,8 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
             isStreaming={isStreaming}
             onSend={handleSend}
             onStop={abort}
+            conversationId={conversation?.id}
+            currentTitle={conversation?.title}
           />
         </div>
       </div>

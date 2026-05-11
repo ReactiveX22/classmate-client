@@ -57,6 +57,18 @@ export const aiService = {
   async deleteConversation(id: string): Promise<void> {
     await apiClient.delete(`/api/v1/ai/conversations/${id}`);
   },
+
+  async updateConversation(
+    id: string,
+    data: { title: string },
+  ): Promise<AiConversation> {
+    const response = await apiClient.patch<AiConversation>(
+      `/api/v1/ai/conversations/${id}`,
+      data,
+    );
+
+    return response.data;
+  },
 };
 
 export async function* streamChat(
