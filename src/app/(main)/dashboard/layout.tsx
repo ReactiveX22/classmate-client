@@ -48,13 +48,13 @@ export default function DashboardLayout({
     <ProtectedRoute>
       <SidebarProvider>
         {getSidebar()}
-        <SidebarInset>
+        <SidebarInset className='overflow-hidden'>
           <ImpersonationBanner />
           <DashboardHeader>
             <NotificationPopover />
             <ProfileDropdown />
           </DashboardHeader>
-          <div className='flex flex-1 flex-col gap-4'>{children}</div>
+          <div className='flex flex-1 flex-col min-h-0'>{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </ProtectedRoute>

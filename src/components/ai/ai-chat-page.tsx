@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/chat/chat-container";
 import { Loader } from "@/components/ui/chat/loader";
 import { ScrollButton } from "@/components/ui/chat/scroll-button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAiChat } from "@/hooks/use-ai-chat";
 import { useAiConversation } from "@/hooks/use-ai-conversation";
 
@@ -70,9 +71,9 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
   };
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-background">
       <div className="relative min-h-0 flex-1">
-        <ChatContainerRoot className="h-full">
+        <ChatContainerRoot className="h-full overflow-y-auto">
           <ChatContainerContent className="px-4 py-12">
             {conversationQuery.isLoading ? (
               <div className="flex min-h-[40vh] items-center justify-center px-4 text-center">
@@ -93,7 +94,7 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
         </ChatContainerRoot>
       </div>
 
-      <div className="z-10 shrink-0 bg-background px-3 pb-3 md:px-5 md:pb-5">
+      <div className="shrink-0 bg-background px-3 pb-3 md:px-5 md:pb-5">
         <div className="mx-auto max-w-3xl">
           <AiInputBar
             isStreaming={isStreaming}
