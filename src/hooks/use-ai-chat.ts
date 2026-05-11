@@ -25,7 +25,7 @@ const initialState: AiChatState = {
   isStreaming: false,
 };
 
-export function useAiChat(classroomId: string) {
+export function useAiChat() {
   const queryClient = useQueryClient();
   const abortRef = useRef<AbortController | null>(null);
   const [state, setState] = useState<AiChatState>(initialState);
@@ -54,7 +54,6 @@ export function useAiChat(classroomId: string) {
         for await (const event of streamChat(
           {
             message: trimmedMessage,
-            classroomId,
             conversationId,
           },
           controller.signal,
@@ -103,7 +102,7 @@ export function useAiChat(classroomId: string) {
                 isStreaming: false,
               }));
               queryClient.invalidateQueries({
-                queryKey: ['ai', 'conversations', classroomId],
+                queryKey: ['ai', 'conversations'],
               });
               break;
 
@@ -138,7 +137,7 @@ export function useAiChat(classroomId: string) {
         }
       }
     },
-    [classroomId, queryClient, state.isStreaming],
+    [queryClient, state.isStreaming],
   );
 
   const abort = useCallback(() => {

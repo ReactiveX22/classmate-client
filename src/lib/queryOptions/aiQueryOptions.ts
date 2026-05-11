@@ -1,12 +1,11 @@
 import { queryOptions } from '@tanstack/react-query';
 import { aiService } from '../api/services/ai.service';
 
-export const aiConversationsQueryOptions = (classroomId: string) =>
+export const aiConversationsQueryOptions = () =>
   queryOptions({
-    queryKey: ['ai', 'conversations', classroomId],
-    queryFn: () => aiService.getConversations(classroomId),
+    queryKey: ['ai', 'conversations'],
+    queryFn: () => aiService.getConversations(),
     staleTime: 30_000,
-    enabled: !!classroomId,
   });
 
 export const aiConversationQueryOptions = (id: string) =>

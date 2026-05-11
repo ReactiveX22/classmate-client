@@ -16,11 +16,10 @@ import { useAiChat } from "@/hooks/use-ai-chat";
 import { useAiConversation } from "@/hooks/use-ai-conversation";
 
 interface AiChatPageProps {
-  classroomId: string;
   initialConvId?: string;
 }
 
-export function AiChatPage({ classroomId, initialConvId }: AiChatPageProps) {
+export function AiChatPage({ initialConvId }: AiChatPageProps) {
   const [queryConvId, setQueryConvId] = useQueryState("convId");
   const activeConvId = initialConvId ?? queryConvId ?? "";
   const {
@@ -32,7 +31,7 @@ export function AiChatPage({ classroomId, initialConvId }: AiChatPageProps) {
     sendMessage,
     abort,
     loadConversation,
-  } = useAiChat(classroomId);
+  } = useAiChat();
   const conversationQuery = useAiConversation(activeConvId);
 
   useEffect(() => {

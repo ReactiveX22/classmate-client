@@ -36,7 +36,7 @@ export function TeacherSidebar({
 
     const conversationItems = conversations.map((conversation) => ({
       title: conversation.title || 'Untitled chat',
-      url: `/dashboard/classrooms/${conversation.classroomId}/ai/${conversation.id}`,
+      url: `/dashboard/ai/${conversation.id}`,
     }));
 
     const conversationsNavItems =
@@ -44,18 +44,14 @@ export function TeacherSidebar({
         ? [
             {
               title: 'New Chat',
-              url: classroomItems[0]?.url
-                ? `${classroomItems[0].url}/ai`
-                : '/dashboard/classrooms',
+              url: '/dashboard/ai',
             },
             ...conversationItems,
           ]
         : [
             {
               title: isConversationsLoading ? 'Loading...' : 'No chats yet',
-              url: classroomItems[0]?.url
-                ? `${classroomItems[0].url}/ai`
-                : '/dashboard/classrooms',
+              url: '/dashboard/ai',
             },
           ];
 

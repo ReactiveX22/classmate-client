@@ -1,20 +1,15 @@
-import { aiConversationsQueryOptions } from '@/lib/queryOptions/aiQueryOptions';
-import { useQueries } from '@tanstack/react-query';
+import { useAiConversations } from './use-ai-conversations';
 
 export function useAiConversationsForClassrooms(classroomIds: string[]) {
-  const results = useQueries({
-    queries: classroomIds.map((classroomId) =>
-      aiConversationsQueryOptions(classroomId),
-    ),
-  });
+  const { data, isLoading, isError } = useAiConversations();
 
-  const conversations = results.flatMap(
-    (result) => result.data?.conversations ?? [],
+  const conversations = (data?.conversations ?? []).filter(
+    (conv) => !conv.classroomId || classroomIds.includes(conv.classroomId),
   );
 
   return {
     conversations,
-    isLoading: results.some((result) => result.isLoading),
-    isError: results.some((result) => result.isError),
+    isLoading,
+    isError,
   };
 }

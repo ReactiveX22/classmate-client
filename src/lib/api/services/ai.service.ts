@@ -3,7 +3,7 @@ import apiClient from '../index';
 export interface AiConversation {
   id: string;
   title: string | null;
-  classroomId: string;
+  classroomId: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -34,17 +34,13 @@ export interface AiConversationResponse {
 
 export interface StreamChatInput {
   message: string;
-  classroomId: string;
   conversationId?: string;
 }
 
 export const aiService = {
-  async getConversations(
-    classroomId: string,
-  ): Promise<AiConversationsResponse> {
+  async getConversations(): Promise<AiConversationsResponse> {
     const response = await apiClient.get<AiConversationsResponse>(
       '/api/v1/ai/conversations',
-      { params: { classroomId } },
     );
 
     return response.data;
