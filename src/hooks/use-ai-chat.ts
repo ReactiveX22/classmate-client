@@ -30,6 +30,37 @@ export function useAiChat() {
   const abortRef = useRef<AbortController | null>(null);
   const [state, setState] = useState<AiChatState>(initialState);
 
+  const syncConversationInCache = useCallback(
+    (conversation: AiConversation) => {
+      setState((current) => ({
+        ...current,
+        conversation:
+          current.conversation?.id === conversation.id
+            ? conversation
+            : current.conversation,
+      }));
+
+      queryClient.setQueryData(
+        ['ai', 'conversations'],
+        (currentData: { conversations: AiConversation[] } | undefined) => {
+          const conversations = currentData?.conversations ?? [];
+          const exists = conversations.some(
+            (item) => item.id === conversation.id,
+          );
+
+          return {
+            conversations: exists
+              ? conversations.map((item) =>
+                  item.id === conversation.id ? conversation : item,
+                )
+              : [conversation, ...conversations],
+          };
+        },
+      );
+    },
+    [queryClient],
+  );
+
   const sendMessage = useCallback(
     async (message: string, conversationId?: string) => {
       const trimmedMessage = message.trim();
@@ -60,30 +91,11 @@ export function useAiChat() {
         )) {
           switch (event.type) {
             case 'conversation':
-              setState((current) => ({
-                ...current,
-                conversation: event.payload,
-              }));
-              queryClient.setQueryData(
-                ['ai', 'conversations'],
-                (currentData: { conversations: AiConversation[] } | undefined) => {
-                  const conversations = currentData?.conversations ?? [];
-                  const nextConversation = event.payload;
-                  const exists = conversations.some(
-                    (conversation) => conversation.id === nextConversation.id,
-                  );
+              syncConversationInCache(event.payload);
+              break;
 
-                  return {
-                    conversations: exists
-                      ? conversations.map((conversation) =>
-                          conversation.id === nextConversation.id
-                            ? nextConversation
-                            : conversation,
-                        )
-                      : [nextConversation, ...conversations],
-                  };
-                },
-              );
+            case 'title_updated':
+              syncConversationInCache(event.payload);
               break;
 
             case 'user_message':
@@ -157,7 +169,7 @@ export function useAiChat() {
         }
       }
     },
-    [queryClient, state.isStreaming],
+    [queryClient, state.isStreaming, syncConversationInCache],
   );
 
   const abort = useCallback(() => {

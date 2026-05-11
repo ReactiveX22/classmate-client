@@ -3,7 +3,6 @@
 import {
   Message,
   MessageAvatar,
-  MessageContent,
 } from "@/components/ui/chat/message";
 import { Loader } from "@/components/ui/chat/loader";
 import { ResponseStream } from "@/components/ui/chat/response-stream";
@@ -31,16 +30,14 @@ export function AiStreamingBubble({
     >
       <div className="flex w-full items-start gap-4">
         <MessageAvatar fallback="AI" />
-        <MessageContent
-          className="w-full max-w-none border-0 bg-transparent p-0 shadow-none"
-        >
+        <div className="w-full max-w-none border-0 bg-transparent p-0 shadow-none">
           {content ? (
             <ResponseStream textStream={content} />
           ) : (
             <Loader variant="typing" size="sm" />
           )}
           <AiToolIndicator className="mt-3" tools={activeTools} />
-        </MessageContent>
+        </div>
       </div>
     </Message>
   );
