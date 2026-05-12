@@ -2,8 +2,8 @@
 
 import { motion, type HTMLMotionProps } from "motion/react";
 
-import { Markdown } from "@/components/ui/chat/markdown";
 import { cn } from "@/lib/utils";
+import { MessageContent } from "./message";
 
 interface ResponseStreamProps extends HTMLMotionProps<"div"> {
   textStream: string;
@@ -30,9 +30,13 @@ function ResponseStream({
       )}
       {...props}
     >
-      <Markdown id={id} className="chat-markdown">
+      <MessageContent
+        markdown
+        className="chat-markdown text-foreground flex-1 max-w-none rounded-lg bg-transparent p-0"
+        id={id}
+      >
         {textStream}
-      </Markdown>
+      </MessageContent>
     </motion.div>
   );
 }
