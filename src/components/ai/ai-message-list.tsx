@@ -107,7 +107,7 @@ export function AiMessageList({
                 </div>
               ) : (
                 <div className="group flex w-full flex-col items-end gap-1">
-                  <MessageContent className="max-w-[85%] rounded-3xl bg-primary px-5 py-2.5 text-primary-foreground shadow-none sm:max-w-[75%]">
+                  <MessageContent className="max-w-[85%] rounded-3xl bg-muted px-5 py-2.5 text-primary-foreground shadow-none sm:max-w-[75%]">
                     {message.content}
                   </MessageContent>
                   <MessageActions className="flex gap-0 opacity-0 transition-opacity duration-150 group-hover/message:opacity-100">

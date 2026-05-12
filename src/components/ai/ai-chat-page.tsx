@@ -120,7 +120,7 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
             <ChatContainerContent className="px-4 py-12">
               {conversationQuery.isLoading ? (
                 <div className="flex min-h-[40vh] items-center justify-center px-4 text-center">
-                  <Loader variant="text-shimmer" />
+                  <Loader variant="bars" />
                 </div>
               ) : messages.length === 0 ? (
                 <div className="flex min-h-[40vh] flex-col items-center justify-center px-4 text-center">

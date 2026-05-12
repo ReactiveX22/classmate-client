@@ -48,7 +48,7 @@ export default function DashboardLayout({
     <ProtectedRoute>
       <SidebarProvider>
         {getSidebar()}
-        <SidebarInset>
+        <SidebarInset className="overflow-hidden">
           <ImpersonationBanner />
           <DashboardHeader>
             <NotificationPopover />

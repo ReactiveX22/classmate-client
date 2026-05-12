@@ -28,7 +28,11 @@ function extractLanguage(className?: string): string {
 
 const INITIAL_COMPONENTS: Partial<Components> = {
   table: function TableComponent({ children }) {
-    return <>{children}</>;
+    return (
+      <div className="markdown-table-wrapper">
+        <table className="w-full">{children}</table>
+      </div>
+    );
   },
   code: function CodeComponent({ className, children, ...props }) {
     const isInline =
