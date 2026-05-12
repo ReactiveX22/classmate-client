@@ -6,12 +6,10 @@ import {
   Message,
   MessageAction,
   MessageActions,
-  MessageAvatar,
   MessageContent,
 } from "@/components/ui/chat/message";
 import type { AiMessage } from "@/lib/api/services/ai.service";
 import { cn, copyToClipboard } from "@/lib/utils";
-import { IconSparkles } from "@tabler/icons-react";
 import { Copy, Pencil } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
@@ -73,46 +71,39 @@ export function AiMessageList({
             transition={{ duration: 0.22, ease: "easeOut" }}
           >
             <Message
-              className="group/message mx-auto flex w-full max-w-4xl px-0 md:px-6"
+              className="group/message mx-auto flex w-full max-w-200 px-0 md:px-6"
               role={message.role}
             >
               {isAssistant ? (
-                <div className="flex w-full items-start gap-4">
-                  <MessageAvatar
-                    fallback={<IconSparkles className="size-4" />}
-                  />
-                  <div className="group flex flex-1 flex-col gap-0">
-                    <MessageContent
-                      markdown
-                      className="chat-markdown text-foreground flex-1 max-w-none rounded-lg bg-transparent p-0"
-                    >
-                      {message.content}
-                    </MessageContent>
-                    <MessageActions
-                      className={cn(
-                        "-ml-2.5 flex gap-0 opacity-0 transition-opacity duration-150 group-hover/message:opacity-100",
-                        isLastMessage && "opacity-100",
-                      )}
-                    >
-                      <MessageAction tooltip="Copy" delayDuration={100}>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="rounded-full"
-                          onClick={() =>
-                            handleCopy(message.content, message.id)
-                          }
-                          aria-label="Copy message"
-                        >
-                          {copiedMessageId === message.id ? (
-                            <Copy className="text-emerald-500" />
-                          ) : (
-                            <Copy />
-                          )}
-                        </Button>
-                      </MessageAction>
-                    </MessageActions>
-                  </div>
+                <div className="group flex w-full flex-col gap-0">
+                  <MessageContent
+                    markdown
+                    className="chat-markdown text-foreground flex-1 max-w-none rounded-lg bg-transparent p-0"
+                  >
+                    {message.content}
+                  </MessageContent>
+                  <MessageActions
+                    className={cn(
+                      "-ml-2.5 flex gap-0 opacity-0 transition-opacity duration-150 group-hover/message:opacity-100",
+                      isLastMessage && "opacity-100",
+                    )}
+                  >
+                    <MessageAction tooltip="Copy" delayDuration={100}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full"
+                        onClick={() => handleCopy(message.content, message.id)}
+                        aria-label="Copy message"
+                      >
+                        {copiedMessageId === message.id ? (
+                          <Copy className="text-emerald-500" />
+                        ) : (
+                          <Copy />
+                        )}
+                      </Button>
+                    </MessageAction>
+                  </MessageActions>
                 </div>
               ) : (
                 <div className="group flex w-full flex-col items-end gap-1">

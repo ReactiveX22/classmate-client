@@ -128,7 +128,7 @@
 
 @layer components {
   .chat-markdown {
-    @apply text-sm leading-7 break-words whitespace-normal;
+    @apply text-sm leading-7 wrap-break-word whitespace-normal;
   }
 
   .chat-markdown > * + * {
@@ -141,7 +141,7 @@
   .chat-markdown h4,
   .chat-markdown h5,
   .chat-markdown h6 {
-    @apply font-semibold tracking-tight text-foreground;
+    @apply font-semibold tracking-tight text-foreground my-3;
   }
 
   .chat-markdown h1 {
@@ -191,7 +191,7 @@
   }
 
   .chat-markdown pre {
-    @apply overflow-x-auto rounded-xl border border-border bg-card p-4;
+    @apply overflow-x-auto rounded-xl bg-card p-4;
   }
 
   .chat-markdown pre code {
@@ -207,12 +207,12 @@
   }
 
   .chat-markdown table {
-    @apply w-full border-collapse overflow-hidden rounded-xl border border-border;
+    @apply w-full border-collapse overflow-hidden rounded-xl border border-border my-3;
   }
 
   .chat-markdown th,
   .chat-markdown td {
-    @apply border-b border-border px-3 py-2 text-left align-top;
+    @apply border-b border-border px-3 py-1 text-left align-top;
   }
 
   .chat-markdown th {

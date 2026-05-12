@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { AiInputBar } from "@/components/ai/ai-input-bar";
@@ -26,6 +27,7 @@ interface AiChatPageProps {
 
 export function AiChatPage({ initialConvId }: AiChatPageProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: user } = useUser();
   const activeConvId = initialConvId ?? "";
   const {
@@ -43,6 +45,7 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
 
   useEffect(() => {
     if (!activeConvId) {
+      queryClient.setQueryData(["ai", "activeChatTitle"], null);
       resetConversation();
       return;
     }
@@ -55,11 +58,20 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
       conversationQuery.data.conversation,
       conversationQuery.data.messages,
     );
+    queryClient.setQueryData(
+      ["ai", "activeChatTitle"],
+      conversationQuery.data.conversation.title,
+    );
+    queryClient.setQueryData(
+      ["ai", "activeChatId"],
+      conversationQuery.data.conversation.id,
+    );
   }, [
     activeConvId,
     conversationQuery.data,
     loadConversation,
     resetConversation,
+    queryClient,
   ]);
 
   useEffect(() => {
@@ -68,7 +80,15 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
     }
 
     router.replace(`/dashboard/ai/${conversation.id}`);
-  }, [conversation?.id, initialConvId, router]);
+    queryClient.setQueryData(["ai", "activeChatTitle"], conversation.title);
+    queryClient.setQueryData(["ai", "activeChatId"], conversation.id);
+  }, [
+    conversation?.id,
+    conversation?.title,
+    initialConvId,
+    router,
+    queryClient,
+  ]);
 
   useEffect(() => {
     if (!conversationQuery.error) {
@@ -104,7 +124,7 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
                 </div>
               ) : messages.length === 0 ? (
                 <div className="flex min-h-[40vh] flex-col items-center justify-center px-4 text-center">
-                  <Card className="max-w-md border-none shadow-none bg-transparent">
+                  <Card className="max-w-2xl border-none shadow-none bg-transparent ring-0">
                     <CardHeader className="flex flex-col items-center gap-4 pb-2">
                       <Avatar size="lg" className="size-16">
                         <AvatarFallback className="bg-primary text-primary-foreground">

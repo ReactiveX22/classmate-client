@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { cn, copyToClipboard } from "@/lib/utils"
-import { Check, Copy } from "lucide-react"
-import { useTheme } from "next-themes"
-import React, { useEffect, useState } from "react"
-import { toast } from "sonner"
-import { codeToHtml } from "shiki"
+import { Button } from "@/components/ui/button";
+import { cn, copyToClipboard } from "@/lib/utils";
+import { Check, Copy } from "lucide-react";
+import { useTheme } from "next-themes";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { codeToHtml } from "shiki";
 
 export type CodeBlockProps = {
-  children?: React.ReactNode
-  className?: string
-} & React.HTMLProps<HTMLDivElement>
+  children?: React.ReactNode;
+  className?: string;
+} & React.HTMLProps<HTMLDivElement>;
 
 function CodeBlock({ children, className, ...props }: CodeBlockProps) {
   return (
@@ -19,21 +19,21 @@ function CodeBlock({ children, className, ...props }: CodeBlockProps) {
       className={cn(
         "not-prose relative flex w-full flex-col overflow-clip border",
         "border-border bg-card text-card-foreground rounded-xl",
-        className
+        className,
       )}
       {...props}
     >
       {children}
     </div>
-  )
+  );
 }
 
 export type CodeBlockCodeProps = {
-  code: string
-  language?: string
-  theme?: string
-  className?: string
-} & React.HTMLProps<HTMLDivElement>
+  code: string;
+  language?: string;
+  theme?: string;
+  className?: string;
+} & React.HTMLProps<HTMLDivElement>;
 
 function CodeBlockCode({
   code,
@@ -42,43 +42,43 @@ function CodeBlockCode({
   className,
   ...props
 }: CodeBlockCodeProps) {
-  const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
-  const { resolvedTheme } = useTheme()
+  const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const { resolvedTheme } = useTheme();
   const resolvedShikiTheme =
-    resolvedTheme === "dark" ? "github-dark" : theme
+    resolvedTheme === "dark" ? "github-dark-default" : theme;
 
   useEffect(() => {
     async function highlight() {
       if (!code) {
-        setHighlightedHtml("<pre><code></code></pre>")
-        return
+        setHighlightedHtml("<pre><code></code></pre>");
+        return;
       }
 
       const html = await codeToHtml(code, {
         lang: language,
         theme: resolvedShikiTheme,
-      })
-      setHighlightedHtml(html)
+      });
+      setHighlightedHtml(html);
     }
-    highlight()
-  }, [code, language, resolvedShikiTheme])
+    highlight();
+  }, [code, language, resolvedShikiTheme]);
 
   async function handleCopy() {
     try {
-      await copyToClipboard(code)
-      setCopied(true)
-      toast.success("Code copied")
-      window.setTimeout(() => setCopied(false), 1500)
+      await copyToClipboard(code);
+      setCopied(true);
+      toast.success("Code copied");
+      window.setTimeout(() => setCopied(false), 1500);
     } catch {
-      toast.error("Could not copy code")
+      toast.error("Could not copy code");
     }
   }
 
   const classNames = cn(
     "w-full overflow-x-auto text-[13px] [&>pre]:px-4 [&>pre]:py-4",
-    className
-  )
+    className,
+  );
 
   // SSR fallback: render plain code if not hydrated yet
   return highlightedHtml ? (
@@ -92,7 +92,11 @@ function CodeBlockCode({
           onClick={handleCopy}
           aria-label="Copy code"
         >
-          {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+          {copied ? (
+            <Check className="size-3.5" />
+          ) : (
+            <Copy className="size-3.5" />
+          )}
         </Button>
       </div>
       <div
@@ -112,7 +116,11 @@ function CodeBlockCode({
           onClick={handleCopy}
           aria-label="Copy code"
         >
-          {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+          {copied ? (
+            <Check className="size-3.5" />
+          ) : (
+            <Copy className="size-3.5" />
+          )}
         </Button>
       </div>
       <div className={classNames} {...props}>
@@ -121,10 +129,10 @@ function CodeBlockCode({
         </pre>
       </div>
     </>
-  )
+  );
 }
 
-export type CodeBlockGroupProps = React.HTMLAttributes<HTMLDivElement>
+export type CodeBlockGroupProps = React.HTMLAttributes<HTMLDivElement>;
 
 function CodeBlockGroup({
   children,
@@ -138,7 +146,7 @@ function CodeBlockGroup({
     >
       {children}
     </div>
-  )
+  );
 }
 
-export { CodeBlockGroup, CodeBlockCode, CodeBlock }
+export { CodeBlockGroup, CodeBlockCode, CodeBlock };
