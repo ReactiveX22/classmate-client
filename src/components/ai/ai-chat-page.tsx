@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { AiInputBar } from "@/components/ai/ai-input-bar";
@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChatContainerContent,
   ChatContainerRoot,
+  ChatContainerScrollAnchor,
 } from "@/components/ui/chat/chat-container";
 import { Loader } from "@/components/ui/chat/loader";
 import { ScrollButton } from "@/components/ui/chat/scroll-button";
@@ -21,6 +22,7 @@ import { useUser } from "@/hooks/useAuth";
 import { Role } from "@/types/auth";
 import { IconSparkles } from "@tabler/icons-react";
 import { ScrollArea } from "../ui/scroll-area";
+
 interface AiChatPageProps {
   initialConvId?: string;
 }
@@ -42,6 +44,35 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
     resetConversation,
   } = useAiChat();
   const conversationQuery = useAiConversation(activeConvId);
+
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const scrollAnchorRef = useRef<HTMLDivElement>(null);
+  const [isNearBottom, setIsNearBottom] = useState(true);
+
+  const scrollToBottom = useCallback(() => {
+    scrollAnchorRef.current?.scrollIntoView({ behavior: "auto" });
+  }, []);
+
+  useEffect(() => {
+    const el = scrollAreaRef.current;
+    if (!el) return;
+
+    const checkScroll = () => {
+      const atBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 50;
+      setIsNearBottom(atBottom);
+    };
+
+    checkScroll();
+    const interval = setInterval(checkScroll, 200);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      scrollToBottom();
+      setIsNearBottom(true);
+    }
+  }, [messages, scrollToBottom]);
 
   useEffect(() => {
     if (!activeConvId) {
@@ -110,11 +141,9 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
     return sendMessage(message, conversationId || undefined);
   };
 
-  console.log(messages);
-
   return (
     <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
-      <ScrollArea className="h-[calc(100vh-56px)]">
+      <ScrollArea ref={scrollAreaRef} className="h-[calc(100vh-56px)]">
         <div className="relative min-h-0 flex-1">
           <ChatContainerRoot className="min-h-0 flex-1 overflow-y-auto pb-28">
             <ChatContainerContent className="px-4 py-12">
@@ -150,23 +179,33 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
                   streamingContent={streamingContent}
                 />
               )}
+              <ChatContainerScrollAnchor
+                ref={scrollAnchorRef}
+                className="mb-4"
+              />
             </ChatContainerContent>
-            <div className="absolute bottom-4 left-1/2 flex w-full max-w-4xl -translate-x-1/2 justify-end px-5">
-              <ScrollButton className="shadow-sm" />
-            </div>
           </ChatContainerRoot>
         </div>
       </ScrollArea>
 
       <div className="pointer-events-none absolute left-1/2 bottom-5 z-10 w-full max-w-3xl -translate-x-1/2 px-3 md:px-5">
-        <div className="pointer-events-auto">
-          <AiInputBar
-            isStreaming={isStreaming}
-            onSend={handleSend}
-            onStop={abort}
-            conversationId={conversation?.id}
-            currentTitle={conversation?.title}
-          />
+        <div className="relative">
+          <div className="absolute -top-12 left-0 w-full flex justify-end pr-2 pointer-events-auto">
+            <ScrollButton
+              className="shadow-sm"
+              isNearBottom={isNearBottom}
+              onScrollToBottom={scrollToBottom}
+            />
+          </div>
+          <div className="pointer-events-auto">
+            <AiInputBar
+              isStreaming={isStreaming}
+              onSend={handleSend}
+              onStop={abort}
+              conversationId={conversation?.id}
+              currentTitle={conversation?.title}
+            />
+          </div>
         </div>
       </div>
     </div>
