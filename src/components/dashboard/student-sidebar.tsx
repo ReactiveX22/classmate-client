@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { Sidebar } from '@/components/ui/sidebar';
-import { useAiConversationsForClassrooms } from '@/hooks/use-ai-conversations-for-classrooms';
-import { useClassrooms } from '@/hooks/use-classrooms';
-import { SidebarData } from '@/types/sidebar-types';
+import { Sidebar } from "@/components/ui/sidebar";
+import { useAiConversationsForClassrooms } from "@/hooks/use-ai-conversations-for-classrooms";
+import { useClassrooms } from "@/hooks/use-classrooms";
+import { SidebarData } from "@/types/sidebar-types";
+import { IconSparkles } from "@tabler/icons-react";
 import {
-  Bot,
   BookOpen,
   LayoutDashboard,
   Megaphone,
   Plus,
   Settings,
   User,
-} from 'lucide-react';
-import { useMemo } from 'react';
-import Link from 'next/link';
-import { AppSidebar } from './app-sidebar';
+} from "lucide-react";
+import { useMemo } from "react";
+import Link from "next/link";
+import { AppSidebar } from "./app-sidebar";
 
 export function StudentSidebar({
   ...props
@@ -36,7 +36,7 @@ export function StudentSidebar({
       })) || [];
 
     const conversationItems = conversations.map((conversation) => ({
-      title: conversation.title || 'Untitled chat',
+      title: conversation.title || "Untitled chat",
       url: `/dashboard/ai/${conversation.id}`,
     }));
 
@@ -45,85 +45,86 @@ export function StudentSidebar({
         ? conversationItems
         : [
             {
-              title: isConversationsLoading ? 'Loading...' : 'No chats yet',
-              url: '/dashboard/ai',
+              title: isConversationsLoading ? "Loading..." : "No chats yet",
+              url: "/dashboard/ai",
             },
           ];
 
     const myClassesItems = [
       {
-        title: 'All Classes',
-        url: '/dashboard/classrooms',
+        title: "All Classes",
+        url: "/dashboard/classrooms",
       },
       ...classroomItems,
     ];
 
     return {
       user: {
-        name: 'Student', // Ideally fetched from user context if AppSidebar doesn't handle it
-        email: 'student@example.com',
-        image: '',
+        name: "Student", // Ideally fetched from user context if AppSidebar doesn't handle it
+        email: "student@example.com",
+        image: "",
       },
       navGroups: [
         {
-          title: 'General',
+          title: "General",
           items: [
             {
-              title: 'Dashboard',
-              url: '/dashboard',
+              title: "Dashboard",
+              url: "/dashboard",
               icon: LayoutDashboard,
             },
             {
-              title: 'My Classes',
+              title: "My Classes",
               icon: BookOpen,
               items:
                 classroomItems.length > 0
                   ? myClassesItems
                   : [
                       {
-                        title: isLoading ? 'Loading...' : 'No classes yet',
-                        url: '/dashboard/classrooms',
+                        title: isLoading ? "Loading..." : "No classes yet",
+                        url: "/dashboard/classrooms",
                       },
                     ],
             },
             {
-              title: 'Notices',
-              url: '/dashboard/notices',
+              title: "Notices",
+              url: "/dashboard/notices",
               icon: Megaphone,
             },
           ],
         },
         {
-          title: 'AI Chats',
+          title: "ClassMate AI",
           action: (
             <Link
-              className='text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground inline-flex size-7 items-center justify-center rounded-md transition-colors'
-              href='/dashboard/ai'
-              aria-label='New chat'
-              title='New chat'
+              className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground inline-flex size-7 items-center justify-center rounded-md transition-colors"
+              href="/dashboard/ai"
+              aria-label="New chat"
+              title="New chat"
             >
-              <Plus className='size-4' />
+              <Plus className="size-4" />
             </Link>
           ),
           items: [
             {
-              title: 'Conversations',
-              icon: Bot,
+              title: "Conversations",
+              icon: IconSparkles,
               items: conversationsNavItems,
+              open: true,
             },
           ],
         },
         {
-          title: 'Account',
+          title: "Account",
           items: [
             {
-              title: 'Profile',
-              url: '/dashboard/profile',
+              title: "Profile",
+              url: "/dashboard/profile",
               icon: User,
             },
             {
-              title: 'Settings',
-              url: '/dashboard/settings',
+              title: "Settings",
+              url: "/dashboard/settings",
               icon: Settings,
             },
           ],

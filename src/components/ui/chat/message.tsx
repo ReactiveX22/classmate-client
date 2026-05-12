@@ -22,7 +22,7 @@ const Message = ({ children, className, ...props }: MessageProps) => (
 export type MessageAvatarProps = {
   src?: string;
   alt?: string;
-  fallback?: string;
+  fallback?: React.ReactNode;
   delayMs?: number;
   className?: string;
 };

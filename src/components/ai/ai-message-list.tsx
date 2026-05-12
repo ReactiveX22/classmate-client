@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, AnimatePresence } from "motion/react";
 import { AiStreamingBubble } from "@/components/ai/ai-streaming-bubble";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +11,9 @@ import {
 } from "@/components/ui/chat/message";
 import type { AiMessage } from "@/lib/api/services/ai.service";
 import { cn, copyToClipboard } from "@/lib/utils";
+import { IconSparkles } from "@tabler/icons-react";
 import { Copy, Pencil } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -75,22 +76,59 @@ export function AiMessageList({
               className="group/message mx-auto flex w-full max-w-4xl px-0 md:px-6"
               role={message.role}
             >
-            {isAssistant ? (
-              <div className="flex w-full items-start gap-4">
-                <MessageAvatar fallback="AI" />
-                <div className="group flex flex-1 flex-col gap-0">
-                  <MessageContent
-                    markdown
-                    className="chat-markdown text-foreground flex-1 max-w-none rounded-lg bg-transparent p-0"
-                  >
+              {isAssistant ? (
+                <div className="flex w-full items-start gap-4">
+                  <MessageAvatar
+                    fallback={<IconSparkles className="size-4" />}
+                  />
+                  <div className="group flex flex-1 flex-col gap-0">
+                    <MessageContent
+                      markdown
+                      className="chat-markdown text-foreground flex-1 max-w-none rounded-lg bg-transparent p-0"
+                    >
+                      {message.content}
+                    </MessageContent>
+                    <MessageActions
+                      className={cn(
+                        "-ml-2.5 flex gap-0 opacity-0 transition-opacity duration-150 group-hover/message:opacity-100",
+                        isLastMessage && "opacity-100",
+                      )}
+                    >
+                      <MessageAction tooltip="Copy" delayDuration={100}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="rounded-full"
+                          onClick={() =>
+                            handleCopy(message.content, message.id)
+                          }
+                          aria-label="Copy message"
+                        >
+                          {copiedMessageId === message.id ? (
+                            <Copy className="text-emerald-500" />
+                          ) : (
+                            <Copy />
+                          )}
+                        </Button>
+                      </MessageAction>
+                    </MessageActions>
+                  </div>
+                </div>
+              ) : (
+                <div className="group flex w-full flex-col items-end gap-1">
+                  <MessageContent className="max-w-[85%] rounded-3xl bg-primary px-5 py-2.5 text-primary-foreground shadow-none sm:max-w-[75%]">
                     {message.content}
                   </MessageContent>
-                  <MessageActions
-                    className={cn(
-                      "-ml-2.5 flex gap-0 opacity-0 transition-opacity duration-150 group-hover/message:opacity-100",
-                      isLastMessage && "opacity-100",
-                    )}
-                  >
+                  <MessageActions className="flex gap-0 opacity-0 transition-opacity duration-150 group-hover/message:opacity-100">
+                    <MessageAction tooltip="Edit" delayDuration={100}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full"
+                      >
+                        <Pencil />
+                      </Button>
+                    </MessageAction>
                     <MessageAction tooltip="Copy" delayDuration={100}>
                       <Button
                         variant="ghost"
@@ -108,40 +146,7 @@ export function AiMessageList({
                     </MessageAction>
                   </MessageActions>
                 </div>
-              </div>
-            ) : (
-              <div className="group flex w-full flex-col items-end gap-1">
-                <MessageContent className="max-w-[85%] rounded-3xl bg-primary px-5 py-2.5 text-primary-foreground shadow-none sm:max-w-[75%]">
-                  {message.content}
-                </MessageContent>
-                <MessageActions className="flex gap-0 opacity-0 transition-opacity duration-150 group-hover/message:opacity-100">
-                  <MessageAction tooltip="Edit" delayDuration={100}>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full"
-                    >
-                      <Pencil />
-                    </Button>
-                  </MessageAction>
-                  <MessageAction tooltip="Copy" delayDuration={100}>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full"
-                      onClick={() => handleCopy(message.content, message.id)}
-                      aria-label="Copy message"
-                    >
-                      {copiedMessageId === message.id ? (
-                        <Copy className="text-emerald-500" />
-                      ) : (
-                        <Copy />
-                      )}
-                    </Button>
-                  </MessageAction>
-                </MessageActions>
-              </div>
-            )}
+              )}
             </Message>
           </motion.div>
         );

@@ -1,14 +1,12 @@
 "use client";
 
-import { motion } from "motion/react";
-import {
-  Message,
-  MessageAvatar,
-} from "@/components/ui/chat/message";
-import { Loader } from "@/components/ui/chat/loader";
-import { ResponseStream } from "@/components/ui/chat/response-stream";
 import { AiToolIndicator } from "@/components/ai/ai-tool-indicator";
+import { Loader } from "@/components/ui/chat/loader";
+import { Message, MessageAvatar } from "@/components/ui/chat/message";
+import { ResponseStream } from "@/components/ui/chat/response-stream";
 import { useSmoothStreamText } from "@/hooks/use-smooth-stream-text";
+import { IconSparkles } from "@tabler/icons-react";
+import { motion } from "motion/react";
 
 interface AiStreamingBubbleProps {
   content: string;
@@ -42,7 +40,7 @@ export function AiStreamingBubble({
         role="assistant"
       >
         <div className="flex w-full items-start gap-4">
-          <MessageAvatar fallback="AI" />
+          <MessageAvatar fallback={<IconSparkles className="size-4" />} />
           <div className="w-full max-w-none border-0 bg-transparent p-0 shadow-none">
             <motion.div
               animate={{ opacity: 1, y: 0 }}
