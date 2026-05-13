@@ -1,14 +1,66 @@
-'use client';
+"use client";
 
-import { Wrench } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Wrench, ChevronDown } from "lucide-react";
 
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { cn } from "@/lib/utils";
+
+export type ToolIndicator = {
+  id: string;
+  name: string;
+  status: "running" | "finishing";
+};
 
 interface AiToolIndicatorProps {
-  tools: { name: string; status: "running" | "finishing" }[];
+  tools: ToolIndicator[];
   className?: string;
+}
+
+function getToolLabel(name: string) {
+  const normalized = name.toLowerCase();
+
+  if (normalized.includes("rag") || normalized.includes("doc")) {
+    return {
+      running: "Searching documents...",
+      finished: "Searched documents",
+    };
+  }
+
+  if (normalized.includes("web") || normalized.includes("search")) {
+    return {
+      running: "Searching the web...",
+      finished: "Searched the web",
+    };
+  }
+
+  if (normalized.includes("grade")) {
+    return {
+      running: "Grading assignments...",
+      finished: "Graded assignments",
+    };
+  }
+
+  return {
+    running: `Running ${name}...`,
+    finished: `Completed ${name}`,
+  };
+}
+
+function ToolStatusText({ tool }: { tool: ToolIndicator }) {
+  const labels = getToolLabel(tool.name);
+  if (tool.status === "running") {
+    return (
+      <span className="bg-[linear-gradient(to_right,var(--muted-foreground)_40%,var(--foreground)_60%,var(--muted-foreground)_80%)] bg-size-[200%_auto] bg-clip-text font-medium text-transparent animate-[shimmer_4s_infinite_linear]">
+        {labels.running}
+      </span>
+    );
+  }
+
+  return <span>{labels.finished}</span>;
 }
 
 export function AiToolIndicator({ tools, className }: AiToolIndicatorProps) {
@@ -16,30 +68,42 @@ export function AiToolIndicator({ tools, className }: AiToolIndicatorProps) {
     return null;
   }
 
+  if (tools.length === 1) {
+    return (
+      <div
+        className={cn(
+          "flex items-start gap-2 text-sm text-muted-foreground",
+          className,
+        )}
+      >
+        <Wrench className="mt-0.5 size-4 shrink-0 text-current" />
+        <ToolStatusText tool={tools[0]} />
+      </div>
+    );
+  }
+
   return (
-    <div className={cn('flex flex-wrap items-center gap-1.5', className)}>
-      {tools.map((tool) => (
-        <motion.div
-          animate={{
-            opacity: 1,
-            y: 0,
-            scale: tool.status === "finishing" ? 0.98 : 1,
-          }}
-          exit={{ opacity: 0, y: -4 }}
-          initial={{ opacity: 0, y: 4 }}
-          key={tool.name}
-          layout
-          transition={{ duration: 0.18, ease: "easeOut" }}
-        >
-          <Badge
-            className="gap-1.5 transition-colors duration-200"
-            variant={tool.status === "finishing" ? "outline" : "secondary"}
+    <Collapsible
+      className={cn(
+        "px-0 py-0",
+        className,
+      )}
+    >
+      <CollapsibleTrigger className="flex w-fit items-center gap-1.5 text-left text-sm text-muted-foreground transition-colors hover:text-foreground">
+        <Wrench className="size-4 shrink-0 text-current" />
+        <span>{tools.length} tool calls</span>
+        <ChevronDown className="size-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-180" />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="mt-2 space-y-2 pl-5">
+        {tools.map((tool) => (
+          <div
+            className="flex items-start gap-2 rounded-xl px-0 py-1 text-sm text-muted-foreground"
+            key={tool.id}
           >
-            <Wrench className="size-3" />
-            {tool.name}
-          </Badge>
-        </motion.div>
-      ))}
-    </div>
+            <ToolStatusText tool={tool} />
+          </div>
+        ))}
+      </CollapsibleContent>
+    </Collapsible>
   );
 }

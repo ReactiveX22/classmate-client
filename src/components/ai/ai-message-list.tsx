@@ -1,6 +1,7 @@
 "use client";
 
 import { AiStreamingBubble } from "@/components/ai/ai-streaming-bubble";
+import type { ToolIndicator } from "@/components/ai/ai-tool-indicator";
 import { Button } from "@/components/ui/button";
 import {
   Message,
@@ -18,7 +19,7 @@ import { toast } from "sonner";
 interface AiMessageListProps {
   messages: AiMessage[];
   streamingContent: string;
-  activeTools: { name: string; status: "running" | "finishing" }[];
+  activeTools?: ToolIndicator[];
   isStreaming: boolean;
 }
 
@@ -28,6 +29,7 @@ export function AiMessageList({
   activeTools,
   isStreaming,
 }: AiMessageListProps) {
+  const tools = activeTools ?? [];
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
   async function handleCopy(content: string, messageId: string) {
@@ -143,9 +145,9 @@ export function AiMessageList({
         );
       })}
       <AnimatePresence initial={false} mode="popLayout">
-        {(isStreaming || streamingContent || activeTools.length > 0) && (
+        {(isStreaming || streamingContent || tools.length > 0) && (
           <AiStreamingBubble
-            activeTools={activeTools}
+            activeTools={tools}
             content={streamingContent}
             isStreaming={isStreaming}
           />

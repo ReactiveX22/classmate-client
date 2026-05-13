@@ -1,6 +1,7 @@
 "use client";
 
 import { AiToolIndicator } from "@/components/ai/ai-tool-indicator";
+import type { ToolIndicator } from "@/components/ai/ai-tool-indicator";
 import { Loader } from "@/components/ui/chat/loader";
 import { Message } from "@/components/ui/chat/message";
 import { ResponseStream } from "@/components/ui/chat/response-stream";
@@ -9,7 +10,7 @@ import { motion } from "motion/react";
 
 interface AiStreamingBubbleProps {
   content: string;
-  activeTools: { name: string; status: "running" | "finishing" }[];
+  activeTools?: ToolIndicator[];
   isStreaming: boolean;
 }
 
@@ -18,12 +19,14 @@ export function AiStreamingBubble({
   activeTools,
   isStreaming,
 }: AiStreamingBubbleProps) {
+  const tools = activeTools ?? [];
   const displayedContent = useSmoothStreamText({
     sourceText: content,
     enabled: isStreaming,
   });
+  const hasRunningTool = tools.some((tool) => tool.status === "running");
 
-  if (!isStreaming && !content && activeTools.length === 0) {
+  if (!isStreaming && !content && tools.length === 0) {
     return null;
   }
 
@@ -40,18 +43,20 @@ export function AiStreamingBubble({
       >
         <div className="flex w-full items-start gap-4">
           <div className="w-full max-w-none border-0 bg-transparent p-0 shadow-none">
-            <motion.div
-              animate={{ opacity: 1, y: 0 }}
-              initial={{ opacity: 0, y: 2 }}
-              transition={{ duration: 0.16, ease: "easeOut" }}
-            >
-              {displayedContent ? (
-                <ResponseStream textStream={displayedContent} />
-              ) : (
-                <Loader variant="typing" size="sm" />
-              )}
-            </motion.div>
-            <AiToolIndicator className="mt-3" tools={activeTools} />
+            <AiToolIndicator className="mt-3" tools={tools} />
+            {!hasRunningTool && (
+              <motion.div
+                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 2 }}
+                transition={{ duration: 0.16, ease: "easeOut" }}
+              >
+                {displayedContent ? (
+                  <ResponseStream textStream={displayedContent} />
+                ) : isStreaming ? (
+                  <Loader className="mt-3" variant="typing" size="sm" />
+                ) : null}
+              </motion.div>
+            )}
           </div>
         </div>
       </Message>

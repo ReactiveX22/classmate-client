@@ -18,6 +18,7 @@ interface AiChatState {
 }
 
 type ToolIndicator = {
+  id: string;
   name: string;
   status: "running" | "finishing";
 };
@@ -35,7 +36,6 @@ export function useAiChat() {
   const abortRef = useRef<AbortController | null>(null);
   const flushFrameRef = useRef<number | null>(null);
   const pendingContentRef = useRef('');
-  const toolRemovalTimersRef = useRef<Map<string, number>>(new Map());
   const [state, setState] = useState<AiChatState>(initialState);
 
   const clearScheduledFlush = useCallback(() => {
@@ -72,9 +72,44 @@ export function useAiChat() {
   }, [flushPendingContent]);
 
   const clearToolTimers = useCallback(() => {
-    toolRemovalTimersRef.current.forEach((timer) => window.clearTimeout(timer));
-    toolRemovalTimersRef.current.clear();
+    return;
   }, []);
+
+  const upsertToolIndicator = useCallback(
+    (name: string, status: ToolIndicator["status"]) => {
+      setState((current) => {
+        const existingIndex = current.activeTools.findIndex(
+          (tool) => tool.name === name,
+        );
+
+        if (existingIndex >= 0) {
+          const nextTools = [...current.activeTools];
+          nextTools[existingIndex] = {
+            ...nextTools[existingIndex],
+            status,
+          };
+
+          return {
+            ...current,
+            activeTools: nextTools,
+          };
+        }
+
+        return {
+          ...current,
+          activeTools: [
+            ...current.activeTools,
+            {
+              id: `${name}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+              name,
+              status,
+            },
+          ],
+        };
+      });
+    },
+    [],
+  );
 
   const syncConversationInCache = useCallback(
     (conversation: AiConversation) => {
@@ -161,46 +196,9 @@ export function useAiChat() {
 
             case 'tool':
               if (event.payload.status === 'start') {
-                window.clearTimeout(
-                  toolRemovalTimersRef.current.get(event.payload.name),
-                );
-                toolRemovalTimersRef.current.delete(event.payload.name);
-
-                setState((current) => ({
-                  ...current,
-                  activeTools: current.activeTools.some(
-                    (tool) => tool.name === event.payload.name,
-                  )
-                    ? current.activeTools.map((tool) =>
-                        tool.name === event.payload.name
-                          ? { ...tool, status: 'running' }
-                          : tool,
-                      )
-                    : [
-                        ...current.activeTools,
-                        { name: event.payload.name, status: 'running' },
-                      ],
-                }));
+                upsertToolIndicator(event.payload.name, 'running');
               } else {
-                setState((current) => ({
-                  ...current,
-                  activeTools: current.activeTools.map((tool) =>
-                    tool.name === event.payload.name
-                      ? { ...tool, status: 'finishing' }
-                      : tool,
-                  ),
-                }));
-
-                const timer = window.setTimeout(() => {
-                  setState((current) => ({
-                    ...current,
-                    activeTools: current.activeTools.filter(
-                      (tool) => tool.name !== event.payload.name,
-                    ),
-                  }));
-                  toolRemovalTimersRef.current.delete(event.payload.name);
-                }, 900);
-                toolRemovalTimersRef.current.set(event.payload.name, timer);
+                upsertToolIndicator(event.payload.name, 'finishing');
               }
               break;
 
@@ -210,7 +208,6 @@ export function useAiChat() {
                 ...current,
                 messages: [...current.messages, event.payload],
                 streamingContent: '',
-                activeTools: [],
                 isStreaming: false,
               }));
               queryClient.invalidateQueries({
@@ -259,6 +256,7 @@ export function useAiChat() {
       queryClient,
       state.isStreaming,
       syncConversationInCache,
+      upsertToolIndicator,
     ],
   );
 

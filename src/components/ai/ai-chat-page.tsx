@@ -153,7 +153,7 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
                 </div>
               ) : messages.length === 0 ? (
                 <div className="flex min-h-[40vh] flex-col items-center justify-center px-4 text-center">
-                  <Card className="max-w-2xl border-none shadow-none bg-transparent ring-0">
+                  <Card className="max-w-2xl border-none bg-transparent shadow-none ring-0">
                     <CardHeader className="flex flex-col items-center gap-4 pb-2">
                       <Avatar size="lg" className="size-16">
                         <AvatarFallback className="bg-primary text-primary-foreground">
@@ -190,7 +190,7 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
 
       <div className="pointer-events-none absolute left-1/2 bottom-5 z-10 w-full max-w-3xl -translate-x-1/2 px-3 md:px-5">
         <div className="relative">
-          <div className="absolute -top-12 left-0 w-full flex justify-end pr-2 pointer-events-auto">
+          <div className="pointer-events-auto absolute -top-12 left-0 flex w-full justify-end pr-2">
             <ScrollButton
               className="shadow-sm"
               isNearBottom={isNearBottom}

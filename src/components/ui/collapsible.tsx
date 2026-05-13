@@ -6,7 +6,11 @@ function Collapsible({ ...props }: CollapsiblePrimitive.Root.Props) {
   return <CollapsiblePrimitive.Root data-slot="collapsible" {...props} />
 }
 
-function CollapsibleTrigger({ ...props }: CollapsiblePrimitive.Trigger.Props) {
+type CollapsibleTriggerProps = CollapsiblePrimitive.Trigger.Props & {
+  asChild?: boolean
+}
+
+function CollapsibleTrigger({ ...props }: CollapsibleTriggerProps) {
   return (
     <CollapsiblePrimitive.Trigger data-slot="collapsible-trigger" {...props} />
   )
