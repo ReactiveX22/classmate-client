@@ -12,6 +12,7 @@ export interface AiMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  metadata?: Record<string, unknown>;
   createdAt: string;
 }
 

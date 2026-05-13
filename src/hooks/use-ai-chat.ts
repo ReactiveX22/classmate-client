@@ -23,6 +23,9 @@ type ToolIndicator = {
   status: "running" | "finishing";
 };
 
+const TOOL_RUNNING_MIN_MS = 450;
+const TOOL_FINISH_MIN_MS = 700;
+
 const initialState: AiChatState = {
   conversation: null,
   messages: [],
@@ -36,6 +39,8 @@ export function useAiChat() {
   const abortRef = useRef<AbortController | null>(null);
   const flushFrameRef = useRef<number | null>(null);
   const pendingContentRef = useRef('');
+  const toolStartTimesRef = useRef<Map<string, number>>(new Map());
+  const toolTimersRef = useRef<Map<string, number>>(new Map());
   const [state, setState] = useState<AiChatState>(initialState);
 
   const clearScheduledFlush = useCallback(() => {
@@ -72,11 +77,61 @@ export function useAiChat() {
   }, [flushPendingContent]);
 
   const clearToolTimers = useCallback(() => {
-    return;
+    for (const timerId of toolTimersRef.current.values()) {
+      window.clearTimeout(timerId);
+    }
+
+    toolTimersRef.current.clear();
+    toolStartTimesRef.current.clear();
   }, []);
 
   const upsertToolIndicator = useCallback(
     (name: string, status: ToolIndicator["status"]) => {
+      const now = Date.now();
+
+      if (status === 'running' && !toolStartTimesRef.current.has(name)) {
+        toolStartTimesRef.current.set(name, now);
+      }
+
+      if (status === 'finishing') {
+        const startedAt = toolStartTimesRef.current.get(name) ?? now;
+        const elapsed = now - startedAt;
+        const delay = Math.max(0, TOOL_RUNNING_MIN_MS - elapsed) + TOOL_FINISH_MIN_MS;
+
+        const existingTimer = toolTimersRef.current.get(name);
+        if (existingTimer !== undefined) {
+          window.clearTimeout(existingTimer);
+        }
+
+        const timerId = window.setTimeout(() => {
+          setState((current) => {
+            const existingIndex = current.activeTools.findIndex(
+              (tool) => tool.name === name,
+            );
+
+            if (existingIndex < 0) {
+              return current;
+            }
+
+            const nextTools = [...current.activeTools];
+            nextTools[existingIndex] = {
+              ...nextTools[existingIndex],
+              status,
+            };
+
+            return {
+              ...current,
+              activeTools: nextTools,
+            };
+          });
+
+          toolTimersRef.current.delete(name);
+        }, delay);
+
+        toolTimersRef.current.set(name, timerId);
+        return;
+      }
+
       setState((current) => {
         const existingIndex = current.activeTools.findIndex(
           (tool) => tool.name === name,

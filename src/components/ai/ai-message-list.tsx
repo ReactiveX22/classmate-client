@@ -2,6 +2,7 @@
 
 import { AiStreamingBubble } from "@/components/ai/ai-streaming-bubble";
 import type { ToolIndicator } from "@/components/ai/ai-tool-indicator";
+import { AiToolIndicator } from "@/components/ai/ai-tool-indicator";
 import { Button } from "@/components/ui/button";
 import {
   Message,
@@ -15,6 +16,10 @@ import { Copy, Pencil } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
+
+type PersistedToolCall = {
+  name: string;
+};
 
 interface AiMessageListProps {
   messages: AiMessage[];
@@ -64,6 +69,15 @@ export function AiMessageList({
       {messages.map((message, index) => {
         const isAssistant = message.role === "assistant";
         const isLastMessage = index === messages.length - 1;
+        const persistedTools = Array.isArray(message.metadata?.toolCalls)
+          ? (message.metadata.toolCalls as PersistedToolCall[]).map(
+              (tool, idx) => ({
+                id: `${message.id}-tool-${idx}`,
+                name: tool.name,
+                status: "finishing" as const,
+              }),
+            )
+          : [];
 
         return (
           <motion.div
@@ -78,6 +92,11 @@ export function AiMessageList({
             >
               {isAssistant ? (
                 <div className="group flex w-full flex-col gap-0">
+                  {persistedTools.length > 0 && (
+                    <div className="mb-3">
+                      <AiToolIndicator tools={persistedTools} />
+                    </div>
+                  )}
                   <MessageContent
                     markdown
                     className="chat-markdown text-foreground flex-1 max-w-none rounded-lg bg-transparent p-0"

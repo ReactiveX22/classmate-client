@@ -43,7 +43,7 @@ export function AiStreamingBubble({
       >
         <div className="flex w-full items-start gap-4">
           <div className="w-full max-w-none border-0 bg-transparent p-0 shadow-none">
-            <AiToolIndicator className="mt-3" tools={tools} />
+            <AiToolIndicator className="mb-5" tools={tools} />
             {!hasRunningTool && (
               <motion.div
                 animate={{ opacity: 1, y: 0 }}
