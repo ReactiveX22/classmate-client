@@ -1,9 +1,16 @@
 "use client";
 
+import { Brain } from "lucide-react";
+
 import { AiStreamingBubble } from "@/components/ai/ai-streaming-bubble";
 import type { ToolIndicator } from "@/components/ai/ai-tool-indicator";
 import { AiToolIndicator } from "@/components/ai/ai-tool-indicator";
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Message,
   MessageAction,
@@ -24,6 +31,7 @@ type PersistedToolCall = {
 interface AiMessageListProps {
   messages: AiMessage[];
   streamingContent: string;
+  streamingReasoning: string;
   activeTools?: ToolIndicator[];
   isStreaming: boolean;
 }
@@ -31,6 +39,7 @@ interface AiMessageListProps {
 export function AiMessageList({
   messages,
   streamingContent,
+  streamingReasoning,
   activeTools,
   isStreaming,
 }: AiMessageListProps) {
@@ -79,6 +88,10 @@ export function AiMessageList({
             )
           : [];
 
+        const persistedReasoning = typeof message.metadata?.reasoning === 'string'
+          ? message.metadata.reasoning
+          : '';
+
         return (
           <motion.div
             key={message.id}
@@ -96,6 +109,28 @@ export function AiMessageList({
                     <div className="mb-3">
                       <AiToolIndicator tools={persistedTools} />
                     </div>
+                  )}
+                  {persistedReasoning && (
+                    <Collapsible className="mb-3">
+                      <CollapsibleTrigger className="flex w-fit items-center gap-1.5 text-left text-sm text-muted-foreground transition-colors hover:text-foreground">
+                        <Brain className="size-4 shrink-0 text-current" />
+                        <span>Thinking</span>
+                        <svg
+                          className="size-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-180"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="m6 9 6 6 6-6" />
+                        </svg>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-2 rounded-lg border border-border bg-muted/50 p-3 text-sm text-muted-foreground">
+                        {persistedReasoning}
+                      </CollapsibleContent>
+                    </Collapsible>
                   )}
                   <MessageContent
                     markdown
@@ -164,10 +199,11 @@ export function AiMessageList({
         );
       })}
       <AnimatePresence initial={false} mode="popLayout">
-        {(isStreaming || streamingContent || tools.length > 0) && (
+        {(isStreaming || streamingContent || streamingReasoning || tools.length > 0) && (
           <AiStreamingBubble
             activeTools={tools}
             content={streamingContent}
+            reasoning={streamingReasoning}
             isStreaming={isStreaming}
           />
         )}

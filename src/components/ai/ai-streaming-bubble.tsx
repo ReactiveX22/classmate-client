@@ -1,7 +1,14 @@
 "use client";
 
+import { Brain } from "lucide-react";
+
 import { AiToolIndicator } from "@/components/ai/ai-tool-indicator";
 import type { ToolIndicator } from "@/components/ai/ai-tool-indicator";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Loader } from "@/components/ui/chat/loader";
 import { Message } from "@/components/ui/chat/message";
 import { ResponseStream } from "@/components/ui/chat/response-stream";
@@ -10,12 +17,14 @@ import { motion } from "motion/react";
 
 interface AiStreamingBubbleProps {
   content: string;
+  reasoning: string;
   activeTools?: ToolIndicator[];
   isStreaming: boolean;
 }
 
 export function AiStreamingBubble({
   content,
+  reasoning,
   activeTools,
   isStreaming,
 }: AiStreamingBubbleProps) {
@@ -24,9 +33,13 @@ export function AiStreamingBubble({
     sourceText: content,
     enabled: isStreaming,
   });
+  const displayedReasoning = useSmoothStreamText({
+    sourceText: reasoning,
+    enabled: isStreaming,
+  });
   const hasRunningTool = tools.some((tool) => tool.status === "running");
 
-  if (!isStreaming && !content && tools.length === 0) {
+  if (!isStreaming && !content && !reasoning && tools.length === 0) {
     return null;
   }
 
@@ -51,7 +64,31 @@ export function AiStreamingBubble({
                 transition={{ duration: 0.16, ease: "easeOut" }}
               >
                 {displayedContent ? (
-                  <ResponseStream textStream={displayedContent} />
+                  <>
+                    {displayedReasoning && (
+                      <Collapsible className="mb-3">
+                        <CollapsibleTrigger className="flex w-fit items-center gap-1.5 text-left text-sm text-muted-foreground transition-colors hover:text-foreground">
+                          <Brain className="size-4 shrink-0 text-current" />
+                          <span>Thinking...</span>
+                          <svg
+                            className="size-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-180"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="m6 9 6 6 6-6" />
+                          </svg>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-2 rounded-lg border border-border bg-muted/50 p-3 text-sm text-muted-foreground">
+                          {displayedReasoning}
+                        </CollapsibleContent>
+                      </Collapsible>
+                    )}
+                    <ResponseStream textStream={displayedContent} />
+                  </>
                 ) : isStreaming ? (
                   <Loader className="mt-3" variant="typing" size="sm" />
                 ) : null}

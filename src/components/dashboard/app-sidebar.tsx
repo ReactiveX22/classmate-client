@@ -4,11 +4,10 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
-  SidebarRail,
 } from "@/components/ui/sidebar";
-import { NavHeader } from "./nav-header";
 import { SidebarData } from "@/types/sidebar-types";
 import { NavGroup } from "./nav-group";
+import { NavHeader } from "./nav-header";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   data: SidebarData;
@@ -25,7 +24,6 @@ export function AppSidebar({ data, ...props }: AppSidebarProps) {
           <NavGroup key={props.title} {...props} />
         ))}
       </SidebarContent>
-      <SidebarRail />
     </Sidebar>
   );
 }

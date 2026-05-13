@@ -13,6 +13,7 @@ interface AiChatState {
   conversation: AiConversation | null;
   messages: AiMessage[];
   streamingContent: string;
+  streamingReasoning: string;
   activeTools: ToolIndicator[];
   isStreaming: boolean;
 }
@@ -30,6 +31,7 @@ const initialState: AiChatState = {
   conversation: null,
   messages: [],
   streamingContent: '',
+  streamingReasoning: '',
   activeTools: [],
   isStreaming: false,
 };
@@ -39,6 +41,7 @@ export function useAiChat() {
   const abortRef = useRef<AbortController | null>(null);
   const flushFrameRef = useRef<number | null>(null);
   const pendingContentRef = useRef('');
+  const pendingReasoningRef = useRef('');
   const toolStartTimesRef = useRef<Map<string, number>>(new Map());
   const toolTimersRef = useRef<Map<string, number>>(new Map());
   const [state, setState] = useState<AiChatState>(initialState);
@@ -83,6 +86,18 @@ export function useAiChat() {
 
     toolTimersRef.current.clear();
     toolStartTimesRef.current.clear();
+  }, []);
+
+  const flushPendingReasoning = useCallback(() => {
+    if (!pendingReasoningRef.current) {
+      return;
+    }
+
+    setState((current) => ({
+      ...current,
+      streamingReasoning: current.streamingReasoning + pendingReasoningRef.current,
+    }));
+    pendingReasoningRef.current = '';
   }, []);
 
   const upsertToolIndicator = useCallback(
@@ -213,10 +228,12 @@ export function useAiChat() {
       setState((current) => ({
         ...current,
         streamingContent: '',
+        streamingReasoning: '',
         activeTools: [],
         isStreaming: true,
       }));
       pendingContentRef.current = '';
+      pendingReasoningRef.current = '';
       clearScheduledFlush();
       clearToolTimers();
 
@@ -249,6 +266,14 @@ export function useAiChat() {
               queueContentFlush();
               break;
 
+            case 'reasoning':
+              pendingReasoningRef.current += event.payload.delta;
+              setState((current) => ({
+                ...current,
+                streamingReasoning: current.streamingReasoning + event.payload.delta,
+              }));
+              break;
+
             case 'tool':
               if (event.payload.status === 'start') {
                 upsertToolIndicator(event.payload.name, 'running');
@@ -259,10 +284,19 @@ export function useAiChat() {
 
             case 'final':
               flushPendingContent();
+              flushPendingReasoning();
+              const finalMessage = {
+                ...event.payload,
+                metadata: {
+                  ...event.payload.metadata,
+                  reasoning: state.streamingReasoning || event.payload.metadata?.reasoning,
+                },
+              };
               setState((current) => ({
                 ...current,
-                messages: [...current.messages, event.payload],
+                messages: [...current.messages, finalMessage],
                 streamingContent: '',
+                streamingReasoning: '',
                 isStreaming: false,
               }));
               queryClient.invalidateQueries({
@@ -272,12 +306,14 @@ export function useAiChat() {
 
             case 'error':
               flushPendingContent();
+              flushPendingReasoning();
               toast.error('AI Error', {
                 description: event.payload.message,
               });
               setState((current) => ({
                 ...current,
                 streamingContent: '',
+                streamingReasoning: '',
                 activeTools: [],
                 isStreaming: false,
               }));
@@ -287,12 +323,14 @@ export function useAiChat() {
       } catch (error) {
         if ((error as Error).name !== 'AbortError') {
           flushPendingContent();
+          flushPendingReasoning();
           toast.error('Connection lost', {
             description: 'Please try again.',
           });
           setState((current) => ({
             ...current,
             streamingContent: '',
+            streamingReasoning: '',
             activeTools: [],
             isStreaming: false,
           }));
@@ -307,9 +345,11 @@ export function useAiChat() {
       clearScheduledFlush,
       clearToolTimers,
       flushPendingContent,
+      flushPendingReasoning,
       queueContentFlush,
       queryClient,
       state.isStreaming,
+      state.streamingReasoning,
       syncConversationInCache,
       upsertToolIndicator,
     ],
@@ -319,24 +359,28 @@ export function useAiChat() {
     abortRef.current?.abort();
     abortRef.current = null;
     flushPendingContent();
+    flushPendingReasoning();
     clearToolTimers();
 
     setState((current) => ({
       ...current,
+      streamingReasoning: '',
       activeTools: [],
       isStreaming: false,
     }));
-  }, [clearToolTimers, flushPendingContent]);
+  }, [clearToolTimers, flushPendingContent, flushPendingReasoning]);
 
   const loadConversation = useCallback(
     (conversation: AiConversation, messages: AiMessage[]) => {
       clearScheduledFlush();
       clearToolTimers();
       pendingContentRef.current = '';
+      pendingReasoningRef.current = '';
       setState({
         conversation,
         messages,
         streamingContent: '',
+        streamingReasoning: '',
         activeTools: [],
         isStreaming: false,
       });
@@ -350,6 +394,7 @@ export function useAiChat() {
     clearScheduledFlush();
     clearToolTimers();
     pendingContentRef.current = '';
+    pendingReasoningRef.current = '';
 
     setState(initialState);
   }, [clearScheduledFlush, clearToolTimers]);

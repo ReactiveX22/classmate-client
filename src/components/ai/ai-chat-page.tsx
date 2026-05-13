@@ -36,6 +36,7 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
     conversation,
     messages,
     streamingContent,
+    streamingReasoning,
     activeTools,
     isStreaming,
     sendMessage,
@@ -177,6 +178,7 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
                   isStreaming={isStreaming}
                   messages={messages}
                   streamingContent={streamingContent}
+                  streamingReasoning={streamingReasoning}
                 />
               )}
               <ChatContainerScrollAnchor
@@ -188,7 +190,7 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
         </div>
       </ScrollArea>
 
-      <div className="pointer-events-none absolute left-1/2 bottom-5 z-10 w-full max-w-3xl -translate-x-1/2 px-3 md:px-5">
+      <div className="pointer-events-none absolute left-1/2 bottom-5 z-10 w-full max-w-200 -translate-x-1/2 px-3 md:px-5">
         <div className="relative">
           <div className="pointer-events-auto absolute -top-12 left-0 flex w-full justify-end pr-2">
             <ScrollButton

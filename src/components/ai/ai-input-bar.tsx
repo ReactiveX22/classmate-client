@@ -102,6 +102,7 @@ export function AiInputBar({
       >
         <div className="flex flex-col">
           <PromptInputTextarea
+            autoFocus
             className="min-h-[44px] rounded-none rounded-t-3xl px-4 pt-3 pl-4 text-base text-primary-foreground leading-[1.3]"
             disabled={isStreaming}
             placeholder="Ask anything"
