@@ -185,10 +185,7 @@ export function useAiChat() {
     (conversation: AiConversation) => {
       setState((current) => ({
         ...current,
-        conversation:
-          current.conversation?.id === conversation.id
-            ? conversation
-            : current.conversation,
+        conversation,
       }));
 
       queryClient.setQueryData(

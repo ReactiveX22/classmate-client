@@ -107,22 +107,6 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
   ]);
 
   useEffect(() => {
-    if (!conversation?.id || initialConvId) {
-      return;
-    }
-
-    router.replace(`/dashboard/ai/${conversation.id}`);
-    queryClient.setQueryData(["ai", "activeChatTitle"], conversation.title);
-    queryClient.setQueryData(["ai", "activeChatId"], conversation.id);
-  }, [
-    conversation?.id,
-    conversation?.title,
-    initialConvId,
-    router,
-    queryClient,
-  ]);
-
-  useEffect(() => {
     if (!conversationQuery.error) {
       return;
     }
