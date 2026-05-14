@@ -1,14 +1,8 @@
 "use client";
 
-import { Brain } from "lucide-react";
-
+import { AiReasoningIndicator } from "@/components/ai/ai-reasoning-indicator";
 import { AiToolIndicator } from "@/components/ai/ai-tool-indicator";
 import type { ToolIndicator } from "@/components/ai/ai-tool-indicator";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { Loader } from "@/components/ui/chat/loader";
 import { Message } from "@/components/ui/chat/message";
 import { ResponseStream } from "@/components/ui/chat/response-stream";
@@ -57,43 +51,24 @@ export function AiStreamingBubble({
         <div className="flex w-full items-start gap-4">
           <div className="w-full max-w-none border-0 bg-transparent p-0 shadow-none">
             <AiToolIndicator className="mb-5" tools={tools} />
-            {!hasRunningTool && (
-              <motion.div
-                animate={{ opacity: 1, y: 0 }}
-                initial={{ opacity: 0, y: 2 }}
-                transition={{ duration: 0.16, ease: "easeOut" }}
-              >
-                {displayedContent ? (
-                  <>
-                    {displayedReasoning && (
-                      <Collapsible className="mb-3">
-                        <CollapsibleTrigger className="flex w-fit items-center gap-1.5 text-left text-sm text-muted-foreground transition-colors hover:text-foreground">
-                          <Brain className="size-4 shrink-0 text-current" />
-                          <span>Thinking...</span>
-                          <svg
-                            className="size-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-180"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="m6 9 6 6 6-6" />
-                          </svg>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="mt-2 rounded-lg border border-border bg-muted/50 p-3 text-sm text-muted-foreground">
-                          {displayedReasoning}
-                        </CollapsibleContent>
-                      </Collapsible>
-                    )}
+            <motion.div
+              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 2 }}
+              transition={{ duration: 0.16, ease: "easeOut" }}
+            >
+              {displayedContent || displayedReasoning ? (
+                <>
+                  <AiReasoningIndicator reasoning={displayedReasoning} isStreaming />
+                  {displayedContent ? (
                     <ResponseStream textStream={displayedContent} />
-                  </>
-                ) : isStreaming ? (
-                  <Loader className="mt-3" variant="typing" size="sm" />
-                ) : null}
-              </motion.div>
-            )}
+                  ) : !hasRunningTool ? (
+                    <Loader className="mt-3" variant="typing" size="sm" />
+                  ) : null}
+                </>
+              ) : isStreaming && !hasRunningTool ? (
+                <Loader className="mt-3" variant="typing" size="sm" />
+              ) : null}
+            </motion.div>
           </div>
         </div>
       </Message>

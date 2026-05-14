@@ -32,7 +32,7 @@ function ResponseStream({
     >
       <MessageContent
         markdown
-        className="chat-markdown text-foreground flex-1 max-w-none rounded-lg bg-transparent p-0"
+        className="chat-markdown flex-1 max-w-none rounded-lg bg-transparent p-0"
         id={id}
       >
         {textStream}
