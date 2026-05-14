@@ -1,27 +1,106 @@
 "use client";
 
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
+import { RenameConversationDialog } from "@/components/ai/rename-conversation-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Sidebar } from "@/components/ui/sidebar";
 import { useAiConversationsForClassrooms } from "@/hooks/use-ai-conversations-for-classrooms";
 import { useClassrooms } from "@/hooks/use-classrooms";
+import { useDeleteConversation } from "@/hooks/use-delete-conversation";
 import { SidebarData } from "@/types/sidebar-types";
 import { IconSparkles2 } from "@tabler/icons-react";
 import {
   BookOpenIcon,
   LayoutDashboard,
   Megaphone,
+  MoreHorizontal,
+  Pencil,
   Plus,
   Settings,
+  Trash2,
   User,
 } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AppSidebar } from "./app-sidebar";
+
+function ConversationAction({
+  conversationId,
+  currentTitle,
+}: {
+  conversationId: string;
+  currentTitle: string;
+}) {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
+
+  const deleteConversation = useDeleteConversation();
+
+  const handleDelete = async () => {
+    await deleteConversation.mutateAsync(conversationId);
+    setIsDeleteDialogOpen(false);
+  };
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <span className="invisible group-hover/item:visible hover:bg-sidebar-accent rounded-md p-1 transition-colors">
+              <MoreHorizontal className="size-4" />
+            </span>
+          }
+        ></DropdownMenuTrigger>
+        <DropdownMenuContent side="right" align="start">
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.preventDefault();
+              setIsRenameDialogOpen(true);
+            }}
+          >
+            <Pencil className="mr-2 size-4" />
+            Rename
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="text-destructive focus:text-destructive"
+            onClick={(e) => {
+              e.preventDefault();
+              setIsDeleteDialogOpen(true);
+            }}
+          >
+            <Trash2 className="mr-2 size-4" />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <DeleteConfirmDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDelete}
+        isLoading={deleteConversation.isPending}
+      />
+
+      <RenameConversationDialog
+        open={isRenameDialogOpen}
+        onOpenChange={setIsRenameDialogOpen}
+        conversationId={conversationId}
+        currentTitle={currentTitle}
+      />
+    </>
+  );
+}
 
 export function TeacherSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const { data: classroomsResponse, isLoading } = useClassrooms({
-    limit: 50, // Get all teacher's classrooms
+    limit: 50,
   });
   const classroomIds =
     classroomsResponse?.data?.map((item) => item.classroom.id) ?? [];
@@ -29,7 +108,6 @@ export function TeacherSidebar({
     useAiConversationsForClassrooms(classroomIds);
 
   const teacherDashboardData: SidebarData = useMemo(() => {
-    // Build classroom items dynamically
     const classroomItems =
       classroomsResponse?.data?.map((item) => ({
         title: item.classroom.name,
@@ -39,6 +117,12 @@ export function TeacherSidebar({
     const conversationItems = conversations.map((conversation) => ({
       title: conversation.title || "Untitled chat",
       url: `/dashboard/ai/${conversation.id}`,
+      action: (
+        <ConversationAction
+          conversationId={conversation.id}
+          currentTitle={conversation.title || "Untitled chat"}
+        />
+      ),
     }));
 
     const conversationsNavItems =
@@ -51,7 +135,6 @@ export function TeacherSidebar({
             },
           ];
 
-    // Add "All Classes" item at the top
     const myClassesItems = [
       {
         title: "All Classes",
@@ -107,14 +190,7 @@ export function TeacherSidebar({
               <Plus className="size-4" />
             </Link>
           ),
-          items: [
-            {
-              title: "Conversations",
-              icon: IconSparkles2,
-              items: conversationsNavItems,
-              open: true,
-            },
-          ],
+          items: conversationsNavItems,
         },
         {
           title: "Account",

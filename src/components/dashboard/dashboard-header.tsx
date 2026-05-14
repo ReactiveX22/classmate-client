@@ -47,7 +47,7 @@ export function DashboardHeader({
           <button
             type="button"
             onClick={() => setIsRenameOpen(true)}
-            className="group absolute left-1/2 -translate-x-1/2 flex items-center gap-2 text-sm text-foreground max-w-[300px] focus:outline-none"
+            className="group absolute left-1/2 -translate-x-1/2 flex items-center gap-2 text-base text-foreground max-w-[300px] focus:outline-none font-medium cursor-pointer"
           >
             <span className="truncate">{chatTitle}</span>
             <Pencil

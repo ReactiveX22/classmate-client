@@ -10,6 +10,7 @@ export type BaseNavItem = {
 export type NavLink = BaseNavItem & {
   url: string;
   items?: never;
+  action?: ReactNode;
 };
 
 export type NavCollapsible = BaseNavItem & {
