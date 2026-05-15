@@ -72,15 +72,18 @@ export function AiMessageList({
       {messages.map((message, index) => {
         const isAssistant = message.role === "assistant";
         const isLastMessage = index === messages.length - 1;
-        const persistedTools = Array.isArray(message.metadata?.toolCalls)
-          ? (message.metadata.toolCalls as PersistedToolCall[]).map(
-              (tool, idx) => ({
-                id: `${message.id}-tool-${idx}`,
-                name: tool.name,
-                status: "finishing" as const,
-              }),
-            )
-          : [];
+        const persistedTools =
+          isStreaming && isLastMessage
+            ? []
+            : Array.isArray(message.metadata?.toolCalls)
+              ? (message.metadata.toolCalls as PersistedToolCall[]).map(
+                  (tool, idx) => ({
+                    id: `${message.id}-tool-${idx}`,
+                    name: tool.name,
+                    status: "finishing" as const,
+                  }),
+                )
+              : [];
 
         const persistedReasoning =
           typeof message.metadata?.reasoning === "string"

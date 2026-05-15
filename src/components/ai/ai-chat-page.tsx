@@ -72,9 +72,35 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
   const [isNearBottom, setIsNearBottom] = useState(true);
+  const scrollRafRef = useRef<number | null>(null);
 
-  const scrollToBottom = useCallback(() => {
-    scrollAnchorRef.current?.scrollIntoView({ behavior: "auto" });
+  const scrollToBottom = useCallback((smooth = false) => {
+    const viewport = scrollAreaRef.current;
+    if (!viewport) return;
+    viewport.scrollTo({
+      top: viewport.scrollHeight,
+      behavior: smooth ? "smooth" : "auto",
+    });
+  }, []);
+
+  const startAutoScroll = useCallback(() => {
+    if (scrollRafRef.current !== null) return;
+
+    const tick = () => {
+      const viewport = scrollAreaRef.current;
+      if (!viewport) return;
+      viewport.scrollTo({ top: viewport.scrollHeight, behavior: "auto" });
+      scrollRafRef.current = requestAnimationFrame(tick);
+    };
+
+    scrollRafRef.current = requestAnimationFrame(tick);
+  }, []);
+
+  const stopAutoScroll = useCallback(() => {
+    if (scrollRafRef.current !== null) {
+      cancelAnimationFrame(scrollRafRef.current);
+      scrollRafRef.current = null;
+    }
   }, []);
 
   useEffect(() => {
@@ -93,9 +119,18 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
 
   useEffect(() => {
     if (isNearBottom && displayMessages.length > 0) {
-      scrollToBottom();
+      scrollToBottom(false);
     }
   }, [displayMessages, isNearBottom, scrollToBottom]);
+
+  useEffect(() => {
+    if (isStreaming && isNearBottom) {
+      startAutoScroll();
+    } else {
+      stopAutoScroll();
+    }
+    return () => stopAutoScroll();
+  }, [isStreaming, isNearBottom, startAutoScroll, stopAutoScroll]);
 
   useEffect(() => {
     if (!convId) {
