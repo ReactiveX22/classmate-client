@@ -14,7 +14,7 @@ import {
 import type { AiMessage } from "@/lib/api/services/ai.service";
 import { cn, copyToClipboard } from "@/lib/utils";
 import { Copy, Pencil } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -88,12 +88,7 @@ export function AiMessageList({
             : "";
 
         return (
-          <motion.div
-            key={message.id}
-            animate={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
-          >
+          <div key={message.id}>
             <Message
               className="group/message mx-auto flex w-full max-w-200 px-0 md:px-6"
               role={message.role}
@@ -169,7 +164,7 @@ export function AiMessageList({
                 </div>
               )}
             </Message>
-          </motion.div>
+          </div>
         );
       })}
       <AnimatePresence initial={false} mode="popLayout">

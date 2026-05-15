@@ -7,8 +7,6 @@ import { toast } from "sonner";
 
 import { AiInputBar } from "@/components/ai/ai-input-bar";
 import { AiMessageList } from "@/components/ai/ai-message-list";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChatContainerContent,
   ChatContainerRoot,
@@ -18,45 +16,58 @@ import { Loader } from "@/components/ui/chat/loader";
 import { ScrollButton } from "@/components/ui/chat/scroll-button";
 import { useAiChat } from "@/hooks/use-ai-chat";
 import { useAiConversation } from "@/hooks/use-ai-conversation";
-import { useUser } from "@/hooks/useAuth";
-import { Role } from "@/types/auth";
-import { IconSparkles } from "@tabler/icons-react";
+import { AiConversation, AiMessage } from "@/lib/api/services/ai.service";
 import { ScrollArea } from "../ui/scroll-area";
 
 interface AiChatPageProps {
-  initialConvId?: string;
+  convId: string;
+  autoMessage?: string | null;
 }
 
-export function AiChatPage({ initialConvId }: AiChatPageProps) {
+export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: user } = useUser();
-  const activeConvId = initialConvId ?? "";
-  const navigatedRef = useRef(false);
+  const [localTitle, setLocalTitle] = useState<string | null>(null);
+  const autoSentRef = useRef(false);
 
-  const handleComplete = useCallback(
-    (conversationId: string) => {
-      if (!navigatedRef.current) {
-        navigatedRef.current = true;
-        router.replace(`/dashboard/ai/${conversationId}`);
-      }
-    },
-    [router],
-  );
+  const handleTitleUpdate = useCallback((conversation: AiConversation) => {
+    setLocalTitle(conversation.title);
+    queryClient.setQueryData(["ai", "activeChatTitle"], conversation.title);
+    queryClient.setQueryData(
+      ["ai", "conversations"],
+      (currentData: { conversations: AiConversation[] } | undefined) => {
+        const conversations = currentData?.conversations ?? [];
+        const exists = conversations.some((item) => item.id === conversation.id);
+        return {
+          conversations: exists
+            ? conversations.map((item) =>
+                item.id === conversation.id ? conversation : item,
+              )
+            : [conversation, ...conversations],
+        };
+      },
+    );
+  }, [queryClient]);
 
   const {
-    conversation,
-    messages,
+    messages: streamingMessages,
     streamingContent,
     streamingReasoning,
     activeTools,
     isStreaming,
     sendMessage,
     abort,
-    loadConversation,
     resetConversation,
-  } = useAiChat({ onComplete: handleComplete });
-  const conversationQuery = useAiConversation(activeConvId);
+  } = useAiChat({ conversationId: convId, onTitleUpdate: handleTitleUpdate });
+
+  const conversationQuery = useAiConversation(convId);
+
+  const baseMessages = conversationQuery.data?.messages ?? [];
+  const displayMessages = (() => {
+    const baseIds = new Set(baseMessages.map((m) => m.id));
+    const newStreaming = streamingMessages.filter((m) => !baseIds.has(m.id));
+    return [...baseMessages, ...newStreaming];
+  })();
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
@@ -81,15 +92,13 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
   }, []);
 
   useEffect(() => {
-    if (messages.length > 0) {
+    if (isNearBottom && displayMessages.length > 0) {
       scrollToBottom();
-      setIsNearBottom(true);
     }
-  }, [messages, scrollToBottom]);
+  }, [displayMessages, isNearBottom, scrollToBottom]);
 
   useEffect(() => {
-    if (!activeConvId) {
-      queryClient.setQueryData(["ai", "activeChatTitle"], null);
+    if (!convId) {
       resetConversation();
       return;
     }
@@ -98,10 +107,6 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
       return;
     }
 
-    loadConversation(
-      conversationQuery.data.conversation,
-      conversationQuery.data.messages,
-    );
     queryClient.setQueryData(
       ["ai", "activeChatTitle"],
       conversationQuery.data.conversation.title,
@@ -110,33 +115,30 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
       ["ai", "activeChatId"],
       conversationQuery.data.conversation.id,
     );
-  }, [
-    activeConvId,
-    conversationQuery.data,
-    loadConversation,
-    resetConversation,
-    queryClient,
-  ]);
+  }, [convId, conversationQuery.data, resetConversation, queryClient]);
+
+  useEffect(() => {
+    if (autoMessage && !autoSentRef.current && !isStreaming) {
+      autoSentRef.current = true;
+      sendMessage(autoMessage);
+    }
+  }, [autoMessage, isStreaming, sendMessage]);
 
   useEffect(() => {
     if (!conversationQuery.error) {
       return;
     }
 
-    if (initialConvId) {
-      router.replace("/dashboard/ai");
-    }
-
     toast.error("Unable to load conversation", {
       description: "Please try opening the chat again.",
     });
-  }, [conversationQuery.error, initialConvId, router]);
+  }, [conversationQuery.error]);
 
   const handleSend = (message: string) => {
-    const conversationId = conversation?.id ?? activeConvId;
-
-    return sendMessage(message, conversationId || undefined);
+    return sendMessage(message);
   };
+
+  const displayTitle = localTitle ?? conversationQuery.data?.conversation.title ?? null;
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
@@ -148,31 +150,17 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
                 <div className="flex min-h-[40vh] items-center justify-center px-4 text-center">
                   <Loader variant="bars" />
                 </div>
-              ) : messages.length === 0 ? (
-                <div className="flex min-h-[40vh] flex-col items-center justify-center px-4 text-center">
-                  <Card className="max-w-2xl border-none bg-transparent shadow-none ring-0">
-                    <CardHeader className="flex flex-col items-center gap-4 pb-2">
-                      <Avatar size="lg" className="size-16">
-                        <AvatarFallback className="bg-primary text-primary-foreground">
-                          <IconSparkles className="size-8" />
-                        </AvatarFallback>
-                      </Avatar>
-                      <CardTitle className="text-2xl">
-                        Hi, I am ClassMate AI
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-center text-muted-foreground">
-                      {user?.role === Role.Instructor
-                        ? "I'm here to help you create courses, manage classes, grade assignments, and support your teaching workflow."
-                        : "I'm here to help you with your studies, answer questions, explain concepts, and assist you with any learning needs."}
-                    </CardContent>
-                  </Card>
+              ) : displayMessages.length === 0 ? (
+                <div className="flex min-h-[40vh] items-center justify-center px-4 text-center">
+                  <p className="text-muted-foreground">
+                    Start typing to continue your conversation.
+                  </p>
                 </div>
               ) : (
                 <AiMessageList
                   activeTools={activeTools}
                   isStreaming={isStreaming}
-                  messages={messages}
+                  messages={displayMessages}
                   streamingContent={streamingContent}
                   streamingReasoning={streamingReasoning}
                 />
@@ -200,8 +188,8 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
               isStreaming={isStreaming}
               onSend={handleSend}
               onStop={abort}
-              conversationId={conversation?.id}
-              currentTitle={conversation?.title}
+              conversationId={convId}
+              currentTitle={displayTitle}
             />
           </div>
         </div>

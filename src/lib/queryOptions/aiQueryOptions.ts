@@ -13,4 +13,5 @@ export const aiConversationQueryOptions = (id: string) =>
     queryKey: ['ai', 'conversations', id],
     queryFn: () => aiService.getConversation(id),
     enabled: !!id,
+    staleTime: Infinity,
   });

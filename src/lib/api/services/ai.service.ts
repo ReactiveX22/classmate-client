@@ -17,7 +17,6 @@ export interface AiMessage {
 }
 
 export type AiStreamEventType =
-  | { type: 'conversation'; payload: AiConversation }
   | { type: 'user_message'; payload: AiMessage }
   | { type: 'content'; payload: { delta: string } }
   | { type: 'reasoning'; payload: { delta: string } }
@@ -37,10 +36,28 @@ export interface AiConversationResponse {
 
 export interface StreamChatInput {
   message: string;
-  conversationId?: string;
+  conversationId: string;
+}
+
+export interface CreateChatInput {
+  message?: string;
+  classroomId?: string;
+}
+
+export interface CreateChatResponse {
+  conversationId: string;
+  conversation: AiConversation;
 }
 
 export const aiService = {
+  async createNewChat(input: CreateChatInput): Promise<CreateChatResponse> {
+    const response = await apiClient.post<CreateChatResponse>(
+      '/api/v1/ai/chat/new',
+      input,
+    );
+    return response.data;
+  },
+
   async getConversations(): Promise<AiConversationsResponse> {
     const response = await apiClient.get<AiConversationsResponse>(
       '/api/v1/ai/conversations',
