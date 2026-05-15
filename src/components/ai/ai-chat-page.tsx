@@ -32,6 +32,18 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
   const queryClient = useQueryClient();
   const { data: user } = useUser();
   const activeConvId = initialConvId ?? "";
+  const navigatedRef = useRef(false);
+
+  const handleComplete = useCallback(
+    (conversationId: string) => {
+      if (!navigatedRef.current) {
+        navigatedRef.current = true;
+        router.replace(`/dashboard/ai/${conversationId}`);
+      }
+    },
+    [router],
+  );
+
   const {
     conversation,
     messages,
@@ -43,7 +55,7 @@ export function AiChatPage({ initialConvId }: AiChatPageProps) {
     abort,
     loadConversation,
     resetConversation,
-  } = useAiChat();
+  } = useAiChat({ onComplete: handleComplete });
   const conversationQuery = useAiConversation(activeConvId);
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);

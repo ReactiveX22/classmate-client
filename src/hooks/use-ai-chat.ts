@@ -9,6 +9,10 @@ import {
   streamChat,
 } from '@/lib/api/services/ai.service';
 
+interface UseAiChatOptions {
+  onComplete?: (conversationId: string) => void;
+}
+
 interface AiChatState {
   conversation: AiConversation | null;
   messages: AiMessage[];
@@ -36,7 +40,7 @@ const initialState: AiChatState = {
   isStreaming: false,
 };
 
-export function useAiChat() {
+export function useAiChat({ onComplete }: UseAiChatOptions = {}) {
   const queryClient = useQueryClient();
   const abortRef = useRef<AbortController | null>(null);
   const flushFrameRef = useRef<number | null>(null);
@@ -44,6 +48,9 @@ export function useAiChat() {
   const pendingReasoningRef = useRef('');
   const toolStartTimesRef = useRef<Map<string, number>>(new Map());
   const toolTimersRef = useRef<Map<string, number>>(new Map());
+  const conversationIdRef = useRef<string | null>(null);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
   const [state, setState] = useState<AiChatState>(initialState);
 
   const clearScheduledFlush = useCallback(() => {
@@ -245,6 +252,7 @@ export function useAiChat() {
           switch (event.type) {
             case 'conversation':
               syncConversationInCache(event.payload);
+              conversationIdRef.current = event.payload.id;
               break;
 
             case 'title_updated':
@@ -296,6 +304,9 @@ export function useAiChat() {
                 streamingReasoning: '',
                 isStreaming: false,
               }));
+              if (onCompleteRef.current && conversationIdRef.current) {
+                onCompleteRef.current(conversationIdRef.current);
+              }
               queryClient.invalidateQueries({
                 queryKey: ['ai', 'conversations'],
               });
