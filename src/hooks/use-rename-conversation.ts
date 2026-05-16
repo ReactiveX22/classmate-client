@@ -9,11 +9,22 @@ export const useRenameConversation = () => {
   return useMutation({
     mutationFn: ({ id, title }: { id: string; title: string }) =>
       aiService.updateConversation(id, { title }),
-    onSuccess: () => {
-      // Invalidate AI conversations to refresh the list
+    onSuccess: (data, { id, title }) => {
       queryClient.invalidateQueries({
         queryKey: ['ai', 'conversations'],
       });
+
+      queryClient.setQueryData(
+        ['ai', 'conversations'],
+        (currentData: { conversations: { id: string; title: string }[] } | undefined) => {
+          if (!currentData) return currentData;
+          return {
+            conversations: currentData.conversations.map((c) =>
+              c.id === id ? { ...c, title } : c,
+            ),
+          };
+        },
+      );
 
       toast.success('Conversation renamed successfully!');
     },

@@ -106,7 +106,7 @@ export function AiMessageList({
                   <AiReasoningIndicator reasoning={persistedReasoning} />
                   <MessageContent
                     markdown
-                    className="chat-markdown text-foreground flex-1 max-w-none rounded-lg bg-transparent p-0 text-base"
+                    className="chat-markdown text-foreground flex-1 max-w-none rounded-lg bg-transparent p-0 text-base leading-7"
                   >
                     {message.content}
                   </MessageContent>

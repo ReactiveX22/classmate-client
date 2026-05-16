@@ -21,8 +21,7 @@ export type AiStreamEventType =
   | { type: 'content'; payload: { delta: string } }
   | { type: 'reasoning'; payload: { delta: string } }
   | { type: 'tool'; payload: { name: string; status: 'start' | 'end' } }
-  | { type: 'title_updated'; payload: AiConversation }
-  | { type: 'final'; payload: AiMessage }
+  | { type: 'final'; payload: AiMessage & { conversation?: AiConversation } }
   | { type: 'error'; payload: { message: string } };
 
 export interface AiConversationsResponse {

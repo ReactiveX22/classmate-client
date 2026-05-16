@@ -53,7 +53,7 @@ function ConversationAction({
             e.preventDefault();
           }}
           render={
-            <button>
+            <button className="p-2 cursor-pointer">
               <MoreHorizontal className="size-4" />
             </button>
           }

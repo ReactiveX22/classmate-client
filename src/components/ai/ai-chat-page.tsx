@@ -25,13 +25,10 @@ interface AiChatPageProps {
 
 export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
   const queryClient = useQueryClient();
-  const [localTitle, setLocalTitle] = useState<string | null>(null);
   const autoSentRef = useRef(false);
 
   const handleTitleUpdate = useCallback(
     (conversation: AiConversation) => {
-      setLocalTitle(conversation.title);
-      queryClient.setQueryData(["ai", "activeChatTitle"], conversation.title);
       queryClient.setQueryData(
         ["ai", "conversations"],
         (currentData: { conversations: AiConversation[] } | undefined) => {
@@ -146,12 +143,15 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
     }
 
     queryClient.setQueryData(
-      ["ai", "activeChatTitle"],
-      conversationQuery.data.conversation.title,
-    );
-    queryClient.setQueryData(
-      ["ai", "activeChatId"],
-      conversationQuery.data.conversation.id,
+      ["ai", "conversations"],
+      (currentData: { conversations: AiConversation[] } | undefined) => {
+        const conversations = currentData?.conversations ?? [];
+        const exists = conversations.some((item) => item.id === convId);
+        if (exists) return currentData;
+        return {
+          conversations: [conversationQuery.data.conversation, ...conversations],
+        };
+      },
     );
   }, [convId, conversationQuery.data, resetConversation, queryClient]);
 

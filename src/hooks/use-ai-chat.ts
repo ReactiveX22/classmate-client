@@ -221,10 +221,6 @@ export function useAiChat({ conversationId, onTitleUpdate }: UseAiChatOptions) {
           controller.signal,
         )) {
           switch (event.type) {
-            case 'title_updated':
-              onTitleUpdate?.(event.payload);
-              break;
-
             case 'user_message':
               queryClient.setQueryData(
                 ['ai', 'conversations', conversationId],
@@ -280,6 +276,9 @@ export function useAiChat({ conversationId, onTitleUpdate }: UseAiChatOptions) {
                   };
                 },
               );
+              if (event.payload.conversation) {
+                onTitleUpdate?.(event.payload.conversation);
+              }
               setState((current) => ({
                 ...current,
                 streamingContent: '',

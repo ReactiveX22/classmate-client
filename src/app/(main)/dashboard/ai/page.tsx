@@ -1,8 +1,7 @@
 'use client';
 
-import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { AiInputBar } from '@/components/ai/ai-input-bar';
@@ -16,15 +15,9 @@ import { IconSparkles } from '@tabler/icons-react';
 
 export default function AiDashboardPage() {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const { setPendingMessage } = useAiAutoMessage();
   const { data: user } = useUser();
   const [isCreating, setIsCreating] = useState(false);
-
-  useEffect(() => {
-    queryClient.setQueryData(["ai", "activeChatTitle"], null);
-    queryClient.setQueryData(["ai", "activeChatId"], null);
-  }, [queryClient]);
 
   const handleSend = async (message: string) => {
     if (isCreating) return;
@@ -33,7 +26,6 @@ export default function AiDashboardPage() {
 
     try {
       const result = await aiService.createNewChat({});
-      queryClient.invalidateQueries({ queryKey: ['ai', 'conversations'] });
       setPendingMessage(message);
       router.push(`/dashboard/ai/${result.conversationId}`);
     } catch {

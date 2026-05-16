@@ -20,8 +20,17 @@ export const useDeleteConversation = () => {
         queryKey: ["ai", "conversations", id],
       });
 
-      queryClient.setQueryData(["ai", "activeChatTitle"], null);
-      queryClient.setQueryData(["ai", "activeChatId"], null);
+      queryClient.setQueryData(
+        ["ai", "conversations"],
+        (currentData: { conversations: { id: string }[] } | undefined) => {
+          if (!currentData) return currentData;
+          return {
+            conversations: currentData.conversations.filter(
+              (c) => c.id !== id,
+            ),
+          };
+        },
+      );
 
       router.push("/dashboard/ai");
 

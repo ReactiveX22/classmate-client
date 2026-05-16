@@ -3,6 +3,7 @@
 import { Pencil } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useParams, usePathname } from "next/navigation";
 
 import { RenameConversationDialog } from "@/components/ai/rename-conversation-dialog";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -21,16 +22,24 @@ export function DashboardHeader({
   ...props
 }: DashboardHeaderProps) {
   const [isRenameOpen, setIsRenameOpen] = useState(false);
-  const { data: chatTitle } = useQuery({
-    queryKey: ["ai", "activeChatTitle"],
-    queryFn: () => null,
+  const pathname = usePathname();
+  const params = useParams();
+  const convId = params?.convId as string | undefined;
+  const isAiChat = pathname?.startsWith("/dashboard/ai/") && convId;
+
+  const { data: conversations } = useQuery({
+    queryKey: ["ai", "conversations"],
+    queryFn: () => null as { conversations: { id: string; title: string | null }[] } | null,
     initialData: null,
+    staleTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
-  const { data: chatId } = useQuery({
-    queryKey: ["ai", "activeChatId"],
-    queryFn: () => null,
-    initialData: null,
-  });
+
+  const chatTitle = isAiChat
+    ? conversations?.conversations?.find((c) => c.id === convId)?.title
+    : null;
 
   return (
     <>
@@ -43,7 +52,7 @@ export function DashboardHeader({
         {...props}
       >
         <SidebarTrigger className="-ml-1" />
-        {chatTitle && chatId ? (
+        {chatTitle && convId ? (
           <button
             type="button"
             onClick={() => setIsRenameOpen(true)}
@@ -61,11 +70,11 @@ export function DashboardHeader({
           {children}
         </div>
       </header>
-      {chatTitle && chatId && (
+      {chatTitle && convId && (
         <RenameConversationDialog
           open={isRenameOpen}
           onOpenChange={setIsRenameOpen}
-          conversationId={chatId}
+          conversationId={convId}
           currentTitle={chatTitle}
         />
       )}

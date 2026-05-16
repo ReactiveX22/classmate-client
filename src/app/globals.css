@@ -179,7 +179,7 @@
   }
 
   .chat-markdown li + li {
-    @apply mt-1;
+    @apply mt-2;
   }
 
   .chat-markdown a {
