@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { CommentSection } from '../comment-section';
 import { EditPostDialog } from '../edit-post-dialog';
 import { AttachmentDisplay } from './attachment-display';
+import { ExpandableContent } from './expandable-content';
 import { PollCard } from './poll-card';
 import { PostCardActions } from './post-card-actions';
 
@@ -79,9 +80,7 @@ export function QuestionCard({ post }: QuestionCardProps) {
         <CardContent className='space-y-4'>
           {post.title && <h3 className='text-base font-semibold'>{post.title}</h3>}
 
-          <p className='whitespace-pre-wrap text-sm leading-relaxed text-foreground'>
-            {post.content}
-          </p>
+          <ExpandableContent content={post.content} />
 
           {isPoll && <PollCard post={post} poll={questionData} />}
 

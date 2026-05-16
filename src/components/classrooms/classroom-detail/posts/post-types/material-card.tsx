@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { EditPostDialog } from '../edit-post-dialog';
 import { CommentSection } from '../comment-section';
 import { AttachmentDisplay } from './attachment-display';
+import { ExpandableContent } from './expandable-content';
 import { PostCardActions } from './post-card-actions';
 
 interface MaterialCardProps {
@@ -121,14 +122,10 @@ export function MaterialCard({ post, resourceHref }: MaterialCardProps) {
           {post.content && (
             resourceHref ? (
               <Link href={resourceHref} className='block hover:opacity-90'>
-                <p className='text-sm whitespace-pre-wrap leading-relaxed'>
-                  {post.content}
-                </p>
+                <ExpandableContent content={post.content} />
               </Link>
             ) : (
-              <p className='text-sm whitespace-pre-wrap leading-relaxed'>
-                {post.content}
-              </p>
+              <ExpandableContent content={post.content} />
             )
           )}
 

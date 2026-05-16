@@ -16,6 +16,7 @@ import { useState } from 'react';
 import { EditPostDialog } from '../edit-post-dialog';
 import { PostCardActions } from './post-card-actions';
 import { CommentSection } from '../comment-section';
+import { ExpandableContent } from './expandable-content';
 
 interface AssignmentCardProps {
   post: Post;
@@ -213,9 +214,7 @@ export function AssignmentCard({
 
         <CardContent className='pt-0'>
           {post.content && (
-            <p className='text-sm text-foreground mb-4 whitespace-pre-wrap leading-relaxed line-clamp-3'>
-              {post.content}
-            </p>
+            <ExpandableContent content={post.content} className='mb-4' />
           )}
 
           <div className='flex flex-wrap gap-2'>

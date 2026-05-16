@@ -9,6 +9,7 @@ import { IconPin } from '@tabler/icons-react';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { useState } from 'react';
 import { AttachmentDisplay } from './attachment-display';
+import { ExpandableContent } from './expandable-content';
 import { PostCardActions } from './post-card-actions';
 import { CommentSection } from '../comment-section';
 
@@ -72,9 +73,7 @@ export function AnnouncementCard({ post }: AnnouncementCardProps) {
         </CardHeader>
 
         <CardContent className='space-y-4 pt-0'>
-          <p className='text-sm text-foreground whitespace-pre-wrap leading-relaxed'>
-            {post.content}
-          </p>
+          <ExpandableContent content={post.content} />
 
           {post.attachments && post.attachments.length > 0 && (
             <AttachmentDisplay attachments={post.attachments} />

@@ -1,9 +1,8 @@
-'use client';
+"use client";
 
-import { AiChatPage } from '@/components/ai/ai-chat-page';
-import { useAiAutoMessage } from '@/contexts/ai-auto-message-context';
-import { use } from 'react';
-import { useEffect } from 'react';
+import { AiChatPage } from "@/components/ai/ai-chat-page";
+import { useAiAutoMessage } from "@/contexts/ai-auto-message-context";
+import { use, useEffect } from "react";
 
 interface AiConversationPageProps {
   params: Promise<{ convId: string }>;

@@ -1,7 +1,6 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -16,7 +15,7 @@ import { Loader } from "@/components/ui/chat/loader";
 import { ScrollButton } from "@/components/ui/chat/scroll-button";
 import { useAiChat } from "@/hooks/use-ai-chat";
 import { useAiConversation } from "@/hooks/use-ai-conversation";
-import { AiConversation, AiMessage } from "@/lib/api/services/ai.service";
+import { AiConversation } from "@/lib/api/services/ai.service";
 import { ScrollArea } from "../ui/scroll-area";
 
 interface AiChatPageProps {
@@ -25,29 +24,33 @@ interface AiChatPageProps {
 }
 
 export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
-  const router = useRouter();
   const queryClient = useQueryClient();
   const [localTitle, setLocalTitle] = useState<string | null>(null);
   const autoSentRef = useRef(false);
 
-  const handleTitleUpdate = useCallback((conversation: AiConversation) => {
-    setLocalTitle(conversation.title);
-    queryClient.setQueryData(["ai", "activeChatTitle"], conversation.title);
-    queryClient.setQueryData(
-      ["ai", "conversations"],
-      (currentData: { conversations: AiConversation[] } | undefined) => {
-        const conversations = currentData?.conversations ?? [];
-        const exists = conversations.some((item) => item.id === conversation.id);
-        return {
-          conversations: exists
-            ? conversations.map((item) =>
-                item.id === conversation.id ? conversation : item,
-              )
-            : [conversation, ...conversations],
-        };
-      },
-    );
-  }, [queryClient]);
+  const handleTitleUpdate = useCallback(
+    (conversation: AiConversation) => {
+      setLocalTitle(conversation.title);
+      queryClient.setQueryData(["ai", "activeChatTitle"], conversation.title);
+      queryClient.setQueryData(
+        ["ai", "conversations"],
+        (currentData: { conversations: AiConversation[] } | undefined) => {
+          const conversations = currentData?.conversations ?? [];
+          const exists = conversations.some(
+            (item) => item.id === conversation.id,
+          );
+          return {
+            conversations: exists
+              ? conversations.map((item) =>
+                  item.id === conversation.id ? conversation : item,
+                )
+              : [conversation, ...conversations],
+          };
+        },
+      );
+    },
+    [queryClient],
+  );
 
   const {
     messages: streamingMessages,
@@ -173,11 +176,12 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
     return sendMessage(message);
   };
 
-  const displayTitle = localTitle ?? conversationQuery.data?.conversation.title ?? null;
+  const displayTitle =
+    localTitle ?? conversationQuery.data?.conversation.title ?? null;
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
-      <ScrollArea ref={scrollAreaRef} className="h-[calc(100vh-56px)]">
+      <ScrollArea ref={scrollAreaRef} className="h-[calc(100vh-64px)]">
         <div className="relative min-h-0 flex-1">
           <ChatContainerRoot className="min-h-0 flex-1 overflow-y-auto pb-28">
             <ChatContainerContent className="px-4 py-12">
