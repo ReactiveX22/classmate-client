@@ -1,7 +1,7 @@
 "use client";
 
 import { Pencil } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useParams, usePathname } from "next/navigation";
 
@@ -27,16 +27,10 @@ export function DashboardHeader({
   const convId = params?.convId as string | undefined;
   const isAiChat = pathname?.startsWith("/dashboard/ai/") && convId;
 
-  const { data: conversations } = useQuery({
-    queryKey: ["ai", "conversations"],
-    queryFn: () =>
-      null as { conversations: { id: string; title: string | null }[] } | null,
-    initialData: null,
-    staleTime: Infinity,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  });
+  const queryClient = useQueryClient();
+  const conversations = queryClient.getQueryData<{
+    conversations: { id: string; title: string | null }[];
+  }>(["ai", "conversations"]);
 
   const chatTitle = isAiChat
     ? conversations?.conversations?.find((c) => c.id === convId)?.title
