@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { aiService } from '@/lib/api/services/ai.service';
-import { toast } from 'sonner';
-import { handleApiError } from '@/lib/api';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { aiService } from "@/lib/api/services/ai.service";
+import { toast } from "sonner";
+import { handleApiError } from "@/lib/api";
 
 export const useRenameConversation = () => {
   const queryClient = useQueryClient();
@@ -11,12 +11,16 @@ export const useRenameConversation = () => {
       aiService.updateConversation(id, { title }),
     onSuccess: (data, { id, title }) => {
       queryClient.invalidateQueries({
-        queryKey: ['ai', 'conversations'],
+        queryKey: ["ai", "conversations"],
       });
 
       queryClient.setQueryData(
-        ['ai', 'conversations'],
-        (currentData: { conversations: { id: string; title: string }[] } | undefined) => {
+        ["ai", "conversations"],
+        (
+          currentData:
+            | { conversations: { id: string; title: string }[] }
+            | undefined,
+        ) => {
           if (!currentData) return currentData;
           return {
             conversations: currentData.conversations.map((c) =>
@@ -26,7 +30,7 @@ export const useRenameConversation = () => {
         },
       );
 
-      toast.success('Conversation renamed successfully!');
+      toast.success("Conversation renamed successfully!");
     },
     onError: (error) => {
       const errorMessage = handleApiError(error);

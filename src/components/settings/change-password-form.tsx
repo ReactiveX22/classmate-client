@@ -1,49 +1,49 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { authClient } from '@/lib/auth-client';
-import { useForm } from '@tanstack/react-form';
-import { useState } from 'react';
-import { toast } from 'sonner';
-import { z } from 'zod';
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
+import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, 'Current password is required'),
+    currentPassword: z.string().min(1, "Current password is required"),
     newPassword: z
       .string()
-      .min(8, 'New password must be at least 8 characters'),
-    confirmPassword: z.string().min(1, 'Please confirm your new password'),
+      .min(8, "New password must be at least 8 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your new password"),
     revokeOtherSessions: z.boolean().default(true),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ['confirmPassword'],
+    path: ["confirmPassword"],
   });
 
 export function ChangePasswordForm() {
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const form = useForm({
     defaultValues: {
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: '',
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
       revokeOtherSessions: true,
     },
     validators: {
@@ -53,14 +53,14 @@ export function ChangePasswordForm() {
 
         const errors: Record<string, string> = {};
         result.error.issues.forEach((issue) => {
-          const path = issue.path.join('.');
+          const path = issue.path.join(".");
           errors[path] = issue.message;
         });
         return errors;
       },
     },
     onSubmit: async ({ value }) => {
-      setErrorMessage('');
+      setErrorMessage("");
       try {
         const { error } = await authClient.changePassword({
           currentPassword: value.currentPassword,
@@ -69,18 +69,18 @@ export function ChangePasswordForm() {
         });
 
         if (error) {
-          setErrorMessage(error.message || 'Failed to change password');
-          toast.error(error.message || 'Failed to change password');
+          setErrorMessage(error.message || "Failed to change password");
+          toast.error(error.message || "Failed to change password");
           return;
         }
 
-        toast.success('Password changed successfully');
+        toast.success("Password changed successfully");
         form.reset();
       } catch (error) {
         const msg =
           error instanceof Error
             ? error.message
-            : 'An unexpected error occurred';
+            : "An unexpected error occurred";
         setErrorMessage(msg);
         toast.error(msg);
       }
@@ -88,9 +88,9 @@ export function ChangePasswordForm() {
   });
 
   return (
-    <Card className='w-full md:min-w-md'>
+    <Card className="w-full md:min-w-md">
       <CardHeader>
-        <CardTitle className='text-xl'>Change Password</CardTitle>
+        <CardTitle className="text-xl">Change Password</CardTitle>
         <CardDescription>
           Ensure your account is using a long, random password to stay secure.
         </CardDescription>
@@ -102,10 +102,10 @@ export function ChangePasswordForm() {
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className='flex flex-col gap-4'
+          className="flex flex-col gap-4"
         >
           <FieldGroup>
-            <form.Field name='currentPassword'>
+            <form.Field name="currentPassword">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -120,8 +120,8 @@ export function ChangePasswordForm() {
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder='••••••••'
-                      type='password'
+                      placeholder="••••••••"
+                      type="password"
                       aria-invalid={isInvalid}
                     />
                     {isInvalid && (
@@ -132,7 +132,7 @@ export function ChangePasswordForm() {
               }}
             </form.Field>
 
-            <form.Field name='newPassword'>
+            <form.Field name="newPassword">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -145,8 +145,8 @@ export function ChangePasswordForm() {
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder='••••••••'
-                      type='password'
+                      placeholder="••••••••"
+                      type="password"
                       aria-invalid={isInvalid}
                     />
                     {isInvalid && (
@@ -157,7 +157,7 @@ export function ChangePasswordForm() {
               }}
             </form.Field>
 
-            <form.Field name='confirmPassword'>
+            <form.Field name="confirmPassword">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -172,8 +172,8 @@ export function ChangePasswordForm() {
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder='••••••••'
-                      type='password'
+                      placeholder="••••••••"
+                      type="password"
                       aria-invalid={isInvalid}
                     />
                     {isInvalid && (
@@ -184,9 +184,9 @@ export function ChangePasswordForm() {
               }}
             </form.Field>
 
-            <form.Field name='revokeOtherSessions'>
+            <form.Field name="revokeOtherSessions">
               {(field) => (
-                <div className='flex items-center space-x-2'>
+                <div className="flex items-center space-x-2">
                   <Checkbox
                     id={field.name}
                     checked={field.state.value}
@@ -194,7 +194,7 @@ export function ChangePasswordForm() {
                   />
                   <FieldLabel
                     htmlFor={field.name}
-                    className='text-sm font-normal leading-none cursor-pointer'
+                    className="text-sm font-normal leading-none cursor-pointer"
                   >
                     Log out of other devices
                   </FieldLabel>
@@ -204,22 +204,22 @@ export function ChangePasswordForm() {
           </FieldGroup>
 
           {errorMessage && (
-            <div className='text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md p-3'>
+            <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md p-3">
               {errorMessage}
             </div>
           )}
 
-          <div className='flex justify-end'>
+          <div className="flex justify-end">
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
               {([canSubmit, isSubmitting]) => (
                 <Button
-                  type='submit'
-                  className='w-full sm:w-auto'
+                  type="submit"
+                  className="w-full sm:w-auto"
                   disabled={!canSubmit || isSubmitting}
                 >
-                  {isSubmitting ? 'Updating...' : 'Update Password'}
+                  {isSubmitting ? "Updating..." : "Update Password"}
                 </Button>
               )}
             </form.Subscribe>

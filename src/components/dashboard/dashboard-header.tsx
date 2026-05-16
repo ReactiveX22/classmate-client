@@ -29,7 +29,8 @@ export function DashboardHeader({
 
   const { data: conversations } = useQuery({
     queryKey: ["ai", "conversations"],
-    queryFn: () => null as { conversations: { id: string; title: string | null }[] } | null,
+    queryFn: () =>
+      null as { conversations: { id: string; title: string | null }[] } | null,
     initialData: null,
     staleTime: Infinity,
     refetchOnMount: false,

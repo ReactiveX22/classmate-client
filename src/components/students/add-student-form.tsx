@@ -1,18 +1,21 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '@/components/ui/field';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Input } from '@/components/ui/input';
-import { useCreateStudent } from '@/hooks/use-students';
-import { useFormErrorHandler } from '@/hooks/use-form-handler';
-import { useForm } from '@tanstack/react-form';
-import { studentSchema, type StudentFormValues } from '@/lib/schemas/student-schema';
+} from "@/components/ui/field";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { useCreateStudent } from "@/hooks/use-students";
+import { useFormErrorHandler } from "@/hooks/use-form-handler";
+import { useForm } from "@tanstack/react-form";
+import {
+  studentSchema,
+  type StudentFormValues,
+} from "@/lib/schemas/student-schema";
 
 interface AddStudentFormProps {
   onSuccess?: () => void;
@@ -24,11 +27,11 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
 
   const form = useForm({
     defaultValues: {
-      name: '',
-      email: '',
-      password: '',
-      studentId: '',
-      phone: '',
+      name: "",
+      email: "",
+      password: "",
+      studentId: "",
+      phone: "",
     } as StudentFormValues,
     validators: {
       onSubmit: studentSchema,
@@ -51,7 +54,8 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
   });
 
   const getFieldError = (fieldName: string, fieldErrorsState: unknown[]) => {
-    if (fieldErrorsState.length > 0) return fieldErrorsState as { message: string }[];
+    if (fieldErrorsState.length > 0)
+      return fieldErrorsState as { message: string }[];
     if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
     return [];
   };
@@ -63,17 +67,17 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className='flex flex-col gap-4 p-1'
+      className="flex flex-col gap-4 p-1"
     >
       <FieldGroup>
-        <form.Field name='name'>
+        <form.Field name="name">
           {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>
-                  Full Name <span className='text-destructive'>*</span>
+                  Full Name <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Input
                   id={field.name}
@@ -81,7 +85,7 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. Jane Doe'
+                  placeholder="e.g. Jane Doe"
                   aria-invalid={isInvalid}
                 />
                 {isInvalid && <FieldError errors={errors} />}
@@ -90,14 +94,14 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
           }}
         </form.Field>
 
-        <form.Field name='email'>
+        <form.Field name="email">
           {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>
-                  Email Address <span className='text-destructive'>*</span>
+                  Email Address <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Input
                   id={field.name}
@@ -105,8 +109,8 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. student@school.com'
-                  type='email'
+                  placeholder="e.g. student@school.com"
+                  type="email"
                   aria-invalid={isInvalid}
                 />
                 {isInvalid && <FieldError errors={errors} />}
@@ -115,14 +119,14 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
           }}
         </form.Field>
 
-        <form.Field name='password'>
+        <form.Field name="password">
           {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>
-                  Password <span className='text-destructive'>*</span>
+                  Password <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Input
                   id={field.name}
@@ -130,11 +134,11 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='••••••••'
-                  type='password'
+                  placeholder="••••••••"
+                  type="password"
                   aria-invalid={isInvalid}
                 />
-                <p className='text-xs text-muted-foreground mt-1'>
+                <p className="text-xs text-muted-foreground mt-1">
                   Must be at least 8 characters.
                 </p>
                 {isInvalid && <FieldError errors={errors} />}
@@ -143,7 +147,7 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
           }}
         </form.Field>
 
-        <form.Field name='studentId'>
+        <form.Field name="studentId">
           {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
@@ -155,10 +159,10 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
                 <Input
                   id={field.name}
                   name={field.name}
-                  value={field.state.value ?? ''}
+                  value={field.state.value ?? ""}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. STU12345'
+                  placeholder="e.g. STU12345"
                   aria-invalid={isInvalid}
                 />
                 {isInvalid && <FieldError errors={errors} />}
@@ -167,22 +171,20 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
           }}
         </form.Field>
 
-        <form.Field name='phone'>
+        <form.Field name="phone">
           {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>
-                  Phone (Optional)
-                </FieldLabel>
+                <FieldLabel htmlFor={field.name}>Phone (Optional)</FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
-                  value={field.state.value ?? ''}
+                  value={field.state.value ?? ""}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. +1 (555) 123-4567'
+                  placeholder="e.g. +1 (555) 123-4567"
                   aria-invalid={isInvalid}
                 />
                 {isInvalid && <FieldError errors={errors} />}
@@ -193,7 +195,7 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
       </FieldGroup>
 
       {globalErrors.length > 0 && (
-        <Alert variant='destructive' className='mt-4'>
+        <Alert variant="destructive" className="mt-4">
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
             {globalErrors.map((err, i) => (
@@ -203,23 +205,25 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
         </Alert>
       )}
 
-      <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+      <form.Subscribe
+        selector={(state) => [state.canSubmit, state.isSubmitting]}
+      >
         {([, isSubmitting]) => (
-          <div className='flex items-center justify-end gap-3 mt-4'>
+          <div className="flex items-center justify-end gap-3 mt-4">
             <Button
-              type='button'
-              variant='outline'
+              type="button"
+              variant="outline"
               onClick={() => form.reset()}
               disabled={isSubmitting}
             >
               Reset
             </Button>
             <Button
-              type='submit'
+              type="submit"
               disabled={isSubmitting}
-              className='min-w-[120px]'
+              className="min-w-[120px]"
             >
-              {isSubmitting ? 'Adding...' : 'Add Student'}
+              {isSubmitting ? "Adding..." : "Add Student"}
             </Button>
           </div>
         )}

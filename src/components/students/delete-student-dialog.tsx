@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   AlertDialog,
@@ -9,10 +9,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { useDeleteStudent } from '@/hooks/use-students';
-import { StudentData } from '@/lib/api/services/student.service';
-import { toast } from 'sonner';
+} from "@/components/ui/alert-dialog";
+import { useDeleteStudent } from "@/hooks/use-students";
+import { StudentData } from "@/lib/api/services/student.service";
+import { toast } from "sonner";
 
 interface DeleteStudentDialogProps {
   student: StudentData;
@@ -32,7 +32,7 @@ export function DeleteStudentDialog({
 
     deleteStudentMutation.mutate(student.user.id, {
       onSuccess: () => {
-        toast.success('Student deleted successfully');
+        toast.success("Student deleted successfully");
         onOpenChange(false);
       },
     });
@@ -58,10 +58,10 @@ export function DeleteStudentDialog({
               e.preventDefault();
               handleDelete();
             }}
-            variant='destructive'
+            variant="destructive"
             disabled={deleteStudentMutation.isPending}
           >
-            {deleteStudentMutation.isPending ? 'Deleting...' : 'Delete'}
+            {deleteStudentMutation.isPending ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

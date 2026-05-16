@@ -25,9 +25,7 @@ export const useDeleteConversation = () => {
         (currentData: { conversations: { id: string }[] } | undefined) => {
           if (!currentData) return currentData;
           return {
-            conversations: currentData.conversations.filter(
-              (c) => c.id !== id,
-            ),
+            conversations: currentData.conversations.filter((c) => c.id !== id),
           };
         },
       );

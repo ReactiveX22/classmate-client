@@ -1,4 +1,4 @@
-import { useAiConversations } from './use-ai-conversations';
+import { useAiConversations } from "./use-ai-conversations";
 
 export function useAiConversationsForClassrooms(classroomIds: string[]) {
   const { data, isLoading, isError } = useAiConversations();

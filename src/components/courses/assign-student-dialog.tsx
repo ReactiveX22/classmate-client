@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { useParams } from 'next/navigation';
+import * as React from "react";
+import { useParams } from "next/navigation";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import { useStudents } from '@/hooks/use-students';
-import { useCreateEnrollment } from '@/hooks/use-enrollments';
-import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Checkbox } from '@/components/ui/checkbox';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useStudents } from "@/hooks/use-students";
+import { useCreateEnrollment } from "@/hooks/use-enrollments";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface AssignStudentDialogProps {
   open: boolean;
@@ -34,7 +34,7 @@ export function AssignStudentDialog({
   enrolledStudentIds,
 }: AssignStudentDialogProps) {
   const { id: courseId } = useParams();
-  const [search, setSearch] = React.useState('');
+  const [search, setSearch] = React.useState("");
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
@@ -50,13 +50,13 @@ export function AssignStudentDialog({
 
   const toggleStudent = (id: string) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
 
   const handleAssign = async () => {
     if (selectedIds.length === 0) {
-      toast.error('Please select at least one student');
+      toast.error("Please select at least one student");
       return;
     }
 
@@ -69,12 +69,12 @@ export function AssignStudentDialog({
           enrollMutation.mutateAsync({
             courseId: courseId as string,
             studentId,
-          })
-        )
+          }),
+        ),
       );
 
       toast.success(
-        `${selectedIds.length} student(s) enrolled in ${courseTitle}`
+        `${selectedIds.length} student(s) enrolled in ${courseTitle}`,
       );
       onOpenChange(false);
       setSelectedIds([]);
@@ -88,8 +88,8 @@ export function AssignStudentDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='sm:max-w-[500px] gap-0 p-0 overflow-hidden'>
-        <div className='p-6 border-b'>
+      <DialogContent className="sm:max-w-[500px] gap-0 p-0 overflow-hidden">
+        <div className="p-6 border-b">
           <DialogHeader>
             <DialogTitle>Assign Students</DialogTitle>
             <DialogDescription>
@@ -98,65 +98,65 @@ export function AssignStudentDialog({
           </DialogHeader>
         </div>
 
-        <div className='p-4 border-b bg-muted/30'>
-          <div className='relative'>
-            <Search className='absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground' />
+        <div className="p-4 border-b bg-muted/30">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <Input
-              placeholder='Search students by name or ID...'
-              className='pl-9 bg-background'
+              placeholder="Search students by name or ID..."
+              className="pl-9 bg-background"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </div>
 
-        <ScrollArea className='h-[300px]'>
-          <div className='p-2'>
+        <ScrollArea className="h-[300px]">
+          <div className="p-2">
             {isLoading ? (
-              <div className='flex flex-col items-center justify-center py-8 text-sm text-muted-foreground gap-2'>
-                <div className='size-4 animate-spin rounded-full border-2 border-primary border-t-transparent' />
+              <div className="flex flex-col items-center justify-center py-8 text-sm text-muted-foreground gap-2">
+                <div className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
                 Searching students...
               </div>
             ) : students.length === 0 ? (
-              <div className='py-8 text-center text-sm text-muted-foreground'>
+              <div className="py-8 text-center text-sm text-muted-foreground">
                 No students found.
               </div>
             ) : (
-              <div className='space-y-1'>
+              <div className="space-y-1">
                 {students
                   .filter(
                     (item) =>
                       item.student !== null &&
-                      !enrolledStudentIds.includes(item.student.id)
+                      !enrolledStudentIds.includes(item.student.id),
                   )
                   .map((item) => (
                     <div
                       key={item.student!.id}
                       className={cn(
-                        'flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors hover:bg-accent/50 group',
-                        selectedIds.includes(item.student!.id) && 'bg-accent'
+                        "flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors hover:bg-accent/50 group",
+                        selectedIds.includes(item.student!.id) && "bg-accent",
                       )}
                       onClick={() => toggleStudent(item.student!.id)}
                     >
                       <Checkbox
                         checked={selectedIds.includes(item.student!.id)}
                         onCheckedChange={() => toggleStudent(item.student!.id)}
-                        className='size-5'
+                        className="size-5"
                       />
-                      <Avatar className='size-9 border'>
-                        <AvatarFallback className='text-xs'>
+                      <Avatar className="size-9 border">
+                        <AvatarFallback className="text-xs">
                           {item.user.name
-                            .split(' ')
+                            .split(" ")
                             .map((n) => n[0])
-                            .join('')}
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
-                      <div className='flex-1 min-w-0'>
-                        <p className='text-sm font-medium leading-none truncate'>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium leading-none truncate">
                           {item.user.name}
                         </p>
-                        <p className='text-xs text-muted-foreground truncate mt-1'>
-                          {item.student?.studentId || 'No ID'} •{' '}
+                        <p className="text-xs text-muted-foreground truncate mt-1">
+                          {item.student?.studentId || "No ID"} •{" "}
                           {item.user.email}
                         </p>
                       </div>
@@ -167,32 +167,32 @@ export function AssignStudentDialog({
           </div>
         </ScrollArea>
 
-        <div className='p-6 border-t bg-muted/10 flex items-center justify-between'>
-          <div className='text-sm text-muted-foreground'>
+        <div className="p-6 border-t bg-muted/10 flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">
             {selectedIds.length > 0 ? (
-              <span className='font-medium text-primary'>
+              <span className="font-medium text-primary">
                 {selectedIds.length} selected
               </span>
             ) : (
-              'Select students'
+              "Select students"
             )}
           </div>
-          <div className='flex items-center gap-3'>
+          <div className="flex items-center gap-3">
             <Button
-              variant='ghost'
-              size='sm'
+              variant="ghost"
+              size="sm"
               onClick={() => onOpenChange(false)}
               disabled={isSubmitting}
             >
               Cancel
             </Button>
             <Button
-              size='sm'
+              size="sm"
               onClick={handleAssign}
-              className='px-6'
+              className="px-6"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Enrolling...' : 'Confirm Enrollment'}
+              {isSubmitting ? "Enrolling..." : "Confirm Enrollment"}
             </Button>
           </div>
         </div>

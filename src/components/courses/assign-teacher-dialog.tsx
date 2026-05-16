@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { useParams } from 'next/navigation';
+import * as React from "react";
+import { useParams } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -9,11 +9,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { TeacherSelect } from './teacher-select';
-import { toast } from 'sonner';
-import { useUpdateCourse } from '@/hooks/use-courses';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { TeacherSelect } from "./teacher-select";
+import { toast } from "sonner";
+import { useUpdateCourse } from "@/hooks/use-courses";
 
 interface AssignTeacherDialogProps {
   open: boolean;
@@ -43,7 +43,7 @@ export function AssignTeacherDialog({
 
   const handleAssign = () => {
     if (!teacherId) {
-      toast.error('Please select a teacher');
+      toast.error("Please select a teacher");
       return;
     }
 
@@ -57,8 +57,8 @@ export function AssignTeacherDialog({
           onOpenChange(false);
           toast.success(
             currentTeacherId
-              ? 'Instructor updated successfully'
-              : 'Teacher assigned successfully',
+              ? "Instructor updated successfully"
+              : "Teacher assigned successfully",
           );
         },
       },
@@ -67,10 +67,10 @@ export function AssignTeacherDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='sm:max-w-[425px] overflow-visible'>
+      <DialogContent className="sm:max-w-[425px] overflow-visible">
         <DialogHeader>
           <DialogTitle>
-            {currentTeacherId ? 'Change Instructor' : 'Assign Teacher'}
+            {currentTeacherId ? "Change Instructor" : "Assign Teacher"}
           </DialogTitle>
           <DialogDescription>
             {currentTeacherId ? (
@@ -84,7 +84,7 @@ export function AssignTeacherDialog({
             )}
           </DialogDescription>
         </DialogHeader>
-        <div className='py-4'>
+        <div className="py-4">
           <TeacherSelect
             value={teacherId}
             onValueChange={setTeacherId}
@@ -93,7 +93,7 @@ export function AssignTeacherDialog({
         </div>
         <DialogFooter>
           <Button
-            variant='outline'
+            variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={updateMutation.isPending}
           >
@@ -102,14 +102,16 @@ export function AssignTeacherDialog({
           <Button
             onClick={handleAssign}
             disabled={
-              updateMutation.isPending || !teacherId || teacherId === currentTeacherId
+              updateMutation.isPending ||
+              !teacherId ||
+              teacherId === currentTeacherId
             }
           >
             {updateMutation.isPending
-              ? 'Saving...'
+              ? "Saving..."
               : currentTeacherId
-                ? 'Update Instructor'
-                : 'Assign'}
+                ? "Update Instructor"
+                : "Assign"}
           </Button>
         </DialogFooter>
       </DialogContent>

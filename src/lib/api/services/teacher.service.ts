@@ -1,7 +1,7 @@
-import { User } from '@/types/auth';
-import apiClient from '..';
-import { PaginationMeta, PaginationParams } from '@/types/pagination';
-import { UserProfile } from '@/types/user';
+import { User } from "@/types/auth";
+import apiClient from "..";
+import { PaginationMeta, PaginationParams } from "@/types/pagination";
+import { UserProfile } from "@/types/user";
 
 export interface CreateTeacherInput {
   email: string;
@@ -48,14 +48,14 @@ export interface TeachersResponse {
 export const teacherService = {
   createTeacher: async (payload: CreateTeacherInput) => {
     const response = await apiClient.post<CreateTeacherResponse>(
-      '/api/v1/teachers',
-      payload
+      "/api/v1/teachers",
+      payload,
     );
     return response.data;
   },
 
   getTeachers: async (params?: PaginationParams) => {
-    const response = await apiClient.get<TeachersResponse>('/api/v1/teachers', {
+    const response = await apiClient.get<TeachersResponse>("/api/v1/teachers", {
       params,
     });
     return response.data;
@@ -69,7 +69,7 @@ export const teacherService = {
   updateTeacher: async (id: string, payload: UpdateTeacherInput) => {
     const response = await apiClient.patch<TeacherData>(
       `/api/v1/teachers/${id}`,
-      payload
+      payload,
     );
     return response.data;
   },

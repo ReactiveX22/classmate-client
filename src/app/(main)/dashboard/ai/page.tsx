@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
-import { AiInputBar } from '@/components/ai/ai-input-bar';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAiAutoMessage } from '@/contexts/ai-auto-message-context';
-import { useUser } from '@/hooks/useAuth';
-import { aiService } from '@/lib/api/services/ai.service';
-import { Role } from '@/types/auth';
-import { IconSparkles } from '@tabler/icons-react';
+import { AiInputBar } from "@/components/ai/ai-input-bar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAiAutoMessage } from "@/contexts/ai-auto-message-context";
+import { useUser } from "@/hooks/useAuth";
+import { aiService } from "@/lib/api/services/ai.service";
+import { Role } from "@/types/auth";
+import { IconSparkles } from "@tabler/icons-react";
 
 export default function AiDashboardPage() {
   const router = useRouter();
@@ -29,8 +29,8 @@ export default function AiDashboardPage() {
       setPendingMessage(message);
       router.push(`/dashboard/ai/${result.conversationId}`);
     } catch {
-      toast.error('Failed to start chat', {
-        description: 'Please try again.',
+      toast.error("Failed to start chat", {
+        description: "Please try again.",
       });
       setIsCreating(false);
     }

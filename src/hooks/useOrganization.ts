@@ -1,15 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { orgService } from '@/lib/api/services/organization.service';
-import { AppError } from '@/utils/errors';
-import { ErrorCode } from '@/types/errors';
-import { toast } from 'sonner';
-import { useEffect } from 'react';
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { orgService } from "@/lib/api/services/organization.service";
+import { AppError } from "@/utils/errors";
+import { ErrorCode } from "@/types/errors";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 export const organizationKeys = {
-  all: ['organization'] as const,
-  lists: () => [...organizationKeys.all, 'list'] as const,
-  detail: (id: string) => [...organizationKeys.all, 'detail', id] as const,
+  all: ["organization"] as const,
+  lists: () => [...organizationKeys.all, "list"] as const,
+  detail: (id: string) => [...organizationKeys.all, "detail", id] as const,
 };
 
 export const useGetOrgById = (id: string) => {
@@ -38,24 +38,24 @@ export const useGetOrgById = (id: string) => {
       if (error instanceof AppError) {
         switch (error.errorCode) {
           case ErrorCode.ORGANIZATION_ACCESS_DENIED:
-            toast.error('Access Denied', {
+            toast.error("Access Denied", {
               description:
-                'You do not have permission to view this organization.',
+                "You do not have permission to view this organization.",
             });
             break;
           case ErrorCode.NOT_FOUND:
-            router.push('/404');
+            router.push("/404");
             break;
           default:
-            toast.error('Error', {
-              description: error.message || 'An unexpected error occurred.',
+            toast.error("Error", {
+              description: error.message || "An unexpected error occurred.",
             });
-            console.error('Organization error:', error);
+            console.error("Organization error:", error);
         }
       } else {
-        console.error('Organization generic error:', error);
-        toast.error('Error', {
-          description: 'Failed to load organization details.',
+        console.error("Organization generic error:", error);
+        toast.error("Error", {
+          description: "Failed to load organization details.",
         });
       }
     }

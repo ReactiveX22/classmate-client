@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import { AddCourseForm } from '@/components/courses/add-course-form';
-import { FormPageHeader } from '@/components/ui/form-page-header';
-import { IconBook } from '@tabler/icons-react';
-import { useRouter } from 'next/navigation';
+import { AddCourseForm } from "@/components/courses/add-course-form";
+import { FormPageHeader } from "@/components/ui/form-page-header";
+import { IconBook } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 export default function NewCoursePage() {
   const router = useRouter();
 
   return (
-    <div className='flex flex-col min-h-screen'>
+    <div className="flex flex-col min-h-screen">
       <FormPageHeader
-        title='Create New Course'
-        description='Add a new course to your organization catalog.'
-        icon={<IconBook className='size-5' />}
-        backLink='/dashboard/courses'
+        title="Create New Course"
+        description="Add a new course to your organization catalog."
+        icon={<IconBook className="size-5" />}
+        backLink="/dashboard/courses"
       />
 
-      <main className='flex-1 p-6 md:p-8 max-w-4xl mx-auto w-full'>
-        <div className='bg-card border rounded-xl p-6 shadow-sm'>
-          <AddCourseForm onSuccess={() => router.push('/dashboard/courses')} />
+      <main className="flex-1 p-6 md:p-8 max-w-4xl mx-auto w-full">
+        <div className="bg-card border rounded-xl p-6 shadow-sm">
+          <AddCourseForm onSuccess={() => router.push("/dashboard/courses")} />
         </div>
       </main>
     </div>

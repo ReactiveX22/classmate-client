@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { submissionService } from '@/lib/api/services/submission.service';
-import { toast } from 'sonner';
-import { handleApiError } from '@/lib/api';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { submissionService } from "@/lib/api/services/submission.service";
+import { toast } from "sonner";
+import { handleApiError } from "@/lib/api";
 
 export const useRemoveSubmissionAttachment = () => {
   const queryClient = useQueryClient();
@@ -19,11 +19,11 @@ export const useRemoveSubmissionAttachment = () => {
     onSuccess: (_, variables) => {
       // Invalidate post query to refetch embedded submission
       queryClient.invalidateQueries({
-        queryKey: ['post', variables.classroomId, variables.postId],
-        refetchType: 'all',
+        queryKey: ["post", variables.classroomId, variables.postId],
+        refetchType: "all",
       });
 
-      toast.success('Attachment removed');
+      toast.success("Attachment removed");
     },
     onError: (error) => {
       const errorMessage = handleApiError(error);

@@ -1,31 +1,31 @@
-import { UserStatus } from '@/types/auth';
-import { adminClient } from 'better-auth/client/plugins';
-import { createAuthClient } from 'better-auth/react';
+import { UserStatus } from "@/types/auth";
+import { adminClient } from "better-auth/client/plugins";
+import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
   baseURL:
-    typeof window !== 'undefined'
-      ? ''
-      : process.env.API_URL || 'http://backend:3000',
-  basePath: '/api/v1/auth',
+    typeof window !== "undefined"
+      ? ""
+      : process.env.API_URL || "http://backend:3000",
+  basePath: "/api/v1/auth",
   user: {
     additionalFields: {
       role: {
-        type: 'string',
+        type: "string",
         input: false,
       },
       status: {
-        type: 'string',
+        type: "string",
         defaultValue: UserStatus.Pending,
         input: false,
       },
       organizationId: {
-        type: 'string',
+        type: "string",
         input: false,
         defaultValue: null,
       },
       organizationName: {
-        type: 'string',
+        type: "string",
         input: true,
         defaultValue: null,
       },
@@ -34,7 +34,7 @@ export const authClient = createAuthClient({
   session: {
     additionalFields: {
       impersonatedBy: {
-        type: 'string',
+        type: "string",
         required: false,
       },
     },
@@ -42,17 +42,17 @@ export const authClient = createAuthClient({
   plugins: [
     adminClient(),
     {
-      id: 'next-cookies-request',
+      id: "next-cookies-request",
       fetchPlugins: [
         {
-          id: 'next-cookies-request-plugin',
-          name: 'next-cookies-request-plugin',
+          id: "next-cookies-request-plugin",
+          name: "next-cookies-request-plugin",
           hooks: {
             async onRequest(ctx) {
-              if (typeof window === 'undefined') {
-                const { cookies } = await import('next/headers');
+              if (typeof window === "undefined") {
+                const { cookies } = await import("next/headers");
                 const headerList = await cookies();
-                ctx.headers.set('cookie', headerList.toString());
+                ctx.headers.set("cookie", headerList.toString());
               }
               return ctx;
             },

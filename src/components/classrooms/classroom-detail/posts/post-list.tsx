@@ -1,9 +1,9 @@
-import { usePosts } from '@/hooks/use-posts';
-import { PostCard } from './post-card';
-import { PostSkeleton } from './post-skeleton';
-import { Button } from '@/components/ui/button';
-import { IconLoader2 } from '@tabler/icons-react';
-import { useEffect, useRef } from 'react';
+import { usePosts } from "@/hooks/use-posts";
+import { PostCard } from "./post-card";
+import { PostSkeleton } from "./post-skeleton";
+import { Button } from "@/components/ui/button";
+import { IconLoader2 } from "@tabler/icons-react";
+import { useEffect, useRef } from "react";
 
 interface PostListProps {
   classroomId: string;
@@ -29,7 +29,7 @@ export function PostList({ classroomId, isTeacher }: PostListProps) {
           fetchNextPage();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     const currentTarget = observerTarget.current;
@@ -46,7 +46,7 @@ export function PostList({ classroomId, isTeacher }: PostListProps) {
 
   if (isLoading) {
     return (
-      <div className='space-y-4'>
+      <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
           <PostSkeleton key={i} />
         ))}
@@ -56,8 +56,8 @@ export function PostList({ classroomId, isTeacher }: PostListProps) {
 
   if (isError) {
     return (
-      <div className='text-center py-12'>
-        <p className='text-sm text-muted-foreground'>
+      <div className="text-center py-12">
+        <p className="text-sm text-muted-foreground">
           Failed to load posts. Please try again.
         </p>
       </div>
@@ -78,26 +78,26 @@ export function PostList({ classroomId, isTeacher }: PostListProps) {
   }
 
   return (
-    <div className='space-y-4 w-full max-w-2xl'>
+    <div className="space-y-4 w-full max-w-2xl">
       {sortedPosts.map((post) => (
         <PostCard key={post.id} post={post} isTeacher={isTeacher} />
       ))}
 
       {/* Intersection observer target */}
-      <div ref={observerTarget} className='h-4' />
+      <div ref={observerTarget} className="h-4" />
 
       {isFetchingNextPage && (
-        <div className='flex justify-center py-4'>
-          <Button variant='ghost' disabled>
-            <IconLoader2 className='mr-2 h-4 w-4 animate-spin' />
+        <div className="flex justify-center py-4">
+          <Button variant="ghost" disabled>
+            <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
             Loading more posts...
           </Button>
         </div>
       )}
 
       {!hasNextPage && posts.length > 0 && (
-        <div className='text-center py-4'>
-          <p className='text-xs text-muted-foreground'>
+        <div className="text-center py-4">
+          <p className="text-xs text-muted-foreground">
             You&apos;ve reached the end
           </p>
         </div>

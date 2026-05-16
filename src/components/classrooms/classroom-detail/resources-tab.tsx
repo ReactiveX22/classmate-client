@@ -163,10 +163,10 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
 
             <CreatePostDialog
               classroomId={classroomId}
-              defaultType='material'
+              defaultType="material"
               hideTypeSelection={true}
               trigger={
-                <Button className='gap-2 shadow-sm mt-4'>
+                <Button className="gap-2 shadow-sm mt-4">
                   <IconPlus size={18} />
                   <span>Upload Resource</span>
                 </Button>

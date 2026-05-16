@@ -1,9 +1,9 @@
 "use client";
 import { useEffect } from "react";
 
-import { useCreatePost } from '@/hooks/use-create-post';
-import { PostType } from '@/lib/api/services/post.service';
-import { PostForm } from './post-form';
+import { useCreatePost } from "@/hooks/use-create-post";
+import { PostType } from "@/lib/api/services/post.service";
+import { PostForm } from "./post-form";
 
 interface CreatePostFormProps {
   classroomId: string;
@@ -25,7 +25,7 @@ export function CreatePostForm({
   onPendingChange,
 }: CreatePostFormProps) {
   const { mutateAsync: createPost, isPending } = useCreatePost();
-  
+
   useEffect(() => {
     onPendingChange?.(isPending);
   }, [isPending, onPendingChange]);

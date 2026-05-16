@@ -2,16 +2,21 @@ import {
   CreateCourseInput,
   UpdateCourseInput,
   courseService,
-} from '@/lib/api/services/course.service';
+} from "@/lib/api/services/course.service";
 import {
   createCourseQueryOptions,
   getCourseQueryOptions,
-} from '@/lib/queryOptions/courseQueryOptions';
-import { PaginationParams } from '@/types/pagination';
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import { toast } from 'sonner';
-import { ApiError } from '@/types/errors';
+} from "@/lib/queryOptions/courseQueryOptions";
+import { PaginationParams } from "@/types/pagination";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import { ApiError } from "@/types/errors";
 
 export const useCourses = (params?: PaginationParams) => {
   return useQuery({
@@ -30,8 +35,8 @@ export function useCreateCourse() {
     mutationFn: (course: CreateCourseInput) =>
       courseService.createCourse(course),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
-      toast.success('Course created successfully');
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
+      toast.success("Course created successfully");
     },
   });
 }
@@ -42,8 +47,8 @@ export function useUpdateCourse() {
     mutationFn: ({ id, data }: { id: string; data: UpdateCourseInput }) =>
       courseService.updateCourse(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
-      toast.success('Course updated successfully');
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
+      toast.success("Course updated successfully");
     },
   });
 }
@@ -53,13 +58,13 @@ export function useDeleteCourse() {
   return useMutation({
     mutationFn: (id: string) => courseService.deleteCourse(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
-      toast.success('Course deleted successfully');
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
+      toast.success("Course deleted successfully");
     },
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;
-      toast.error('Deletion Failed', {
-        description: apiError?.message || 'An unexpected error occurred.',
+      toast.error("Deletion Failed", {
+        description: apiError?.message || "An unexpected error occurred.",
       });
     },
   });

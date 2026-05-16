@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { submissionService } from '@/lib/api/services/submission.service';
-import { toast } from 'sonner';
-import { handleApiError } from '@/lib/api';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { submissionService } from "@/lib/api/services/submission.service";
+import { toast } from "sonner";
+import { handleApiError } from "@/lib/api";
 
 export const useGradeSubmission = () => {
   const queryClient = useQueryClient();
@@ -29,9 +29,9 @@ export const useGradeSubmission = () => {
       ),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ['submissions', variables.classroomId, variables.postId],
+        queryKey: ["submissions", variables.classroomId, variables.postId],
       });
-      toast.success('Grade updated successfully');
+      toast.success("Grade updated successfully");
     },
     onError: (error: unknown) => {
       toast.error(handleApiError(error));

@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
-import { dashboardService } from '@/lib/api/services/dashboard.service';
+import { useQuery } from "@tanstack/react-query";
+import { dashboardService } from "@/lib/api/services/dashboard.service";
 
 export const dashboardKeys = {
-  all: ['dashboard'] as const,
-  stats: () => [...dashboardKeys.all, 'stats'] as const,
+  all: ["dashboard"] as const,
+  stats: () => [...dashboardKeys.all, "stats"] as const,
 };
 
 export const useAdminStats = () => {

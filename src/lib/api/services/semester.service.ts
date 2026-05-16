@@ -1,5 +1,5 @@
-import apiClient from '../index';
-import { PaginationMeta, PaginationParams } from '@/types/pagination';
+import apiClient from "../index";
+import { PaginationMeta, PaginationParams } from "@/types/pagination";
 
 export interface Semester {
   id: string;
@@ -30,7 +30,7 @@ export const semesterService = {
     params?: PaginationParams,
   ): Promise<SemestersResponse> => {
     const response = await apiClient.get<SemestersResponse>(
-      '/api/v1/semesters',
+      "/api/v1/semesters",
       {
         params,
       },
@@ -45,7 +45,7 @@ export const semesterService = {
 
   createSemester: async (payload: CreateSemesterInput): Promise<Semester> => {
     const response = await apiClient.post<Semester>(
-      '/api/v1/semesters',
+      "/api/v1/semesters",
       payload,
     );
     return response.data;

@@ -55,7 +55,10 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
     streamingReasoning,
     activeTools,
     isStreaming,
+    isRetrying,
+    lastError,
     sendMessage,
+    retry,
     abort,
     resetConversation,
   } = useAiChat({ conversationId: convId, onTitleUpdate: handleTitleUpdate });
@@ -68,6 +71,16 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
     const newStreaming = streamingMessages.filter((m) => !baseIds.has(m.id));
     return [...baseMessages, ...newStreaming];
   })();
+
+  const lastMessage = displayMessages[displayMessages.length - 1];
+  const hasOrphanedUserMessage =
+    !conversationQuery.isLoading &&
+    displayMessages.length > 0 &&
+    lastMessage?.role === "user" &&
+    !isStreaming &&
+    !lastError;
+
+  const displayError = lastError ?? (hasOrphanedUserMessage ? {} : null);
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
@@ -149,7 +162,10 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
         const exists = conversations.some((item) => item.id === convId);
         if (exists) return currentData;
         return {
-          conversations: [conversationQuery.data.conversation, ...conversations],
+          conversations: [
+            conversationQuery.data.conversation,
+            ...conversations,
+          ],
         };
       },
     );
@@ -195,8 +211,10 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
               ) : (
                 <AiMessageList
                   activeTools={activeTools}
+                  error={displayError}
                   isStreaming={isStreaming}
                   messages={displayMessages}
+                  onRetry={retry}
                   streamingContent={streamingContent}
                   streamingReasoning={streamingReasoning}
                 />
@@ -221,6 +239,7 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
           </div>
           <div className="pointer-events-auto">
             <AiInputBar
+              isRetrying={isRetrying}
               isStreaming={isStreaming}
               onSend={handleSend}
               onStop={abort}

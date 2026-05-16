@@ -13,7 +13,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCreateCourse } from "@/hooks/use-courses";
 import { useFormErrorHandler } from "@/hooks/use-form-handler";
 import { useForm } from "@tanstack/react-form";
-import { courseSchema, type CourseFormValues } from "@/lib/schemas/course-schema";
+import {
+  courseSchema,
+  type CourseFormValues,
+} from "@/lib/schemas/course-schema";
 import { TeacherSelect } from "./teacher-select";
 import { SemesterSelect } from "./semester-select";
 import { SessionSelect } from "./session-select";
@@ -61,7 +64,8 @@ export function AddCourseForm({ onSuccess }: AddCourseFormProps) {
   });
 
   const getFieldError = (fieldName: string, fieldErrorsState: unknown[]) => {
-    if (fieldErrorsState.length > 0) return fieldErrorsState as { message: string }[];
+    if (fieldErrorsState.length > 0)
+      return fieldErrorsState as { message: string }[];
     if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
     return [];
   };
@@ -261,7 +265,9 @@ export function AddCourseForm({ onSuccess }: AddCourseFormProps) {
           </Alert>
         )}
 
-        <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting]}
+        >
           {([, isSubmitting]) => (
             <div className="flex items-center justify-end gap-3 mt-4">
               <Button

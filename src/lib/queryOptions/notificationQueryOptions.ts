@@ -1,15 +1,15 @@
-import { PaginationParams } from '@/types/pagination';
-import { infiniteQueryOptions } from '@tanstack/react-query';
+import { PaginationParams } from "@/types/pagination";
+import { infiniteQueryOptions } from "@tanstack/react-query";
 import {
   notificationService,
   NotificationsResponse,
-} from '../api/services/notification.service';
+} from "../api/services/notification.service";
 
 export function infiniteNotificationsQueryOptions(
-  params?: Omit<PaginationParams, 'page'>,
+  params?: Omit<PaginationParams, "page">,
 ) {
   return infiniteQueryOptions({
-    queryKey: ['notifications', params],
+    queryKey: ["notifications", params],
     queryFn: ({ pageParam = 1 }) =>
       notificationService.getNotifications({
         ...params,

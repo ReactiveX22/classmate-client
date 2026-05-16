@@ -1,37 +1,37 @@
-'use client';
+"use client";
 
-import { StudentWorkCard } from '@/components/classrooms/classroom-detail/assignments/student-work-card';
-import { CommentSection } from '@/components/classrooms/classroom-detail/posts/comment-section';
-import { EditPostDialog } from '@/components/classrooms/classroom-detail/posts/edit-post-dialog';
-import { AttachmentDisplay } from '@/components/classrooms/classroom-detail/posts/post-types/attachment-display';
-import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { StudentWorkCard } from "@/components/classrooms/classroom-detail/assignments/student-work-card";
+import { CommentSection } from "@/components/classrooms/classroom-detail/posts/comment-section";
+import { EditPostDialog } from "@/components/classrooms/classroom-detail/posts/edit-post-dialog";
+import { AttachmentDisplay } from "@/components/classrooms/classroom-detail/posts/post-types/attachment-display";
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useDeletePost } from '@/hooks/use-delete-post';
-import { usePost } from '@/hooks/use-post';
-import { useUser } from '@/hooks/useAuth';
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useDeletePost } from "@/hooks/use-delete-post";
+import { usePost } from "@/hooks/use-post";
+import { useUser } from "@/hooks/useAuth";
 import {
   IconArrowLeft,
   IconClipboard,
   IconDotsVertical,
   IconPencil,
   IconTrash,
-} from '@tabler/icons-react';
-import { format } from 'date-fns';
-import { useRouter } from 'next/navigation';
-import { use, useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { StudentWorkTab } from '@/components/classrooms/classroom-detail/assignments/student-work-tab';
-import { Post } from '@/lib/api/services/post.service';
+} from "@tabler/icons-react";
+import { format } from "date-fns";
+import { useRouter } from "next/navigation";
+import { use, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { StudentWorkTab } from "@/components/classrooms/classroom-detail/assignments/student-work-tab";
+import { Post } from "@/lib/api/services/post.service";
 
 interface AssignmentPageProps {
   params: Promise<{ id: string; assignmentId: string }>;
@@ -67,16 +67,16 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
 
   if (isLoading) {
     return (
-      <div className='container max-w-5xl py-8 space-y-8'>
-        <Skeleton className='h-8 w-32' />
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-          <div className='lg:col-span-2 space-y-4'>
-            <Skeleton className='h-12 w-3/4' />
-            <Skeleton className='h-4 w-1/4' />
-            <Skeleton className='h-64 w-full' />
+      <div className="container max-w-5xl py-8 space-y-8">
+        <Skeleton className="h-8 w-32" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-4">
+            <Skeleton className="h-12 w-3/4" />
+            <Skeleton className="h-4 w-1/4" />
+            <Skeleton className="h-64 w-full" />
           </div>
-          <div className='lg:col-span-1'>
-            <Skeleton className='h-64 w-full' />
+          <div className="lg:col-span-1">
+            <Skeleton className="h-64 w-full" />
           </div>
         </div>
       </div>
@@ -85,60 +85,60 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
 
   if (isError || !post) {
     return (
-      <div className='flex flex-col items-center justify-center min-h-[50vh]'>
-        <h2 className='text-xl font-semibold mb-2'>Assignment not found</h2>
+      <div className="flex flex-col items-center justify-center min-h-[50vh]">
+        <h2 className="text-xl font-semibold mb-2">Assignment not found</h2>
         <Button onClick={() => router.back()}>Go back</Button>
       </div>
     );
   }
 
   return (
-    <div className='container max-w-6xl p-4 md:p-6 mx-auto'>
+    <div className="container max-w-6xl p-4 md:p-6 mx-auto">
       <Button
-        variant='ghost'
-        className='mb-6 pl-0 hover:pl-2 transition-all gap-2 text-muted-foreground'
+        variant="ghost"
+        className="mb-6 pl-0 hover:pl-2 transition-all gap-2 text-muted-foreground"
         onClick={() => router.back()}
       >
         <IconArrowLeft size={18} />
         Back to Classwork
       </Button>
 
-      <div className='flex items-start gap-3 sm:gap-5 mb-6'>
-        <div className='p-2 sm:p-3.5 bg-primary/10 rounded-full text-primary mt-1 shrink-0'>
-          <IconClipboard className='w-5 h-5 sm:w-6 sm:h-6' />
+      <div className="flex items-start gap-3 sm:gap-5 mb-6">
+        <div className="p-2 sm:p-3.5 bg-primary/10 rounded-full text-primary mt-1 shrink-0">
+          <IconClipboard className="w-5 h-5 sm:w-6 sm:h-6" />
         </div>
-        <div className='flex-1 min-w-0 space-y-2'>
-          <div className='flex items-start justify-between gap-2 sm:gap-4'>
-            <div className='flex-1 min-w-0'>
-              <h1 className='text-xl sm:text-3xl font-semibold tracking-tight text-foreground'>
+        <div className="flex-1 min-w-0 space-y-2">
+          <div className="flex items-start justify-between gap-2 sm:gap-4">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl sm:text-3xl font-semibold tracking-tight text-foreground">
                 {post.title}
               </h1>
-              <div className='flex flex-wrap items-center gap-x-2 gap-y-1 text-xs md:text-sm text-muted-foreground mt-1 sm:mt-2'>
-                <span className='font-medium text-foreground'>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs md:text-sm text-muted-foreground mt-1 sm:mt-2">
+                <span className="font-medium text-foreground">
                   {post.author?.name}
                 </span>
                 <span>•</span>
-                <span>Posted {format(new Date(post.createdAt), 'MMM d')}</span>
+                <span>Posted {format(new Date(post.createdAt), "MMM d")}</span>
               </div>
             </div>
 
-            <div className='flex items-start gap-3 shrink-0'>
+            <div className="flex items-start gap-3 shrink-0">
               {/* Badges: hidden on mobile, shown on sm+ */}
-              <div className='hidden sm:flex flex-col items-end gap-1.5'>
+              <div className="hidden sm:flex flex-col items-end gap-1.5">
                 {post.assignmentData?.points && (
                   <Badge
-                    variant='outline'
-                    className='bg-blue-500/5 border-blue-200 text-blue-700'
+                    variant="outline"
+                    className="bg-blue-500/5 border-blue-200 text-blue-700"
                   >
                     {post.assignmentData.points} points
                   </Badge>
                 )}
                 {post.assignmentData?.dueDate && (
                   <Badge
-                    variant='outline'
-                    className='bg-red-500/5 border-red-200 text-red-700'
+                    variant="outline"
+                    className="bg-red-500/5 border-red-200 text-red-700"
                   >
-                    Due {format(new Date(post.assignmentData.dueDate), 'PPp')}
+                    Due {format(new Date(post.assignmentData.dueDate), "PPp")}
                   </Badge>
                 )}
               </div>
@@ -148,25 +148,25 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
                   <DropdownMenuTrigger
                     render={
                       <Button
-                        variant='ghost'
-                        size='icon'
-                        className='h-8 w-8 text-muted-foreground'
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground"
                       >
                         <IconDotsVertical size={20} />
-                        <span className='sr-only'>Actions</span>
+                        <span className="sr-only">Actions</span>
                       </Button>
                     }
                   />
-                  <DropdownMenuContent align='end'>
+                  <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-                      <IconPencil className='mr-2 h-4 w-4' />
+                      <IconPencil className="mr-2 h-4 w-4" />
                       Edit
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => setShowDeleteDialog(true)}
-                      className='text-destructive focus:text-destructive'
+                      className="text-destructive focus:text-destructive"
                     >
-                      <IconTrash className='mr-2 h-4 w-4' />
+                      <IconTrash className="mr-2 h-4 w-4" />
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -176,37 +176,37 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
           </div>
 
           {/* Badges: shown on mobile as a row below title */}
-          <div className='flex sm:hidden flex-wrap items-center gap-1.5 mt-2'>
+          <div className="flex sm:hidden flex-wrap items-center gap-1.5 mt-2">
             {post.assignmentData?.points && (
               <Badge
-                variant='outline'
-                className='bg-blue-500/5 border-blue-200 text-blue-700'
+                variant="outline"
+                className="bg-blue-500/5 border-blue-200 text-blue-700"
               >
                 {post.assignmentData.points} points
               </Badge>
             )}
             {post.assignmentData?.dueDate && (
               <Badge
-                variant='outline'
-                className='bg-red-500/5 border-red-200 text-red-700'
+                variant="outline"
+                className="bg-red-500/5 border-red-200 text-red-700"
               >
-                Due {format(new Date(post.assignmentData.dueDate), 'PPp')}
+                Due {format(new Date(post.assignmentData.dueDate), "PPp")}
               </Badge>
             )}
           </div>
         </div>
       </div>
 
-      <Separator className='my-6' />
+      <Separator className="my-6" />
 
       {isAuthor ? (
-        <Tabs defaultValue='instructions' className='w-full'>
-          <TabsList className='mb-6'>
-            <TabsTrigger value='instructions'>Instructions</TabsTrigger>
-            <TabsTrigger value='student-work'>Submissions</TabsTrigger>
+        <Tabs defaultValue="instructions" className="w-full">
+          <TabsList className="mb-6">
+            <TabsTrigger value="instructions">Instructions</TabsTrigger>
+            <TabsTrigger value="student-work">Submissions</TabsTrigger>
           </TabsList>
 
-          <TabsContent value='instructions' className='space-y-6'>
+          <TabsContent value="instructions" className="space-y-6">
             <AssignmentContent
               post={post!}
               isAuthor={isAuthor}
@@ -215,7 +215,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
             />
           </TabsContent>
 
-          <TabsContent value='student-work'>
+          <TabsContent value="student-work">
             <StudentWorkTab
               classroomId={classroomId}
               postId={assignmentId}
@@ -225,7 +225,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
           </TabsContent>
         </Tabs>
       ) : (
-        <div className='space-y-6'>
+        <div className="space-y-6">
           <AssignmentContent
             post={post!}
             isAuthor={isAuthor}
@@ -238,10 +238,10 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
       <DeleteConfirmDialog
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
-        title='Delete Assignment'
-        description='Are you sure you want to delete this assignment? This action cannot be undone.'
+        title="Delete Assignment"
+        description="Are you sure you want to delete this assignment? This action cannot be undone."
         onConfirm={handleDelete}
-        confirmText='Delete'
+        confirmText="Delete"
         isLoading={deletePost.isPending}
       />
 
@@ -268,24 +268,24 @@ function AssignmentContent({
   assignmentId: string;
 }) {
   return (
-    <div className='space-y-6'>
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Assignment Details */}
-        <div className='lg:col-span-2 space-y-6'>
-          <div className='prose prose-zinc dark:prose-invert max-w-none'>
-            <p className='whitespace-pre-wrap leading-relaxed text-base'>
+        <div className="lg:col-span-2 space-y-6">
+          <div className="prose prose-zinc dark:prose-invert max-w-none">
+            <p className="whitespace-pre-wrap leading-relaxed text-base">
               {post.content}
             </p>
           </div>
 
           {post.attachments && post.attachments.length > 0 && (
-            <div className='space-y-4 pt-2'>
-              <h3 className='font-medium text-muted-foreground text-xs'>
+            <div className="space-y-4 pt-2">
+              <h3 className="font-medium text-muted-foreground text-xs">
                 Attachments
               </h3>
               <AttachmentDisplay
                 attachments={post.attachments}
-                variant='default'
+                variant="default"
               />
             </div>
           )}
@@ -293,7 +293,7 @@ function AssignmentContent({
 
         {/* Right Column - Your Work (Students only) */}
         {!isAuthor && (
-          <div className='lg:col-span-1 space-y-6'>
+          <div className="lg:col-span-1 space-y-6">
             <StudentWorkCard
               classroomId={classroomId}
               postId={assignmentId}
@@ -304,7 +304,7 @@ function AssignmentContent({
         )}
       </div>
 
-      <Card className='mt-6 gap-2'>
+      <Card className="mt-6 gap-2">
         <CardHeader>
           <CardTitle>Discussion</CardTitle>
         </CardHeader>
@@ -312,7 +312,7 @@ function AssignmentContent({
           {post.commentsEnabled ? (
             <CommentSection postId={assignmentId} classroomId={classroomId} />
           ) : (
-            <p className='text-sm text-muted-foreground'>
+            <p className="text-sm text-muted-foreground">
               Comments are disabled for this assignment.
             </p>
           )}

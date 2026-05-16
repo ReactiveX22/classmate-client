@@ -1,167 +1,173 @@
-'use client';
+"use client";
 
-import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import type { Course } from '@/lib/api/services/course.service';
-import { IconEdit, IconTrash, IconEye } from '@tabler/icons-react';
-import type { ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
-import { MoreHorizontal } from 'lucide-react';
-import Link from 'next/link';
-import { useState } from 'react';
-import { EditCourseDialog } from '@/components/courses/edit-course-dialog';
-import { DeleteCourseDialog } from '@/components/courses/delete-course-dialog';
-import { Badge } from '@/components/ui/badge';
+} from "@/components/ui/dropdown-menu";
+import type { Course } from "@/lib/api/services/course.service";
+import { IconEdit, IconTrash, IconEye } from "@tabler/icons-react";
+import type { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
+import { MoreHorizontal } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { EditCourseDialog } from "@/components/courses/edit-course-dialog";
+import { DeleteCourseDialog } from "@/components/courses/delete-course-dialog";
+import { Badge } from "@/components/ui/badge";
 
-import type { Option } from '@/types/data-table';
+import type { Option } from "@/types/data-table";
 
 export const getColumns = (
   semesterOptions: Option[],
-  sessionOptions: Option[]
+  sessionOptions: Option[],
 ): ColumnDef<Course>[] => [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected()}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label='Select all'
-          className='translate-y-0.5'
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label='Select row'
-          className='translate-y-0.5'
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-      size: 40,
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected()}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+        className="translate-y-0.5"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+        className="translate-y-0.5"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+    size: 40,
+  },
+  {
+    accessorKey: "title",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label="Title" />
+    ),
+    meta: {
+      label: "Title",
+      placeholder: "Filter by title...",
+      variant: "text",
     },
-    {
-      accessorKey: 'title',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label='Title' />
-      ),
-      meta: {
-        label: 'Title',
-        placeholder: 'Filter by title...',
-        variant: 'text',
-      },
-      cell: ({ row }) => {
-        return (
-          <Link
-            href={`/dashboard/courses/${row.original.id}`}
-            className='font-medium hover:underline underline-offset-4 decoration-primary/30 text-primary'
-          >
-            {row.original.title}
-          </Link>
-        );
-      },
-      enableSorting: true,
+    cell: ({ row }) => {
+      return (
+        <Link
+          href={`/dashboard/courses/${row.original.id}`}
+          className="font-medium hover:underline underline-offset-4 decoration-primary/30 text-primary"
+        >
+          {row.original.title}
+        </Link>
+      );
     },
-    {
-      accessorKey: 'code',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label='Code' />
-      ),
-      meta: {
-        label: 'Code',
-        placeholder: 'Filter by code...',
-        variant: 'text',
-      },
-      cell: ({ row }) => {
-        return <Badge variant='secondary'>{row.original.code}</Badge>;
-      },
-      enableSorting: true,
+    enableSorting: true,
+  },
+  {
+    accessorKey: "code",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label="Code" />
+    ),
+    meta: {
+      label: "Code",
+      placeholder: "Filter by code...",
+      variant: "text",
     },
-    {
-      id: 'semesterId',
-      accessorFn: (row) => row.semesterId,
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label='Semester' />
-      ),
-      meta: {
-        label: 'Semester',
-        placeholder: 'Filter by semester...',
-        variant: 'multiSelect',
-        options: semesterOptions,
-      },
-      cell: ({ row }) => {
-        const semester = row.original.semester;
-        return <div>{semester ? semester.ordinal : row.original.semesterId || '—'}</div>;
-      },
-      enableSorting: true,
-      enableColumnFilter: true,
+    cell: ({ row }) => {
+      return <Badge variant="secondary">{row.original.code}</Badge>;
     },
-    {
-      id: 'sessionId',
-      accessorFn: (row) => row.sessionId,
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label='Session' />
-      ),
-      meta: {
-        label: 'Session',
-        placeholder: 'Filter by session...',
-        variant: 'multiSelect',
-        options: sessionOptions,
-      },
-      cell: ({ row }) => {
-        const session = row.original.session;
-        return session ? (
-          <div>{session.name}</div>
-        ) : (
-          <span className='text-muted-foreground'>{row.original.sessionId || '—'}</span>
-        );
-      },
-      enableSorting: true,
-      enableColumnFilter: true,
+    enableSorting: true,
+  },
+  {
+    id: "semesterId",
+    accessorFn: (row) => row.semesterId,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label="Semester" />
+    ),
+    meta: {
+      label: "Semester",
+      placeholder: "Filter by semester...",
+      variant: "multiSelect",
+      options: semesterOptions,
     },
-    {
-      accessorKey: 'credits',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label='Credits' />
-      ),
-      meta: {
-        label: 'Credits',
-        variant: 'text',
-      },
-      cell: ({ row }) => {
-        return <div>{row.original.credits}</div>;
-      },
-      enableSorting: true,
+    cell: ({ row }) => {
+      const semester = row.original.semester;
+      return (
+        <div>
+          {semester ? semester.ordinal : row.original.semesterId || "—"}
+        </div>
+      );
     },
-    {
-      accessorKey: 'createdAt',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label='Created' />
-      ),
-      meta: {
-        label: 'Created',
-        variant: 'date',
-      },
-      cell: ({ row }) => {
-        const date = new Date(row.original.createdAt);
-        return <span>{format(date, 'MMM dd, yyyy')}</span>;
-      },
-      enableSorting: true,
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  {
+    id: "sessionId",
+    accessorFn: (row) => row.sessionId,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label="Session" />
+    ),
+    meta: {
+      label: "Session",
+      placeholder: "Filter by session...",
+      variant: "multiSelect",
+      options: sessionOptions,
     },
-    {
-      id: 'actions',
-      cell: ({ row }) => <ActionCell course={row.original} />,
-      size: 40,
+    cell: ({ row }) => {
+      const session = row.original.session;
+      return session ? (
+        <div>{session.name}</div>
+      ) : (
+        <span className="text-muted-foreground">
+          {row.original.sessionId || "—"}
+        </span>
+      );
     },
-  ];
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  {
+    accessorKey: "credits",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label="Credits" />
+    ),
+    meta: {
+      label: "Credits",
+      variant: "text",
+    },
+    cell: ({ row }) => {
+      return <div>{row.original.credits}</div>;
+    },
+    enableSorting: true,
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} label="Created" />
+    ),
+    meta: {
+      label: "Created",
+      variant: "date",
+    },
+    cell: ({ row }) => {
+      const date = new Date(row.original.createdAt);
+      return <span>{format(date, "MMM dd, yyyy")}</span>;
+    },
+    enableSorting: true,
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => <ActionCell course={row.original} />,
+    size: 40,
+  },
+];
 
 const ActionCell = ({ course }: { course: Course }) => {
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -173,15 +179,15 @@ const ActionCell = ({ course }: { course: Course }) => {
         <DropdownMenuTrigger
           render={
             <Button
-              variant='ghost'
-              className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
+              variant="ghost"
+              className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
             >
-              <MoreHorizontal className='h-4 w-4' />
-              <span className='sr-only'>Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">Open menu</span>
             </Button>
           }
         ></DropdownMenuTrigger>
-        <DropdownMenuContent align='end' className='w-44'>
+        <DropdownMenuContent align="end" className="w-44">
           <DropdownMenuItem
             render={<Link href={`/dashboard/courses/${course.id}`} />}
           >
@@ -191,7 +197,7 @@ const ActionCell = ({ course }: { course: Course }) => {
             <IconEdit /> Edit
           </DropdownMenuItem>
           <DropdownMenuItem
-            variant='destructive'
+            variant="destructive"
             onClick={() => setShowDeleteDialog(true)}
           >
             <IconTrash />

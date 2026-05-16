@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -6,8 +6,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { AddSemesterForm } from './add-semester-form';
+} from "@/components/ui/dialog";
+import { AddSemesterForm } from "./add-semester-form";
 
 interface AddSemesterDialogProps {
   open: boolean;
@@ -20,7 +20,7 @@ export function AddSemesterDialog({
 }: AddSemesterDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='w-full max-w-[calc(100%-2rem)] max-h-[calc(100%-2rem)] sm:max-w-xl overflow-auto'>
+      <DialogContent className="w-full max-w-[calc(100%-2rem)] max-h-[calc(100%-2rem)] sm:max-w-xl overflow-auto">
         <DialogHeader>
           <DialogTitle>Add Semester</DialogTitle>
           <DialogDescription>Create a new semester.</DialogDescription>

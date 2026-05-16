@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -6,9 +6,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { TeacherData } from '@/lib/api/services/teacher.service';
-import { EditTeacherForm } from './edit-teacher-form';
+} from "@/components/ui/dialog";
+import { TeacherData } from "@/lib/api/services/teacher.service";
+import { EditTeacherForm } from "./edit-teacher-form";
 
 interface EditTeacherDialogProps {
   teacher: TeacherData;
@@ -23,7 +23,7 @@ export function EditTeacherDialog({
 }: EditTeacherDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='w-full max-w-[calc(100%-2rem)] max-h-[calc(100%-2rem)] sm:max-w-md overflow-auto'>
+      <DialogContent className="w-full max-w-[calc(100%-2rem)] max-h-[calc(100%-2rem)] sm:max-w-md overflow-auto">
         <DialogHeader>
           <DialogTitle>Edit Teacher</DialogTitle>
           <DialogDescription>Update teacher account details.</DialogDescription>

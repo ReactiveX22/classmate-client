@@ -1,5 +1,6 @@
 "use client";
 
+import { AiErrorBanner } from "@/components/ai/ai-error-banner";
 import { AiReasoningIndicator } from "@/components/ai/ai-reasoning-indicator";
 import { AiStreamingBubble } from "@/components/ai/ai-streaming-bubble";
 import type { ToolIndicator } from "@/components/ai/ai-tool-indicator";
@@ -28,6 +29,8 @@ interface AiMessageListProps {
   streamingReasoning: string;
   activeTools?: ToolIndicator[];
   isStreaming: boolean;
+  error?: { message: string } | null;
+  onRetry?: () => void;
 }
 
 export function AiMessageList({
@@ -36,6 +39,8 @@ export function AiMessageList({
   streamingReasoning,
   activeTools,
   isStreaming,
+  error,
+  onRetry,
 }: AiMessageListProps) {
   const tools = activeTools ?? [];
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
@@ -181,6 +186,11 @@ export function AiMessageList({
             reasoning={streamingReasoning}
             isStreaming={isStreaming}
           />
+        )}
+      </AnimatePresence>
+      <AnimatePresence initial={false} mode="popLayout">
+        {error && onRetry && (
+          <AiErrorBanner message={error.message} onRetry={onRetry} />
         )}
       </AnimatePresence>
     </div>

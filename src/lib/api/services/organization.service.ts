@@ -1,14 +1,14 @@
-import type { Organization } from '@/types/auth';
-import apiClient from '../index';
-import { AppError } from '@/utils/errors';
-import { ErrorCode, ApiError } from '@/types/errors';
-import axios, { AxiosError } from 'axios';
+import type { Organization } from "@/types/auth";
+import apiClient from "../index";
+import { AppError } from "@/utils/errors";
+import { ErrorCode, ApiError } from "@/types/errors";
+import axios, { AxiosError } from "axios";
 
 export const orgService = {
   async getOrgById(id: string): Promise<Organization> {
     try {
       const response = await apiClient.get<Organization>(
-        `/api/v1/organizations/${id}`
+        `/api/v1/organizations/${id}`,
       );
       console.log(response.data);
       return response.data;
@@ -22,9 +22,9 @@ export const orgService = {
         if (errorData?.errorCode) {
           throw new AppError(
             errorData.errorCode as ErrorCode,
-            errorData.message || 'An error occurred',
+            errorData.message || "An error occurred",
             status,
-            errorData.details
+            errorData.details,
           );
         }
       }

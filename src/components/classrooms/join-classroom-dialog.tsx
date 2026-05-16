@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,15 +9,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Field, FieldError, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { IconPlus } from '@tabler/icons-react';
-import { useForm } from '@tanstack/react-form';
-import { useState } from 'react';
-import z from 'zod';
+} from "@/components/ui/dialog";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { IconPlus } from "@tabler/icons-react";
+import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
+import z from "zod";
 
-import { useJoinClassroom } from '@/hooks/use-classrooms';
+import { useJoinClassroom } from "@/hooks/use-classrooms";
 
 export function JoinClassroomDialog() {
   const [open, setOpen] = useState(false);
@@ -25,11 +25,11 @@ export function JoinClassroomDialog() {
 
   const form = useForm({
     defaultValues: {
-      code: '',
+      code: "",
     },
     validators: {
       onChange: z.object({
-        code: z.string().min(1, 'Class code is required'),
+        code: z.string().min(1, "Class code is required"),
       }),
     },
     onSubmit: async ({ value }) => {
@@ -44,12 +44,12 @@ export function JoinClassroomDialog() {
       <DialogTrigger
         render={
           <Button>
-            <IconPlus className='size-4 mr-2' />
+            <IconPlus className="size-4 mr-2" />
             Join Classroom
           </Button>
         }
       />
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Join Classroom</DialogTitle>
           <DialogDescription>
@@ -63,9 +63,9 @@ export function JoinClassroomDialog() {
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className='grid gap-4 py-4'
+          className="grid gap-4 py-4"
         >
-          <form.Field name='code'>
+          <form.Field name="code">
             {(field) => {
               const isInvalid =
                 field.state.meta.isTouched &&
@@ -79,7 +79,7 @@ export function JoinClassroomDialog() {
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder='e.g. abcd123'
+                    placeholder="e.g. abcd123"
                     aria-invalid={isInvalid}
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -90,8 +90,8 @@ export function JoinClassroomDialog() {
 
           <DialogFooter>
             <Button
-              type='button'
-              variant='outline'
+              type="button"
+              variant="outline"
               onClick={() => setOpen(false)}
             >
               Cancel
@@ -100,7 +100,7 @@ export function JoinClassroomDialog() {
               selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
               {([canSubmit, isSubmitting]) => (
-                <Button type='submit' disabled={!canSubmit || isSubmitting}>
+                <Button type="submit" disabled={!canSubmit || isSubmitting}>
                   Join
                 </Button>
               )}

@@ -1,5 +1,5 @@
-import { PaginationParams } from '@/types/pagination';
-import { queryOptions, UseQueryOptions } from '@tanstack/react-query';
+import { PaginationParams } from "@/types/pagination";
+import { queryOptions, UseQueryOptions } from "@tanstack/react-query";
 import {
   AttendanceChecklistItem,
   ClassroomDetail,
@@ -7,7 +7,7 @@ import {
   ClassroomsResponse,
   StudentAttendanceStats,
   UpcomingPost,
-} from '../api/services/classroom.service';
+} from "../api/services/classroom.service";
 
 export function createClassroomQueryOptions<
   TData = ClassroomsResponse,
@@ -16,12 +16,12 @@ export function createClassroomQueryOptions<
   params?: PaginationParams,
   options?: Omit<
     UseQueryOptions<ClassroomsResponse, TError, TData>,
-    'queryKey' | 'queryFn'
+    "queryKey" | "queryFn"
   >,
 ) {
   return queryOptions({
     ...options,
-    queryKey: ['classrooms', params],
+    queryKey: ["classrooms", params],
     queryFn: () => classroomService.getClassrooms(params),
     staleTime: 5 * 60 * 1000,
   });
@@ -34,12 +34,12 @@ export function getClassroomQueryOptions<
   id: string,
   options?: Omit<
     UseQueryOptions<ClassroomDetail, TError, TData>,
-    'queryKey' | 'queryFn'
+    "queryKey" | "queryFn"
   >,
 ) {
   return queryOptions({
     ...options,
-    queryKey: ['classrooms', id],
+    queryKey: ["classrooms", id],
     queryFn: () => classroomService.getClassroomById(id),
   });
 }
@@ -51,12 +51,12 @@ export function getAttendanceChecklistQueryOptions<
   date?: string,
   options?: Omit<
     UseQueryOptions<AttendanceChecklistItem[], TError, TData>,
-    'queryKey' | 'queryFn'
+    "queryKey" | "queryFn"
   >,
 ) {
   return queryOptions({
     ...options,
-    queryKey: ['classrooms', classroomId, 'attendance-checklist', date],
+    queryKey: ["classrooms", classroomId, "attendance-checklist", date],
     queryFn: () => classroomService.getAttendanceChecklist(classroomId, date),
   });
 }
@@ -69,12 +69,12 @@ export function getStudentAttendanceStatsQueryOptions<
   studentId: string,
   options?: Omit<
     UseQueryOptions<StudentAttendanceStats, TError, TData>,
-    'queryKey' | 'queryFn'
+    "queryKey" | "queryFn"
   >,
 ) {
   return queryOptions({
     ...options,
-    queryKey: ['classrooms', classroomId, 'attendance-stats', studentId],
+    queryKey: ["classrooms", classroomId, "attendance-stats", studentId],
     queryFn: () =>
       classroomService.getStudentAttendanceStats(classroomId, studentId),
   });
@@ -86,12 +86,12 @@ export function getUpcomingPostsQueryOptions<
   classroomId: string,
   options?: Omit<
     UseQueryOptions<UpcomingPost[], TError, TData>,
-    'queryKey' | 'queryFn'
+    "queryKey" | "queryFn"
   >,
 ) {
   return queryOptions({
     ...options,
-    queryKey: ['classrooms', classroomId, 'upcoming-posts'],
+    queryKey: ["classrooms", classroomId, "upcoming-posts"],
     queryFn: () => classroomService.getUpcomingPosts(classroomId),
   });
 }

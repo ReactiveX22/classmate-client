@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   AlertDialog,
@@ -9,9 +9,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { useDeleteCourse } from '@/hooks/use-courses';
-import { Course } from '@/lib/api/services/course.service';
+} from "@/components/ui/alert-dialog";
+import { useDeleteCourse } from "@/hooks/use-courses";
+import { Course } from "@/lib/api/services/course.service";
 
 interface DeleteCourseDialogProps {
   course: Course;
@@ -41,10 +41,10 @@ export function DeleteCourseDialog({
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete the
-            course{' '}
+            course{" "}
             <strong>
               {course.title} ({course.code})
-            </strong>{' '}
+            </strong>{" "}
             and remove its data from our servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -57,10 +57,10 @@ export function DeleteCourseDialog({
               e.preventDefault();
               handleDelete();
             }}
-            variant='destructive'
+            variant="destructive"
             disabled={deleteCourseMutation.isPending}
           >
-            {deleteCourseMutation.isPending ? 'Deleting...' : 'Delete'}
+            {deleteCourseMutation.isPending ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

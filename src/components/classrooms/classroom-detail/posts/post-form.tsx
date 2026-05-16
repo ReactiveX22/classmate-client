@@ -1,45 +1,41 @@
-import { AttachmentUpload } from '@/components/common/attachment-upload';
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Checkbox } from '@/components/ui/checkbox';
+import { AttachmentUpload } from "@/components/common/attachment-upload";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   Sortable,
   SortableContent,
   SortableItem,
   SortableItemHandle,
-} from '@/components/ui/sortable';
-import { Textarea } from '@/components/ui/textarea';
-import { useFormErrorHandler } from '@/hooks/use-form-handler';
+} from "@/components/ui/sortable";
+import { Textarea } from "@/components/ui/textarea";
+import { useFormErrorHandler } from "@/hooks/use-form-handler";
 import {
   UploadResult,
   useUploadAttachment,
-} from '@/hooks/use-upload-attachment';
+} from "@/hooks/use-upload-attachment";
 import {
   CreatePostDto,
   PollOption,
@@ -47,85 +43,85 @@ import {
   PostType,
   QuestionData,
   SubmissionType,
-} from '@/lib/api/services/post.service';
-import { cn } from '@/lib/utils';
-import { IconCalendar } from '@tabler/icons-react';
-import { useForm } from '@tanstack/react-form';
-import { format } from 'date-fns';
-import { GripVertical, Plus, X } from 'lucide-react';
-import { useState } from 'react';
-import { z } from 'zod';
+} from "@/lib/api/services/post.service";
+import { cn } from "@/lib/utils";
+import { IconCalendar } from "@tabler/icons-react";
+import { useForm } from "@tanstack/react-form";
+import { format } from "date-fns";
+import { GripVertical, Plus, X } from "lucide-react";
+import { useState } from "react";
+import { z } from "zod";
 
 // Zod Schemas
 const baseSchema = z.object({
-  content: z.string().min(1, 'Content is required'),
+  content: z.string().min(1, "Content is required"),
   isPinned: z.boolean(),
   commentsEnabled: z.boolean(),
   tags: z.array(z.string()),
 });
 
 const assignmentSchema = baseSchema.extend({
-  type: z.literal('assignment'),
-  title: z.string().min(1, 'Title is required'),
+  type: z.literal("assignment"),
+  title: z.string().min(1, "Title is required"),
   assignmentData: z.object({
     dueDate: z.date().optional(),
     points: z.number().min(0).max(1000).default(100),
     submissionType: z
-      .enum(['file', 'text', 'link', 'multiple'] as const)
-      .default('file'),
+      .enum(["file", "text", "link", "multiple"] as const)
+      .default("file"),
     allowLateSubmission: z.boolean().default(true),
   }),
 });
 
 const materialSchema = baseSchema.extend({
-  type: z.literal('material'),
-  title: z.string().min(1, 'Title is required'),
+  type: z.literal("material"),
+  title: z.string().min(1, "Title is required"),
 });
 
 const announcementSchema = baseSchema.extend({
-  type: z.literal('announcement'),
+  type: z.literal("announcement"),
   title: z.string().optional(),
 });
 
 const questionShortAnswerSchema = z.object({
-  mode: z.literal('short_answer'),
+  mode: z.literal("short_answer"),
 });
 
 const pollOptionSchema = z.object({
   id: z.string().min(1),
-  text: z.string().trim().min(1, 'Poll options cannot be empty'),
+  text: z.string().trim().min(1, "Poll options cannot be empty"),
   position: z.number(),
 });
 
 const questionPollSchema = z
   .object({
-    mode: z.literal('poll'),
-    selectionMode: z.enum(['single', 'multiple'] as const),
+    mode: z.literal("poll"),
+    selectionMode: z.enum(["single", "multiple"] as const),
     options: z
       .array(pollOptionSchema)
-      .min(2, 'Polls must have at least 2 options'),
+      .min(2, "Polls must have at least 2 options"),
   })
   .superRefine((value, ctx) => {
     const ids = value.options.map((option) => option.id);
     if (new Set(ids).size !== ids.length) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'Poll options must be unique',
-        path: ['options'],
+        message: "Poll options must be unique",
+        path: ["options"],
       });
     }
   });
 
 const questionSchema = baseSchema.extend({
-  type: z.literal('question'),
+  type: z.literal("question"),
   title: z.string().optional(),
-  questionData: z.discriminatedUnion('mode', [
+  questionData: z.discriminatedUnion("mode", [
     questionShortAnswerSchema,
     questionPollSchema,
   ]),
 });
 
-const postSchema = z.discriminatedUnion('type', [
+const postSchema = z.discriminatedUnion("type", [
   announcementSchema,
   assignmentSchema,
   materialSchema,
@@ -136,14 +132,14 @@ export type PostFormData = z.input<typeof postSchema>;
 
 const createPollOption = (index: number): PollOption => ({
   id: crypto.randomUUID(),
-  text: '',
+  text: "",
   position: index,
 });
 
 const createDefaultPollQuestionData = (
-  selectionMode: 'single' | 'multiple',
+  selectionMode: "single" | "multiple",
 ): QuestionData => ({
-  mode: 'poll',
+  mode: "poll",
   selectionMode,
   options: [createPollOption(0), createPollOption(1)],
 });
@@ -174,7 +170,7 @@ export function PostForm({
   defaultType,
   initialAttachments = [],
   onSubmit,
-  submitLabel = 'Post',
+  submitLabel = "Post",
   isSubmitting = false,
   hideTypeSelection = false,
   lockQuestionPollStructure = false,
@@ -184,21 +180,23 @@ export function PostForm({
   const { fieldErrors, globalErrors, handleError } = useFormErrorHandler();
   const [attachments, setAttachments] =
     useState<UploadResult[]>(initialAttachments);
-  const [currentTag, setCurrentTag] = useState('');
+  const [currentTag, setCurrentTag] = useState("");
 
   const { mutateAsync: uploadFile } = useUploadAttachment();
 
-  const defaultValues: PostFormData = initialValues || ({
-    type: defaultType || 'announcement',
-    content: '',
-    isPinned: false,
-    commentsEnabled: true,
-    title: '',
-    tags: [],
-    questionData: {
-      mode: 'short_answer',
-    },
-  } as PostFormData);
+  const defaultValues: PostFormData =
+    initialValues ||
+    ({
+      type: defaultType || "announcement",
+      content: "",
+      isPinned: false,
+      commentsEnabled: true,
+      title: "",
+      tags: [],
+      questionData: {
+        mode: "short_answer",
+      },
+    } as PostFormData);
 
   const form = useForm({
     defaultValues,
@@ -217,23 +215,23 @@ export function PostForm({
           tags: value.tags || [],
         };
 
-        if (value.type === 'assignment') {
+        if (value.type === "assignment") {
           payload.assignmentData = {
             ...value.assignmentData,
             dueDate: value.assignmentData.dueDate?.toISOString(),
           };
         }
 
-        if (value.type === 'question') {
+        if (value.type === "question") {
           payload.questionData =
-            value.questionData.mode === 'poll'
+            value.questionData.mode === "poll"
               ? {
-                  mode: 'poll',
+                  mode: "poll",
                   selectionMode: value.questionData.selectionMode,
                   options: reorderPollOptions(value.questionData.options),
                 }
               : {
-                  mode: 'short_answer',
+                  mode: "short_answer",
                 };
         }
 
@@ -256,7 +254,7 @@ export function PostForm({
   ) => {
     const errors = fieldErrorsState
       .filter((err): err is string | { message?: string } => !!err)
-      .map((err) => (typeof err === 'string' ? { message: err } : err));
+      .map((err) => (typeof err === "string" ? { message: err } : err));
 
     if (errors.length > 0) return errors;
     if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
@@ -267,11 +265,11 @@ export function PostForm({
     pushValue: (value: string) => void,
     currentTags: string[],
   ) => {
-    const normalized = currentTag.trim().replace(/^#/, '').toLowerCase();
+    const normalized = currentTag.trim().replace(/^#/, "").toLowerCase();
     if (normalized && !currentTags.includes(normalized)) {
       pushValue(normalized);
     }
-    setCurrentTag('');
+    setCurrentTag("");
   };
   return (
     <form
@@ -281,48 +279,48 @@ export function PostForm({
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className='space-y-6 py-4'
+      className="space-y-6 py-4"
     >
       <FieldGroup>
         {/* Post Type Selector */}
         {!hideTypeSelection && (
-          <form.Field name='type'>
+          <form.Field name="type">
             {(field) => {
               const errors = getFieldError(field.name, field.state.meta.errors);
               const isInvalid = errors.length > 0;
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>
-                    Post Type <span className='text-destructive'>*</span>
+                    Post Type <span className="text-destructive">*</span>
                   </FieldLabel>
                   <Select
-                    value={field.state.value || 'announcement'}
+                    value={field.state.value || "announcement"}
                     onValueChange={(val) => {
                       field.handleChange(val as PostType);
                       // Set defaults when switching types
-                      if (val === 'assignment') {
-                        form.setFieldValue('assignmentData', {
+                      if (val === "assignment") {
+                        form.setFieldValue("assignmentData", {
                           points: 100,
-                          submissionType: 'file',
+                          submissionType: "file",
                           allowLateSubmission: true,
                         });
                       }
-                      if (val === 'question') {
-                        form.setFieldValue('questionData', {
-                          mode: 'short_answer',
+                      if (val === "question") {
+                        form.setFieldValue("questionData", {
+                          mode: "short_answer",
                         });
                       }
                     }}
                     disabled={!!initialValues}
                   >
                     <SelectTrigger>
-                      <SelectValue className='capitalize' />
+                      <SelectValue className="capitalize" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value='announcement'>Announcement</SelectItem>
-                      <SelectItem value='assignment'>Assignment</SelectItem>
-                      <SelectItem value='material'>Material</SelectItem>
-                      <SelectItem value='question'>Question</SelectItem>
+                      <SelectItem value="announcement">Announcement</SelectItem>
+                      <SelectItem value="assignment">Assignment</SelectItem>
+                      <SelectItem value="material">Material</SelectItem>
+                      <SelectItem value="question">Question</SelectItem>
                     </SelectContent>
                   </Select>
                   {isInvalid && <FieldError errors={errors} />}
@@ -335,29 +333,35 @@ export function PostForm({
         {/* Title Field (Conditional) */}
         <form.Subscribe selector={(state) => state.values.type}>
           {(type) => {
-            const isRequired = type === 'assignment' || type === 'material';
-            if (!isRequired && type !== 'question' && type !== 'announcement')
+            const isRequired = type === "assignment" || type === "material";
+            if (!isRequired && type !== "question" && type !== "announcement")
               return null;
 
-            if (type === 'announcement') return null;
+            if (type === "announcement") return null;
 
             return (
-              <form.Field name='title'>
+              <form.Field name="title">
                 {(field) => {
-                  const errors = getFieldError(field.name, field.state.meta.errors);
+                  const errors = getFieldError(
+                    field.name,
+                    field.state.meta.errors,
+                  );
                   const isInvalid = errors.length > 0;
                   return (
                     <Field data-invalid={isInvalid}>
                       <FieldLabel htmlFor={field.name}>
-                        Title {isRequired && <span className='text-destructive'>*</span>}
+                        Title{" "}
+                        {isRequired && (
+                          <span className="text-destructive">*</span>
+                        )}
                       </FieldLabel>
                       <Input
                         id={field.name}
                         name={field.name}
-                        value={field.state.value || ''}
+                        value={field.state.value || ""}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder='Enter title'
+                        placeholder="Enter title"
                       />
                       {isInvalid && <FieldError errors={errors} />}
                     </Field>
@@ -370,15 +374,18 @@ export function PostForm({
 
         <form.Subscribe selector={(state) => state.values.type}>
           {(type) =>
-            type === 'question' ? (
-              <form.Field name='questionData'>
+            type === "question" ? (
+              <form.Field name="questionData">
                 {(field) => {
-                  const errors = getFieldError(field.name, field.state.meta.errors);
+                  const errors = getFieldError(
+                    field.name,
+                    field.state.meta.errors,
+                  );
                   const isInvalid = errors.length > 0;
-                  const value = field.state.value || { mode: 'short_answer' };
+                  const value = field.state.value || { mode: "short_answer" };
 
                   const updatePollOptions = (options: PollOption[]) => {
-                    if (value.mode !== 'poll') return;
+                    if (value.mode !== "poll") return;
                     field.handleChange({
                       ...value,
                       options: reorderPollOptions(options),
@@ -388,48 +395,55 @@ export function PostForm({
                   return (
                     <Field data-invalid={isInvalid}>
                       <FieldLabel>
-                        Response Type <span className='text-destructive'>*</span>
+                        Response Type{" "}
+                        <span className="text-destructive">*</span>
                       </FieldLabel>
                       <Select
                         value={value.mode}
-                        disabled={lockQuestionPollStructure && value.mode === 'poll'}
+                        disabled={
+                          lockQuestionPollStructure && value.mode === "poll"
+                        }
                         onValueChange={(nextValue) => {
-                          if (nextValue === 'short_answer') {
-                            field.handleChange({ mode: 'short_answer' });
+                          if (nextValue === "short_answer") {
+                            field.handleChange({ mode: "short_answer" });
                             return;
                           }
 
                           field.handleChange(
-                            createDefaultPollQuestionData('single'),
+                            createDefaultPollQuestionData("single"),
                           );
                         }}
                       >
                         <SelectTrigger>
                           <SelectValue>
-                            {value.mode === 'short_answer' ? 'Short Answer' : 'Poll'}
+                            {value.mode === "short_answer"
+                              ? "Short Answer"
+                              : "Poll"}
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value='short_answer'>
+                          <SelectItem value="short_answer">
                             Short Answer
                           </SelectItem>
-                          <SelectItem value='poll'>Poll</SelectItem>
+                          <SelectItem value="poll">Poll</SelectItem>
                         </SelectContent>
                       </Select>
 
-                      {value.mode === 'poll' && (
-                        <div className='mt-4 space-y-3'>
-                          <div className='flex items-center justify-between gap-3'>
+                      {value.mode === "poll" && (
+                        <div className="mt-4 space-y-3">
+                          <div className="flex items-center justify-between gap-3">
                             <div>
-                              <p className='text-sm font-medium'>Poll Options</p>
-                              <p className='text-xs text-muted-foreground'>
+                              <p className="text-sm font-medium">
+                                Poll Options
+                              </p>
+                              <p className="text-xs text-muted-foreground">
                                 Drag by the handle to reorder options.
                               </p>
                             </div>
                             <Button
-                              type='button'
-                              variant='outline'
-                              size='sm'
+                              type="button"
+                              variant="outline"
+                              size="sm"
                               disabled={lockQuestionPollStructure}
                               onClick={() =>
                                 updatePollOptions([
@@ -438,7 +452,7 @@ export function PostForm({
                                 ])
                               }
                             >
-                              <Plus className='mr-2 h-4 w-4' />
+                              <Plus className="mr-2 h-4 w-4" />
                               Add Option
                             </Button>
                           </div>
@@ -448,18 +462,18 @@ export function PostForm({
                             getItemValue={(option) => option.id}
                             onValueChange={updatePollOptions}
                           >
-                            <SortableContent className='space-y-2'>
+                            <SortableContent className="space-y-2">
                               {value.options.map((option, index) => (
                                 <SortableItem
                                   key={option.id}
                                   value={option.id}
-                                  className='flex items-center gap-2 rounded-md border bg-background p-2'
+                                  className="flex items-center gap-2 rounded-md border bg-background p-2"
                                 >
                                   <SortableItemHandle
-                                    className='rounded-md border p-2 text-muted-foreground hover:text-foreground'
+                                    className="rounded-md border p-2 text-muted-foreground hover:text-foreground"
                                     aria-label={`Reorder option ${index + 1}`}
                                   >
-                                    <GripVertical className='h-4 w-4' />
+                                    <GripVertical className="h-4 w-4" />
                                   </SortableItemHandle>
                                   <Input
                                     value={option.text}
@@ -479,9 +493,9 @@ export function PostForm({
                                     placeholder={`Option ${index + 1}`}
                                   />
                                   <Button
-                                    type='button'
-                                    variant='ghost'
-                                    size='icon'
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
                                     disabled={
                                       lockQuestionPollStructure ||
                                       value.options.length <= 2
@@ -495,28 +509,30 @@ export function PostForm({
                                       )
                                     }
                                   >
-                                    <X className='h-4 w-4' />
+                                    <X className="h-4 w-4" />
                                   </Button>
                                 </SortableItem>
                               ))}
                             </SortableContent>
                           </Sortable>
 
-                          <div className='flex items-center space-x-2 pt-2'>
+                          <div className="flex items-center space-x-2 pt-2">
                             <Checkbox
-                              id='poll-multi-choice'
-                              className='group-has-disabled/field:opacity-100'
-                              checked={value.selectionMode === 'multiple'}
+                              id="poll-multi-choice"
+                              className="group-has-disabled/field:opacity-100"
+                              checked={value.selectionMode === "multiple"}
                               onCheckedChange={(checked) => {
                                 field.handleChange({
                                   ...value,
-                                  selectionMode: checked ? 'multiple' : 'single',
+                                  selectionMode: checked
+                                    ? "multiple"
+                                    : "single",
                                 });
                               }}
                             />
                             <Label
-                              htmlFor='poll-multi-choice'
-                              className='text-sm font-normal'
+                              htmlFor="poll-multi-choice"
+                              className="text-sm font-normal"
                             >
                               Allow multiple choices
                             </Label>
@@ -525,7 +541,6 @@ export function PostForm({
                       )}
 
                       {isInvalid && <FieldError errors={errors} />}
-
                     </Field>
                   );
                 }}
@@ -535,23 +550,23 @@ export function PostForm({
         </form.Subscribe>
 
         {/* Content Field */}
-        <form.Field name='content'>
+        <form.Field name="content">
           {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>
-                  Content <span className='text-destructive'>*</span>
+                  Content <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Textarea
                   id={field.name}
                   name={field.name}
-                  value={field.state.value || ''}
+                  value={field.state.value || ""}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  className='min-h-[100px]'
-                  placeholder='Share with your class...'
+                  className="min-h-[100px]"
+                  placeholder="Share with your class..."
                 />
                 {isInvalid && <FieldError errors={errors} />}
               </Field>
@@ -561,48 +576,48 @@ export function PostForm({
 
         <form.Subscribe selector={(state) => state.values.type}>
           {(type) =>
-            type === 'material' ? (
-              <form.Field name='tags' mode='array'>
+            type === "material" ? (
+              <form.Field name="tags" mode="array">
                 {(field) => (
                   <Field>
-                    <FieldLabel htmlFor='resource-tag-input'>Tags</FieldLabel>
-                    <div className='space-y-3'>
-                      <div className='flex gap-2'>
+                    <FieldLabel htmlFor="resource-tag-input">Tags</FieldLabel>
+                    <div className="space-y-3">
+                      <div className="flex gap-2">
                         <Input
-                          id='resource-tag-input'
+                          id="resource-tag-input"
                           value={currentTag}
-                          placeholder='Add tag and press Enter'
+                          placeholder="Add tag and press Enter"
                           onChange={(e) => setCurrentTag(e.target.value)}
                           onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
+                            if (e.key === "Enter") {
                               e.preventDefault();
                               handleAddTag(field.pushValue, field.state.value);
                             }
                           }}
                         />
                         <Button
-                          type='button'
-                          variant='outline'
-                          size='icon'
+                          type="button"
+                          variant="outline"
+                          size="icon"
                           onClick={() =>
                             handleAddTag(field.pushValue, field.state.value)
                           }
                         >
-                          <Plus className='h-4 w-4' />
+                          <Plus className="h-4 w-4" />
                         </Button>
                       </div>
 
                       {field.state.value.length > 0 && (
-                        <div className='flex flex-wrap gap-2'>
+                        <div className="flex flex-wrap gap-2">
                           {field.state.value.map((tag, index) => (
-                            <Badge key={`${tag}-${index}`} variant='secondary'>
+                            <Badge key={`${tag}-${index}`} variant="secondary">
                               #{tag}
                               <button
-                                type='button'
-                                className='ml-1 rounded-full p-0.5 hover:bg-muted-foreground/20'
+                                type="button"
+                                className="ml-1 rounded-full p-0.5 hover:bg-muted-foreground/20"
                                 onClick={() => field.removeValue(index)}
                               >
-                                <X className='h-3 w-3' />
+                                <X className="h-3 w-3" />
                               </button>
                             </Badge>
                           ))}
@@ -619,12 +634,12 @@ export function PostForm({
         {/* Assignment Specific Fields */}
         <form.Subscribe selector={(state) => state.values.type}>
           {(type) =>
-            type === 'assignment' ? (
-              <div className='space-y-4 border rounded-lg p-4 bg-muted/20'>
-                <h4 className='font-medium text-sm'>Assignment Details</h4>
-                <div className='grid grid-cols-2 gap-4'>
+            type === "assignment" ? (
+              <div className="space-y-4 border rounded-lg p-4 bg-muted/20">
+                <h4 className="font-medium text-sm">Assignment Details</h4>
+                <div className="grid grid-cols-2 gap-4">
                   {/* Due Date */}
-                  <form.Field name='assignmentData.dueDate'>
+                  <form.Field name="assignmentData.dueDate">
                     {(field) => (
                       <Field>
                         <FieldLabel>Due Date</FieldLabel>
@@ -632,24 +647,24 @@ export function PostForm({
                           <PopoverTrigger
                             render={
                               <Button
-                                variant='outline'
+                                variant="outline"
                                 className={cn(
-                                  'w-full justify-start text-left font-normal',
-                                  !field.state.value && 'text-muted-foreground',
+                                  "w-full justify-start text-left font-normal",
+                                  !field.state.value && "text-muted-foreground",
                                 )}
                               >
-                                <IconCalendar className='mr-2 h-4 w-4' />
+                                <IconCalendar className="mr-2 h-4 w-4" />
                                 {field.state.value ? (
-                                  format(field.state.value, 'PPP')
+                                  format(field.state.value, "PPP")
                                 ) : (
                                   <span>Pick a date</span>
                                 )}
                               </Button>
                             }
                           />
-                          <PopoverContent className='w-auto p-0' align='start'>
+                          <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
-                              mode='single'
+                              mode="single"
                               selected={field.state.value}
                               onSelect={(date) => field.handleChange(date)}
                               initialFocus
@@ -661,15 +676,15 @@ export function PostForm({
                   </form.Field>
 
                   {/* Points */}
-                  <form.Field name='assignmentData.points'>
+                  <form.Field name="assignmentData.points">
                     {(field) => (
                       <Field>
                         <FieldLabel>Points</FieldLabel>
                         <Input
-                          type='number'
-                          min='0'
-                          max='1000'
-                          value={field.state.value ?? ''}
+                          type="number"
+                          min="0"
+                          max="1000"
+                          value={field.state.value ?? ""}
                           onChange={(e) =>
                             field.handleChange(Number(e.target.value))
                           }
@@ -680,13 +695,13 @@ export function PostForm({
                 </div>
 
                 {/* Submission Type & Late Submission */}
-                <div className='grid gap-2'>
-                  <form.Field name='assignmentData.submissionType'>
+                <div className="grid gap-2">
+                  <form.Field name="assignmentData.submissionType">
                     {(field) => (
                       <Field>
                         <FieldLabel>Submission Type</FieldLabel>
                         <Select
-                          value={field.state.value || 'file'}
+                          value={field.state.value || "file"}
                           onValueChange={(val) =>
                             field.handleChange(val as SubmissionType)
                           }
@@ -695,10 +710,10 @@ export function PostForm({
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value='file'>File Upload</SelectItem>
-                            <SelectItem value='text'>Text Entry</SelectItem>
-                            <SelectItem value='link'>Website URL</SelectItem>
-                            <SelectItem value='multiple'>
+                            <SelectItem value="file">File Upload</SelectItem>
+                            <SelectItem value="text">Text Entry</SelectItem>
+                            <SelectItem value="link">Website URL</SelectItem>
+                            <SelectItem value="multiple">
                               Multiple Options
                             </SelectItem>
                           </SelectContent>
@@ -708,19 +723,19 @@ export function PostForm({
                   </form.Field>
                 </div>
 
-                <form.Field name='assignmentData.allowLateSubmission'>
+                <form.Field name="assignmentData.allowLateSubmission">
                   {(field) => (
-                    <div className='flex items-center space-x-2 pt-2'>
+                    <div className="flex items-center space-x-2 pt-2">
                       <Checkbox
-                        id='late-submission'
+                        id="late-submission"
                         checked={!!field.state.value}
                         onCheckedChange={(checked) =>
                           field.handleChange(!!checked)
                         }
                       />
                       <Label
-                        htmlFor='late-submission'
-                        className='font-normal text-sm'
+                        htmlFor="late-submission"
+                        className="font-normal text-sm"
                       >
                         Allow late submissions
                       </Label>
@@ -749,31 +764,31 @@ export function PostForm({
         />
 
         {/* Footer Options */}
-        <div className='flex flex-col gap-3 pt-2'>
-          <form.Field name='isPinned'>
+        <div className="flex flex-col gap-3 pt-2">
+          <form.Field name="isPinned">
             {(field) => (
-              <div className='flex items-center space-x-2'>
+              <div className="flex items-center space-x-2">
                 <Checkbox
-                  id='pinned'
+                  id="pinned"
                   checked={!!field.state.value}
                   onCheckedChange={(checked) => field.handleChange(!!checked)}
                 />
-                <Label htmlFor='pinned' className='font-medium'>
+                <Label htmlFor="pinned" className="font-medium">
                   Pin to top of stream
                 </Label>
               </div>
             )}
           </form.Field>
 
-          <form.Field name='commentsEnabled'>
+          <form.Field name="commentsEnabled">
             {(field) => (
-              <div className='flex items-center space-x-2'>
+              <div className="flex items-center space-x-2">
                 <Checkbox
-                  id='comments'
+                  id="comments"
                   checked={!!field.state.value}
                   onCheckedChange={(checked) => field.handleChange(!!checked)}
                 />
-                <Label htmlFor='comments' className='font-medium'>
+                <Label htmlFor="comments" className="font-medium">
                   Enable comments
                 </Label>
               </div>
@@ -783,7 +798,7 @@ export function PostForm({
       </FieldGroup>
 
       {globalErrors.length > 0 && (
-        <Alert variant='destructive'>
+        <Alert variant="destructive">
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
             {globalErrors.map((err, i) => (
@@ -794,11 +809,11 @@ export function PostForm({
       )}
 
       {showFooter && (
-        <div className='flex justify-end gap-2'>
+        <div className="flex justify-end gap-2">
           <form.Subscribe selector={(state) => [state.isSubmitting]}>
             {([formIsSubmitting]) => (
-              <Button type='submit' disabled={formIsSubmitting || isSubmitting}>
-                {formIsSubmitting || isSubmitting ? 'Saving...' : submitLabel}
+              <Button type="submit" disabled={formIsSubmitting || isSubmitting}>
+                {formIsSubmitting || isSubmitting ? "Saving..." : submitLabel}
               </Button>
             )}
           </form.Subscribe>

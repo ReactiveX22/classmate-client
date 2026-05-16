@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { toast } from 'sonner';
-import { Plus } from 'lucide-react';
+import { useState } from "react";
+import { toast } from "sonner";
+import { Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -10,10 +10,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { useCreateNotice } from '@/hooks/use-notices';
-import { NoticeForm, NoticeFormValues } from './notice-form';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useCreateNotice } from "@/hooks/use-notices";
+import { NoticeForm, NoticeFormValues } from "./notice-form";
 
 export function AddNoticeDialog() {
   const [open, setOpen] = useState(false);
@@ -23,9 +23,9 @@ export function AddNoticeDialog() {
     try {
       await createNotice(values);
       setOpen(false);
-      toast.success('Notice created successfully');
+      toast.success("Notice created successfully");
     } catch (error) {
-      toast.error('Failed to create notice');
+      toast.error("Failed to create notice");
       console.error(error);
     }
   };
@@ -35,12 +35,12 @@ export function AddNoticeDialog() {
       <DialogTrigger
         render={
           <Button>
-            <Plus className='mr-2 h-4 w-4' />
+            <Plus className="mr-2 h-4 w-4" />
             Publish Notice
           </Button>
         }
       ></DialogTrigger>
-      <DialogContent className='sm:max-w-[600px] lg:max-w-[800px] max-h-[90vh] overflow-y-auto'>
+      <DialogContent className="sm:max-w-[600px] lg:max-w-[800px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create Notice</DialogTitle>
           <DialogDescription>
@@ -50,7 +50,7 @@ export function AddNoticeDialog() {
         <NoticeForm
           onSubmit={onSubmit}
           isSubmitting={isPending}
-          submitLabel='Create Notice'
+          submitLabel="Create Notice"
         />
       </DialogContent>
     </Dialog>

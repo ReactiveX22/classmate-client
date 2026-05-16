@@ -1,14 +1,14 @@
 import {
   NotificationItem,
   NotificationsResponse,
-} from '@/lib/api/services/notification.service';
-import { socketService } from '@/lib/api/services/socket.service';
-import { infiniteNotificationsQueryOptions } from '@/lib/queryOptions/notificationQueryOptions';
-import { InfiniteData, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
-import { useBrowserNotification } from './use-browser-notification';
-import { useUser } from './useAuth';
+} from "@/lib/api/services/notification.service";
+import { socketService } from "@/lib/api/services/socket.service";
+import { infiniteNotificationsQueryOptions } from "@/lib/queryOptions/notificationQueryOptions";
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { useBrowserNotification } from "./use-browser-notification";
+import { useUser } from "./useAuth";
 
 export const useNotificationSocket = () => {
   const { data: user } = useUser();
@@ -21,7 +21,7 @@ export const useNotificationSocket = () => {
     const socket = socketService.getSocket();
     if (!socket) return;
 
-    socket.on('notification', (newNotification: NotificationItem) => {
+    socket.on("notification", (newNotification: NotificationItem) => {
       if (newNotification?.actor?.id === user?.id) return;
 
       const { title, content } = newNotification.notification;
@@ -31,7 +31,7 @@ export const useNotificationSocket = () => {
       sendBrowserNotification(title, { body: content });
 
       queryClient.setQueriesData<InfiniteData<NotificationsResponse>>(
-        { queryKey: ['notifications'] },
+        { queryKey: ["notifications"] },
         (oldData) => {
           if (!oldData) return undefined;
 
@@ -51,7 +51,7 @@ export const useNotificationSocket = () => {
     });
 
     return () => {
-      socket.off('notification');
+      socket.off("notification");
     };
   }, [
     queryClient,

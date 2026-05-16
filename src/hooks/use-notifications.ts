@@ -3,15 +3,15 @@ import {
   useInfiniteQuery,
   useMutation,
   useQueryClient,
-} from '@tanstack/react-query';
-import { infiniteNotificationsQueryOptions } from '@/lib/queryOptions/notificationQueryOptions';
-import { PaginationParams } from '@/types/pagination';
+} from "@tanstack/react-query";
+import { infiniteNotificationsQueryOptions } from "@/lib/queryOptions/notificationQueryOptions";
+import { PaginationParams } from "@/types/pagination";
 import {
   notificationService,
   NotificationsResponse,
-} from '@/lib/api/services/notification.service';
+} from "@/lib/api/services/notification.service";
 
-export const useNotifications = (params?: Omit<PaginationParams, 'page'>) => {
+export const useNotifications = (params?: Omit<PaginationParams, "page">) => {
   return useInfiniteQuery(infiniteNotificationsQueryOptions(params));
 };
 
@@ -21,13 +21,13 @@ export const useMarkAsRead = () => {
   return useMutation({
     mutationFn: (id: string) => notificationService.markAsRead(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: ['notifications'] });
+      await queryClient.cancelQueries({ queryKey: ["notifications"] });
       const previousNotifications = queryClient.getQueryData<
         InfiniteData<NotificationsResponse>
-      >(['notifications']);
+      >(["notifications"]);
 
       queryClient.setQueriesData<InfiniteData<NotificationsResponse>>(
-        { queryKey: ['notifications'] },
+        { queryKey: ["notifications"] },
         (old) => {
           if (!old) return old;
           return {
@@ -47,13 +47,13 @@ export const useMarkAsRead = () => {
     onError: (_err, _id, context) => {
       if (context?.previousNotifications) {
         queryClient.setQueryData(
-          ['notifications'],
+          ["notifications"],
           context.previousNotifications,
         );
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
   });
 };
@@ -64,13 +64,13 @@ export const useMarkAllAsRead = () => {
   return useMutation({
     mutationFn: () => notificationService.markAllAsRead(),
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ['notifications'] });
+      await queryClient.cancelQueries({ queryKey: ["notifications"] });
       const previousNotifications = queryClient.getQueryData<
         InfiniteData<NotificationsResponse>
-      >(['notifications']);
+      >(["notifications"]);
 
       queryClient.setQueriesData<InfiniteData<NotificationsResponse>>(
-        { queryKey: ['notifications'] },
+        { queryKey: ["notifications"] },
         (old) => {
           if (!old) return old;
           return {
@@ -88,13 +88,13 @@ export const useMarkAllAsRead = () => {
     onError: (_err, _variables, context) => {
       if (context?.previousNotifications) {
         queryClient.setQueryData(
-          ['notifications'],
+          ["notifications"],
           context.previousNotifications,
         );
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
   });
 };

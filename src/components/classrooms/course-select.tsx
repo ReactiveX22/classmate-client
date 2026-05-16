@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import * as React from 'react';
+import * as React from "react";
 import {
   Combobox,
   ComboboxInput,
@@ -8,11 +8,11 @@ import {
   ComboboxList,
   ComboboxItem,
   ComboboxEmpty,
-} from '@/components/ui/combobox';
-import { useCourses } from '@/hooks/use-courses';
-import { useState, useEffect, useRef } from 'react';
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
-import { Badge } from '@/components/ui/badge';
+} from "@/components/ui/combobox";
+import { useCourses } from "@/hooks/use-courses";
+import { useState, useEffect, useRef } from "react";
+import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
+import { Badge } from "@/components/ui/badge";
 
 interface CourseSelectProps {
   value?: string;
@@ -25,8 +25,8 @@ export function CourseSelect({
   onValueChange,
   error,
 }: CourseSelectProps) {
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const isSelectedRef = useRef(false);
   const prevValueRef = useRef(value);
 
@@ -46,7 +46,7 @@ export function CourseSelect({
   useEffect(() => {
     if (value !== prevValueRef.current) {
       if (!value) {
-        setSearch('');
+        setSearch("");
       } else {
         const found = courses.find((c) => c.id === value);
         if (found) {
@@ -69,20 +69,20 @@ export function CourseSelect({
 
   return (
     <Combobox
-      value={value || ''}
+      value={value || ""}
       onValueChange={(val) => {
         const found = courses.find((c) => c.id === val);
         if (found) {
           isSelectedRef.current = true;
           setSearch(found.title);
         } else if (!val) {
-          setSearch('');
+          setSearch("");
         }
         onValueChange(val || undefined);
       }}
     >
       <ComboboxInput
-        placeholder='Search course by title or code...'
+        placeholder="Search course by title or code..."
         value={search}
         onChange={(e) => {
           setSearch(e.target.value);
@@ -93,22 +93,22 @@ export function CourseSelect({
       <ComboboxContent>
         <ComboboxList>
           {isLoading ? (
-            <ComboboxEmpty className='flex justify-center py-4 text-xs text-muted-foreground'>
+            <ComboboxEmpty className="flex justify-center py-4 text-xs text-muted-foreground">
               Searching...
             </ComboboxEmpty>
           ) : courses.length === 0 ? (
-            <ComboboxEmpty className='py-4'>No courses found.</ComboboxEmpty>
+            <ComboboxEmpty className="py-4">No courses found.</ComboboxEmpty>
           ) : (
             courses.map((c) => (
-              <ComboboxItem key={c.id} value={c.id} className='py-2.5 px-3'>
-                <div className='flex flex-col gap-1 w-full'>
-                  <div className='flex items-center justify-between gap-2'>
-                    <span className='font-semibold text-sm flex items-center gap-1.5'>
+              <ComboboxItem key={c.id} value={c.id} className="py-2.5 px-3">
+                <div className="flex flex-col gap-1 w-full">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-semibold text-sm flex items-center gap-1.5">
                       {c.title}
                     </span>
                     <Badge
-                      variant='secondary'
-                      className='text-[10px] h-4.5 px-1.5'
+                      variant="secondary"
+                      className="text-[10px] h-4.5 px-1.5"
                     >
                       {c.code}
                     </Badge>

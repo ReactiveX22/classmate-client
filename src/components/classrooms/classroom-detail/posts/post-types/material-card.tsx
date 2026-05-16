@@ -1,19 +1,19 @@
-import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { useDeletePost } from '@/hooks/use-delete-post';
-import { useTogglePostBookmark } from '@/hooks/use-toggle-post-bookmark';
-import { Post } from '@/lib/api/services/post.service';
-import { IconBook, IconBookmark, IconPin } from '@tabler/icons-react';
-import { formatDistanceToNow } from 'date-fns';
-import Link from 'next/link';
-import { useState } from 'react';
-import { EditPostDialog } from '../edit-post-dialog';
-import { CommentSection } from '../comment-section';
-import { AttachmentDisplay } from './attachment-display';
-import { ExpandableContent } from './expandable-content';
-import { PostCardActions } from './post-card-actions';
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useDeletePost } from "@/hooks/use-delete-post";
+import { useTogglePostBookmark } from "@/hooks/use-toggle-post-bookmark";
+import { Post } from "@/lib/api/services/post.service";
+import { IconBook, IconBookmark, IconPin } from "@tabler/icons-react";
+import { formatDistanceToNow } from "date-fns";
+import Link from "next/link";
+import { useState } from "react";
+import { EditPostDialog } from "../edit-post-dialog";
+import { CommentSection } from "../comment-section";
+import { AttachmentDisplay } from "./attachment-display";
+import { ExpandableContent } from "./expandable-content";
+import { PostCardActions } from "./post-card-actions";
 
 interface MaterialCardProps {
   post: Post;
@@ -42,45 +42,45 @@ export function MaterialCard({ post, resourceHref }: MaterialCardProps) {
 
   return (
     <>
-      <Card className='overflow-hidden hover:shadow-md transition-shadow'>
+      <Card className="overflow-hidden hover:shadow-md transition-shadow">
         <CardHeader>
-          <div className='flex items-start gap-2.5 sm:gap-3'>
-            <div className='p-2 sm:p-2.5 bg-green-500/10 rounded-full shrink-0'>
-              <IconBook className='w-4 h-4 sm:w-5 sm:h-5 text-green-600' />
+          <div className="flex items-start gap-2.5 sm:gap-3">
+            <div className="p-2 sm:p-2.5 bg-green-500/10 rounded-full shrink-0">
+              <IconBook className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
             </div>
-            <div className='flex-1 min-w-0'>
-              <div className='flex items-center gap-2 flex-wrap mb-1'>
-                <h3 className='font-medium text-sm'>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap mb-1">
+                <h3 className="font-medium text-sm">
                   {resourceHref ? (
                     <Link
                       href={resourceHref}
-                      className='hover:underline underline-offset-4'
+                      className="hover:underline underline-offset-4"
                     >
-                      {post.title || 'Class Material'}
+                      {post.title || "Class Material"}
                     </Link>
                   ) : (
-                    post.title || 'Class Material'
+                    post.title || "Class Material"
                   )}
                 </h3>
                 {post.isPinned && (
-                  <Badge variant='secondary' className='gap-1 h-5'>
+                  <Badge variant="secondary" className="gap-1 h-5">
                     <IconPin size={12} />
                   </Badge>
                 )}
               </div>
-              <p className='text-xs text-muted-foreground'>
-                {post.author?.name || 'Unknown'} •{' '}
+              <p className="text-xs text-muted-foreground">
+                {post.author?.name || "Unknown"} •{" "}
                 {formatDistanceToNow(new Date(post.createdAt), {
                   addSuffix: true,
                 })}
               </p>
             </div>
             <Button
-              variant='ghost'
-              size='icon'
-              className='h-8 w-8'
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
               aria-label={
-                post.isBookmarked ? 'Remove bookmark' : 'Add bookmark'
+                post.isBookmarked ? "Remove bookmark" : "Add bookmark"
               }
               onClick={() =>
                 toggleBookmark.mutate({
@@ -95,8 +95,8 @@ export function MaterialCard({ post, resourceHref }: MaterialCardProps) {
                 size={18}
                 className={
                   post.isBookmarked
-                    ? 'fill-current text-primary'
-                    : 'text-muted-foreground'
+                    ? "fill-current text-primary"
+                    : "text-muted-foreground"
                 }
               />
             </Button>
@@ -108,31 +108,30 @@ export function MaterialCard({ post, resourceHref }: MaterialCardProps) {
           />
         </CardHeader>
 
-        <CardContent className='space-y-4'>
+        <CardContent className="space-y-4">
           {post.tags && post.tags.length > 0 && (
-            <div className='flex flex-wrap gap-2'>
+            <div className="flex flex-wrap gap-2">
               {post.tags.map((tag) => (
-                <Badge key={tag} variant='secondary' className='text-xs'>
+                <Badge key={tag} variant="secondary" className="text-xs">
                   #{tag}
                 </Badge>
               ))}
             </div>
           )}
 
-          {post.content && (
-            resourceHref ? (
-              <Link href={resourceHref} className='block hover:opacity-90'>
+          {post.content &&
+            (resourceHref ? (
+              <Link href={resourceHref} className="block hover:opacity-90">
                 <ExpandableContent content={post.content} />
               </Link>
             ) : (
               <ExpandableContent content={post.content} />
-            )
-          )}
+            ))}
 
           {post.attachments && post.attachments.length > 0 && (
             <AttachmentDisplay
               attachments={post.attachments}
-              variant='compact'
+              variant="compact"
             />
           )}
 
@@ -145,10 +144,10 @@ export function MaterialCard({ post, resourceHref }: MaterialCardProps) {
       <DeleteConfirmDialog
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
-        title='Delete Material'
-        description='Are you sure you want to delete this material? This action cannot be undone.'
+        title="Delete Material"
+        description="Are you sure you want to delete this material? This action cannot be undone."
         onConfirm={handleDelete}
-        confirmText='Delete'
+        confirmText="Delete"
         isLoading={deletePost.isPending}
       />
 

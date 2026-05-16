@@ -3,12 +3,12 @@ import {
   GetStudentsParams,
   studentService,
   UpdateStudentInput,
-} from '@/lib/api/services/student.service';
-import { createStudentQueryOptions } from '@/lib/queryOptions/usersQueryOptions';
-import { ApiError, ErrorCode } from '@/types/errors';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import { toast } from 'sonner';
+} from "@/lib/api/services/student.service";
+import { createStudentQueryOptions } from "@/lib/queryOptions/usersQueryOptions";
+import { ApiError, ErrorCode } from "@/types/errors";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
 
 export function useCreateStudent() {
   const queryClient = useQueryClient();
@@ -16,18 +16,18 @@ export function useCreateStudent() {
     mutationFn: (student: CreateStudentInput) =>
       studentService.createStudent(student),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['students'] });
+      queryClient.invalidateQueries({ queryKey: ["students"] });
     },
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;
       if (apiError?.errorCode === ErrorCode.DUPLICATE_KEY) {
-        toast.error('Duplicate Student ID', {
+        toast.error("Duplicate Student ID", {
           description:
-            'A student with this ID already exists. Please use a unique ID.',
+            "A student with this ID already exists. Please use a unique ID.",
         });
       } else {
-        toast.error('Creation Failed', {
-          description: apiError?.message || 'An unexpected error occurred.',
+        toast.error("Creation Failed", {
+          description: apiError?.message || "An unexpected error occurred.",
         });
       }
     },
@@ -43,17 +43,17 @@ export function useDeleteStudent() {
   return useMutation({
     mutationFn: (id: string) => studentService.deleteStudent(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['students'] });
+      queryClient.invalidateQueries({ queryKey: ["students"] });
     },
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;
       if (apiError?.errorCode === ErrorCode.RESOURCE_NOT_FOUND) {
-        toast.error('Student Not Found', {
-          description: 'The student you are trying to delete does not exist.',
+        toast.error("Student Not Found", {
+          description: "The student you are trying to delete does not exist.",
         });
       } else {
-        toast.error('Deletion Failed', {
-          description: apiError?.message || 'An unexpected error occurred.',
+        toast.error("Deletion Failed", {
+          description: apiError?.message || "An unexpected error occurred.",
         });
       }
     },
@@ -66,13 +66,13 @@ export function useUpdateStudent() {
     mutationFn: ({ id, data }: { id: string; data: UpdateStudentInput }) =>
       studentService.updateStudent(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['students'] });
-      toast.success('Student updated successfully');
+      queryClient.invalidateQueries({ queryKey: ["students"] });
+      toast.success("Student updated successfully");
     },
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;
-      toast.error('Update Failed', {
-        description: apiError?.message || 'An unexpected error occurred.',
+      toast.error("Update Failed", {
+        description: apiError?.message || "An unexpected error occurred.",
       });
     },
   });

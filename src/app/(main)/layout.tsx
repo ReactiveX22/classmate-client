@@ -1,5 +1,5 @@
-import { Providers } from '@/lib/providers/QueryProvider';
-import { NuqsAdapter } from 'nuqs/adapters/next/app';
+import { Providers } from "@/lib/providers/QueryProvider";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 export default function MainLayout({
   children,

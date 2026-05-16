@@ -1,6 +1,6 @@
-import { authClient } from '@/lib/auth-client';
-import type { LoginCredentials, SignupCredentials } from '@/types/auth';
-import apiClient, { handleApiError } from '../index';
+import { authClient } from "@/lib/auth-client";
+import type { LoginCredentials, SignupCredentials } from "@/types/auth";
+import apiClient, { handleApiError } from "../index";
 
 export const authService = {
   async login(credentials: LoginCredentials) {
@@ -10,11 +10,11 @@ export const authService = {
     });
 
     if (response.error) {
-      throw new Error(response.error.message || 'Login failed');
+      throw new Error(response.error.message || "Login failed");
     }
 
     if (!response.data) {
-      throw new Error('Login failed - no data returned');
+      throw new Error("Login failed - no data returned");
     }
 
     return response.data;
@@ -29,11 +29,11 @@ export const authService = {
     } as Parameters<typeof authClient.signUp.email>[0]);
 
     if (response.error) {
-      throw new Error(response.error.message || 'Signup failed');
+      throw new Error(response.error.message || "Signup failed");
     }
 
     if (!response.data) {
-      throw new Error('Signup failed - no data returned');
+      throw new Error("Signup failed - no data returned");
     }
 
     return response.data;
@@ -49,7 +49,7 @@ export const authService = {
 
   async impersonate(userId: string) {
     try {
-      const response = await apiClient.post('/api/v1/impersonation/start', {
+      const response = await apiClient.post("/api/v1/impersonation/start", {
         userId,
       });
       return response.data;

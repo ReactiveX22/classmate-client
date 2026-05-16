@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useCreateClassroom } from '@/hooks/use-classrooms';
-import { useForm } from '@tanstack/react-form';
-import z from 'zod';
-import { CourseSelect } from './course-select';
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useCreateClassroom } from "@/hooks/use-classrooms";
+import { useForm } from "@tanstack/react-form";
+import z from "zod";
+import { CourseSelect } from "./course-select";
 
 const classroomSchema = z.object({
-  courseId: z.string().min(1, 'Course is required'),
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  section: z.string().min(1, 'Section is required'),
+  courseId: z.string().min(1, "Course is required"),
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  section: z.string().min(1, "Section is required"),
   description: z.string(),
 });
 
@@ -30,10 +30,10 @@ export function CreateClassroomForm({ onSuccess }: CreateClassroomFormProps) {
 
   const form = useForm({
     defaultValues: {
-      courseId: '',
-      name: '',
-      section: '',
-      description: '',
+      courseId: "",
+      name: "",
+      section: "",
+      description: "",
     },
     validators: {
       onChange: classroomSchema,
@@ -57,10 +57,10 @@ export function CreateClassroomForm({ onSuccess }: CreateClassroomFormProps) {
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className='flex flex-col gap-4 p-1'
+      className="flex flex-col gap-4 p-1"
     >
       <FieldGroup>
-        <form.Field name='courseId'>
+        <form.Field name="courseId">
           {(field) => {
             const isInvalid =
               field.state.meta.isTouched && field.state.meta.errors.length > 0;
@@ -69,7 +69,7 @@ export function CreateClassroomForm({ onSuccess }: CreateClassroomFormProps) {
                 <FieldLabel htmlFor={field.name}>Course</FieldLabel>
                 <CourseSelect
                   value={field.state.value}
-                  onValueChange={(val) => field.handleChange(val || '')}
+                  onValueChange={(val) => field.handleChange(val || "")}
                   error={isInvalid}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -78,7 +78,7 @@ export function CreateClassroomForm({ onSuccess }: CreateClassroomFormProps) {
           }}
         </form.Field>
 
-        <form.Field name='name'>
+        <form.Field name="name">
           {(field) => {
             const isInvalid =
               field.state.meta.isTouched && field.state.meta.errors.length > 0;
@@ -91,7 +91,7 @@ export function CreateClassroomForm({ onSuccess }: CreateClassroomFormProps) {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. Data Structures and Algorithms'
+                  placeholder="e.g. Data Structures and Algorithms"
                   aria-invalid={isInvalid}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -100,7 +100,7 @@ export function CreateClassroomForm({ onSuccess }: CreateClassroomFormProps) {
           }}
         </form.Field>
 
-        <form.Field name='section'>
+        <form.Field name="section">
           {(field) => {
             const isInvalid =
               field.state.meta.isTouched && field.state.meta.errors.length > 0;
@@ -113,7 +113,7 @@ export function CreateClassroomForm({ onSuccess }: CreateClassroomFormProps) {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. CSE-301-A'
+                  placeholder="e.g. CSE-301-A"
                   aria-invalid={isInvalid}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -122,7 +122,7 @@ export function CreateClassroomForm({ onSuccess }: CreateClassroomFormProps) {
           }}
         </form.Field>
 
-        <form.Field name='description'>
+        <form.Field name="description">
           {(field) => {
             return (
               <Field>
@@ -135,7 +135,7 @@ export function CreateClassroomForm({ onSuccess }: CreateClassroomFormProps) {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='Enter a brief description...'
+                  placeholder="Enter a brief description..."
                   rows={3}
                 />
               </Field>
@@ -145,10 +145,10 @@ export function CreateClassroomForm({ onSuccess }: CreateClassroomFormProps) {
       </FieldGroup>
 
       {createClassroomMutation.error && (
-        <div className='text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3'>
+        <div className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3">
           {createClassroomMutation.error.response?.data?.message ||
             createClassroomMutation.error.message ||
-            'Failed to create classroom'}
+            "Failed to create classroom"}
         </div>
       )}
 
@@ -157,13 +157,13 @@ export function CreateClassroomForm({ onSuccess }: CreateClassroomFormProps) {
       >
         {([canSubmit, isSubmitting]) => (
           <Button
-            type='submit'
-            className='w-full mt-2'
+            type="submit"
+            className="w-full mt-2"
             disabled={!canSubmit || createClassroomMutation.isPending}
           >
             {createClassroomMutation.isPending || isSubmitting
-              ? 'Creating Classroom...'
-              : 'Create Classroom'}
+              ? "Creating Classroom..."
+              : "Create Classroom"}
           </Button>
         )}
       </form.Subscribe>

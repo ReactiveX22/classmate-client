@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useUser } from '@/hooks/useAuth';
-import { Role } from '@/types/auth';
-import { ReactNode } from 'react';
+import { useUser } from "@/hooks/useAuth";
+import { Role } from "@/types/auth";
+import { ReactNode } from "react";
 
 interface RoleGuardProps {
   allowedRoles: Role[];

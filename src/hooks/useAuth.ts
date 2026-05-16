@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { authService } from '@/lib/api/services/auth.service';
-import { useSession } from '@/lib/auth-client';
-import type { LoginCredentials, SignupCredentials, User } from '@/types/auth';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { authService } from "@/lib/api/services/auth.service";
+import { useSession } from "@/lib/auth-client";
+import type { LoginCredentials, SignupCredentials, User } from "@/types/auth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export function useLogin() {
   const router = useRouter();
@@ -14,12 +14,12 @@ export function useLogin() {
     mutationFn: (credentials: LoginCredentials) =>
       authService.login(credentials),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['session'] });
-      queryClient.invalidateQueries({ queryKey: ['user'] });
-      router.push('/dashboard');
+      queryClient.invalidateQueries({ queryKey: ["session"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      router.push("/dashboard");
     },
     onError: (error: Error) => {
-      console.error('Login failed:', error.message);
+      console.error("Login failed:", error.message);
     },
   });
 }
@@ -32,12 +32,12 @@ export function useSignup() {
     mutationFn: (credentials: SignupCredentials) =>
       authService.signup(credentials),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['session'] });
-      queryClient.invalidateQueries({ queryKey: ['user'] });
-      router.push('/dashboard');
+      queryClient.invalidateQueries({ queryKey: ["session"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      router.push("/dashboard");
     },
     onError: (error: Error) => {
-      console.error('Signup failed:', error.message);
+      console.error("Signup failed:", error.message);
     },
   });
 }
@@ -50,10 +50,10 @@ export function useLogout() {
     mutationFn: () => authService.logout(),
     onSuccess: () => {
       queryClient.clear();
-      router.push('/login');
+      router.push("/login");
     },
     onError: (error: Error) => {
-      console.error('Logout failed:', error.message);
+      console.error("Logout failed:", error.message);
     },
   });
 }
@@ -65,10 +65,10 @@ export function useImpersonate() {
     mutationFn: (userId: string) => authService.impersonate(userId),
     onSuccess: () => {
       queryClient.clear();
-      window.location.href = '/dashboard';
+      window.location.href = "/dashboard";
     },
     onError: (error: Error) => {
-      console.error('Impersonation failed:', error.message);
+      console.error("Impersonation failed:", error.message);
     },
   });
 }

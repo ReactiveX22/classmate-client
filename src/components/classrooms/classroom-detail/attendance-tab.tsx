@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { TeacherAttendanceView } from './teacher-attendance-view';
-import { StudentAttendanceView } from './student-attendance-view';
-import { useUser } from '@/hooks/useAuth';
+import { TeacherAttendanceView } from "./teacher-attendance-view";
+import { StudentAttendanceView } from "./student-attendance-view";
+import { useUser } from "@/hooks/useAuth";
 
 interface AttendanceTabProps {
   classroomId: string;

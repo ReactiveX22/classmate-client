@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   ActionBar,
@@ -7,12 +7,12 @@ import {
   ActionBarItem,
   ActionBarSelection,
   ActionBarSeparator,
-} from '@/components/ui/action-bar';
-import { Submission } from '@/lib/api/services/submission.service';
-import { IconArrowBackUp } from '@tabler/icons-react';
-import type { Table } from '@tanstack/react-table';
-import { X } from 'lucide-react';
-import * as React from 'react';
+} from "@/components/ui/action-bar";
+import { Submission } from "@/lib/api/services/submission.service";
+import { IconArrowBackUp } from "@tabler/icons-react";
+import type { Table } from "@tanstack/react-table";
+import { X } from "lucide-react";
+import * as React from "react";
 
 interface StudentWorkActionBarProps {
   table: Table<Submission>;
@@ -30,7 +30,7 @@ export function StudentWorkActionBar({
   // Filter to only count returnable rows (not already returned or assigned)
   const returnableRows = rows.filter(
     (row) =>
-      row.original.status !== 'returned' && row.original.status !== 'assigned'
+      row.original.status !== "returned" && row.original.status !== "assigned",
   );
 
   const onOpenChange = React.useCallback(
@@ -39,7 +39,7 @@ export function StudentWorkActionBar({
         table.toggleAllRowsSelected(false);
       }
     },
-    [table]
+    [table],
   );
 
   const handleReturn = React.useCallback(() => {
@@ -49,7 +49,7 @@ export function StudentWorkActionBar({
   return (
     <ActionBar open={rows.length > 0} onOpenChange={onOpenChange}>
       <ActionBarSelection>
-        <span className='font-medium'>{rows.length}</span>
+        <span className="font-medium">{rows.length}</span>
         <span>selected</span>
         <ActionBarSeparator />
         <ActionBarClose>

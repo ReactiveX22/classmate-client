@@ -2,13 +2,13 @@ import axios, {
   AxiosError,
   AxiosInstance,
   InternalAxiosRequestConfig,
-} from 'axios';
+} from "axios";
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL: '',
+  baseURL: "",
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   withCredentials: true,
 });
@@ -19,7 +19,7 @@ apiClient.interceptors.request.use(
   },
   (error: AxiosError) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 apiClient.interceptors.response.use(
@@ -30,7 +30,7 @@ apiClient.interceptors.response.use(
     // hanlde errors
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;
@@ -38,11 +38,11 @@ export default apiClient;
 export const handleApiError = (error: unknown): string => {
   if (axios.isAxiosError(error)) {
     return (
-      error.response?.data?.message || error.message || 'An error occurred'
+      error.response?.data?.message || error.message || "An error occurred"
     );
   }
   if (error instanceof Error) {
     return error.message;
   }
-  return 'An unexpected error occurred';
+  return "An unexpected error occurred";
 };

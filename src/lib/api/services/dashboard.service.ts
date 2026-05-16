@@ -1,4 +1,4 @@
-import apiClient from '../index';
+import apiClient from "../index";
 
 export interface AdminStats {
   studentsCount: number;
@@ -8,7 +8,9 @@ export interface AdminStats {
 
 export const dashboardService = {
   getAdminStats: async (): Promise<AdminStats> => {
-    const response = await apiClient.get<AdminStats>('/api/v1/dashboard/admin/stats');
+    const response = await apiClient.get<AdminStats>(
+      "/api/v1/dashboard/admin/stats",
+    );
     return response.data;
   },
 };

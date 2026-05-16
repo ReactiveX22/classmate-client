@@ -83,12 +83,7 @@ export function AiToolIndicator({ tools, className }: AiToolIndicatorProps) {
   }
 
   return (
-    <Collapsible
-      className={cn(
-        "px-0 py-0",
-        className,
-      )}
-    >
+    <Collapsible className={cn("px-0 py-0", className)}>
       <CollapsibleTrigger className="flex w-fit items-center gap-1.5 text-left text-sm text-muted-foreground transition-colors hover:text-foreground">
         <Wrench className="size-4 shrink-0 text-current" />
         <span>{tools.length} tool calls</span>

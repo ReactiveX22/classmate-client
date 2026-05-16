@@ -1,26 +1,26 @@
-import { AttachmentUpload } from '@/components/common/attachment-upload';
-import { AttachmentDisplay } from '@/components/classrooms/classroom-detail/posts/post-types/attachment-display';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { useCreateSubmission } from '@/hooks/use-create-submission';
-import { useRemoveSubmissionAttachment } from '@/hooks/use-remove-submission-attachment';
-import { useUnsubmit } from '@/hooks/use-unsubmit';
+import { AttachmentUpload } from "@/components/common/attachment-upload";
+import { AttachmentDisplay } from "@/components/classrooms/classroom-detail/posts/post-types/attachment-display";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { useCreateSubmission } from "@/hooks/use-create-submission";
+import { useRemoveSubmissionAttachment } from "@/hooks/use-remove-submission-attachment";
+import { useUnsubmit } from "@/hooks/use-unsubmit";
 import {
   UploadResult,
   useUploadAttachment,
-} from '@/hooks/use-upload-attachment';
-import { AssignmentData, postService } from '@/lib/api/services/post.service';
-import { Submission } from '@/lib/api/services/submission.service';
+} from "@/hooks/use-upload-attachment";
+import { AssignmentData, postService } from "@/lib/api/services/post.service";
+import { Submission } from "@/lib/api/services/submission.service";
 import {
   IconCheck,
   IconFilePlus,
   IconLoader2,
   IconPlus,
-} from '@tabler/icons-react';
-import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
+} from "@tabler/icons-react";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
 
 interface StudentWorkCardProps {
   classroomId: string;
@@ -36,7 +36,7 @@ export function StudentWorkCard({
   submission,
 }: StudentWorkCardProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
   const [attachments, setAttachments] = useState<UploadResult[]>([]);
   const [isAddingAttachment, setIsAddingAttachment] = useState(false);
 
@@ -48,12 +48,12 @@ export function StudentWorkCard({
   const { mutateAsync: uploadFile } = useUploadAttachment();
 
   useEffect(() => {
-    if (submission && submission.status === 'assigned') {
-      setContent(submission.content || '');
+    if (submission && submission.status === "assigned") {
+      setContent(submission.content || "");
       setAttachments((submission.attachments as UploadResult[]) || []);
       setIsEditing(true);
     } else if (!submission) {
-      setContent('');
+      setContent("");
       setAttachments([]);
       setIsAddingAttachment(false);
       setIsEditing(false); // Default state handles the "Add or create" button
@@ -62,17 +62,17 @@ export function StudentWorkCard({
     }
   }, [submission]);
 
-  const submissionType = assignmentData?.submissionType || 'file';
-  const allowsText = submissionType === 'text' || submissionType === 'multiple';
+  const submissionType = assignmentData?.submissionType || "file";
+  const allowsText = submissionType === "text" || submissionType === "multiple";
   const allowsFiles =
-    submissionType === 'file' || submissionType === 'multiple';
+    submissionType === "file" || submissionType === "multiple";
 
   const getStatusBadge = (submission: Submission | null | undefined) => {
-    if (!submission || submission.status === 'assigned') {
+    if (!submission || submission.status === "assigned") {
       return (
         <Badge
-          variant='secondary'
-          className='text-xs font-normal text-muted-foreground bg-muted hover:bg-muted'
+          variant="secondary"
+          className="text-xs font-normal text-muted-foreground bg-muted hover:bg-muted"
         >
           Assigned
         </Badge>
@@ -80,21 +80,21 @@ export function StudentWorkCard({
     }
 
     switch (submission.status) {
-      case 'turned_in':
+      case "turned_in":
         return (
-          <Badge className='text-xs font-medium text-green-700 bg-green-100 dark:bg-green-900/30 dark:text-green-400'>
+          <Badge className="text-xs font-medium text-green-700 bg-green-100 dark:bg-green-900/30 dark:text-green-400">
             Turned in
           </Badge>
         );
-      case 'graded':
+      case "graded":
         return (
-          <Badge className='text-xs font-medium text-purple-700 bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400'>
+          <Badge className="text-xs font-medium text-purple-700 bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400">
             Graded
           </Badge>
         );
-      case 'returned':
+      case "returned":
         return (
-          <Badge className='text-xs font-medium text-gray-700 bg-gray-100 dark:bg-gray-900/30 dark:text-gray-400'>
+          <Badge className="text-xs font-medium text-gray-700 bg-gray-100 dark:bg-gray-900/30 dark:text-gray-400">
             Returned
           </Badge>
         );
@@ -126,7 +126,7 @@ export function StudentWorkCard({
       {
         onSuccess: () => {
           setIsEditing(false);
-          setContent('');
+          setContent("");
           setAttachments([]);
         },
       },
@@ -141,7 +141,7 @@ export function StudentWorkCard({
     // Check if it's an existing submission attachment
     const isExisting = submission?.attachments?.some((a) => a.id === id);
 
-    if (isExisting && submission?.status === 'assigned') {
+    if (isExisting && submission?.status === "assigned") {
       await removeSubmissionAttachment({
         classroomId,
         postId,
@@ -158,41 +158,41 @@ export function StudentWorkCard({
   const canSubmit = hasWork && !isSubmitting;
 
   // Submitted / Read-only state
-  if (submission && submission.status !== 'assigned') {
+  if (submission && submission.status !== "assigned") {
     return (
-      <Card className='shadow-sm'>
-        <CardHeader className='flex flex-col gap-2 items-start sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 pb-2'>
-          <CardTitle className='text-base'>Your work</CardTitle>
+      <Card className="shadow-sm">
+        <CardHeader className="flex flex-col gap-2 items-start sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 pb-2">
+          <CardTitle className="text-base">Your work</CardTitle>
           {getStatusBadge(submission)}
         </CardHeader>
-        <CardContent className='space-y-3 p-3 sm:p-4 pt-0'>
+        <CardContent className="space-y-3 p-3 sm:p-4 pt-0">
           {submission.content && (
-            <div className='space-y-2'>
-              <p className='text-sm font-medium text-muted-foreground'>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">
                 Your response
               </p>
-              <p className='text-sm whitespace-pre-wrap bg-muted/30 rounded-lg p-3'>
+              <p className="text-sm whitespace-pre-wrap bg-muted/30 rounded-lg p-3">
                 {submission.content}
               </p>
             </div>
           )}
 
           {submission.attachments && submission.attachments.length > 0 && (
-            <div className='space-y-2'>
-              <p className='text-sm font-medium text-muted-foreground'>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">
                 Attachments
               </p>
               <AttachmentDisplay
                 attachments={submission.attachments}
-                variant='compact'
+                variant="compact"
               />
             </div>
           )}
 
-          {submission.status === 'graded' && submission.grade !== undefined && (
-            <div className='flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg'>
-              <span className='text-sm font-medium'>Grade</span>
-              <span className='text-lg font-semibold text-purple-700 dark:text-purple-400'>
+          {submission.status === "graded" && submission.grade !== undefined && (
+            <div className="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+              <span className="text-sm font-medium">Grade</span>
+              <span className="text-lg font-semibold text-purple-700 dark:text-purple-400">
                 {submission.grade}
                 {assignmentData?.points && ` / ${assignmentData.points}`}
               </span>
@@ -200,35 +200,35 @@ export function StudentWorkCard({
           )}
 
           {submission.feedback && (
-            <div className='space-y-2'>
-              <p className='text-sm font-medium text-muted-foreground'>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">
                 Feedback
               </p>
-              <p className='text-sm whitespace-pre-wrap bg-muted/30 rounded-lg p-3'>
+              <p className="text-sm whitespace-pre-wrap bg-muted/30 rounded-lg p-3">
                 {submission.feedback}
               </p>
             </div>
           )}
 
-          <p className='text-xs text-muted-foreground'>
-            Submitted on {format(new Date(submission.createdAt), 'PPp')}
+          <p className="text-xs text-muted-foreground">
+            Submitted on {format(new Date(submission.createdAt), "PPp")}
           </p>
 
-          {(submission.status === 'turned_in' ||
-            submission.status === 'returned') && (
+          {(submission.status === "turned_in" ||
+            submission.status === "returned") && (
             <Button
-              variant='outline'
-              className='w-full'
+              variant="outline"
+              className="w-full"
               onClick={handleUnsubmit}
               disabled={isUnsubmitting}
             >
               {isUnsubmitting ? (
                 <>
-                  <IconLoader2 className='mr-2 h-4 w-4 animate-spin' />
+                  <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
                   Unsubmitting...
                 </>
               ) : (
-                'Unsubmit'
+                "Unsubmit"
               )}
             </Button>
           )}
@@ -240,30 +240,30 @@ export function StudentWorkCard({
   // Edit/Create Mode (Assigned or New)
   if (isEditing) {
     return (
-      <Card className='shadow-sm'>
-        <CardHeader className='flex flex-col gap-2 items-start sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 pb-2'>
-          <CardTitle className='text-base'>Your work</CardTitle>
+      <Card className="shadow-sm">
+        <CardHeader className="flex flex-col gap-2 items-start sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 pb-2">
+          <CardTitle className="text-base">Your work</CardTitle>
           {getStatusBadge(submission)}
         </CardHeader>
-        <CardContent className='space-y-3 p-3 sm:p-4 pt-0'>
+        <CardContent className="space-y-3 p-3 sm:p-4 pt-0">
           {allowsText && (
-            <div className='space-y-2'>
-              <label className='text-sm font-medium text-muted-foreground'>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">
                 Your response
               </label>
               <Textarea
-                placeholder='Type your response here...'
+                placeholder="Type your response here..."
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className='min-h-[100px]'
+                className="min-h-[100px]"
               />
             </div>
           )}
 
           {allowsFiles && (
-            <div className='space-y-2'>
+            <div className="space-y-2">
               {attachments.length > 0 || isAddingAttachment ? (
-                <div className='space-y-2 animate-in fade-in slide-in-from-top-2 duration-300'>
+                <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
                   <AttachmentUpload
                     attachments={attachments}
                     onAttachmentsChange={setAttachments}
@@ -279,8 +279,8 @@ export function StudentWorkCard({
                 </div>
               ) : (
                 <Button
-                  variant='outline'
-                  className='w-full'
+                  variant="outline"
+                  className="w-full"
                   onClick={() => setIsAddingAttachment(true)}
                 >
                   <IconPlus />
@@ -290,20 +290,20 @@ export function StudentWorkCard({
             </div>
           )}
 
-          <div className='flex gap-2'>
+          <div className="flex gap-2">
             <Button
-              className='w-full'
+              className="w-full"
               onClick={handleSubmit}
               disabled={!canSubmit}
             >
               {isSubmitting ? (
                 <>
-                  <IconLoader2 className='mr-2 h-4 w-4 animate-spin' />
+                  <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
                   Submitting...
                 </>
               ) : (
                 <>
-                  <IconCheck className='mr-2 h-4 w-4' />
+                  <IconCheck className="mr-2 h-4 w-4" />
                   Turn in
                 </>
               )}
@@ -316,20 +316,20 @@ export function StudentWorkCard({
 
   // Default empty state (No submission, start fresh)
   return (
-    <Card className='shadow-sm'>
-        <CardHeader className='flex flex-col gap-2 items-start sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 pb-2'>
-          <CardTitle className='text-base'>Your work</CardTitle>
-          {getStatusBadge(submission)}
-        </CardHeader>
-        <CardContent className='space-y-3 p-3 sm:p-4 pt-0'>
-        <div className='flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted-foreground/20 rounded-lg bg-muted/5 text-muted-foreground text-sm transition-colors hover:bg-muted/10'>
-          <IconFilePlus className='mb-3 opacity-40' stroke={1.5} size={40} />
+    <Card className="shadow-sm">
+      <CardHeader className="flex flex-col gap-2 items-start sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 pb-2">
+        <CardTitle className="text-base">Your work</CardTitle>
+        {getStatusBadge(submission)}
+      </CardHeader>
+      <CardContent className="space-y-3 p-3 sm:p-4 pt-0">
+        <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-muted-foreground/20 rounded-lg bg-muted/5 text-muted-foreground text-sm transition-colors hover:bg-muted/10">
+          <IconFilePlus className="mb-3 opacity-40" stroke={1.5} size={40} />
           <span>No work attached</span>
         </div>
 
         <Button
-          className='w-full h-10'
-          variant='outline'
+          className="w-full h-10"
+          variant="outline"
           onClick={() => {
             setIsEditing(true);
             setIsAddingAttachment(true);
@@ -340,8 +340,8 @@ export function StudentWorkCard({
         </Button>
 
         <Button
-          className='w-full h-10'
-          variant='default'
+          className="w-full h-10"
+          variant="default"
           onClick={() => setIsEditing(true)}
         >
           Mark as done

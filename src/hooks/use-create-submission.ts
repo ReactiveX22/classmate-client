@@ -1,10 +1,10 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   submissionService,
   CreateSubmissionDto,
-} from '@/lib/api/services/submission.service';
-import { toast } from 'sonner';
-import { handleApiError } from '@/lib/api';
+} from "@/lib/api/services/submission.service";
+import { toast } from "sonner";
+import { handleApiError } from "@/lib/api";
 
 export const useCreateSubmission = () => {
   const queryClient = useQueryClient();
@@ -22,17 +22,17 @@ export const useCreateSubmission = () => {
     onSuccess: (_, variables) => {
       // Invalidate submission query to refetch
       queryClient.invalidateQueries({
-        queryKey: ['submission', variables.classroomId, variables.postId],
-        refetchType: 'all',
+        queryKey: ["submission", variables.classroomId, variables.postId],
+        refetchType: "all",
       });
 
       // Invalidate post query to refetch embedded submission
       queryClient.invalidateQueries({
-        queryKey: ['post', variables.classroomId, variables.postId],
-        refetchType: 'all',
+        queryKey: ["post", variables.classroomId, variables.postId],
+        refetchType: "all",
       });
 
-      toast.success('Assignment submitted successfully!');
+      toast.success("Assignment submitted successfully!");
     },
     onError: (error) => {
       const errorMessage = handleApiError(error);

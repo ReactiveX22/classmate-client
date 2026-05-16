@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useCallback } from 'react';
-import { useInView } from 'react-intersection-observer';
-import { IconLoader2 } from '@tabler/icons-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { NoticeData } from '@/lib/api/services/notice.service';
-import { NoticeCard } from './notice-card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { useEffect, useState, useCallback } from "react";
+import { useInView } from "react-intersection-observer";
+import { IconLoader2 } from "@tabler/icons-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { NoticeData } from "@/lib/api/services/notice.service";
+import { NoticeCard } from "./notice-card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface NoticeListProps {
   notices: NoticeData[];
@@ -33,7 +33,7 @@ export function NoticeList({
 
   const scrollAreaRef = useCallback((node: HTMLDivElement | null) => {
     if (node) {
-      const viewport = node.querySelector('[data-radix-scroll-area-viewport]');
+      const viewport = node.querySelector("[data-radix-scroll-area-viewport]");
       if (viewport instanceof HTMLElement) {
         setScrollViewport(viewport);
       }
@@ -42,7 +42,7 @@ export function NoticeList({
 
   const { ref: observerRef, inView } = useInView({
     root: scrollViewport,
-    rootMargin: '100px',
+    rootMargin: "100px",
     threshold: 0,
     skip: !scrollViewport,
   });
@@ -55,16 +55,16 @@ export function NoticeList({
 
   if (isLoading) {
     return (
-      <div className='flex flex-col gap-3 p-4'>
+      <div className="flex flex-col gap-3 p-4">
         {Array.from({ length: 5 }).map((_, i) => (
           <div
             key={i}
-            className='flex flex-col gap-2 p-4 border rounded-xl bg-card/50'
+            className="flex flex-col gap-2 p-4 border rounded-xl bg-card/50"
           >
-            <Skeleton className='h-5 w-3/4' />
-            <div className='flex gap-2'>
-              <Skeleton className='h-3 w-1/4' />
-              <Skeleton className='h-3 w-1/4' />
+            <Skeleton className="h-5 w-3/4" />
+            <div className="flex gap-2">
+              <Skeleton className="h-3 w-1/4" />
+              <Skeleton className="h-3 w-1/4" />
             </div>
           </div>
         ))}
@@ -74,15 +74,15 @@ export function NoticeList({
 
   if (notices.length === 0) {
     return (
-      <div className='flex flex-col items-center justify-center p-8 text-center h-[300px] text-muted-foreground'>
+      <div className="flex flex-col items-center justify-center p-8 text-center h-[300px] text-muted-foreground">
         <p>No notices found.</p>
       </div>
     );
   }
 
   return (
-    <ScrollArea ref={scrollAreaRef} className='h-full'>
-      <div className='flex flex-col gap-3 p-4'>
+    <ScrollArea ref={scrollAreaRef} className="h-full">
+      <div className="flex flex-col gap-3 p-4">
         {notices.map((item) => (
           <NoticeCard
             key={item.notice.id}
@@ -93,10 +93,10 @@ export function NoticeList({
         ))}
 
         {/* Sentinel element for infinite scroll */}
-        <div ref={observerRef} className='h-4 w-full'>
+        <div ref={observerRef} className="h-4 w-full">
           {isFetchingNextPage && (
-            <div className='flex justify-center py-2'>
-              <IconLoader2 className='h-4 w-4 animate-spin text-muted-foreground' />
+            <div className="flex justify-center py-2">
+              <IconLoader2 className="h-4 w-4 animate-spin text-muted-foreground" />
             </div>
           )}
         </div>

@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import * as React from 'react';
+import * as React from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,7 +10,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
 
 interface DeleteConfirmDialogProps {
   open: boolean;
@@ -21,19 +21,19 @@ interface DeleteConfirmDialogProps {
   confirmText?: string;
   cancelText?: string;
   isLoading?: boolean;
-  variant?: 'destructive' | 'default';
+  variant?: "destructive" | "default";
 }
 
 export function DeleteConfirmDialog({
   open,
   onOpenChange,
-  title = 'Are you sure?',
-  description = 'This action cannot be undone.',
+  title = "Are you sure?",
+  description = "This action cannot be undone.",
   onConfirm,
-  confirmText = 'Delete',
-  cancelText = 'Cancel',
+  confirmText = "Delete",
+  cancelText = "Cancel",
   isLoading = false,
-  variant = 'destructive',
+  variant = "destructive",
 }: DeleteConfirmDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -54,7 +54,7 @@ export function DeleteConfirmDialog({
             variant={variant}
             disabled={isLoading}
           >
-            {isLoading ? 'Processing...' : confirmText}
+            {isLoading ? "Processing..." : confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

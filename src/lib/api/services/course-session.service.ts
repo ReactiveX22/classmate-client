@@ -1,5 +1,5 @@
-import apiClient from '../index';
-import { PaginationMeta, PaginationParams } from '@/types/pagination';
+import apiClient from "../index";
+import { PaginationMeta, PaginationParams } from "@/types/pagination";
 
 export interface CourseSession {
   id: string;
@@ -39,7 +39,7 @@ export const courseSessionService = {
     params?: PaginationParams,
   ): Promise<CourseSessionsResponse> => {
     const response = await apiClient.get<CourseSessionsResponse>(
-      '/api/v1/course-sessions',
+      "/api/v1/course-sessions",
       {
         params,
       },
@@ -58,7 +58,7 @@ export const courseSessionService = {
     payload: CreateCourseSessionInput,
   ): Promise<CourseSession> => {
     const response = await apiClient.post<CourseSession>(
-      '/api/v1/course-sessions',
+      "/api/v1/course-sessions",
       payload,
     );
     return response.data;

@@ -1,5 +1,5 @@
-import { LucideIcon } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 export type BaseNavItem = {
   title: string;

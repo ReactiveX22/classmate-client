@@ -1,4 +1,4 @@
-import apiClient from '../index';
+import apiClient from "../index";
 
 export interface CreateEnrollmentInput {
   studentId: string;
@@ -13,18 +13,18 @@ export interface EnrollmentResponse {
 
 export const enrollmentService = {
   createEnrollment: async (
-    payload: CreateEnrollmentInput
+    payload: CreateEnrollmentInput,
   ): Promise<EnrollmentResponse> => {
     const response = await apiClient.post<EnrollmentResponse>(
-      '/api/v1/enrollments',
-      payload
+      "/api/v1/enrollments",
+      payload,
     );
     return response.data;
   },
 
   deleteEnrollment: async (
     courseId: string,
-    studentId: string
+    studentId: string,
   ): Promise<void> => {
     await apiClient.delete(`/api/v1/enrollments/${courseId}/${studentId}`);
   },

@@ -21,7 +21,12 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import { getInitials } from "@/lib/utils";
 import { useUser } from "@/hooks/useAuth";
-import { useComments, useCreateComment, useDeleteComment, useUpdateComment } from "@/hooks/use-comments";
+import {
+  useComments,
+  useCreateComment,
+  useDeleteComment,
+  useUpdateComment,
+} from "@/hooks/use-comments";
 
 interface CommentSectionProps {
   postId: string;
@@ -38,7 +43,10 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
 
-  const { data: comments = [], isLoading: isLoadingComments } = useComments(classroomId, postId);
+  const { data: comments = [], isLoading: isLoadingComments } = useComments(
+    classroomId,
+    postId,
+  );
   const createComment = useCreateComment();
   const deleteComment = useDeleteComment();
   const updateComment = useUpdateComment();
@@ -48,7 +56,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
     if (!newComment.trim() || !user.data || !classroomId) return;
     createComment.mutate(
       { classroomId, postId, data: { content: newComment.trim() } },
-      { onSuccess: () => setNewComment("") }
+      { onSuccess: () => setNewComment("") },
     );
   };
 
@@ -66,7 +74,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
           setEditingCommentId(null);
           setEditContent("");
         },
-      }
+      },
     );
   };
 
@@ -112,116 +120,127 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
       {isExpanded && (
         <div className="mt-1 space-y-0.5">
           {isLoadingComments && (
-            <p className="text-xs text-muted-foreground py-2 px-1">Loading comments...</p>
+            <p className="text-xs text-muted-foreground py-2 px-1">
+              Loading comments...
+            </p>
           )}
 
           {/* Comments List – flat, borderless, Google Classroom style */}
           {!isLoadingComments && comments.length > 0 && (
             <div className="space-y-0.5">
-              {(showAllComments ? comments : comments.slice(0, 2)).map((comment: any) => (
-                <div
-                  key={comment.id}
-                  className="group flex gap-2.5 items-start rounded-xl py-1 hover:bg-muted/40 transition-colors"
-                >
-                  <Avatar className="w-6 h-6 shrink-0 mt-0.5">
-                    <AvatarImage src={getCommentAuthorImage(comment)} />
-                    <AvatarFallback className="text-[10px]">
-                      {getInitials(getCommentAuthorName(comment))}
-                    </AvatarFallback>
-                  </Avatar>
+              {(showAllComments ? comments : comments.slice(0, 2)).map(
+                (comment: any) => (
+                  <div
+                    key={comment.id}
+                    className="group flex gap-2.5 items-start rounded-xl py-1 hover:bg-muted/40 transition-colors"
+                  >
+                    <Avatar className="w-6 h-6 shrink-0 mt-0.5">
+                      <AvatarImage src={getCommentAuthorImage(comment)} />
+                      <AvatarFallback className="text-[10px]">
+                        {getInitials(getCommentAuthorName(comment))}
+                      </AvatarFallback>
+                    </Avatar>
 
-                  <div className="flex-1 min-w-0">
-                    {editingCommentId === comment.id ? (
-                      <div className="space-y-1.5 w-full">
-                        <Textarea
-                          value={editContent}
-                          onChange={(e) => setEditContent(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" && !e.shiftKey) {
-                              e.preventDefault();
-                              handleEditSubmit(comment.id);
-                            }
-                            if (e.key === "Escape") cancelEditing();
-                          }}
-                          className="resize-none min-h-[52px] text-sm bg-muted/30 rounded-xl border-0 focus-visible:ring-1"
-                          rows={2}
-                          disabled={updateComment.isPending}
-                          autoFocus
-                        />
-                        <div className="flex justify-end gap-1.5">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 text-xs"
-                            onClick={cancelEditing}
+                    <div className="flex-1 min-w-0">
+                      {editingCommentId === comment.id ? (
+                        <div className="space-y-1.5 w-full">
+                          <Textarea
+                            value={editContent}
+                            onChange={(e) => setEditContent(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" && !e.shiftKey) {
+                                e.preventDefault();
+                                handleEditSubmit(comment.id);
+                              }
+                              if (e.key === "Escape") cancelEditing();
+                            }}
+                            className="resize-none min-h-[52px] text-sm bg-muted/30 rounded-xl border-0 focus-visible:ring-1"
+                            rows={2}
                             disabled={updateComment.isPending}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            size="sm"
-                            className="h-7 text-xs"
-                            onClick={() => handleEditSubmit(comment.id)}
-                            disabled={updateComment.isPending || !editContent.trim()}
-                          >
-                            {updateComment.isPending ? "Saving…" : "Save"}
-                          </Button>
+                            autoFocus
+                          />
+                          <div className="flex justify-end gap-1.5">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 text-xs"
+                              onClick={cancelEditing}
+                              disabled={updateComment.isPending}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              size="sm"
+                              className="h-7 text-xs"
+                              onClick={() => handleEditSubmit(comment.id)}
+                              disabled={
+                                updateComment.isPending || !editContent.trim()
+                              }
+                            >
+                              {updateComment.isPending ? "Saving…" : "Save"}
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <>
-                        <p className="text-xs text-foreground whitespace-pre-wrap leading-relaxed">
-                          <span className="font-semibold">
-                            {getCommentAuthorName(comment).split(" ")[0]}
+                      ) : (
+                        <>
+                          <p className="text-xs text-foreground whitespace-pre-wrap leading-relaxed">
+                            <span className="font-semibold">
+                              {getCommentAuthorName(comment).split(" ")[0]}
+                            </span>{" "}
+                            {comment.content}
+                          </p>
+                          <span className="text-[10px] text-muted-foreground mt-0.5 block">
+                            {comment.createdAt
+                              ? formatDistanceToNow(
+                                  new Date(comment.createdAt),
+                                  { addSuffix: true },
+                                )
+                              : ""}
+                            {comment.updatedAt &&
+                              comment.updatedAt !== comment.createdAt &&
+                              " · edited"}
                           </span>
-                          {" "}
-                          {comment.content}
-                        </p>
-                        <span className="text-[10px] text-muted-foreground mt-0.5 block">
-                          {comment.createdAt
-                            ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })
-                            : ""}
-                          {comment.updatedAt && comment.updatedAt !== comment.createdAt && " · edited"}
-                        </span>
-                      </>
-                    )}
-                  </div>
+                        </>
+                      )}
+                    </div>
 
-                  {/* Three-dot menu — only for author, only in view mode */}
-                  {user.data?.id === comment.authorId && editingCommentId !== comment.id && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        render={
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground"
-                          >
-                            <IconDotsVertical size={14} />
-                          </Button>
-                        }
-                      />
-                      <DropdownMenuContent align="end" className="w-32">
-                        <DropdownMenuItem
-                          className="gap-2 text-xs cursor-pointer"
-                          onClick={() => startEditing(comment)}
-                        >
-                          <IconEdit size={13} />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="gap-2 text-xs text-destructive focus:text-destructive cursor-pointer"
-                          onClick={() => handleDelete(comment.id)}
-                          disabled={deleteComment.isPending}
-                        >
-                          <IconTrash size={13} />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
-                </div>
-              ))}
+                    {/* Three-dot menu — only for author, only in view mode */}
+                    {user.data?.id === comment.authorId &&
+                      editingCommentId !== comment.id && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger
+                            render={
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground"
+                              >
+                                <IconDotsVertical size={14} />
+                              </Button>
+                            }
+                          />
+                          <DropdownMenuContent align="end" className="w-32">
+                            <DropdownMenuItem
+                              className="gap-2 text-xs cursor-pointer"
+                              onClick={() => startEditing(comment)}
+                            >
+                              <IconEdit size={13} />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="gap-2 text-xs text-destructive focus:text-destructive cursor-pointer"
+                              onClick={() => handleDelete(comment.id)}
+                              disabled={deleteComment.isPending}
+                            >
+                              <IconTrash size={13} />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                  </div>
+                ),
+              )}
 
               {comments.length > 2 && (
                 <Button

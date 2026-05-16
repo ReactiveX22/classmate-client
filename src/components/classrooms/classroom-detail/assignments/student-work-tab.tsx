@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useSubmissions } from '@/hooks/use-submissions';
-import { useState, useMemo, useCallback } from 'react';
-import { DataTable } from '@/components/data-table/data-table';
+import { useSubmissions } from "@/hooks/use-submissions";
+import { useState, useMemo, useCallback } from "react";
+import { DataTable } from "@/components/data-table/data-table";
 import {
   getCoreRowModel,
   useReactTable,
   getSortedRowModel,
   SortingState,
   RowData,
-} from '@tanstack/react-table';
-import { getColumns } from './columns';
-import { PaginationParams } from '@/types/pagination';
-import { useGradeSubmission } from '@/hooks/use-grade-submission';
-import { useReturnSubmission } from '@/hooks/use-return-submission';
-import { StudentWorkActionBar } from './student-work-action-bar';
+} from "@tanstack/react-table";
+import { getColumns } from "./columns";
+import { PaginationParams } from "@/types/pagination";
+import { useGradeSubmission } from "@/hooks/use-grade-submission";
+import { useReturnSubmission } from "@/hooks/use-return-submission";
+import { StudentWorkActionBar } from "./student-work-action-bar";
 
-declare module '@tanstack/react-table' {
+declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface TableMeta<TData extends RowData> {
     isSavingRow?: string | null;
@@ -49,14 +49,10 @@ export function StudentWorkTab({
     limit,
     sortBy: sorting.length > 0 ? sorting[0].id : undefined,
     sortOrder:
-      sorting.length > 0 ? (sorting[0].desc ? 'desc' : 'asc') : undefined,
+      sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : undefined,
   };
 
-  const { data, isLoading } = useSubmissions(
-    classroomId,
-    postId,
-    queryParams,
-  );
+  const { data, isLoading } = useSubmissions(classroomId, postId, queryParams);
 
   const submissions = data?.data || [];
   const meta = data?.meta;
@@ -73,7 +69,7 @@ export function StudentWorkTab({
     },
     [classroomId, postId, gradeMutation],
   );
-  
+
   const handleReturn = useCallback(
     (submissionId: string) => {
       returnMutation.mutate({
@@ -89,8 +85,8 @@ export function StudentWorkTab({
     const selectedRows = table.getFilteredSelectedRowModel().rows;
     selectedRows.forEach((row) => {
       if (
-        row.original.status !== 'returned' &&
-        row.original.status !== 'assigned'
+        row.original.status !== "returned" &&
+        row.original.status !== "assigned"
       ) {
         handleReturn(row.original.id);
       }
@@ -134,7 +130,7 @@ export function StudentWorkTab({
         : null,
     },
     onPaginationChange: (updater) => {
-      if (typeof updater === 'function') {
+      if (typeof updater === "function") {
         const newState = updater({
           pageIndex: page - 1,
           pageSize: limit,
@@ -146,14 +142,14 @@ export function StudentWorkTab({
 
   if (isLoading) {
     return (
-      <div className='flex items-center justify-center p-12'>
-        <span className='text-muted-foreground'>Loading submissions...</span>
+      <div className="flex items-center justify-center p-12">
+        <span className="text-muted-foreground">Loading submissions...</span>
       </div>
     );
   }
 
   return (
-    <div className='space-y-4'>
+    <div className="space-y-4">
       <DataTable table={table} />
       <StudentWorkActionBar
         table={table}

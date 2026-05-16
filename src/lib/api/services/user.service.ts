@@ -1,9 +1,9 @@
-import api from '@/lib/api';
-import { UpdateProfileInput, UserProfileResponse } from '@/types/user-profile';
+import api from "@/lib/api";
+import { UpdateProfileInput, UserProfileResponse } from "@/types/user-profile";
 
 export const userService = {
   getProfile: async () => {
-    const { data } = await api.get<UserProfileResponse>('/api/v1/users/me');
+    const { data } = await api.get<UserProfileResponse>("/api/v1/users/me");
     return data;
   },
 
@@ -25,12 +25,12 @@ export const userService = {
     }
 
     const response = await api.patch<UserProfileResponse>(
-      '/api/v1/users/me',
+      "/api/v1/users/me",
       payload,
       {
         headers:
           payload instanceof FormData
-            ? { 'Content-Type': 'multipart/form-data' }
+            ? { "Content-Type": "multipart/form-data" }
             : undefined,
       },
     );

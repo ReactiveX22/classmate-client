@@ -12,14 +12,20 @@ import {
 
 interface AiInputBarProps {
   isStreaming: boolean;
+  isRetrying?: boolean;
   onSend: (message: string) => void | Promise<void>;
   onStop: () => void;
 }
 
-export function AiInputBar({ isStreaming, onSend, onStop }: AiInputBarProps) {
+export function AiInputBar({
+  isStreaming,
+  isRetrying,
+  onSend,
+  onStop,
+}: AiInputBarProps) {
   const [message, setMessage] = useState("");
 
-  const canSend = message.trim().length > 0 && !isStreaming;
+  const canSend = message.trim().length > 0 && !isStreaming && !isRetrying;
 
   const handleSubmit = async () => {
     if (!canSend) {
@@ -44,7 +50,7 @@ export function AiInputBar({ isStreaming, onSend, onStop }: AiInputBarProps) {
           <PromptInputTextarea
             autoFocus
             className="rounded-[28px] p-4 pr-10 pl-5 md:text-base text-primary-foreground"
-            disabled={isStreaming}
+            disabled={isStreaming || isRetrying}
             placeholder="Ask anything"
           />
 

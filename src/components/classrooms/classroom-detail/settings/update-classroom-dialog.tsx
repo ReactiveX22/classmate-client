@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { ClassroomDetail } from '@/lib/api/services/classroom.service';
-import { UpdateClassroomForm } from './update-classroom-form';
+} from "@/components/ui/dialog";
+import { ClassroomDetail } from "@/lib/api/services/classroom.service";
+import { UpdateClassroomForm } from "./update-classroom-form";
 
 interface UpdateClassroomDialogProps {
   classroom: ClassroomDetail;
