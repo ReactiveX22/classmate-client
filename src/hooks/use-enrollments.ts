@@ -1,11 +1,11 @@
 import {
   CreateEnrollmentInput,
   enrollmentService,
-} from '@/lib/api/services/enrollment.service';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import { toast } from 'sonner';
-import { ApiError } from '@/types/errors';
+} from "@/lib/api/services/enrollment.service";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import { ApiError } from "@/types/errors";
 
 export function useCreateEnrollment() {
   const queryClient = useQueryClient();
@@ -13,12 +13,12 @@ export function useCreateEnrollment() {
     mutationFn: (payload: CreateEnrollmentInput) =>
       enrollmentService.createEnrollment(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
     },
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;
-      toast.error('Enrollment Failed', {
-        description: apiError?.message || 'An unexpected error occurred.',
+      toast.error("Enrollment Failed", {
+        description: apiError?.message || "An unexpected error occurred.",
       });
     },
   });
@@ -35,12 +35,12 @@ export function useDeleteEnrollment() {
       studentId: string;
     }) => enrollmentService.deleteEnrollment(courseId, studentId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
     },
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;
-      toast.error('Failed to remove enrollment', {
-        description: apiError?.message || 'An unexpected error occurred.',
+      toast.error("Failed to remove enrollment", {
+        description: apiError?.message || "An unexpected error occurred.",
       });
     },
   });

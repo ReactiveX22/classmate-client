@@ -1,6 +1,6 @@
-'use client';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+"use client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,14 +9,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { IconLogout, IconSettings, IconUser } from '@tabler/icons-react';
-import { User } from 'lucide-react';
+} from "@/components/ui/dropdown-menu";
+import { IconLogout, IconSettings, IconUser } from "@tabler/icons-react";
+import { User } from "lucide-react";
 
-import { useLogout } from '@/hooks/useAuth';
-import { useSession } from '@/lib/auth-client';
+import { useLogout } from "@/hooks/useAuth";
+import { useSession } from "@/lib/auth-client";
 
-import Link from 'next/link';
+import Link from "next/link";
 
 export function ProfileDropdown() {
   const { data: session, isPending } = useSession();
@@ -26,8 +26,8 @@ export function ProfileDropdown() {
 
   if (isPending) {
     return (
-      <Button variant='ghost' className='relative h-8 w-8 rounded-full'>
-        <Avatar className='h-8 w-8'>
+      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+        <Avatar className="h-8 w-8">
           <AvatarFallback>...</AvatarFallback>
         </Avatar>
       </Button>
@@ -42,7 +42,7 @@ export function ProfileDropdown() {
     try {
       await logoutMutation.mutateAsync();
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
   };
 
@@ -51,24 +51,24 @@ export function ProfileDropdown() {
       <DropdownMenuTrigger
         render={
           <Button
-            variant='ghost'
-            className='relative h-8 w-8 rounded-full cursor-pointer'
+            variant="ghost"
+            className="relative h-8 w-8 rounded-full cursor-pointer"
           >
-            <Avatar className='h-8 w-8'>
-              <AvatarImage src={user.image || ''} alt={user.name || 'User'} />
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={user.image || ""} alt={user.name || "User"} />
               <AvatarFallback>
-                <User className='size-4' />
+                <User className="size-4" />
               </AvatarFallback>
             </Avatar>
           </Button>
         }
       />
-      <DropdownMenuContent className='w-56' align='end'>
+      <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuGroup>
-          <DropdownMenuLabel className='font-normal'>
-            <div className='flex flex-col gap-1.5 text-foreground'>
-              <p className='text-sm leading-none font-medium'>{user.name}</p>
-              <p className='text-xs text-muted-foreground leading-none'>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col gap-1.5 text-foreground">
+              <p className="text-sm leading-none font-medium">{user.name}</p>
+              <p className="text-xs text-muted-foreground leading-none">
                 {user.email}
               </p>
             </div>
@@ -78,7 +78,7 @@ export function ProfileDropdown() {
         <DropdownMenuGroup>
           <DropdownMenuItem
             render={
-              <Link href='/dashboard/profile'>
+              <Link href="/dashboard/profile">
                 <IconUser size={16} />
                 Profile
               </Link>
@@ -86,7 +86,7 @@ export function ProfileDropdown() {
           />
           <DropdownMenuItem
             render={
-              <Link href='/dashboard/settings'>
+              <Link href="/dashboard/settings">
                 <IconSettings size={16} />
                 Settings
               </Link>
@@ -95,12 +95,12 @@ export function ProfileDropdown() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          variant='destructive'
+          variant="destructive"
           onClick={handleLogout}
           disabled={logoutMutation.isPending}
         >
           <IconLogout size={16} />
-          {logoutMutation.isPending ? 'Signing out...' : 'Sign out'}
+          {logoutMutation.isPending ? "Signing out..." : "Sign out"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

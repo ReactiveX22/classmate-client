@@ -1,10 +1,10 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   classroomService,
   BulkCreateAttendanceInput,
-} from '@/lib/api/services/classroom.service';
-import { toast } from 'sonner';
-import { handleApiError } from '@/lib/api';
+} from "@/lib/api/services/classroom.service";
+import { toast } from "sonner";
+import { handleApiError } from "@/lib/api";
 
 export const useBulkCreateAttendance = () => {
   const queryClient = useQueryClient();
@@ -20,13 +20,13 @@ export const useBulkCreateAttendance = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: [
-          'classrooms',
+          "classrooms",
           variables.classroomId,
-          'attendance-checklist',
+          "attendance-checklist",
           variables.data.date,
         ],
       });
-      toast.success('Attendance saved successfully!');
+      toast.success("Attendance saved successfully!");
     },
     onError: (error) => {
       const errorMessage = handleApiError(error);

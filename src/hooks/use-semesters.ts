@@ -2,16 +2,21 @@ import {
   CreateSemesterInput,
   UpdateSemesterInput,
   semesterService,
-} from '@/lib/api/services/semester.service';
+} from "@/lib/api/services/semester.service";
 import {
   createSemesterQueryOptions,
   getSemesterQueryOptions,
-} from '@/lib/queryOptions/semesterQueryOptions';
-import { PaginationParams } from '@/types/pagination';
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import { toast } from 'sonner';
-import { ApiError } from '@/types/errors';
+} from "@/lib/queryOptions/semesterQueryOptions";
+import { PaginationParams } from "@/types/pagination";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import { ApiError } from "@/types/errors";
 
 export const useSemesters = (params?: PaginationParams) => {
   return useQuery({
@@ -30,13 +35,13 @@ export function useCreateSemester() {
     mutationFn: (data: CreateSemesterInput) =>
       semesterService.createSemester(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['semesters'] });
-      toast.success('Semester created successfully');
+      queryClient.invalidateQueries({ queryKey: ["semesters"] });
+      toast.success("Semester created successfully");
     },
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;
-      toast.error('Creation Failed', {
-        description: apiError?.message || 'An unexpected error occurred.',
+      toast.error("Creation Failed", {
+        description: apiError?.message || "An unexpected error occurred.",
       });
     },
   });
@@ -48,13 +53,13 @@ export function useUpdateSemester() {
     mutationFn: ({ id, data }: { id: string; data: UpdateSemesterInput }) =>
       semesterService.updateSemester(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['semesters'] });
-      toast.success('Semester updated successfully');
+      queryClient.invalidateQueries({ queryKey: ["semesters"] });
+      toast.success("Semester updated successfully");
     },
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;
-      toast.error('Update Failed', {
-        description: apiError?.message || 'An unexpected error occurred.',
+      toast.error("Update Failed", {
+        description: apiError?.message || "An unexpected error occurred.",
       });
     },
   });
@@ -65,13 +70,13 @@ export function useDeleteSemester() {
   return useMutation({
     mutationFn: (id: string) => semesterService.deleteSemester(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['semesters'] });
-      toast.success('Semester deleted successfully');
+      queryClient.invalidateQueries({ queryKey: ["semesters"] });
+      toast.success("Semester deleted successfully");
     },
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;
-      toast.error('Deletion Failed', {
-        description: apiError?.message || 'An unexpected error occurred.',
+      toast.error("Deletion Failed", {
+        description: apiError?.message || "An unexpected error occurred.",
       });
     },
   });

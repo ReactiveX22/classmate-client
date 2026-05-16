@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { CardAction } from '@/components/ui/card';
+import { Button } from "@/components/ui/button";
+import { CardAction } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useUser } from '@/hooks/useAuth';
-import { Edit2, MoreVertical, Trash2 } from 'lucide-react';
+} from "@/components/ui/dropdown-menu";
+import { useUser } from "@/hooks/useAuth";
+import { Edit2, MoreVertical, Trash2 } from "lucide-react";
 
 interface PostCardActionsProps {
   authorId: string;
@@ -34,17 +34,17 @@ export function PostCardActions({
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
-            <Button variant='ghost' size='icon-sm'>
+            <Button variant="ghost" size="icon-sm">
               <MoreVertical />
             </Button>
           }
         />
-        <DropdownMenuContent align='end'>
+        <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={onEdit}>
             <Edit2 />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem variant='destructive' onClick={onDelete}>
+          <DropdownMenuItem variant="destructive" onClick={onDelete}>
             <Trash2 />
             Delete
           </DropdownMenuItem>

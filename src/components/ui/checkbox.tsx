@@ -1,11 +1,15 @@
-"use client"
+"use client";
 
-import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox"
+import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox";
 
-import { cn } from "@/lib/utils"
-import { IconCheck } from "@tabler/icons-react"
+import { cn } from "@/lib/utils";
+import { IconCheck } from "@tabler/icons-react";
 
-function Checkbox({ className, indeterminate, ...props }: CheckboxPrimitive.Root.Props & { indeterminate?: boolean }) {
+function Checkbox({
+  className,
+  indeterminate,
+  ...props
+}: CheckboxPrimitive.Root.Props & { indeterminate?: boolean }) {
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
@@ -13,7 +17,7 @@ function Checkbox({ className, indeterminate, ...props }: CheckboxPrimitive.Root
       indeterminate={indeterminate}
       className={cn(
         "border-input dark:bg-input/30 data-checked:bg-primary data-checked:text-primary-foreground dark:data-checked:bg-primary data-checked:border-primary aria-invalid:aria-checked:border-primary aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 flex size-4 items-center justify-center rounded-[4px] border shadow-xs transition-shadow group-has-disabled/field:opacity-50 focus-visible:ring-[3px] aria-invalid:ring-[3px] peer relative shrink-0 outline-none after:absolute after:-inset-x-3 after:-inset-y-2 disabled:cursor-not-allowed disabled:opacity-50",
-        className
+        className,
       )}
       {...props}
     >
@@ -28,7 +32,7 @@ function Checkbox({ className, indeterminate, ...props }: CheckboxPrimitive.Root
         )}
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
-  )
+  );
 }
 
-export { Checkbox }
+export { Checkbox };

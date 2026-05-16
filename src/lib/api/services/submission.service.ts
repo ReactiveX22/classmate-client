@@ -1,9 +1,9 @@
-import apiClient from '../index';
-import { Attachment, AttachmentDto } from './post.service';
-import { User } from '@/types/auth';
-import { PaginationParams } from '@/types/pagination';
+import apiClient from "../index";
+import { Attachment, AttachmentDto } from "./post.service";
+import { User } from "@/types/auth";
+import { PaginationParams } from "@/types/pagination";
 
-export type SubmissionStatus = 'assigned' | 'turned_in' | 'graded' | 'returned';
+export type SubmissionStatus = "assigned" | "turned_in" | "graded" | "returned";
 
 export interface Submission {
   id: string;
@@ -29,22 +29,22 @@ export const submissionService = {
   createSubmission: async (
     classroomId: string,
     postId: string,
-    data: CreateSubmissionDto
+    data: CreateSubmissionDto,
   ): Promise<Submission> => {
     const response = await apiClient.post<Submission>(
       `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions`,
-      data
+      data,
     );
     return response.data;
   },
 
   getMySubmission: async (
     classroomId: string,
-    postId: string
+    postId: string,
   ): Promise<Submission | null> => {
     try {
       const response = await apiClient.get<Submission>(
-        `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions`
+        `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions`,
       );
       return response.data;
     } catch {
@@ -54,10 +54,10 @@ export const submissionService = {
 
   unsubmit: async (
     classroomId: string,
-    postId: string
+    postId: string,
   ): Promise<Submission> => {
     const response = await apiClient.patch<Submission>(
-      `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/unsubmit`
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/unsubmit`,
     );
     return response.data;
   },
@@ -65,17 +65,17 @@ export const submissionService = {
   removeAttachment: async (
     classroomId: string,
     postId: string,
-    attachmentId: string
+    attachmentId: string,
   ): Promise<void> => {
     await apiClient.delete(
-      `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/upload/${attachmentId}`
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/upload/${attachmentId}`,
     );
   },
 
   getSubmissions: async (
     classroomId: string,
     postId: string,
-    params?: PaginationParams
+    params?: PaginationParams,
   ): Promise<{
     data: Submission[];
     meta: {
@@ -89,7 +89,7 @@ export const submissionService = {
   }> => {
     const response = await apiClient.get(
       `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions`,
-      { params }
+      { params },
     );
     return response.data;
   },
@@ -99,11 +99,11 @@ export const submissionService = {
     postId: string,
     studentId: string,
     grade: number,
-    feedback?: string
+    feedback?: string,
   ): Promise<Submission> => {
     const response = await apiClient.patch<Submission>(
       `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/students/${studentId}/grade`,
-      { grade, ...(feedback && { feedback }) }
+      { grade, ...(feedback && { feedback }) },
     );
     return response.data;
   },
@@ -111,10 +111,10 @@ export const submissionService = {
   returnSubmission: async (
     classroomId: string,
     postId: string,
-    submissionId: string
+    submissionId: string,
   ): Promise<Submission> => {
     const response = await apiClient.patch<Submission>(
-      `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/${submissionId}/return`
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/submissions/${submissionId}/return`,
     );
     return response.data;
   },

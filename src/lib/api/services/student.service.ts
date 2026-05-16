@@ -1,7 +1,7 @@
-import { UserProfile } from '@/types/user';
-import apiClient from '../index';
-import { PaginationMeta } from '@/types/pagination';
-import { User } from '@/types/auth';
+import { UserProfile } from "@/types/user";
+import apiClient from "../index";
+import { PaginationMeta } from "@/types/pagination";
+import { User } from "@/types/auth";
 
 export interface CreateStudentInput {
   email: string;
@@ -52,15 +52,15 @@ export interface GetStudentsParams {
   page?: number;
   limit?: number;
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
   search?: string;
 }
 
 export const studentService = {
   getStudents: async (
-    params?: GetStudentsParams
+    params?: GetStudentsParams,
   ): Promise<StudentsResponse> => {
-    const response = await apiClient.get<StudentsResponse>('/api/v1/students', {
+    const response = await apiClient.get<StudentsResponse>("/api/v1/students", {
       params,
     });
     return response.data;
@@ -68,8 +68,8 @@ export const studentService = {
 
   createStudent: async (payload: CreateStudentInput) => {
     const response = await apiClient.post<CreateStudentResponse>(
-      '/api/v1/students',
-      payload
+      "/api/v1/students",
+      payload,
     );
     return response.data;
   },
@@ -82,7 +82,7 @@ export const studentService = {
   updateStudent: async (id: string, payload: UpdateStudentInput) => {
     const response = await apiClient.patch<StudentData>(
       `/api/v1/students/${id}`,
-      payload
+      payload,
     );
     return response.data;
   },

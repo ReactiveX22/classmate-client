@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -6,9 +6,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Semester } from '@/lib/api/services/semester.service';
-import { EditSemesterForm } from './edit-semester-form';
+} from "@/components/ui/dialog";
+import { Semester } from "@/lib/api/services/semester.service";
+import { EditSemesterForm } from "./edit-semester-form";
 
 interface EditSemesterDialogProps {
   semester: Semester;
@@ -23,12 +23,15 @@ export function EditSemesterDialog({
 }: EditSemesterDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='w-full max-w-[calc(100%-2rem)] max-h-[calc(100%-2rem)] sm:max-w-xl overflow-auto'>
+      <DialogContent className="w-full max-w-[calc(100%-2rem)] max-h-[calc(100%-2rem)] sm:max-w-xl overflow-auto">
         <DialogHeader>
           <DialogTitle>Edit Semester</DialogTitle>
           <DialogDescription>Update the semester ordinal.</DialogDescription>
         </DialogHeader>
-        <EditSemesterForm semester={semester} onSuccess={() => onOpenChange(false)} />
+        <EditSemesterForm
+          semester={semester}
+          onSuccess={() => onOpenChange(false)}
+        />
       </DialogContent>
     </Dialog>
   );

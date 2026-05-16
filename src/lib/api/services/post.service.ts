@@ -1,12 +1,12 @@
-import apiClient from '../index';
-import { PaginationMeta, PaginationParams } from '@/types/pagination';
-import { User } from '@/types/auth';
-import { Submission } from './submission.service';
+import apiClient from "../index";
+import { PaginationMeta, PaginationParams } from "@/types/pagination";
+import { User } from "@/types/auth";
+import { Submission } from "./submission.service";
 
-export type PostType = 'announcement' | 'assignment' | 'material' | 'question';
-export type AttachmentType = 'file' | 'link' | 'video' | 'image';
-export type SubmissionType = 'file' | 'text' | 'link' | 'multiple';
-export type PollSelectionMode = 'single' | 'multiple';
+export type PostType = "announcement" | "assignment" | "material" | "question";
+export type AttachmentType = "file" | "link" | "video" | "image";
+export type SubmissionType = "file" | "text" | "link" | "multiple";
+export type PollSelectionMode = "single" | "multiple";
 
 export type Attachment = {
   id: string;
@@ -55,11 +55,11 @@ export type PollResult = {
 };
 
 export type ShortAnswerQuestionData = {
-  mode: 'short_answer';
+  mode: "short_answer";
 };
 
 export type PollQuestionData = {
-  mode: 'poll';
+  mode: "poll";
   selectionMode: PollSelectionMode;
   options: PollOption[];
   votes?: PollVote[];
@@ -139,34 +139,34 @@ export interface VotePollDto {
 export const postService = {
   getPosts: async (
     classroomId: string,
-    params?: PostsQueryParams
+    params?: PostsQueryParams,
   ): Promise<PostsResponse> => {
     const response = await apiClient.get<PostsResponse>(
       `/api/v1/classrooms/${classroomId}/posts`,
       {
         params,
-      }
+      },
     );
     return response.data;
   },
 
   createPost: async (
     classroomId: string,
-    data: CreatePostDto
+    data: CreatePostDto,
   ): Promise<Post> => {
     const response = await apiClient.post<Post>(
       `/api/v1/classrooms/${classroomId}/posts`,
-      data
+      data,
     );
     return response.data;
   },
 
   removeAttachment: async (
     classroomId: string,
-    attachmentId: string
+    attachmentId: string,
   ): Promise<void> => {
     await apiClient.delete(
-      `/api/v1/classrooms/${classroomId}/posts/upload/${attachmentId}`
+      `/api/v1/classrooms/${classroomId}/posts/upload/${attachmentId}`,
     );
   },
 
@@ -177,18 +177,18 @@ export const postService = {
   updatePost: async (
     classroomId: string,
     postId: string,
-    data: Partial<CreatePostDto>
+    data: Partial<CreatePostDto>,
   ): Promise<Post> => {
     const response = await apiClient.patch<Post>(
       `/api/v1/classrooms/${classroomId}/posts/${postId}`,
-      data
+      data,
     );
     return response.data;
   },
 
   getPost: async (classroomId: string, postId: string): Promise<Post> => {
     const response = await apiClient.get<Post>(
-      `/api/v1/classrooms/${classroomId}/posts/${postId}`
+      `/api/v1/classrooms/${classroomId}/posts/${postId}`,
     );
     return response.data;
   },
@@ -196,25 +196,27 @@ export const postService = {
   voteOnPoll: async (
     classroomId: string,
     postId: string,
-    data: VotePollDto
+    data: VotePollDto,
   ): Promise<Post> => {
     const response = await apiClient.put<Post>(
       `/api/v1/classrooms/${classroomId}/posts/${postId}/poll-vote`,
-      data
+      data,
     );
     return response.data;
   },
 
   bookmarkPost: async (classroomId: string, postId: string): Promise<void> => {
-    await apiClient.post(`/api/v1/classrooms/${classroomId}/posts/${postId}/bookmark`);
+    await apiClient.post(
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/bookmark`,
+    );
   },
 
   unbookmarkPost: async (
     classroomId: string,
-    postId: string
+    postId: string,
   ): Promise<void> => {
     await apiClient.delete(
-      `/api/v1/classrooms/${classroomId}/posts/${postId}/bookmark`
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/bookmark`,
     );
   },
 };

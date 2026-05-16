@@ -57,14 +57,14 @@ export interface Organization {
 }
 
 export enum UserStatus {
-  Active = 'active',
-  Pending = 'pending',
+  Active = "active",
+  Pending = "pending",
 }
 
 export enum Role {
-  SuperAdmin = 'super-admin',
-  Admin = 'admin',
-  Instructor = 'instructor',
-  Student = 'student',
-  Staff = 'staff',
+  SuperAdmin = "super-admin",
+  Admin = "admin",
+  Instructor = "instructor",
+  Student = "student",
+  Staff = "staff",
 }

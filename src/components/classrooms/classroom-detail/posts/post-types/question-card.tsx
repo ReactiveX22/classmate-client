@@ -1,19 +1,20 @@
-'use client';
+"use client";
 
-import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { useDeletePost } from '@/hooks/use-delete-post';
-import { Post } from '@/lib/api/services/post.service';
-import { getInitials } from '@/lib/utils';
-import { IconPin } from '@tabler/icons-react';
-import { formatDistanceToNow } from 'date-fns';
-import { useState } from 'react';
-import { CommentSection } from '../comment-section';
-import { EditPostDialog } from '../edit-post-dialog';
-import { AttachmentDisplay } from './attachment-display';
-import { PollCard } from './poll-card';
-import { PostCardActions } from './post-card-actions';
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useDeletePost } from "@/hooks/use-delete-post";
+import { Post } from "@/lib/api/services/post.service";
+import { getInitials } from "@/lib/utils";
+import { IconPin } from "@tabler/icons-react";
+import { formatDistanceToNow } from "date-fns";
+import { useState } from "react";
+import { CommentSection } from "../comment-section";
+import { EditPostDialog } from "../edit-post-dialog";
+import { AttachmentDisplay } from "./attachment-display";
+import { ExpandableContent } from "./expandable-content";
+import { PollCard } from "./poll-card";
+import { PostCardActions } from "./post-card-actions";
 
 interface QuestionCardProps {
   post: Post;
@@ -40,29 +41,27 @@ export function QuestionCard({ post }: QuestionCardProps) {
   };
 
   const questionData = post.questionData;
-  const isPoll = questionData?.mode === 'poll';
+  const isPoll = questionData?.mode === "poll";
 
   return (
     <>
-      <Card className='overflow-hidden transition-shadow hover:shadow-md'>
+      <Card className="overflow-hidden transition-shadow hover:shadow-md">
         <CardHeader>
-          <div className='flex items-start gap-3'>
-            <Avatar className='w-8 h-8 sm:w-10 sm:h-10 shrink-0'>
+          <div className="flex items-start gap-3">
+            <Avatar className="w-8 h-8 sm:w-10 sm:h-10 shrink-0">
               <AvatarImage src={post.author?.image || undefined} />
-              <AvatarFallback>
-                {getInitials(post.author?.name)}
-              </AvatarFallback>
+              <AvatarFallback>{getInitials(post.author?.name)}</AvatarFallback>
             </Avatar>
-            <div className='min-w-0 flex-1'>
-              <div className='flex items-center gap-2'>
-                <p className='text-sm font-medium'>
-                  {post.author?.name || 'Unknown'}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-medium">
+                  {post.author?.name || "Unknown"}
                 </p>
                 {post.isPinned && (
-                  <IconPin size={16} className='text-muted-foreground' />
+                  <IconPin size={16} className="text-muted-foreground" />
                 )}
               </div>
-              <p className='text-xs text-muted-foreground'>
+              <p className="text-xs text-muted-foreground">
                 {formatDistanceToNow(new Date(post.createdAt), {
                   addSuffix: true,
                 })}
@@ -76,12 +75,12 @@ export function QuestionCard({ post }: QuestionCardProps) {
           />
         </CardHeader>
 
-        <CardContent className='space-y-4'>
-          {post.title && <h3 className='text-base font-semibold'>{post.title}</h3>}
+        <CardContent className="space-y-4">
+          {post.title && (
+            <h3 className="text-base font-semibold">{post.title}</h3>
+          )}
 
-          <p className='whitespace-pre-wrap text-sm leading-relaxed text-foreground'>
-            {post.content}
-          </p>
+          <ExpandableContent content={post.content} />
 
           {isPoll && <PollCard post={post} poll={questionData} />}
 
@@ -98,10 +97,10 @@ export function QuestionCard({ post }: QuestionCardProps) {
       <DeleteConfirmDialog
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
-        title='Delete Question'
-        description='Are you sure you want to delete this question? This action cannot be undone.'
+        title="Delete Question"
+        description="Are you sure you want to delete this question? This action cannot be undone."
         onConfirm={handleDelete}
-        confirmText='Delete'
+        confirmText="Delete"
         isLoading={deletePost.isPending}
       />
 

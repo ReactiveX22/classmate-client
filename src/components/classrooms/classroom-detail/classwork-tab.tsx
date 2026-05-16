@@ -2,12 +2,7 @@
 
 import { RoleGuard } from "@/components/common/role-guard";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { usePosts } from "@/hooks/use-posts";
 import { Role } from "@/types/auth";
 import { IconClipboardList, IconLoader2, IconPlus } from "@tabler/icons-react";
@@ -34,13 +29,13 @@ export function ClassworkTab({ classroomId, isTeacher }: ClassworkTabProps) {
   const isEmpty = !isLoading && assignments.length === 0;
 
   return (
-    <div className='max-w-3xl mx-auto space-y-4 pb-12 sm:pb-20'>
-      <div className='flex items-center justify-end mb-4'>
+    <div className="max-w-3xl mx-auto space-y-4 pb-12 sm:pb-20">
+      <div className="flex items-center justify-end mb-4">
         <RoleGuard allowedRoles={[Role.Instructor]}>
           <CreatePostDialog
             classroomId={classroomId}
             trigger={
-              <Button className='gap-2 shadow-sm mt-4'>
+              <Button className="gap-2 shadow-sm mt-4">
                 <IconPlus size={18} />
                 <span>Create</span>
               </Button>

@@ -1,7 +1,7 @@
-import { handleApiError } from '@/lib/api';
-import { postService } from '@/lib/api/services/post.service';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { handleApiError } from "@/lib/api";
+import { postService } from "@/lib/api/services/post.service";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export const useTogglePostBookmark = () => {
   const queryClient = useQueryClient();
@@ -26,14 +26,14 @@ export const useTogglePostBookmark = () => {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ['posts', variables.classroomId],
-        refetchType: 'all',
+        queryKey: ["posts", variables.classroomId],
+        refetchType: "all",
       });
 
       // Invalidate specific post query
       queryClient.invalidateQueries({
-        queryKey: ['post', variables.classroomId, variables.postId],
-        refetchType: 'all',
+        queryKey: ["post", variables.classroomId, variables.postId],
+        refetchType: "all",
       });
     },
     onError: (error) => {

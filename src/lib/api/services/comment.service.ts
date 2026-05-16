@@ -1,5 +1,5 @@
-import apiClient from '../index';
-import { User } from '@/types/auth';
+import apiClient from "../index";
+import { User } from "@/types/auth";
 
 export interface Comment {
   id: string;
@@ -18,9 +18,12 @@ export interface CreateCommentDto {
 }
 
 export const commentService = {
-  getComments: async (classroomId: string, postId: string): Promise<Comment[]> => {
+  getComments: async (
+    classroomId: string,
+    postId: string,
+  ): Promise<Comment[]> => {
     const { data } = await apiClient.get<Comment[] | { data: Comment[] }>(
-      `/api/v1/classrooms/${classroomId}/posts/${postId}/comments`
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/comments`,
     );
     return Array.isArray(data) ? data : data.data;
   },
@@ -28,35 +31,35 @@ export const commentService = {
   createComment: async (
     classroomId: string,
     postId: string,
-    data: CreateCommentDto
+    data: CreateCommentDto,
   ): Promise<Comment> => {
     const response = await apiClient.post<Comment | { data: Comment }>(
       `/api/v1/classrooms/${classroomId}/posts/${postId}/comments`,
-      data
+      data,
     );
-    return 'data' in response.data ? response.data.data : response.data;
+    return "data" in response.data ? response.data.data : response.data;
   },
 
   updateComment: async (
     classroomId: string,
     postId: string,
     commentId: string,
-    data: CreateCommentDto
+    data: CreateCommentDto,
   ): Promise<Comment> => {
     const response = await apiClient.patch<Comment | { data: Comment }>(
       `/api/v1/classrooms/${classroomId}/posts/${postId}/comments/${commentId}`,
-      data
+      data,
     );
-    return 'data' in response.data ? response.data.data : response.data;
+    return "data" in response.data ? response.data.data : response.data;
   },
 
   deleteComment: async (
     classroomId: string,
     postId: string,
-    commentId: string
+    commentId: string,
   ): Promise<void> => {
     await apiClient.delete(
-      `/api/v1/classrooms/${classroomId}/posts/${postId}/comments/${commentId}`
+      `/api/v1/classrooms/${classroomId}/posts/${postId}/comments/${commentId}`,
     );
   },
 };

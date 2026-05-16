@@ -3,20 +3,20 @@ import {
   useMutation,
   useQueryClient,
   useInfiniteQuery,
-} from '@tanstack/react-query';
+} from "@tanstack/react-query";
 import {
   noticeService,
   GetNoticesParams,
   CreateNoticeInput,
   UpdateNoticeInput,
   NoticesResponse,
-} from '@/lib/api/services/notice.service';
+} from "@/lib/api/services/notice.service";
 
 export const noticeKeys = {
-  all: ['notices'] as const,
-  lists: () => [...noticeKeys.all, 'list'] as const,
+  all: ["notices"] as const,
+  lists: () => [...noticeKeys.all, "list"] as const,
   list: (params: GetNoticesParams) => [...noticeKeys.lists(), params] as const,
-  details: () => [...noticeKeys.all, 'detail'] as const,
+  details: () => [...noticeKeys.all, "detail"] as const,
   detail: (id: string) => [...noticeKeys.details(), id] as const,
 };
 
@@ -52,8 +52,8 @@ export const useRecentNotices = (limit: number = 5) => {
     queryFn: () =>
       noticeService.getNotices({
         limit,
-        sortBy: 'createdAt',
-        sortOrder: 'desc',
+        sortBy: "createdAt",
+        sortOrder: "desc",
       }),
   });
 };

@@ -7,12 +7,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { IconPlus } from '@tabler/icons-react';
-import { useState } from 'react';
-import { CreatePostForm } from './create-post-form';
-import { PostType } from '@/lib/api/services/post.service';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from "@/components/ui/dialog";
+import { IconPlus } from "@tabler/icons-react";
+import { useState } from "react";
+import { CreatePostForm } from "./create-post-form";
+import { PostType } from "@/lib/api/services/post.service";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CreatePostDialogProps {
   classroomId: string;
@@ -35,27 +35,27 @@ export function CreatePostDialog({
       <DialogTrigger
         render={
           trigger || (
-            <Button size='sm' className='sm:px-3'>
-              <IconPlus className='h-4 w-4 sm:mr-2' />
-              <span className='hidden sm:inline'>Create Post</span>
+            <Button size="sm" className="sm:px-3">
+              <IconPlus className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Create Post</span>
             </Button>
           )
         }
       />
-      <DialogContent className='sm:max-w-[600px] '>
+      <DialogContent className="sm:max-w-[600px] ">
         <DialogHeader>
           <DialogTitle>
             {defaultType
               ? `Create New ${defaultType.charAt(0).toUpperCase() + defaultType.slice(1)}`
-              : 'Create New Post'}
+              : "Create New Post"}
           </DialogTitle>
           <DialogDescription>
-            {defaultType === 'material'
-              ? 'Share learning materials and resources with your class.'
-              : 'Share information, assignments, or questions with your class.'}
+            {defaultType === "material"
+              ? "Share learning materials and resources with your class."
+              : "Share information, assignments, or questions with your class."}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className='max-h-[75vh] pr-4'>
+        <ScrollArea className="max-h-[75vh] pr-4">
           <CreatePostForm
             classroomId={classroomId}
             defaultType={defaultType}
@@ -63,14 +63,14 @@ export function CreatePostDialog({
             onSuccess={() => {
               setOpen(false);
             }}
-            id='create-post-form'
+            id="create-post-form"
             showFooter={false}
             onPendingChange={setIsSubmitting}
           />
         </ScrollArea>
         <DialogFooter>
-          <Button type='submit' form='create-post-form' disabled={isSubmitting}>
-            {isSubmitting ? 'Submitting...' : 'Submit'}
+          <Button type="submit" form="create-post-form" disabled={isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Submit"}
           </Button>
         </DialogFooter>
       </DialogContent>

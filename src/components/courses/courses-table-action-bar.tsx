@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import type { Table } from '@tanstack/react-table';
-import { Trash2, X } from 'lucide-react';
-import * as React from 'react';
+import type { Table } from "@tanstack/react-table";
+import { Trash2, X } from "lucide-react";
+import * as React from "react";
 import {
   ActionBar,
   ActionBarClose,
@@ -10,10 +10,10 @@ import {
   ActionBarItem,
   ActionBarSelection,
   ActionBarSeparator,
-} from '@/components/ui/action-bar';
-import { Course } from '@/lib/api/services/course.service';
-import { useDeleteCourse } from '@/hooks/use-courses';
-import { toast } from 'sonner';
+} from "@/components/ui/action-bar";
+import { Course } from "@/lib/api/services/course.service";
+import { useDeleteCourse } from "@/hooks/use-courses";
+import { toast } from "sonner";
 
 interface CoursesTableActionBarProps {
   table: Table<Course>;
@@ -48,7 +48,7 @@ export function CoursesTableActionBar({ table }: CoursesTableActionBarProps) {
   return (
     <ActionBar open={rows.length > 0} onOpenChange={onOpenChange}>
       <ActionBarSelection>
-        <span className='font-medium'>{rows.length}</span>
+        <span className="font-medium">{rows.length}</span>
         <span>selected</span>
         <ActionBarSeparator />
         <ActionBarClose>
@@ -58,12 +58,12 @@ export function CoursesTableActionBar({ table }: CoursesTableActionBarProps) {
       <ActionBarSeparator />
       <ActionBarGroup>
         <ActionBarItem
-          variant='destructive'
+          variant="destructive"
           onClick={onBulkDelete}
           disabled={deleteCourseMutation.isPending}
         >
           <Trash2 />
-          {deleteCourseMutation.isPending ? 'Deleting...' : 'Delete'}
+          {deleteCourseMutation.isPending ? "Deleting..." : "Delete"}
         </ActionBarItem>
       </ActionBarGroup>
     </ActionBar>

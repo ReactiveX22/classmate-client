@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Sidebar } from '@/components/ui/sidebar';
-import { SidebarData } from '@/types/sidebar-types';
+import { Sidebar } from "@/components/ui/sidebar";
+import { SidebarData } from "@/types/sidebar-types";
 import {
   BookOpen,
   GraduationCap,
@@ -11,67 +11,67 @@ import {
   Settings,
   User,
   CalendarDays,
-} from 'lucide-react';
-import { AppSidebar } from './app-sidebar';
+} from "lucide-react";
+import { AppSidebar } from "./app-sidebar";
 
 const adminDashboardData: SidebarData = {
   user: {
-    name: 'Admin User',
-    email: 'admin@classmate.com',
-    image: '',
+    name: "Admin User",
+    email: "admin@classmate.com",
+    image: "",
   },
   navGroups: [
     {
-      title: 'General',
+      title: "General",
       items: [
         {
-          title: 'Dashboard',
-          url: '/dashboard',
+          title: "Dashboard",
+          url: "/dashboard",
           icon: LayoutDashboard,
         },
         {
-          title: 'Notices',
+          title: "Notices",
           icon: Megaphone,
-          url: '/dashboard/notices',
+          url: "/dashboard/notices",
         },
       ],
     },
     {
-      title: 'Manage',
+      title: "Manage",
       items: [
         {
-          title: 'Students',
-          url: '/dashboard/users/students',
+          title: "Students",
+          url: "/dashboard/users/students",
           icon: GraduationCap,
         },
         {
-          title: 'Teachers',
-          url: '/dashboard/users/teachers',
+          title: "Teachers",
+          url: "/dashboard/users/teachers",
           icon: Presentation,
         },
         {
-          title: 'Courses',
-          url: '/dashboard/courses',
+          title: "Courses",
+          url: "/dashboard/courses",
           icon: BookOpen,
         },
         {
-          title: 'Sessions',
-          url: '/dashboard/academic-sessions',
+          title: "Sessions",
+          url: "/dashboard/academic-sessions",
           icon: CalendarDays,
         },
       ],
     },
     {
-      title: 'Account',
+      title: "Account",
       items: [
         {
-          title: 'Profile',
-          url: '/dashboard/profile',
+          title: "Profile",
+          url: "/dashboard/profile",
           icon: User,
         },
         {
-          title: 'Settings',
-          url: '/dashboard/settings',
+          title: "Settings",
+          url: "/dashboard/settings",
           icon: Settings,
         },
       ],

@@ -21,14 +21,14 @@ export function UpcomingCard({ classroomId }: UpcomingCardProps) {
 
   if (isLoading) {
     return (
-      <Card className='hidden md:block w-64 h-fit shrink-0'>
-        <CardHeader className='px-4 pt-4 pb-2'>
-          <CardTitle className='text-sm font-semibold'>Upcoming</CardTitle>
+      <Card className="hidden md:block w-64 h-fit shrink-0">
+        <CardHeader className="px-4 pt-4 pb-2">
+          <CardTitle className="text-sm font-semibold">Upcoming</CardTitle>
         </CardHeader>
-        <CardContent className='space-y-3 px-4 pb-4 pt-0'>
-          <div className='space-y-2'>
-            <Skeleton className='h-3 w-3/4' />
-            <Skeleton className='h-2 w-1/2' />
+        <CardContent className="space-y-3 px-4 pb-4 pt-0">
+          <div className="space-y-2">
+            <Skeleton className="h-3 w-3/4" />
+            <Skeleton className="h-2 w-1/2" />
           </div>
           <div className="space-y-2">
             <Skeleton className="h-3 w-3/4" />
@@ -44,11 +44,11 @@ export function UpcomingCard({ classroomId }: UpcomingCardProps) {
   const hasUpcoming = upcomingPosts && upcomingPosts.length > 0;
 
   return (
-    <Card className='hidden md:block w-64 h-fit shrink-0'>
-      <CardHeader className='px-4 pt-4 pb-2'>
-        <CardTitle className='text-sm font-semibold'>Upcoming</CardTitle>
+    <Card className="hidden md:block w-64 h-fit shrink-0">
+      <CardHeader className="px-4 pt-4 pb-2">
+        <CardTitle className="text-sm font-semibold">Upcoming</CardTitle>
       </CardHeader>
-      <CardContent className='text-xs px-4 pb-4 pt-0'>
+      <CardContent className="text-xs px-4 pb-4 pt-0">
         {!hasUpcoming ? (
           <p className="text-muted-foreground">No work due soon</p>
         ) : (

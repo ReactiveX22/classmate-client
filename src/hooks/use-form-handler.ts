@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { toast } from 'sonner';
-import { mapServerErrors } from '@/lib/utils/form-errors';
+import { useState } from "react";
+import { toast } from "sonner";
+import { mapServerErrors } from "@/lib/utils/form-errors";
 
 export function useFormErrorHandler() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -9,17 +9,17 @@ export function useFormErrorHandler() {
   const handleError = (error: unknown, formValues: Record<string, unknown>) => {
     setFieldErrors({});
     setGlobalErrors([]);
-    
+
     const result = mapServerErrors(error, formValues);
-    
-    if (result.type === 'field') {
+
+    if (result.type === "field") {
       const newFieldErrors: Record<string, string> = {};
-      result.errors.forEach(e => { 
-        if (e.field) newFieldErrors[e.field] = e.message; 
+      result.errors.forEach((e) => {
+        if (e.field) newFieldErrors[e.field] = e.message;
       });
       setFieldErrors(newFieldErrors);
-      
-      // If the API provided a main message but also field errors, 
+
+      // If the API provided a main message but also field errors,
       // we only show the global message if it's not redundant.
       // For now, let's keep it simple: field errors only show inline.
     } else {
@@ -28,5 +28,11 @@ export function useFormErrorHandler() {
     }
   };
 
-  return { fieldErrors, globalErrors, handleError, setFieldErrors, setGlobalErrors };
+  return {
+    fieldErrors,
+    globalErrors,
+    handleError,
+    setFieldErrors,
+    setGlobalErrors,
+  };
 }

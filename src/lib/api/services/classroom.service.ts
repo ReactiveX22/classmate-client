@@ -1,7 +1,7 @@
-import { User } from '@/types/auth';
-import apiClient from '../index';
-import { PaginationMeta, PaginationParams } from '@/types/pagination';
-import { Attachment } from './post.service';
+import { User } from "@/types/auth";
+import apiClient from "../index";
+import { PaginationMeta, PaginationParams } from "@/types/pagination";
+import { Attachment } from "./post.service";
 
 export interface Classroom {
   id: string;
@@ -40,7 +40,7 @@ export interface TeacherProfile {
 export interface UpcomingPost {
   id: string;
   title: string;
-  type: 'assignment' | 'announcement' | 'material';
+  type: "assignment" | "announcement" | "material";
   dueAt: string;
 }
 
@@ -106,7 +106,7 @@ export interface AssignmentWithSubmission {
   id: string;
   classroomId: string;
   authorId: string;
-  type: 'assignment' | 'announcement' | 'material';
+  type: "assignment" | "announcement" | "material";
   title: string;
   content: string;
   attachments: Attachment[];
@@ -149,7 +149,7 @@ export interface AttendanceChecklistItem {
   image: string | null;
   studentId: string;
   attendanceId: string | null;
-  status: 'present' | 'absent' | 'late' | null;
+  status: "present" | "absent" | "late" | null;
   remarks: string | null;
 }
 
@@ -157,7 +157,7 @@ export interface BulkCreateAttendanceInput {
   date: string;
   records: {
     studentId: string;
-    status: 'present' | 'absent' | 'late';
+    status: "present" | "absent" | "late";
     remarks?: string;
   }[];
 }
@@ -167,7 +167,7 @@ export const classroomService = {
     params?: PaginationParams,
   ): Promise<ClassroomsResponse> => {
     const response = await apiClient.get<ClassroomsResponse>(
-      '/api/v1/classrooms',
+      "/api/v1/classrooms",
       {
         params,
       },
@@ -186,7 +186,7 @@ export const classroomService = {
     payload: CreateClassroomInput,
   ): Promise<Classroom> => {
     const response = await apiClient.post<Classroom>(
-      '/api/v1/classrooms',
+      "/api/v1/classrooms",
       payload,
     );
     return response.data;
@@ -226,7 +226,7 @@ export const classroomService = {
   },
 
   joinClassroom: async (classCode: string): Promise<void> => {
-    await apiClient.post('/api/v1/classrooms/join', {
+    await apiClient.post("/api/v1/classrooms/join", {
       classCode,
     });
   },

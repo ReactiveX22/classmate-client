@@ -1,7 +1,7 @@
-import { handleApiError } from '@/lib/api';
-import { postService, VotePollDto } from '@/lib/api/services/post.service';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { handleApiError } from "@/lib/api";
+import { postService, VotePollDto } from "@/lib/api/services/post.service";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export const useVoteOnPoll = () => {
   const queryClient = useQueryClient();
@@ -18,12 +18,12 @@ export const useVoteOnPoll = () => {
     }) => postService.voteOnPoll(classroomId, postId, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ['posts', variables.classroomId],
-        refetchType: 'all',
+        queryKey: ["posts", variables.classroomId],
+        refetchType: "all",
       });
       queryClient.invalidateQueries({
-        queryKey: ['post', variables.classroomId, variables.postId],
-        refetchType: 'all',
+        queryKey: ["post", variables.classroomId, variables.postId],
+        refetchType: "all",
       });
     },
     onError: (error) => {

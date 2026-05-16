@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useUpdateClassroom } from '@/hooks/use-classrooms';
-import { ClassroomDetail } from '@/lib/api/services/classroom.service';
-import { useForm } from '@tanstack/react-form';
-import z from 'zod';
-import { CourseSelect } from '../../course-select';
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useUpdateClassroom } from "@/hooks/use-classrooms";
+import { ClassroomDetail } from "@/lib/api/services/classroom.service";
+import { useForm } from "@tanstack/react-form";
+import z from "zod";
+import { CourseSelect } from "../../course-select";
 
 const classroomSchema = z.object({
-  courseId: z.string().min(1, 'Course is required'),
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  section: z.string().min(1, 'Section is required'),
+  courseId: z.string().min(1, "Course is required"),
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  section: z.string().min(1, "Section is required"),
   description: z.string(),
 });
 
@@ -37,10 +37,10 @@ export function UpdateClassroomForm({
 
   const form = useForm({
     defaultValues: {
-      courseId: classroom.course?.id || '',
+      courseId: classroom.course?.id || "",
       name: classroom.name,
       section: classroom.section,
-      description: classroom.description || '',
+      description: classroom.description || "",
     },
     validators: {
       onChange: classroomSchema,
@@ -66,10 +66,10 @@ export function UpdateClassroomForm({
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className='flex flex-col gap-4'
+      className="flex flex-col gap-4"
     >
       <FieldGroup>
-        <form.Field name='courseId'>
+        <form.Field name="courseId">
           {(field) => {
             const isInvalid =
               field.state.meta.isTouched && field.state.meta.errors.length > 0;
@@ -78,7 +78,7 @@ export function UpdateClassroomForm({
                 <FieldLabel htmlFor={field.name}>Course</FieldLabel>
                 <CourseSelect
                   value={field.state.value}
-                  onValueChange={(val) => field.handleChange(val || '')}
+                  onValueChange={(val) => field.handleChange(val || "")}
                   error={isInvalid}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -86,7 +86,7 @@ export function UpdateClassroomForm({
             );
           }}
         </form.Field>
-        <form.Field name='name'>
+        <form.Field name="name">
           {(field) => {
             const isInvalid =
               field.state.meta.isTouched && field.state.meta.errors.length > 0;
@@ -99,7 +99,7 @@ export function UpdateClassroomForm({
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. Data Structures and Algorithms'
+                  placeholder="e.g. Data Structures and Algorithms"
                   aria-invalid={isInvalid}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -108,7 +108,7 @@ export function UpdateClassroomForm({
           }}
         </form.Field>
 
-        <form.Field name='section'>
+        <form.Field name="section">
           {(field) => {
             const isInvalid =
               field.state.meta.isTouched && field.state.meta.errors.length > 0;
@@ -121,7 +121,7 @@ export function UpdateClassroomForm({
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. CSE-301-A'
+                  placeholder="e.g. CSE-301-A"
                   aria-invalid={isInvalid}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -130,7 +130,7 @@ export function UpdateClassroomForm({
           }}
         </form.Field>
 
-        <form.Field name='description'>
+        <form.Field name="description">
           {(field) => {
             return (
               <Field>
@@ -143,7 +143,7 @@ export function UpdateClassroomForm({
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='Enter a brief description...'
+                  placeholder="Enter a brief description..."
                   rows={3}
                 />
               </Field>
@@ -153,17 +153,17 @@ export function UpdateClassroomForm({
       </FieldGroup>
 
       {updateClassroomMutation.error && (
-        <div className='text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3'>
+        <div className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-md p-3">
           {updateClassroomMutation.error.response?.data?.message ||
             updateClassroomMutation.error.message ||
-            'Failed to update classroom'}
+            "Failed to update classroom"}
         </div>
       )}
 
-      <div className='flex items-center gap-2 justify-end'>
+      <div className="flex items-center gap-2 justify-end">
         <Button
-          type='button'
-          variant='ghost'
+          type="button"
+          variant="ghost"
           onClick={onCancel}
           disabled={updateClassroomMutation.isPending}
         >
@@ -174,12 +174,12 @@ export function UpdateClassroomForm({
         >
           {([canSubmit, isSubmitting]) => (
             <Button
-              type='submit'
+              type="submit"
               disabled={!canSubmit || updateClassroomMutation.isPending}
             >
               {updateClassroomMutation.isPending || isSubmitting
-                ? 'Saving...'
-                : 'Save Changes'}
+                ? "Saving..."
+                : "Save Changes"}
             </Button>
           )}
         </form.Subscribe>

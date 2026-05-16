@@ -1,11 +1,11 @@
-import { ApiError, ErrorCode } from '@/types/errors';
-import axios from 'axios';
+import { ApiError, ErrorCode } from "@/types/errors";
+import axios from "axios";
 
 export function mapServerErrors(
   error: unknown,
   formValues: Record<string, unknown>,
 ) {
-  let mainMessage = 'An unexpected error occurred.';
+  let mainMessage = "An unexpected error occurred.";
   let apiError: ApiError | undefined;
 
   if (axios.isAxiosError(error)) {
@@ -25,11 +25,11 @@ export function mapServerErrors(
       .filter((err) => err.field in formValues)
       .map((err) => ({ field: err.field, message: err.issue }));
     return {
-      type: 'field' as const,
+      type: "field" as const,
       errors: relevantErrors,
       message: mainMessage,
     };
   }
 
-  return { type: 'global' as const, message: mainMessage };
+  return { type: "global" as const, message: mainMessage };
 }

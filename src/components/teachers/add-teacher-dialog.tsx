@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,10 +8,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { useState } from 'react';
-import { AddTeacherForm } from './add-teacher-form';
-import { IconUserPlus } from '@tabler/icons-react';
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import { AddTeacherForm } from "./add-teacher-form";
+import { IconUserPlus } from "@tabler/icons-react";
 
 export function AddTeacherDialog() {
   const [open, setOpen] = useState(false);
@@ -21,12 +21,12 @@ export function AddTeacherDialog() {
       <DialogTrigger
         render={
           <Button>
-            <IconUserPlus className='mr-2 h-4 w-4' />
+            <IconUserPlus className="mr-2 h-4 w-4" />
             Add Teacher
           </Button>
         }
       />
-      <DialogContent className='w-full max-w-[calc(100%-2rem)] max-h-[calc(100%-2rem)] sm:max-w-md overflow-auto'>
+      <DialogContent className="w-full max-w-[calc(100%-2rem)] max-h-[calc(100%-2rem)] sm:max-w-md overflow-auto">
         <DialogHeader>
           <DialogTitle>Add New Teacher</DialogTitle>
           <DialogDescription>

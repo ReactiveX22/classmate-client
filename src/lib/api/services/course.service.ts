@@ -1,8 +1,8 @@
-import { User } from '@/types/auth';
-import apiClient from '../index';
-import { PaginationMeta, PaginationParams } from '@/types/pagination';
-import { Semester } from './semester.service';
-import { CourseSession } from './course-session.service';
+import { User } from "@/types/auth";
+import apiClient from "../index";
+import { PaginationMeta, PaginationParams } from "@/types/pagination";
+import { Semester } from "./semester.service";
+import { CourseSession } from "./course-session.service";
 
 export interface Enrollment {
   studentId: string;
@@ -67,7 +67,7 @@ export interface CoursesResponse {
 
 export const courseService = {
   getCourses: async (params?: PaginationParams): Promise<CoursesResponse> => {
-    const response = await apiClient.get<CoursesResponse>('/api/v1/courses', {
+    const response = await apiClient.get<CoursesResponse>("/api/v1/courses", {
       params,
     });
     return response.data;
@@ -79,7 +79,7 @@ export const courseService = {
   },
 
   createCourse: async (payload: CreateCourseInput): Promise<Course> => {
-    const response = await apiClient.post<Course>('/api/v1/courses', payload);
+    const response = await apiClient.post<Course>("/api/v1/courses", payload);
     return response.data;
   },
 

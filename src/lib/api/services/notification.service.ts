@@ -1,5 +1,5 @@
-import apiClient from '../index';
-import { PaginationMeta, PaginationParams } from '@/types/pagination';
+import apiClient from "../index";
+import { PaginationMeta, PaginationParams } from "@/types/pagination";
 
 export interface NotificationActor {
   id: string;
@@ -39,7 +39,7 @@ export const notificationService = {
     params?: PaginationParams,
   ): Promise<NotificationsResponse> => {
     const response = await apiClient.get<NotificationsResponse>(
-      '/api/v1/notifications',
+      "/api/v1/notifications",
       {
         params,
       },
@@ -50,6 +50,6 @@ export const notificationService = {
     await apiClient.patch(`/api/v1/notifications/${id}/read`);
   },
   markAllAsRead: async (): Promise<void> => {
-    await apiClient.patch('/api/v1/notifications/read-all');
+    await apiClient.patch("/api/v1/notifications/read-all");
   },
 };

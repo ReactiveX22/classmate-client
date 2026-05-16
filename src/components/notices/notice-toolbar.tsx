@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { buttonVariants } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Role } from '@/types/auth';
-import { Plus, Search } from 'lucide-react';
-import Link from 'next/link';
-import { RoleGuard } from '../common/role-guard';
+import { buttonVariants } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Role } from "@/types/auth";
+import { Plus, Search } from "lucide-react";
+import Link from "next/link";
+import { RoleGuard } from "../common/role-guard";
 
 interface NoticeToolbarProps {
   searchPromise: string;
@@ -17,25 +17,25 @@ export function NoticeToolbar({
   onSearchChange,
 }: NoticeToolbarProps) {
   return (
-    <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between py-4 border-b px-6 bg-card'>
-      <h2 className='text-lg font-semibold'>Notices</h2>
-      <div className='flex items-center gap-2'>
-        <div className='relative'>
-          <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between py-4 border-b px-6 bg-card">
+      <h2 className="text-lg font-semibold">Notices</h2>
+      <div className="flex items-center gap-2">
+        <div className="relative">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder='Search...'
-            className='pl-9 w-full sm:w-[250px] bg-muted/50'
+            placeholder="Search..."
+            className="pl-9 w-full sm:w-[250px] bg-muted/50"
             value={searchPromise}
             onChange={(e) => onSearchChange(e.target.value)}
           />
         </div>
         <RoleGuard allowedRoles={[Role.Admin]}>
           <Link
-            href='/dashboard/notices/new'
-            className={buttonVariants({ variant: 'default', size: 'default' })}
+            href="/dashboard/notices/new"
+            className={buttonVariants({ variant: "default", size: "default" })}
           >
-            <Plus className='h-4 w-4 sm:mr-2' />
-            <span className='hidden sm:inline'>Publish Notice</span>
+            <Plus className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Publish Notice</span>
           </Link>
         </RoleGuard>
       </div>

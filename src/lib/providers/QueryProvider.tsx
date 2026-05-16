@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState } from 'react';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -9,7 +9,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            retry: process.env.NODE_ENV === 'production' ? 3 : false,
+            retry: process.env.NODE_ENV === "production" ? 3 : false,
             staleTime: 1000 * 60 * 1, // Cache for 1 minute
           },
         },

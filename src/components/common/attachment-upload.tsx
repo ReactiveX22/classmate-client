@@ -1,8 +1,8 @@
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
-import { UploadResult } from '@/hooks/use-upload-attachment';
-import { cn } from '@/lib/utils';
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import { UploadResult } from "@/hooks/use-upload-attachment";
+import { cn } from "@/lib/utils";
 import {
   IconFile,
   IconFileDescription,
@@ -16,15 +16,15 @@ import {
   IconTrash,
   IconVideo,
   IconX,
-} from '@tabler/icons-react';
-import { FileIcon } from 'lucide-react';
-import { useCallback, useState } from 'react';
-import { toast } from 'sonner';
+} from "@tabler/icons-react";
+import { FileIcon } from "lucide-react";
+import { useCallback, useState } from "react";
+import { toast } from "sonner";
 
 interface FileUploadState {
   file: File;
   progress: number;
-  status: 'uploading' | 'success' | 'error';
+  status: "uploading" | "success" | "error";
   result?: UploadResult;
   error?: string;
 }
@@ -45,20 +45,20 @@ interface AttachmentUploadProps {
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/gif',
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'application/vnd.ms-powerpoint',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'text/plain',
-  'application/zip',
-  'application/x-zip-compressed',
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/gif",
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "text/plain",
+  "application/zip",
+  "application/x-zip-compressed",
 ];
 
 export function AttachmentUpload({
@@ -69,16 +69,16 @@ export function AttachmentUpload({
 }: AttachmentUploadProps) {
   const [uploads, setUploads] = useState<FileUploadState[]>([]);
   const [showLinkInput, setShowLinkInput] = useState(false);
-  const [linkUrl, setLinkUrl] = useState('');
-  const [linkName, setLinkName] = useState('');
+  const [linkUrl, setLinkUrl] = useState("");
+  const [linkName, setLinkName] = useState("");
   const [isDragging, setIsDragging] = useState(false);
 
   const validateFile = (file: File): string | null => {
     if (file.size > MAX_FILE_SIZE) {
-      return 'File is too large. Maximum size is 10MB';
+      return "File is too large. Maximum size is 10MB";
     }
     if (!ALLOWED_TYPES.includes(file.type)) {
-      return 'File type not allowed';
+      return "File type not allowed";
     }
     return null;
   };
@@ -101,7 +101,7 @@ export function AttachmentUpload({
       const newUploads: FileUploadState[] = validFiles.map((file) => ({
         file,
         progress: 0,
-        status: 'uploading' as const,
+        status: "uploading" as const,
       }));
 
       // Store the starting index before updating state
@@ -130,7 +130,7 @@ export function AttachmentUpload({
           setUploads((prev) => {
             const updated = [...prev];
             if (updated[uploadIndex]) {
-              updated[uploadIndex].status = 'success';
+              updated[uploadIndex].status = "success";
               updated[uploadIndex].result = result;
             }
             return updated;
@@ -142,9 +142,9 @@ export function AttachmentUpload({
           setUploads((prev) => {
             const updated = [...prev];
             if (updated[uploadIndex]) {
-              updated[uploadIndex].status = 'error';
+              updated[uploadIndex].status = "error";
               updated[uploadIndex].error =
-                error instanceof Error ? error.message : 'Upload failed';
+                error instanceof Error ? error.message : "Upload failed";
             }
             return updated;
           });
@@ -181,11 +181,11 @@ export function AttachmentUpload({
     const upload = uploads[index];
 
     // If it was successfully uploaded, also remove from attachments and server
-    if (upload.status === 'success' && upload.result) {
+    if (upload.status === "success" && upload.result) {
       try {
         await onRemove(upload.result.id);
       } catch (error) {
-        console.error('Failed to remove attachment from server:', error);
+        console.error("Failed to remove attachment from server:", error);
         // We still remove it from UI state even if server delete fails,
         // as the user intends to remove it from the post.
       }
@@ -202,7 +202,7 @@ export function AttachmentUpload({
     try {
       await onRemove(id);
     } catch (error) {
-      console.error('Failed to remove attachment from server:', error);
+      console.error("Failed to remove attachment from server:", error);
     }
 
     // Remove from attachments
@@ -214,14 +214,14 @@ export function AttachmentUpload({
 
   const addLink = () => {
     if (!linkUrl.trim()) {
-      toast.error('Please enter a URL');
+      toast.error("Please enter a URL");
       return;
     }
 
     try {
       new URL(linkUrl);
     } catch {
-      toast.error('Please enter a valid URL');
+      toast.error("Please enter a valid URL");
       return;
     }
 
@@ -229,89 +229,88 @@ export function AttachmentUpload({
       id: `link-${Date.now()}`,
       name: linkName.trim() || linkUrl,
       url: linkUrl,
-      type: 'link',
+      type: "link",
       size: 0,
-      mimeType: 'text/uri-list',
+      mimeType: "text/uri-list",
     };
 
     onAttachmentsChange([...attachments, linkAttachment]);
-    setLinkUrl('');
-    setLinkName('');
+    setLinkUrl("");
+    setLinkName("");
     setShowLinkInput(false);
   };
 
   const getFileIcon = (mimeType: string, type?: string) => {
-    const isImage = type === 'image' || mimeType.startsWith('image/');
-    const isVideo = type === 'video' || mimeType.startsWith('video/');
-    const isLink = type === 'link' || mimeType === 'text/uri-list';
-    const isPdf = mimeType.includes('pdf');
+    const isImage = type === "image" || mimeType.startsWith("image/");
+    const isVideo = type === "video" || mimeType.startsWith("video/");
+    const isLink = type === "link" || mimeType === "text/uri-list";
+    const isPdf = mimeType.includes("pdf");
     const isWord =
-      mimeType.includes('wordprocessingml') ||
-      mimeType.includes('msword');
+      mimeType.includes("wordprocessingml") || mimeType.includes("msword");
     const isExcel =
-      mimeType.includes('spreadsheetml') ||
-      mimeType.includes('ms-excel') ||
-      mimeType.includes('xls');
+      mimeType.includes("spreadsheetml") ||
+      mimeType.includes("ms-excel") ||
+      mimeType.includes("xls");
     const isPpt =
-      mimeType.includes('presentationml') ||
-      mimeType.includes('ms-powerpoint') ||
-      mimeType.includes('ppt');
-    const isZip = mimeType.includes('zip') || mimeType.includes('compressed');
-    const isText = mimeType.includes('text/plain') || mimeType.includes('txt');
+      mimeType.includes("presentationml") ||
+      mimeType.includes("ms-powerpoint") ||
+      mimeType.includes("ppt");
+    const isZip = mimeType.includes("zip") || mimeType.includes("compressed");
+    const isText = mimeType.includes("text/plain") || mimeType.includes("txt");
 
     let Icon = IconFile;
-    let bg = 'bg-muted';
-    let text = 'text-muted-foreground';
+    let bg = "bg-muted";
+    let text = "text-muted-foreground";
 
     if (isImage) {
       Icon = IconPhoto;
-      bg = 'bg-purple-100 dark:bg-purple-950';
-      text = 'text-purple-600 dark:text-purple-400';
+      bg = "bg-purple-100 dark:bg-purple-950";
+      text = "text-purple-600 dark:text-purple-400";
     } else if (isVideo) {
       Icon = IconVideo;
-      bg = 'bg-pink-100 dark:bg-pink-950';
-      text = 'text-pink-600 dark:text-pink-400';
+      bg = "bg-pink-100 dark:bg-pink-950";
+      text = "text-pink-600 dark:text-pink-400";
     } else if (isLink) {
       Icon = IconLink;
-      bg = 'bg-blue-100 dark:bg-blue-950';
-      text = 'text-blue-600 dark:text-blue-400';
+      bg = "bg-blue-100 dark:bg-blue-950";
+      text = "text-blue-600 dark:text-blue-400";
     } else if (isPdf) {
       Icon = IconFileText;
-      bg = 'bg-red-100 dark:bg-red-950';
-      text = 'text-red-600 dark:text-red-400';
+      bg = "bg-red-100 dark:bg-red-950";
+      text = "text-red-600 dark:text-red-400";
     } else if (isWord) {
       Icon = IconFileDescription;
-      bg = 'bg-indigo-100 dark:bg-indigo-950';
-      text = 'text-indigo-600 dark:text-indigo-400';
+      bg = "bg-indigo-100 dark:bg-indigo-950";
+      text = "text-indigo-600 dark:text-indigo-400";
     } else if (isExcel) {
       Icon = IconFileSpreadsheet;
-      bg = 'bg-emerald-100 dark:bg-emerald-950';
-      text = 'text-emerald-600 dark:text-emerald-400';
+      bg = "bg-emerald-100 dark:bg-emerald-950";
+      text = "text-emerald-600 dark:text-emerald-400";
     } else if (isPpt) {
       Icon = IconPresentation;
-      bg = 'bg-orange-100 dark:bg-orange-950';
-      text = 'text-orange-600 dark:text-orange-400';
+      bg = "bg-orange-100 dark:bg-orange-950";
+      text = "text-orange-600 dark:text-orange-400";
     } else if (isZip) {
       Icon = IconFileZip;
-      bg = 'bg-amber-100 dark:bg-amber-950';
-      text = 'text-amber-600 dark:text-amber-400';
+      bg = "bg-amber-100 dark:bg-amber-950";
+      text = "text-amber-600 dark:text-amber-400";
     } else if (isText) {
       Icon = IconFileText;
-      bg = 'bg-gray-100 dark:bg-gray-950';
-      text = 'text-gray-600 dark:text-gray-400';
+      bg = "bg-gray-100 dark:bg-gray-950";
+      text = "text-gray-600 dark:text-gray-400";
     }
 
     return (
-      <div className={cn('p-2 rounded-md transition-transform', bg)}>
+      <div className={cn("p-2 rounded-md transition-transform", bg)}>
         <Icon size={18} className={text} />
       </div>
     );
   };
 
   const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return "0 B";
     const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
   };
@@ -319,21 +318,21 @@ export function AttachmentUpload({
   // Combine uploads and attachments for display
   const allItems = [
     ...uploads.map((upload, index) => ({
-      type: 'upload' as const,
+      type: "upload" as const,
       index,
       upload,
     })),
     ...attachments
       .filter((att) => !uploads.some((u) => u.result?.id === att.id))
       .map((attachment) => ({
-        type: 'attachment' as const,
+        type: "attachment" as const,
         attachment,
       })),
   ];
 
   return (
-    <div className='space-y-4'>
-      <Label className='text-muted-foreground'>Attachments</Label>
+    <div className="space-y-4">
+      <Label className="text-muted-foreground">Attachments</Label>
 
       {/* Drop Zone */}
       <div
@@ -344,83 +343,83 @@ export function AttachmentUpload({
         }}
         onDragLeave={() => setIsDragging(false)}
         className={cn(
-          'border-2 border-dashed rounded-lg p-6 transition-colors',
+          "border-2 border-dashed rounded-lg p-6 transition-colors",
           isDragging
-            ? 'border-primary bg-primary/5'
-            : 'border-border bg-muted/10',
+            ? "border-primary bg-primary/5"
+            : "border-border bg-muted/10",
         )}
       >
-        <div className='flex flex-col items-center justify-center text-center gap-4'>
-          <IconPaperclip className='h-8 w-8 text-muted-foreground' />
+        <div className="flex flex-col items-center justify-center text-center gap-4">
+          <IconPaperclip className="h-8 w-8 text-muted-foreground" />
           <div>
-            <p className='text-sm font-medium'>
+            <p className="text-sm font-medium">
               Drag and drop files here, or click to browse
             </p>
-            <p className='text-xs text-muted-foreground mt-1'>
+            <p className="text-xs text-muted-foreground mt-1">
               Max 10MB • JPG, PNG, PDF, DOC, XLS, PPT, TXT, ZIP
             </p>
           </div>
-          <div className='flex gap-2'>
+          <div className="flex gap-2">
             <Button
-              type='button'
-              variant='outline'
-              size='sm'
-              onClick={() => document.getElementById('file-input')?.click()}
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => document.getElementById("file-input")?.click()}
             >
-              <FileIcon className='mr-2' />
+              <FileIcon className="mr-2" />
               Browse Files
             </Button>
             <Button
-              type='button'
-              variant='outline'
-              size='sm'
+              type="button"
+              variant="outline"
+              size="sm"
               onClick={() => setShowLinkInput(true)}
             >
-              <IconLink className='mr-2' />
+              <IconLink className="mr-2" />
               Add Link
             </Button>
           </div>
           <input
-            id='file-input'
-            type='file'
+            id="file-input"
+            type="file"
             multiple
             onChange={handleFileInput}
-            className='hidden'
-            accept={ALLOWED_TYPES.join(',')}
+            className="hidden"
+            accept={ALLOWED_TYPES.join(",")}
           />
         </div>
       </div>
 
       {/* Link Input */}
       {showLinkInput && (
-        <div className='border rounded-lg p-4 space-y-3 bg-muted/20'>
-          <div className='flex items-center justify-between'>
-            <h4 className='font-medium text-sm'>Add Link</h4>
+        <div className="border rounded-lg p-4 space-y-3 bg-muted/20">
+          <div className="flex items-center justify-between">
+            <h4 className="font-medium text-sm">Add Link</h4>
             <Button
-              type='button'
-              variant='ghost'
-              size='sm'
+              type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => setShowLinkInput(false)}
             >
-              <IconX className='h-4 w-4' />
+              <IconX className="h-4 w-4" />
             </Button>
           </div>
-          <div className='space-y-2'>
+          <div className="space-y-2">
             <input
-              type='url'
-              placeholder='https://example.com'
+              type="url"
+              placeholder="https://example.com"
               value={linkUrl}
               onChange={(e) => setLinkUrl(e.target.value)}
-              className='w-full px-3 py-2 border rounded-md text-sm'
+              className="w-full px-3 py-2 border rounded-md text-sm"
             />
             <input
-              type='text'
-              placeholder='Link name (optional)'
+              type="text"
+              placeholder="Link name (optional)"
               value={linkName}
               onChange={(e) => setLinkName(e.target.value)}
-              className='w-full px-3 py-2 border rounded-md text-sm'
+              className="w-full px-3 py-2 border rounded-md text-sm"
             />
-            <Button type='button' size='sm' onClick={addLink}>
+            <Button type="button" size="sm" onClick={addLink}>
               Add Link
             </Button>
           </div>
@@ -429,49 +428,49 @@ export function AttachmentUpload({
 
       {/* Combined List: Uploads + Attachments */}
       {allItems.length > 0 && (
-        <div className='space-y-2'>
-          <Label className='text-sm'>Attached ({allItems.length})</Label>
+        <div className="space-y-2">
+          <Label className="text-sm">Attached ({allItems.length})</Label>
           {allItems.map((item) => {
-            if (item.type === 'upload') {
+            if (item.type === "upload") {
               const { upload, index } = item;
               return (
                 <div
                   key={`upload-${index}`}
-                  className='border rounded-lg p-3 bg-background space-y-2'
+                  className="border rounded-lg p-3 bg-background space-y-2"
                 >
-                  <div className='flex items-center justify-between'>
-                    <div className='flex items-center gap-2.5 flex-1 min-w-0'>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5 flex-1 min-w-0">
                       {getFileIcon(upload.file.type)}
-                      <div className='flex-1 min-w-0'>
-                        <p className='text-sm font-medium truncate'>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">
                           {upload.file.name}
                         </p>
-                        <p className='text-xs text-muted-foreground'>
+                        <p className="text-xs text-muted-foreground">
                           {formatFileSize(upload.file.size)}
-                          {upload.status === 'uploading' && ' • Uploading...'}
-                          {upload.status === 'success' && ' • Uploaded'}
-                          {upload.status === 'error' && ' • Failed'}
+                          {upload.status === "uploading" && " • Uploading..."}
+                          {upload.status === "success" && " • Uploaded"}
+                          {upload.status === "error" && " • Failed"}
                         </p>
                       </div>
                     </div>
                     <Button
-                      type='button'
-                      variant='ghost'
-                      size='sm'
+                      type="button"
+                      variant="ghost"
+                      size="sm"
                       onClick={() => removeUpload(index)}
                     >
-                      {upload.status === 'error' ? (
-                        <IconX className='h-4 w-4' />
+                      {upload.status === "error" ? (
+                        <IconX className="h-4 w-4" />
                       ) : (
-                        <IconTrash className='h-4 w-4 text-destructive' />
+                        <IconTrash className="h-4 w-4 text-destructive" />
                       )}
                     </Button>
                   </div>
-                  {upload.status === 'uploading' && (
-                    <Progress value={upload.progress} className='h-1' />
+                  {upload.status === "uploading" && (
+                    <Progress value={upload.progress} className="h-1" />
                   )}
-                  {upload.status === 'error' && (
-                    <p className='text-xs text-red-500'>{upload.error}</p>
+                  {upload.status === "error" && (
+                    <p className="text-xs text-red-500">{upload.error}</p>
                   )}
                 </div>
               );
@@ -480,28 +479,28 @@ export function AttachmentUpload({
               return (
                 <div
                   key={attachment.id}
-                  className='border rounded-lg p-3 bg-background flex items-center justify-between'
+                  className="border rounded-lg p-3 bg-background flex items-center justify-between"
                 >
-                  <div className='flex items-center gap-2 flex-1 min-w-0'>
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
                     {getFileIcon(attachment.mimeType, attachment.type)}
-                    <div className='flex-1 min-w-0'>
-                      <p className='text-sm font-medium truncate'>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">
                         {attachment.name}
                       </p>
                       {attachment.size > 0 && (
-                        <p className='text-xs text-muted-foreground'>
+                        <p className="text-xs text-muted-foreground">
                           {formatFileSize(attachment.size)}
                         </p>
                       )}
                     </div>
                   </div>
                   <Button
-                    type='button'
-                    variant='ghost'
-                    size='sm'
+                    type="button"
+                    variant="ghost"
+                    size="sm"
                     onClick={() => removeAttachment(attachment.id)}
                   >
-                    <IconTrash className='h-4 w-4 text-destructive' />
+                    <IconTrash className="h-4 w-4 text-destructive" />
                   </Button>
                 </div>
               );

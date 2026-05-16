@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   AlertDialog,
@@ -9,10 +9,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { useDeleteTeacher } from '@/hooks/use-teachers';
-import { TeacherData } from '@/lib/api/services/teacher.service';
-import { toast } from 'sonner';
+} from "@/components/ui/alert-dialog";
+import { useDeleteTeacher } from "@/hooks/use-teachers";
+import { TeacherData } from "@/lib/api/services/teacher.service";
+import { toast } from "sonner";
 
 interface DeleteTeacherDialogProps {
   teacher: TeacherData;
@@ -30,7 +30,7 @@ export function DeleteTeacherDialog({
   const handleDelete = () => {
     deleteTeacherMutation.mutate(teacher.user.id, {
       onSuccess: () => {
-        toast.success('Teacher deleted successfully');
+        toast.success("Teacher deleted successfully");
         onOpenChange(false);
       },
     });
@@ -56,10 +56,10 @@ export function DeleteTeacherDialog({
               e.preventDefault();
               handleDelete();
             }}
-            variant='destructive'
+            variant="destructive"
             disabled={deleteTeacherMutation.isPending}
           >
-            {deleteTeacherMutation.isPending ? 'Deleting...' : 'Delete'}
+            {deleteTeacherMutation.isPending ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

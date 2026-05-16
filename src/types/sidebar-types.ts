@@ -1,4 +1,5 @@
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 export type BaseNavItem = {
   title: string;
@@ -9,6 +10,7 @@ export type BaseNavItem = {
 export type NavLink = BaseNavItem & {
   url: string;
   items?: never;
+  action?: ReactNode;
 };
 
 export type NavCollapsible = BaseNavItem & {
@@ -22,6 +24,7 @@ export type NavItem = NavCollapsible | NavLink;
 export type NavGroup = {
   title: string;
   items: NavItem[];
+  action?: ReactNode;
 };
 
 export type SidebarData = {

@@ -1,5 +1,5 @@
-import { StudentGradesView } from './grades/student-grades-view';
-import { TeacherGradesView } from './grades/teacher-grades-view';
+import { StudentGradesView } from "./grades/student-grades-view";
+import { TeacherGradesView } from "./grades/teacher-grades-view";
 
 interface GradesTabProps {
   classroomId: string;

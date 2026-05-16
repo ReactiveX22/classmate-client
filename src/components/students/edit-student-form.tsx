@@ -1,19 +1,22 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '@/components/ui/field';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Input } from '@/components/ui/input';
-import { useUpdateStudent } from '@/hooks/use-students';
-import { StudentData } from '@/lib/api/services/student.service';
-import { useFormErrorHandler } from '@/hooks/use-form-handler';
-import { useForm } from '@tanstack/react-form';
-import { editStudentSchema, type EditStudentFormValues } from '@/lib/schemas/student-schema';
+} from "@/components/ui/field";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { useUpdateStudent } from "@/hooks/use-students";
+import { StudentData } from "@/lib/api/services/student.service";
+import { useFormErrorHandler } from "@/hooks/use-form-handler";
+import { useForm } from "@tanstack/react-form";
+import {
+  editStudentSchema,
+  type EditStudentFormValues,
+} from "@/lib/schemas/student-schema";
 
 interface EditStudentFormProps {
   student: StudentData;
@@ -26,9 +29,9 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
 
   const form = useForm({
     defaultValues: {
-      name: student.user.name || '',
-      studentId: student.student?.studentId || '',
-      phone: student.userProfile?.phone || '',
+      name: student.user.name || "",
+      studentId: student.student?.studentId || "",
+      phone: student.userProfile?.phone || "",
     } as EditStudentFormValues,
     validators: {
       onSubmit: editStudentSchema,
@@ -55,7 +58,8 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
   });
 
   const getFieldError = (fieldName: string, fieldErrorsState: unknown[]) => {
-    if (fieldErrorsState.length > 0) return fieldErrorsState as { message: string }[];
+    if (fieldErrorsState.length > 0)
+      return fieldErrorsState as { message: string }[];
     if (fieldErrors[fieldName]) return [{ message: fieldErrors[fieldName] }];
     return [];
   };
@@ -67,17 +71,17 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className='flex flex-col gap-4 p-1'
+      className="flex flex-col gap-4 p-1"
     >
       <FieldGroup>
-        <form.Field name='name'>
+        <form.Field name="name">
           {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>
-                  Full Name <span className='text-destructive'>*</span>
+                  Full Name <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Input
                   id={field.name}
@@ -85,7 +89,7 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. John Doe'
+                  placeholder="e.g. John Doe"
                   aria-invalid={isInvalid}
                 />
                 {isInvalid && <FieldError errors={errors} />}
@@ -94,7 +98,7 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
           }}
         </form.Field>
 
-        <form.Field name='studentId'>
+        <form.Field name="studentId">
           {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
@@ -106,10 +110,10 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
                 <Input
                   id={field.name}
                   name={field.name}
-                  value={field.state.value || ''}
+                  value={field.state.value || ""}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. ST-2023-001'
+                  placeholder="e.g. ST-2023-001"
                   aria-invalid={isInvalid}
                 />
                 {isInvalid && <FieldError errors={errors} />}
@@ -118,22 +122,20 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
           }}
         </form.Field>
 
-        <form.Field name='phone'>
+        <form.Field name="phone">
           {(field) => {
             const errors = getFieldError(field.name, field.state.meta.errors);
             const isInvalid = errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>
-                  Phone (Optional)
-                </FieldLabel>
+                <FieldLabel htmlFor={field.name}>Phone (Optional)</FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder='e.g. +1 (555) 123-4567'
+                  placeholder="e.g. +1 (555) 123-4567"
                   aria-invalid={isInvalid}
                 />
                 {isInvalid && <FieldError errors={errors} />}
@@ -144,7 +146,7 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
       </FieldGroup>
 
       {globalErrors.length > 0 && (
-        <Alert variant='destructive' className='mt-4'>
+        <Alert variant="destructive" className="mt-4">
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
             {globalErrors.map((err, i) => (
@@ -154,23 +156,25 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
         </Alert>
       )}
 
-      <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+      <form.Subscribe
+        selector={(state) => [state.canSubmit, state.isSubmitting]}
+      >
         {([, isSubmitting]) => (
-          <div className='flex items-center justify-end gap-3 mt-4'>
+          <div className="flex items-center justify-end gap-3 mt-4">
             <Button
-              type='button'
-              variant='outline'
+              type="button"
+              variant="outline"
               onClick={() => form.reset()}
               disabled={isSubmitting}
             >
               Reset
             </Button>
             <Button
-              type='submit'
+              type="submit"
               disabled={isSubmitting}
-              className='min-w-[120px]'
+              className="min-w-[120px]"
             >
-              {isSubmitting ? 'Updating...' : 'Save Changes'}
+              {isSubmitting ? "Updating..." : "Save Changes"}
             </Button>
           </div>
         )}

@@ -1,7 +1,7 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Attachment } from '@/lib/api/services/post.service';
-import { cn, getProxiedUrl } from '@/lib/utils';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Attachment } from "@/lib/api/services/post.service";
+import { cn, getProxiedUrl } from "@/lib/utils";
 import {
   IconDownload,
   IconExternalLink,
@@ -14,20 +14,20 @@ import {
   IconFileSpreadsheet,
   IconVideo,
   IconFileZip,
-} from '@tabler/icons-react';
-import Image from 'next/image';
-import { useState } from 'react';
-import { ImageGalleryDialog } from './image-gallery-dialog';
+} from "@tabler/icons-react";
+import Image from "next/image";
+import { useState } from "react";
+import { ImageGalleryDialog } from "./image-gallery-dialog";
 
 interface AttachmentDisplayProps {
   attachments: Attachment[];
-  variant?: 'default' | 'compact';
+  variant?: "default" | "compact";
 }
 
 const formatFileSize = (bytes: number) => {
-  if (bytes === 0) return '0 B';
+  if (bytes === 0) return "0 B";
   const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const sizes = ["B", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 };
@@ -39,7 +39,7 @@ const formatFileSize = (bytes: number) => {
 const truncateFileName = (name: string, maxLength: number = 30): string => {
   if (name.length <= maxLength) return name;
 
-  const lastDotIndex = name.lastIndexOf('.');
+  const lastDotIndex = name.lastIndexOf(".");
   const hasExtension = lastDotIndex > 0 && lastDotIndex > name.length - 6;
 
   if (hasExtension) {
@@ -48,135 +48,132 @@ const truncateFileName = (name: string, maxLength: number = 30): string => {
     const availableLength = maxLength - extension.length - 3; // 3 for "..."
 
     if (availableLength > 5) {
-      return baseName.slice(0, availableLength) + '...' + extension;
+      return baseName.slice(0, availableLength) + "..." + extension;
     }
   }
 
-  return name.slice(0, maxLength - 3) + '...';
+  return name.slice(0, maxLength - 3) + "...";
 };
 
 const getAttachmentTypeInfo = (type: string, mimeType?: string) => {
-  if (type === 'link')
+  if (type === "link")
     return {
       Icon: IconLink,
-      color: 'blue',
-      label: 'Link',
-      bg: 'bg-blue-100 dark:bg-blue-950',
-      text: 'text-blue-600 dark:text-blue-400',
+      color: "blue",
+      label: "Link",
+      bg: "bg-blue-100 dark:bg-blue-950",
+      text: "text-blue-600 dark:text-blue-400",
     };
 
-  if (type === 'image' || mimeType?.startsWith('image/'))
+  if (type === "image" || mimeType?.startsWith("image/"))
     return {
       Icon: IconPhoto,
-      color: 'purple',
-      label: 'Image',
-      bg: 'bg-purple-100 dark:bg-purple-950',
-      text: 'text-purple-600 dark:text-purple-400',
+      color: "purple",
+      label: "Image",
+      bg: "bg-purple-100 dark:bg-purple-950",
+      text: "text-purple-600 dark:text-purple-400",
     };
 
-  if (type === 'video' || mimeType?.startsWith('video/'))
+  if (type === "video" || mimeType?.startsWith("video/"))
     return {
       Icon: IconVideo,
-      color: 'pink',
-      label: 'Video',
-      bg: 'bg-pink-100 dark:bg-pink-950',
-      text: 'text-pink-600 dark:text-pink-400',
+      color: "pink",
+      label: "Video",
+      bg: "bg-pink-100 dark:bg-pink-950",
+      text: "text-pink-600 dark:text-pink-400",
     };
 
-  if (mimeType?.includes('pdf'))
+  if (mimeType?.includes("pdf"))
     return {
       Icon: IconFileText,
-      color: 'red',
-      label: 'PDF',
-      bg: 'bg-red-100 dark:bg-red-950',
-      text: 'text-red-600 dark:text-red-400',
+      color: "red",
+      label: "PDF",
+      bg: "bg-red-100 dark:bg-red-950",
+      text: "text-red-600 dark:text-red-400",
     };
 
   // Word
-  if (
-    mimeType?.includes('wordprocessingml') ||
-    mimeType?.includes('msword')
-  )
+  if (mimeType?.includes("wordprocessingml") || mimeType?.includes("msword"))
     return {
       Icon: IconFileDescription,
-      color: 'indigo',
-      label: 'Word',
-      bg: 'bg-indigo-100 dark:bg-indigo-950',
-      text: 'text-indigo-600 dark:text-indigo-400',
+      color: "indigo",
+      label: "Word",
+      bg: "bg-indigo-100 dark:bg-indigo-950",
+      text: "text-indigo-600 dark:text-indigo-400",
     };
 
   // Excel
   if (
-    mimeType?.includes('spreadsheetml') ||
-    mimeType?.includes('ms-excel') ||
-    mimeType?.includes('xls')
+    mimeType?.includes("spreadsheetml") ||
+    mimeType?.includes("ms-excel") ||
+    mimeType?.includes("xls")
   )
     return {
       Icon: IconFileSpreadsheet,
-      color: 'emerald',
-      label: 'Excel',
-      bg: 'bg-emerald-100 dark:bg-emerald-950',
-      text: 'text-emerald-600 dark:text-emerald-400',
+      color: "emerald",
+      label: "Excel",
+      bg: "bg-emerald-100 dark:bg-emerald-950",
+      text: "text-emerald-600 dark:text-emerald-400",
     };
 
   // PowerPoint
   if (
-    mimeType?.includes('presentationml') ||
-    mimeType?.includes('ms-powerpoint') ||
-    mimeType?.includes('ppt')
+    mimeType?.includes("presentationml") ||
+    mimeType?.includes("ms-powerpoint") ||
+    mimeType?.includes("ppt")
   )
     return {
       Icon: IconPresentation,
-      color: 'orange',
-      label: 'PPTX',
-      bg: 'bg-orange-100 dark:bg-orange-950',
-      text: 'text-orange-600 dark:text-orange-400',
+      color: "orange",
+      label: "PPTX",
+      bg: "bg-orange-100 dark:bg-orange-950",
+      text: "text-orange-600 dark:text-orange-400",
     };
 
   // ZIP
-  if (mimeType?.includes('zip') || mimeType?.includes('compressed'))
+  if (mimeType?.includes("zip") || mimeType?.includes("compressed"))
     return {
       Icon: IconFileZip,
-      color: 'amber',
-      label: 'Archive',
-      bg: 'bg-amber-100 dark:bg-amber-950',
-      text: 'text-amber-600 dark:text-amber-400',
+      color: "amber",
+      label: "Archive",
+      bg: "bg-amber-100 dark:bg-amber-950",
+      text: "text-amber-600 dark:text-amber-400",
     };
 
   // Text
-  if (mimeType?.includes('text/plain') || mimeType?.includes('txt'))
+  if (mimeType?.includes("text/plain") || mimeType?.includes("txt"))
     return {
       Icon: IconFileText,
-      color: 'gray',
-      label: 'Text',
-      bg: 'bg-gray-100 dark:bg-gray-950',
-      text: 'text-gray-600 dark:text-gray-400',
+      color: "gray",
+      label: "Text",
+      bg: "bg-gray-100 dark:bg-gray-950",
+      text: "text-gray-600 dark:text-gray-400",
     };
 
   return {
     Icon: IconFile,
-    color: 'muted',
-    label: 'File',
-    bg: 'bg-muted',
-    text: 'text-muted-foreground',
+    color: "muted",
+    label: "File",
+    bg: "bg-muted",
+    text: "text-muted-foreground",
   };
 };
 
 const isImageFile = (attachment: Attachment) => {
   return (
-    attachment.type === 'image' || attachment.mimeType?.startsWith('image/')
+    attachment.type === "image" || attachment.mimeType?.startsWith("image/")
   );
 };
 
 const isVideoFile = (attachment: Attachment) => {
   return (
-    attachment.type === 'video' || attachment.mimeType?.startsWith('video/')
+    attachment.type === "video" || attachment.mimeType?.startsWith("video/")
   );
 };
 
 export function AttachmentDisplay({
   attachments,
-  variant = 'default',
+  variant = "default",
 }: AttachmentDisplayProps) {
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -199,8 +196,8 @@ export function AttachmentDisplay({
     e.preventDefault();
     e.stopPropagation();
 
-    if (attachment.type === 'link') {
-      window.open(attachment.url, '_blank', 'noopener,noreferrer');
+    if (attachment.type === "link") {
+      window.open(attachment.url, "_blank", "noopener,noreferrer");
       return;
     }
 
@@ -208,7 +205,7 @@ export function AttachmentDisplay({
       const response = await fetch(getProxiedUrl(attachment.url));
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
       link.download = attachment.name;
       document.body.appendChild(link);
@@ -216,15 +213,15 @@ export function AttachmentDisplay({
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Download failed:', error);
+      console.error("Download failed:", error);
       // Fallback
-      window.open(getProxiedUrl(attachment.url), '_blank');
+      window.open(getProxiedUrl(attachment.url), "_blank");
     }
   };
 
-  if (variant === 'compact') {
+  if (variant === "compact") {
     return (
-      <div className='grid gap-2'>
+      <div className="grid gap-2">
         {attachments.map((attachment) => {
           const { Icon, bg, text, label } = getAttachmentTypeInfo(
             attachment.type,
@@ -235,41 +232,41 @@ export function AttachmentDisplay({
             <a
               key={attachment.id}
               href={getProxiedUrl(attachment.url)}
-              target='_blank'
-              rel='noopener noreferrer'
-              className='flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-lg hover:bg-muted/50 transition-colors group overflow-hidden'
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-lg hover:bg-muted/50 transition-colors group overflow-hidden"
             >
-              <div className={cn('p-2 rounded-md transition-transform', bg)}>
+              <div className={cn("p-2 rounded-md transition-transform", bg)}>
                 <Icon size={20} className={text} />
               </div>
-              <div className='flex-1 min-w-0'>
+              <div className="flex-1 min-w-0">
                 <p
-                  className='text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors'
+                  className="text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors"
                   title={attachment.name}
                 >
                   {truncateFileName(attachment.name, 28)}
                 </p>
-                <div className='flex items-center gap-2 mt-0.5'>
+                <div className="flex items-center gap-2 mt-0.5">
                   {attachment.size !== undefined && attachment.size > 0 && (
-                    <p className='text-xs text-muted-foreground'>
+                    <p className="text-xs text-muted-foreground">
                       {formatFileSize(attachment.size)}
                     </p>
                   )}
-                  <Badge variant='secondary' className='text-[10px]'>
+                  <Badge variant="secondary" className="text-[10px]">
                     {label}
                   </Badge>
                 </div>
               </div>
               <Button
-                variant='ghost'
-                size='icon-sm'
-                className='opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0'
+                variant="ghost"
+                size="icon-sm"
+                className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0"
                 onClick={(e) => handleDownload(e, attachment)}
               >
-                {label === 'Link' ? (
-                  <IconExternalLink className='h-4 w-4' />
+                {label === "Link" ? (
+                  <IconExternalLink className="h-4 w-4" />
                 ) : (
-                  <IconDownload className='h-4 w-4' />
+                  <IconDownload className="h-4 w-4" />
                 )}
               </Button>
             </a>
@@ -280,16 +277,16 @@ export function AttachmentDisplay({
   }
 
   return (
-    <div className='space-y-4'>
+    <div className="space-y-4">
       {/* Image Gallery */}
       {images.length > 0 && (
         <div
           className={cn(
-            'grid gap-2 rounded-lg overflow-hidden',
-            images.length === 1 && 'grid-cols-1',
-            images.length === 2 && 'grid-cols-2',
-            images.length === 3 && 'grid-cols-3',
-            images.length >= 4 && 'grid-cols-2',
+            "grid gap-2 rounded-lg overflow-hidden",
+            images.length === 1 && "grid-cols-1",
+            images.length === 2 && "grid-cols-2",
+            images.length === 3 && "grid-cols-3",
+            images.length >= 4 && "grid-cols-2",
           )}
         >
           {images.slice(0, 4).map((image, index) => {
@@ -300,17 +297,17 @@ export function AttachmentDisplay({
             return (
               <div
                 key={image.id}
-                role='button'
+                role="button"
                 onClick={() => {
                   setSelectedImageIndex(index);
                   setIsGalleryOpen(true);
                 }}
                 className={cn(
-                  'relative group overflow-hidden bg-muted rounded-md cursor-pointer',
-                  images.length === 1 && 'aspect-video max-h-[400px]',
-                  images.length === 2 && 'aspect-square',
-                  images.length >= 3 && 'aspect-square',
-                  'hover:opacity-95 transition-opacity',
+                  "relative group overflow-hidden bg-muted rounded-md cursor-pointer",
+                  images.length === 1 && "aspect-video max-h-[400px]",
+                  images.length === 2 && "aspect-square",
+                  images.length >= 3 && "aspect-square",
+                  "hover:opacity-95 transition-opacity",
                 )}
               >
                 {!hasError ? (
@@ -319,20 +316,20 @@ export function AttachmentDisplay({
                     alt={image.name}
                     fill
                     unoptimized
-                    className='object-contain transition-all'
+                    className="object-contain transition-all"
                     onError={() => handleImageError(image.id)}
-                    sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 ) : (
-                  <div className='w-full h-full flex items-center justify-center'>
-                    <IconPhoto className='h-12 w-12 text-muted-foreground' />
+                  <div className="w-full h-full flex items-center justify-center">
+                    <IconPhoto className="h-12 w-12 text-muted-foreground" />
                   </div>
                 )}
 
                 {/* Overlay for more images */}
                 {isLastItem && remainingCount > 0 && (
-                  <div className='absolute inset-0 bg-black/60 flex items-center justify-center'>
-                    <span className='text-white text-2xl font-semibold'>
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    <span className="text-white text-2xl font-semibold">
                       +{remainingCount}
                     </span>
                   </div>
@@ -340,7 +337,7 @@ export function AttachmentDisplay({
 
                 {/* Hover overlay - Only show if not the "+more" overlay to avoid overlap */}
                 {(!isLastItem || remainingCount === 0) && (
-                  <div className='absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100'>
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                     {/* <IconExternalLink className='text-white h-6 w-6' /> */}
                   </div>
                 )}
@@ -359,13 +356,13 @@ export function AttachmentDisplay({
 
       {/* Video Players */}
       {videos.length > 0 && (
-        <div className='space-y-2'>
+        <div className="space-y-2">
           {videos.map((video) => (
-            <div key={video.id} className='rounded-lg overflow-hidden bg-black'>
+            <div key={video.id} className="rounded-lg overflow-hidden bg-black">
               <video
                 controls
-                className='w-full max-h-[400px]'
-                preload='metadata'
+                className="w-full max-h-[400px]"
+                preload="metadata"
               >
                 <source src={getProxiedUrl(video.url)} type={video.mimeType} />
                 Your browser does not support the video tag.
@@ -377,7 +374,7 @@ export function AttachmentDisplay({
 
       {/* Other Files & Links */}
       {otherFiles.length > 0 && (
-        <div className='grid gap-2'>
+        <div className="grid gap-2">
           {otherFiles.map((attachment) => {
             const { Icon, bg, text, label } = getAttachmentTypeInfo(
               attachment.type,
@@ -388,46 +385,46 @@ export function AttachmentDisplay({
               <a
                 key={attachment.id}
                 href={getProxiedUrl(attachment.url)}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-lg hover:bg-muted/50 transition-colors group overflow-hidden'
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-lg hover:bg-muted/50 transition-colors group overflow-hidden"
               >
                 <div
                   className={cn(
-                    'p-2 rounded-md group-hover:scale-105 transition-transform',
+                    "p-2 rounded-md group-hover:scale-105 transition-transform",
                     bg,
                   )}
                 >
                   <Icon size={20} className={text} />
                 </div>
-                <div className='flex-1 min-w-0'>
+                <div className="flex-1 min-w-0">
                   <p
-                    className='text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors'
+                    className="text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors"
                     title={attachment.name}
                   >
                     {truncateFileName(attachment.name, 40)}
                   </p>
-                  <div className='flex items-center gap-2 mt-0.5'>
+                  <div className="flex items-center gap-2 mt-0.5">
                     {attachment.size !== undefined && attachment.size > 0 && (
-                      <p className='text-xs text-muted-foreground'>
+                      <p className="text-xs text-muted-foreground">
                         {formatFileSize(attachment.size)}
                       </p>
                     )}
-                    <Badge variant='secondary' className='text-[10px]'>
+                    <Badge variant="secondary" className="text-[10px]">
                       {label}
                     </Badge>
                   </div>
                 </div>
                 <Button
-                  variant='ghost'
-                  size='icon-sm'
-                  className='opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity cursor-pointer shrink-0'
+                  variant="ghost"
+                  size="icon-sm"
+                  className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity cursor-pointer shrink-0"
                   onClick={(e) => handleDownload(e, attachment)}
                 >
-                  {label === 'Link' ? (
-                    <IconExternalLink className='h-4 w-4' />
+                  {label === "Link" ? (
+                    <IconExternalLink className="h-4 w-4" />
                   ) : (
-                    <IconDownload className='h-4 w-4' />
+                    <IconDownload className="h-4 w-4" />
                   )}
                 </Button>
               </a>

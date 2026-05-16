@@ -1,28 +1,29 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "katex/dist/katex.min.css";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
   --background: oklch(0.9946 0.0026 286.3519);
   --foreground: oklch(0.1615 0.0105 285.1663);
-  --card: oklch(1.0000 0 0);
+  --card: oklch(1 0 0);
   --card-foreground: oklch(0.1615 0.0105 285.1663);
-  --popover: oklch(1.0000 0 0);
+  --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.1615 0.0105 285.1663);
-  --primary: oklch(0.5565 0.2430 261.9529);
-  --primary-foreground: oklch(0.9670 0.0029 264.5419);
+  --primary: oklch(0.5565 0.243 261.9529);
+  --primary-foreground: oklch(0.967 0.0029 264.5419);
   --secondary: oklch(0.9475 0.0268 290.4744);
   --secondary-foreground: oklch(0.4143 0.1248 286.0391);
   --muted: oklch(0.9601 0.0093 286.2229);
-  --muted-foreground: oklch(0.5052 0.0379 284.9640);
+  --muted-foreground: oklch(0.5052 0.0379 284.964);
   --accent: oklch(0.9634 0.0175 279.0619);
   --accent-foreground: oklch(0.5553 0.2554 283.4559);
-  --destructive: oklch(0.6370 0.2370 25.3310);
+  --destructive: oklch(0.637 0.237 25.331);
   --border: oklch(0.9163 0.0162 286.0759);
   --input: oklch(0.9163 0.0162 286.0759);
-  --ring: oklch(0.5565 0.2430 261.9529);
+  --ring: oklch(0.5565 0.243 261.9529);
   --chart-1: oklch(0.5553 0.2554 283.4559);
   --chart-2: oklch(0.6037 0.2141 267.5162);
   --chart-3: oklch(0.7495 0.1297 210.9704);
@@ -31,42 +32,42 @@
   --radius: 0.625rem;
   --sidebar: oklch(0.9946 0.0026 286.3519);
   --sidebar-foreground: oklch(0.1615 0.0105 285.1663);
-  --sidebar-primary: oklch(0.5565 0.2430 261.9529);
-  --sidebar-primary-foreground: oklch(1.0000 0 0);
+  --sidebar-primary: oklch(0.5565 0.243 261.9529);
+  --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.9634 0.0175 279.0619);
   --sidebar-accent-foreground: oklch(0.5553 0.2554 283.4559);
   --sidebar-border: oklch(0.9163 0.0162 286.0759);
-  --sidebar-ring: oklch(0.5565 0.2430 261.9529);
+  --sidebar-ring: oklch(0.5565 0.243 261.9529);
 }
 
 .dark {
-  --background: oklch(0.1457 0.0043 285.8570);
+  --background: oklch(0.15457 0.0043 285.857);
   --foreground: oklch(0.9803 0.0053 286.3017);
-  --card: oklch(0.1840 0.0081 285.5768);
+  --card: oklch(0.184 0.0081 285.5768);
   --card-foreground: oklch(0.9803 0.0053 286.3017);
-  --popover: oklch(0.1840 0.0081 285.5768);
+  --popover: oklch(0.184 0.0081 285.5768);
   --popover-foreground: oklch(0.9803 0.0053 286.3017);
   --primary: oklch(0.6449 0.2024 288.1131);
-  --primary-foreground: oklch(1.0000 0 0);
+  --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.2434 0.0577 285.6789);
   --secondary-foreground: oklch(0.8684 0.0704 292.0563);
   --muted: oklch(0.2225 0.0194 284.7155);
   --muted-foreground: oklch(0.7155 0.0288 285.6486);
   --accent: oklch(0.2793 0.0598 283.1864);
   --accent-foreground: oklch(0.8201 0.0997 293.7767);
-  --destructive: oklch(.704 .191 22.216);
+  --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(0.2897 0.0199 285.0881);
   --input: oklch(0.2897 0.0199 285.0881);
   --ring: oklch(0.6449 0.2024 288.1131);
-  --chart-1: oklch(0.6231 0.1880 259.8145);
+  --chart-1: oklch(0.6231 0.188 259.8145);
   --chart-2: oklch(0.6268 0.2325 303.9004);
   --chart-3: oklch(0.5854 0.2041 277.1173);
   --chart-4: oklch(0.6056 0.2189 292.7172);
-  --chart-5: oklch(0.7845 0.1325 181.9120);
-  --sidebar: oklch(0.1795 0.0082 285.5496);
-  --sidebar-foreground: oklch(0.9197 0.0040 286.3202);
+  --chart-5: oklch(0.7845 0.1325 181.912);
+  --sidebar: oklch(0.1895 0.0082 285.5496);
+  --sidebar-foreground: oklch(0.9197 0.004 286.3202);
   --sidebar-primary: oklch(0.6449 0.2024 288.1131);
-  --sidebar-primary-foreground: oklch(1.0000 0 0);
+  --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.2434 0.0577 285.6789);
   --sidebar-accent-foreground: oklch(0.8684 0.0704 292.0563);
   --sidebar-border: oklch(0.2739 0.0055 286.0326);
@@ -125,8 +126,187 @@
   }
 }
 
-@keyframes glow-pulse {
+@layer components {
+  .chat-markdown {
+    @apply text-sm leading-7 wrap-break-word whitespace-normal;
+  }
 
+  .chat-markdown > * + * {
+    @apply mt-3;
+  }
+
+  .chat-markdown h1,
+  .chat-markdown h2,
+  .chat-markdown h3,
+  .chat-markdown h4,
+  .chat-markdown h5,
+  .chat-markdown h6 {
+    @apply font-semibold tracking-tight text-foreground my-3;
+  }
+
+  .chat-markdown h1 {
+    @apply text-2xl;
+  }
+
+  .chat-markdown h2 {
+    @apply text-xl;
+  }
+
+  .chat-markdown h3 {
+    @apply text-lg;
+  }
+
+  .chat-markdown p,
+  .chat-markdown ul,
+  .chat-markdown ol,
+  .chat-markdown blockquote,
+  .chat-markdown pre,
+  .chat-markdown table {
+    @apply my-0;
+  }
+
+  .chat-markdown ul,
+  .chat-markdown ol {
+    @apply pl-6;
+  }
+
+  .chat-markdown ul {
+    list-style: disc;
+  }
+
+  .chat-markdown ol {
+    list-style: decimal;
+  }
+
+  .chat-markdown li + li {
+    @apply mt-2;
+  }
+
+  .chat-markdown a {
+    @apply font-medium text-primary underline underline-offset-4;
+  }
+
+  .chat-markdown code {
+    @apply rounded bg-muted px-1 py-0.5 font-mono text-[0.875em];
+  }
+
+  .chat-markdown pre {
+    @apply overflow-x-auto rounded-xl bg-card p-4;
+  }
+
+  .chat-markdown pre code {
+    @apply rounded-none bg-transparent p-0 text-inherit;
+  }
+
+  .chat-markdown blockquote {
+    @apply border-l-2 border-border pl-4 text-muted-foreground my-3;
+  }
+
+  .chat-markdown hr {
+    @apply border-border my-6;
+  }
+
+  .chat-markdown table {
+    @apply w-full border-separate border-spacing-0 overflow-x-auto rounded-xl border border-border my-3;
+    clip-path: inset(0 round 0.85rem);
+  }
+
+  .chat-markdown th,
+  .chat-markdown td {
+    @apply border-b border-r border-border p-2 text-left align-top text-sm;
+  }
+
+  .chat-markdown th {
+    @apply bg-muted font-semibold;
+  }
+
+  .chat-markdown tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  .chat-markdown tbody tr td:last-child {
+    @apply border-r-0;
+  }
+
+  .chat-markdown tbody tr th:last-child {
+    @apply border-r-0;
+  }
+
+  .chat-markdown tbody tr:hover {
+    @apply bg-muted/50;
+  }
+
+  .chat-markdown strong,
+  .chat-markdown b {
+    @apply font-semibold;
+  }
+
+  .chat-markdown img {
+    @apply max-w-full rounded-2xl object-cover;
+  }
+
+  .chat-markdown li {
+    unicode-bidi: plaintext;
+  }
+
+  .chat-markdown a {
+    @apply font-medium text-primary underline underline-offset-4;
+  }
+}
+
+@keyframes typing {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+}
+
+@keyframes loading-dots {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes wave-bars {
+  0%,
+  100% {
+    transform: scaleY(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scaleY(0.6);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 50%;
+  }
+  100% {
+    background-position: -200% 50%;
+  }
+}
+
+@keyframes spinner-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes glow-pulse {
   0%,
   100% {
     box-shadow: 0 0 20px 0 rgba(var(--primary), 0.2);
@@ -138,7 +318,6 @@
 }
 
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0);
@@ -149,11 +328,24 @@
   }
 }
 
-
 .glowing-button {
   animation: glow-pulse 2s infinite;
 }
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+/* Fix for shadcn sidebar inset variant overflow - GitHub issue #7947 */
+.sidebar-spacer {
+  height: calc(100svh - 16px) !important;
+}
+
+[data-sidebar-variant="inset"] [data-slot="sidebar-spacer"] {
+  height: calc(100svh - 16px) !important;
+}
+
+/* Markdown table wrapper for overflow */
+.markdown-table-wrapper {
+  overflow-x: auto;
 }
