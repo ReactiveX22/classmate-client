@@ -92,7 +92,7 @@ function PromptInput({
         <div
           onClick={handleClick}
           className={cn(
-            "border-input bg-background cursor-text rounded-3xl border p-2 shadow-xs",
+            "border-input bg-background cursor-text rounded-3xl border shadow-xs",
             disabled && "cursor-not-allowed opacity-60",
             className,
           )}
@@ -121,7 +121,7 @@ function PromptInputTextarea({
   const adjustHeight = (el: HTMLTextAreaElement | null) => {
     if (!el || disableAutosize) return;
 
-    el.style.height = "auto";
+    el.style.height = "0px";
 
     if (typeof maxHeight === "number") {
       el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`;
@@ -139,7 +139,7 @@ function PromptInputTextarea({
     if (!textareaRef.current || disableAutosize) return;
 
     const el = textareaRef.current;
-    el.style.height = "auto";
+    el.style.height = "0px";
 
     if (typeof maxHeight === "number") {
       el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`;
@@ -169,7 +169,7 @@ function PromptInputTextarea({
       onChange={handleChange}
       onKeyDown={handleKeyDown}
       className={cn(
-        "text-primary min-h-[44px] w-full resize-none border-none bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+        "text-primary min-h-[44px] w-full resize-none border-none bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         className,
       )}
       rows={1}

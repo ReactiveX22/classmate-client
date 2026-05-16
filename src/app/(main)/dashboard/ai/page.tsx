@@ -70,7 +70,6 @@ export default function AiDashboardPage() {
             isStreaming={isCreating}
             onSend={handleSend}
             onStop={() => {}}
-            currentTitle={null}
           />
         </div>
       </div>

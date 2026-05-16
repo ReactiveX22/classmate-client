@@ -176,9 +176,6 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
     return sendMessage(message);
   };
 
-  const displayTitle =
-    localTitle ?? conversationQuery.data?.conversation.title ?? null;
-
   return (
     <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
       <ScrollArea ref={scrollAreaRef} className="h-[calc(100vh-64px)]">
@@ -227,8 +224,6 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
               isStreaming={isStreaming}
               onSend={handleSend}
               onStop={abort}
-              conversationId={convId}
-              currentTitle={displayTitle}
             />
           </div>
         </div>
