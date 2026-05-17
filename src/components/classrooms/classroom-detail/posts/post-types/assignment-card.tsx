@@ -99,10 +99,7 @@ export function AssignmentCard({
 
   return (
     <>
-      <Card
-        className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
-        onClick={handleNavigate}
-      >
+      <Card className="overflow-hidden hover:shadow-md transition-shadow">
         <CardHeader>
           <div className="flex items-start gap-2.5 sm:gap-4">
             <div className="p-2 sm:p-3 bg-blue-500/10 rounded-full shrink-0">
@@ -206,6 +203,7 @@ export function AssignmentCard({
           <div onClick={(e) => e.stopPropagation()}>
             <PostCardActions
               authorId={post.authorId}
+              onViewDetails={handleNavigate}
               onEdit={() => setShowEditDialog(true)}
               onDelete={() => setShowDeleteDialog(true)}
             />

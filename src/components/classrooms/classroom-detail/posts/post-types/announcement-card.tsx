@@ -8,10 +8,10 @@ import { getInitials } from "@/lib/utils";
 import { IconPin } from "@tabler/icons-react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { useState } from "react";
+import { CommentSection } from "../comment-section";
 import { AttachmentDisplay } from "./attachment-display";
 import { ExpandableContent } from "./expandable-content";
 import { PostCardActions } from "./post-card-actions";
-import { CommentSection } from "../comment-section";
 
 interface AnnouncementCardProps {
   post: Post;

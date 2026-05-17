@@ -7,6 +7,7 @@ import { useTogglePostBookmark } from "@/hooks/use-toggle-post-bookmark";
 import { Post } from "@/lib/api/services/post.service";
 import { IconBook, IconBookmark, IconPin } from "@tabler/icons-react";
 import { formatDistanceToNow } from "date-fns";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { EditPostDialog } from "../edit-post-dialog";
@@ -21,10 +22,17 @@ interface MaterialCardProps {
 }
 
 export function MaterialCard({ post, resourceHref }: MaterialCardProps) {
+  const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const deletePost = useDeletePost();
   const toggleBookmark = useTogglePostBookmark();
+
+  const handleNavigate = () => {
+    router.push(
+      `/dashboard/classrooms/${post.classroomId}/resources/${post.id}`,
+    );
+  };
 
   const handleDelete = () => {
     deletePost.mutate(
@@ -103,6 +111,7 @@ export function MaterialCard({ post, resourceHref }: MaterialCardProps) {
           </div>
           <PostCardActions
             authorId={post.authorId}
+            onViewDetails={handleNavigate}
             onEdit={() => setShowEditDialog(true)}
             onDelete={() => setShowDeleteDialog(true)}
           />
@@ -119,14 +128,7 @@ export function MaterialCard({ post, resourceHref }: MaterialCardProps) {
             </div>
           )}
 
-          {post.content &&
-            (resourceHref ? (
-              <Link href={resourceHref} className="block hover:opacity-90">
-                <ExpandableContent content={post.content} />
-              </Link>
-            ) : (
-              <ExpandableContent content={post.content} />
-            ))}
+          {post.content && <ExpandableContent content={post.content} />}
 
           {post.attachments && post.attachments.length > 0 && (
             <AttachmentDisplay

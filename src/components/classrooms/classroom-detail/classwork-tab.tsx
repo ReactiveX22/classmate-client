@@ -34,6 +34,7 @@ export function ClassworkTab({ classroomId, isTeacher }: ClassworkTabProps) {
         <RoleGuard allowedRoles={[Role.Instructor]}>
           <CreatePostDialog
             classroomId={classroomId}
+            defaultType="assignment"
             trigger={
               <Button className="gap-2 shadow-sm mt-4">
                 <IconPlus size={18} />
@@ -61,6 +62,7 @@ export function ClassworkTab({ classroomId, isTeacher }: ClassworkTabProps) {
             </p>
             <CreatePostDialog
               classroomId={classroomId}
+              defaultType="assignment"
               trigger={<Button variant="outline">Create assignment</Button>}
             />
           </CardContent>

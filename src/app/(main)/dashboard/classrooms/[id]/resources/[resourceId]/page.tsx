@@ -202,7 +202,7 @@ export default function ResourceDetailPage({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="h-fit">
           <CardHeader>
             <CardTitle className="text-base">Attachments</CardTitle>
           </CardHeader>
