@@ -40,7 +40,7 @@ export function DashboardHeader({
     <>
       <header
         className={cn(
-          "shrink-0 flex h-14 items-center gap-2 bg-background px-4 mt-2 rounded-md",
+          "shrink-0 flex h-14 items-center gap-2 bg-background px-4 rounded-md",
           fixed && "sticky top-0 z-50",
           className,
         )}

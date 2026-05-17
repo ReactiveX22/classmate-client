@@ -90,6 +90,7 @@ export interface Post {
   author?: User;
   submission?: Submission | null;
   submissionStats?: SubmissionStats | null;
+  authorName: string;
 }
 
 export interface PostsResponse {

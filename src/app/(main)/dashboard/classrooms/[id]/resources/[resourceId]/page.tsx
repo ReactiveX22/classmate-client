@@ -7,6 +7,7 @@ import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Markdown } from "@/components/ui/chat/markdown";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -137,7 +138,7 @@ export default function ResourceDetailPage({
                 {post.title || "Class Material"}
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
-                {post.author?.name || "Unknown"} • Posted{" "}
+                {post.authorName || "Unknown"} • Posted{" "}
                 {format(new Date(post.createdAt), "MMM d, yyyy")}
               </p>
             </div>
@@ -191,9 +192,7 @@ export default function ResourceDetailPage({
         <Card>
           <CardContent>
             {post.content ? (
-              <p className="whitespace-pre-wrap leading-relaxed text-sm sm:text-base">
-                {post.content}
-              </p>
+              <Markdown className="chat-markdown">{post.content}</Markdown>
             ) : (
               <p className="text-sm text-muted-foreground">
                 No description provided.

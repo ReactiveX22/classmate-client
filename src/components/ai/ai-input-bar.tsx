@@ -40,7 +40,7 @@ export function AiInputBar({
   return (
     <>
       <PromptInput
-        className="border-input bg-popover relative z-10 w-full border shadow-xs rounded-[28px]"
+        className="border-input bg-popover relative z-10 w-full border shadow-md rounded-[28px]"
         isLoading={isStreaming}
         onSubmit={handleSubmit}
         value={message}
@@ -49,7 +49,7 @@ export function AiInputBar({
         <div className="relative">
           <PromptInputTextarea
             autoFocus
-            className="rounded-[28px] p-4 pr-10 pl-5 md:text-base text-primary-foreground"
+            className="rounded-[28px] p-4 pr-10 pl-5 md:text-base"
             disabled={isStreaming || isRetrying}
             placeholder="Ask anything"
           />

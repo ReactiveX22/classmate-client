@@ -32,6 +32,7 @@ import { use, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StudentWorkTab } from "@/components/classrooms/classroom-detail/assignments/student-work-tab";
 import { Post } from "@/lib/api/services/post.service";
+import { Markdown } from "@/components/ui/chat/markdown";
 
 interface AssignmentPageProps {
   params: Promise<{ id: string; assignmentId: string }>;
@@ -115,7 +116,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
               </h1>
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs md:text-sm text-muted-foreground mt-1 sm:mt-2">
                 <span className="font-medium text-foreground">
-                  {post.author?.name}
+                  {post.authorName}
                 </span>
                 <span>•</span>
                 <span>Posted {format(new Date(post.createdAt), "MMM d")}</span>
@@ -273,9 +274,7 @@ function AssignmentContent({
         {/* Left Column - Assignment Details */}
         <div className="lg:col-span-2 space-y-6">
           <div className="prose prose-zinc dark:prose-invert max-w-none">
-            <p className="whitespace-pre-wrap leading-relaxed text-base">
-              {post.content}
-            </p>
+            <Markdown className="chat-markdown">{post.content}</Markdown>
           </div>
 
           {post.attachments && post.attachments.length > 0 && (

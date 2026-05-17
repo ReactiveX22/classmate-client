@@ -22,7 +22,7 @@ export default function ClassroomsPage() {
   const classrooms = response?.data || [];
 
   return (
-    <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 max-w-7xl mx-auto w-full">
+    <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 mx-auto w-full">
       <PageHeader
         title="My Classrooms"
         description="Manage and view all your assigned classrooms"

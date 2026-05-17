@@ -1,5 +1,6 @@
 "use client";
 
+import { Markdown } from "@/components/ui/chat/markdown";
 import { useState } from "react";
 
 interface ExpandableContentProps {
@@ -26,11 +27,11 @@ export function ExpandableContent({
   return (
     <div>
       <div
-        className={`text-sm whitespace-pre-wrap leading-relaxed ${className} ${
+        className={`text-sm leading-relaxed ${className} ${
           !isExpanded ? "line-clamp-6" : ""
         }`}
       >
-        {content}
+        <Markdown className="chat-markdown">{content}</Markdown>
       </div>
       <button
         onClick={handleToggle}

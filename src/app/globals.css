@@ -12,7 +12,7 @@
   --card-foreground: oklch(0.1615 0.0105 285.1663);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.1615 0.0105 285.1663);
-  --primary: oklch(0.5565 0.243 261.9529);
+  --primary: oklch(46.744% 0.21538 285.192);
   --primary-foreground: oklch(0.967 0.0029 264.5419);
   --secondary: oklch(0.9475 0.0268 290.4744);
   --secondary-foreground: oklch(0.4143 0.1248 286.0391);
@@ -167,7 +167,7 @@
 
   .chat-markdown ul,
   .chat-markdown ol {
-    @apply pl-6;
+    @apply pl-6 mb-4;
   }
 
   .chat-markdown ul {
