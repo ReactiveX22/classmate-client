@@ -17,6 +17,7 @@ import { EditPostDialog } from "../edit-post-dialog";
 import { PostCardActions } from "./post-card-actions";
 import { CommentSection } from "../comment-section";
 import { ExpandableContent } from "./expandable-content";
+import { cn } from "@/lib/utils";
 
 interface AssignmentCardProps {
   post: Post;
@@ -121,7 +122,7 @@ export function AssignmentCard({
                   {post.assignmentData?.points && (
                     <Badge
                       variant="outline"
-                      className="bg-blue-500/5 border-blue-200 text-blue-700"
+                      className="bg-blue-500/10 text-blue-600 border-transparent"
                     >
                       {post.assignmentData.points} pts
                     </Badge>
@@ -129,12 +130,13 @@ export function AssignmentCard({
                   {isTeacher && post.submissionStats && (
                     <Badge
                       variant="outline"
-                      className={
+                      className={cn(
+                        "border-transparent",
                         post.submissionStats.graded ===
-                        post.submissionStats.total
-                          ? "bg-green-500/5 border-green-200 text-green-700"
-                          : "bg-amber-500/5 border-amber-200 text-amber-700"
-                      }
+                          post.submissionStats.total
+                          ? "bg-green-500/10 text-green-600"
+                          : "bg-amber-500/10 text-amber-600",
+                      )}
                     >
                       {post.submissionStats.graded}/{post.submissionStats.total}{" "}
                       graded
@@ -159,7 +161,7 @@ export function AssignmentCard({
                 {post.assignmentData?.points && (
                   <Badge
                     variant="outline"
-                    className="bg-blue-500/5 border-blue-200 text-blue-700"
+                    className="bg-blue-500/10 text-blue-600 border-transparent"
                   >
                     {post.assignmentData.points} pts
                   </Badge>
@@ -167,11 +169,12 @@ export function AssignmentCard({
                 {isTeacher && post.submissionStats && (
                   <Badge
                     variant="outline"
-                    className={
+                    className={cn(
+                      "border-transparent",
                       post.submissionStats.graded === post.submissionStats.total
-                        ? "bg-green-500/5 border-green-200 text-green-700"
-                        : "bg-amber-500/5 border-amber-200 text-amber-700"
-                    }
+                        ? "bg-green-500/10 text-green-600"
+                        : "bg-amber-500/10 text-amber-600",
+                    )}
                   >
                     {post.submissionStats.graded}/{post.submissionStats.total}{" "}
                     graded

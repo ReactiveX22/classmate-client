@@ -128,7 +128,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
                 {post.assignmentData?.points && (
                   <Badge
                     variant="outline"
-                    className="bg-blue-500/5 border-blue-200 text-blue-700"
+                    className="bg-blue-500/10 border-transparent text-blue-500"
                   >
                     {post.assignmentData.points} points
                   </Badge>
@@ -136,7 +136,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
                 {post.assignmentData?.dueDate && (
                   <Badge
                     variant="outline"
-                    className="bg-red-500/5 border-red-200 text-red-700"
+                    className="bg-red-500/10 border-transparent text-red-500"
                   >
                     Due {format(new Date(post.assignmentData.dueDate), "PPp")}
                   </Badge>
@@ -180,7 +180,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
             {post.assignmentData?.points && (
               <Badge
                 variant="outline"
-                className="bg-blue-500/5 border-blue-200 text-blue-700"
+                className="bg-blue-500/10 border-transparent text-blue-500"
               >
                 {post.assignmentData.points} points
               </Badge>
@@ -188,7 +188,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
             {post.assignmentData?.dueDate && (
               <Badge
                 variant="outline"
-                className="bg-red-500/5 border-red-200 text-red-700"
+                className="bg-red-500/10 border-transparent text-red-500"
               >
                 Due {format(new Date(post.assignmentData.dueDate), "PPp")}
               </Badge>

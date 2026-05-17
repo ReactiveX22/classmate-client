@@ -28,7 +28,7 @@ export function StreamTab({ classroomId, isTeacher }: StreamTabProps) {
       <div className="flex flex-col-reverse md:flex-row gap-4 w-full">
         <UpcomingCard classroomId={classroomId} isTeacher={isTeacher} />
 
-        <div className="flex-1 max-w-xl space-y-4">
+        <div className="flex-1 max-w-3xl space-y-4">
           <Card className="py-2">
             <CardHeader className="py-1 items-center">
               <div className="flex items-center gap-2">

@@ -78,7 +78,7 @@ export function PostList({ classroomId, isTeacher }: PostListProps) {
   }
 
   return (
-    <div className="space-y-4 w-full max-w-2xl">
+    <div className="space-y-4 w-full max-w-3xl">
       {sortedPosts.map((post) => (
         <PostCard key={post.id} post={post} isTeacher={isTeacher} />
       ))}

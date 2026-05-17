@@ -44,11 +44,11 @@ export function UpcomingCard({ classroomId }: UpcomingCardProps) {
   const hasUpcoming = upcomingPosts && upcomingPosts.length > 0;
 
   return (
-    <Card className="hidden md:block w-64 h-fit shrink-0">
-      <CardHeader className="px-4 pt-4 pb-2">
+    <Card className="hidden md:block w-64 h-fit shrink-0 p-4">
+      <CardHeader className="px-0 md:px-0">
         <CardTitle className="text-sm font-semibold">Upcoming</CardTitle>
       </CardHeader>
-      <CardContent className="text-xs px-4 pb-4 pt-0">
+      <CardContent className="text-xs pt-2 px-0 md:px-0">
         {!hasUpcoming ? (
           <p className="text-muted-foreground">No work due soon</p>
         ) : (
