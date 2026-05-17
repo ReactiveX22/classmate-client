@@ -80,7 +80,11 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
     !isStreaming &&
     !lastError;
 
-  const displayError = lastError ?? (hasOrphanedUserMessage ? {} : null);
+  const displayError =
+    lastError ??
+    (hasOrphanedUserMessage
+      ? { message: "Failed to get a response. Please try again." }
+      : null);
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const scrollAnchorRef = useRef<HTMLDivElement>(null);

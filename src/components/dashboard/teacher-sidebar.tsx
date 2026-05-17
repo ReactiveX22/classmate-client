@@ -1,7 +1,7 @@
 "use client";
 
-import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { RenameConversationDialog } from "@/components/ai/rename-conversation-dialog";
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +13,6 @@ import { useAiConversationsForClassrooms } from "@/hooks/use-ai-conversations-fo
 import { useClassrooms } from "@/hooks/use-classrooms";
 import { useDeleteConversation } from "@/hooks/use-delete-conversation";
 import { SidebarData } from "@/types/sidebar-types";
-import { IconSparkles2 } from "@tabler/icons-react";
 import {
   BookOpenIcon,
   LayoutDashboard,
@@ -25,8 +24,8 @@ import {
   Trash2,
   User,
 } from "lucide-react";
-import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useMemo, useState } from "react";
 import { AppSidebar } from "./app-sidebar";
 
 function ConversationAction({
@@ -50,11 +49,15 @@ function ConversationAction({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger
+          onClick={(e) => {
+            e.preventDefault();
+          }}
           render={
-            <span className="invisible group-hover/item:visible hover:bg-sidebar-accent rounded-md p-1 transition-colors">
+            <button className="p-2 cursor-pointer">
               <MoreHorizontal className="size-4" />
-            </span>
+            </button>
           }
+          className="opacity-0 transition-opacity group-hover/item:flex group-hover/item:opacity-100 data-popup-open:opacity-100 focus:outline-none"
         ></DropdownMenuTrigger>
         <DropdownMenuContent side="right" align="start">
           <DropdownMenuItem

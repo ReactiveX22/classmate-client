@@ -2,21 +2,20 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Attachment } from "@/lib/api/services/post.service";
 import { cn, getProxiedUrl } from "@/lib/utils";
-import {
-  IconDownload,
-  IconExternalLink,
-  IconFile,
-  IconFileDescription,
-  IconFileText,
-  IconLink,
-  IconPhoto,
-  IconPresentation,
-  IconFileSpreadsheet,
-  IconVideo,
-  IconFileZip,
-} from "@tabler/icons-react";
+import { IconDownload, IconExternalLink, IconLink } from "@tabler/icons-react";
 import Image from "next/image";
 import { useState } from "react";
+import {
+  FileIconDocx,
+  FileIconGeneric,
+  FileIconImage,
+  FileIconPdf,
+  FileIconPptx,
+  FileIconTxt,
+  FileIconVideo,
+  FileIconXlsx,
+  FileIconZip,
+} from "./attachment-icons";
 import { ImageGalleryDialog } from "./image-gallery-dialog";
 
 interface AttachmentDisplayProps {
@@ -67,95 +66,90 @@ const getAttachmentTypeInfo = (type: string, mimeType?: string) => {
 
   if (type === "image" || mimeType?.startsWith("image/"))
     return {
-      Icon: IconPhoto,
+      Icon: FileIconImage,
       color: "purple",
       label: "Image",
-      bg: "bg-purple-100 dark:bg-purple-950",
-      text: "text-purple-600 dark:text-purple-400",
+      bg: "",
+      text: "",
     };
 
   if (type === "video" || mimeType?.startsWith("video/"))
     return {
-      Icon: IconVideo,
+      Icon: FileIconVideo,
       color: "pink",
       label: "Video",
-      bg: "bg-pink-100 dark:bg-pink-950",
-      text: "text-pink-600 dark:text-pink-400",
+      bg: "",
+      text: "",
     };
 
   if (mimeType?.includes("pdf"))
     return {
-      Icon: IconFileText,
+      Icon: FileIconPdf,
       color: "red",
       label: "PDF",
-      bg: "bg-red-100 dark:bg-red-950",
-      text: "text-red-600 dark:text-red-400",
+      bg: "",
+      text: "",
     };
 
-  // Word
   if (mimeType?.includes("wordprocessingml") || mimeType?.includes("msword"))
     return {
-      Icon: IconFileDescription,
+      Icon: FileIconDocx,
       color: "indigo",
       label: "Word",
-      bg: "bg-indigo-100 dark:bg-indigo-950",
-      text: "text-indigo-600 dark:text-indigo-400",
+      bg: "",
+      text: "",
     };
 
-  // Excel
   if (
     mimeType?.includes("spreadsheetml") ||
     mimeType?.includes("ms-excel") ||
     mimeType?.includes("xls")
   )
     return {
-      Icon: IconFileSpreadsheet,
+      Icon: FileIconXlsx,
       color: "emerald",
       label: "Excel",
-      bg: "bg-emerald-100 dark:bg-emerald-950",
-      text: "text-emerald-600 dark:text-emerald-400",
+      bg: "",
+      text: "",
     };
 
-  // PowerPoint
   if (
     mimeType?.includes("presentationml") ||
     mimeType?.includes("ms-powerpoint") ||
     mimeType?.includes("ppt")
   )
     return {
-      Icon: IconPresentation,
+      Icon: FileIconPptx,
       color: "orange",
       label: "PPTX",
-      bg: "bg-orange-100 dark:bg-orange-950",
-      text: "text-orange-600 dark:text-orange-400",
+      bg: "",
+      text: "",
     };
 
-  // ZIP
   if (mimeType?.includes("zip") || mimeType?.includes("compressed"))
     return {
-      Icon: IconFileZip,
+      Icon: FileIconZip,
       color: "amber",
       label: "Archive",
-      bg: "bg-amber-100 dark:bg-amber-950",
-      text: "text-amber-600 dark:text-amber-400",
+      bg: "",
+      text: "",
     };
 
-  // Text
   if (mimeType?.includes("text/plain") || mimeType?.includes("txt"))
     return {
-      Icon: IconFileText,
+      Icon: FileIconTxt,
       color: "gray",
       label: "Text",
-      bg: "bg-gray-100 dark:bg-gray-950",
-      text: "text-gray-600 dark:text-gray-400",
+      bg: "",
+      text: "",
     };
 
   return {
-    Icon: IconFile,
+    Icon: FileIconGeneric,
     color: "muted",
     label: "File",
-    bg: "bg-muted",
-    text: "text-muted-foreground",
+    bg: "",
+    text: "",
   };
 };
 
@@ -223,7 +217,7 @@ export function AttachmentDisplay({
     return (
       <div className="grid gap-2">
         {attachments.map((attachment) => {
-          const { Icon, bg, text, label } = getAttachmentTypeInfo(
+          const { Icon, text, label } = getAttachmentTypeInfo(
             attachment.type,
             attachment.mimeType,
           );
@@ -234,11 +228,9 @@ export function AttachmentDisplay({
               href={getProxiedUrl(attachment.url)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-lg hover:bg-muted/50 transition-colors group overflow-hidden"
+              className="flex items-center gap-3 sm:gap-3 p-2.5 sm:p-3 border rounded-lg hover:bg-muted/50 transition-colors group overflow-hidden"
             >
-              <div className={cn("p-2 rounded-md transition-transform", bg)}>
-                <Icon size={20} className={text} />
-              </div>
+              <Icon size={24} className={text || undefined} />
               <div className="flex-1 min-w-0">
                 <p
                   className="text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors"
@@ -322,7 +314,7 @@ export function AttachmentDisplay({
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <IconPhoto className="h-12 w-12 text-muted-foreground" />
+                    <FileIconImage className="h-12 w-12 text-muted-foreground" />
                   </div>
                 )}
 
@@ -376,7 +368,7 @@ export function AttachmentDisplay({
       {otherFiles.length > 0 && (
         <div className="grid gap-2">
           {otherFiles.map((attachment) => {
-            const { Icon, bg, text, label } = getAttachmentTypeInfo(
+            const { Icon, text, label } = getAttachmentTypeInfo(
               attachment.type,
               attachment.mimeType,
             );
@@ -387,16 +379,9 @@ export function AttachmentDisplay({
                 href={getProxiedUrl(attachment.url)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-lg hover:bg-muted/50 transition-colors group overflow-hidden"
+                className="flex items-center gap-3 sm:gap-3 p-2.5 sm:p-3 border rounded-lg hover:bg-muted/50 transition-colors group overflow-hidden"
               >
-                <div
-                  className={cn(
-                    "p-2 rounded-md group-hover:scale-105 transition-transform",
-                    bg,
-                  )}
-                >
-                  <Icon size={20} className={text} />
-                </div>
+                <Icon size={24} className={text || undefined} />
                 <div className="flex-1 min-w-0">
                   <p
                     className="text-xs sm:text-sm font-medium truncate group-hover:text-primary transition-colors"
