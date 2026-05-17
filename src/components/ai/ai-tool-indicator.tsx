@@ -23,27 +23,38 @@ interface AiToolIndicatorProps {
 function getToolLabel(name: string) {
   const normalized = name.toLowerCase();
 
-  if (normalized.includes("rag") || normalized.includes("doc")) {
-    return {
-      running: "Searching documents...",
-      finished: "Searched documents",
-    };
-  }
-
-  if (normalized.includes("web") || normalized.includes("search")) {
-    return {
+  const toolMappings: Record<string, { running: string; finished: string }> = {
+    get_classroom_posts: {
+      running: "Scanning classroom stream...",
+      finished: "Classroom stream updated",
+    },
+    list_user_classrooms: {
+      running: "Loading your classrooms...",
+      finished: "Classrooms synchronized",
+    },
+    get_upcoming_deadlines: {
+      running: "Checking upcoming deadlines...",
+      finished: "Deadlines updated",
+    },
+    rag_search: {
+      running: "Searching your course materials...",
+      finished: "Materials retrieved",
+    },
+    web_search: {
       running: "Searching the web...",
-      finished: "Searched the web",
-    };
+      finished: "Search results ready",
+    },
+    grade_assignment: {
+      running: "Grading submission...",
+      finished: "Submission graded",
+    },
+  };
+
+  if (toolMappings[normalized]) {
+    return toolMappings[normalized];
   }
 
-  if (normalized.includes("grade")) {
-    return {
-      running: "Grading assignments...",
-      finished: "Graded assignments",
-    };
-  }
-
+  // Fallback for unknown tools
   return {
     running: `Running ${name}...`,
     finished: `Completed ${name}`,

@@ -89,65 +89,37 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
   const [isNearBottom, setIsNearBottom] = useState(true);
-  const scrollRafRef = useRef<number | null>(null);
 
   const scrollToBottom = useCallback((smooth = false) => {
     const viewport = scrollAreaRef.current;
     if (!viewport) return;
+    setIsNearBottom(true);
     viewport.scrollTo({
       top: viewport.scrollHeight,
       behavior: smooth ? "smooth" : "auto",
     });
   }, []);
 
-  const startAutoScroll = useCallback(() => {
-    if (scrollRafRef.current !== null) return;
-
-    const tick = () => {
-      const viewport = scrollAreaRef.current;
-      if (!viewport) return;
-      viewport.scrollTo({ top: viewport.scrollHeight, behavior: "auto" });
-      scrollRafRef.current = requestAnimationFrame(tick);
-    };
-
-    scrollRafRef.current = requestAnimationFrame(tick);
-  }, []);
-
-  const stopAutoScroll = useCallback(() => {
-    if (scrollRafRef.current !== null) {
-      cancelAnimationFrame(scrollRafRef.current);
-      scrollRafRef.current = null;
-    }
-  }, []);
-
   useEffect(() => {
     const el = scrollAreaRef.current;
     if (!el) return;
 
-    const checkScroll = () => {
+    const handleScroll = () => {
       const atBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 50;
       setIsNearBottom(atBottom);
     };
 
-    checkScroll();
-    const interval = setInterval(checkScroll, 200);
-    return () => clearInterval(interval);
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
-    if (isNearBottom && displayMessages.length > 0) {
-      scrollToBottom(false);
-    }
-  }, [displayMessages, isNearBottom, scrollToBottom]);
+    if (!isNearBottom) return;
 
-  useEffect(() => {
-    if (isStreaming && isNearBottom) {
-      startAutoScroll();
-    } else {
-      stopAutoScroll();
-    }
-    return () => stopAutoScroll();
-  }, [isStreaming, isNearBottom, startAutoScroll, stopAutoScroll]);
+    const el = scrollAreaRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [displayMessages.length, streamingContent, isNearBottom]);
 
   useEffect(() => {
     if (!convId) {
@@ -200,7 +172,7 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
     <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
       <ScrollArea ref={scrollAreaRef} className="h-[calc(100vh-64px)]">
         <div className="relative min-h-0 flex-1">
-          <ChatContainerRoot className="min-h-0 flex-1 overflow-y-auto pb-28">
+          <ChatContainerRoot className="min-h-0 flex-1 pb-28">
             <ChatContainerContent className="px-4 py-12">
               {conversationQuery.isLoading ? (
                 <div className="flex min-h-[40vh] items-center justify-center px-4 text-center">

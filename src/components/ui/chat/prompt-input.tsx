@@ -169,7 +169,7 @@ function PromptInputTextarea({
       onChange={handleChange}
       onKeyDown={handleKeyDown}
       className={cn(
-        "text-primary min-h-[44px] w-full resize-none border-none bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        "text-primary min-h-[44px] w-full resize-none border-none bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden selection:bg-primary selection:text-primary-foreground",
         className,
       )}
       rows={1}
@@ -225,7 +225,7 @@ function PromptInputAction({
 
 export {
   PromptInput,
-  PromptInputTextarea,
-  PromptInputActions,
   PromptInputAction,
+  PromptInputActions,
+  PromptInputTextarea,
 };

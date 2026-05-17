@@ -81,6 +81,10 @@ export const aiService = {
     await apiClient.delete(`/api/v1/ai/conversations/${id}`);
   },
 
+  async deleteAllConversations(): Promise<void> {
+    await apiClient.delete("/api/v1/ai/conversations");
+  },
+
   async updateConversation(
     id: string,
     data: { title: string },
