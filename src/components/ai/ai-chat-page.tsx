@@ -179,7 +179,7 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
       orientation="horizontal"
       className="h-[calc(100vh-64px)] w-full bg-background"
     >
-      <ResizablePanel defaultSize={80} minSize={50}>
+      <ResizablePanel defaultSize={75} minSize={50}>
         <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
           <ScrollArea ref={scrollAreaRef} className="h-[calc(100vh-64px)]">
             <div className="relative min-h-0 flex-1">
@@ -237,7 +237,7 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
         </div>
       </ResizablePanel>
       <ResizableHandle withHandle />
-      <ResizablePanel defaultSize={20} minSize={20}>
+      <ResizablePanel defaultSize={25} minSize={20}>
         <TaskPanel />
       </ResizablePanel>
     </ResizablePanelGroup>
