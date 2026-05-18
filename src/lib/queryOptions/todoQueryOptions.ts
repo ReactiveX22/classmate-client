@@ -1,15 +1,8 @@
 import { queryOptions, UseQueryOptions } from "@tanstack/react-query";
-import {
-  Todo,
-  TodosResponse,
-  todoService,
-} from "../api/services/todo.service";
+import { Todo, TodosResponse, todoService } from "../api/services/todo.service";
 import { PaginationParams } from "@/types/pagination";
 
-export function createTodosQueryOptions<
-  TData = TodosResponse,
-  TError = Error,
->(
+export function createTodosQueryOptions<TData = TodosResponse, TError = Error>(
   params?: PaginationParams,
   options?: Omit<
     UseQueryOptions<TodosResponse, TError, TData>,
@@ -26,10 +19,7 @@ export function createTodosQueryOptions<
 
 export function getTodoQueryOptions<TData = Todo, TError = Error>(
   id: string,
-  options?: Omit<
-    UseQueryOptions<Todo, TError, TData>,
-    "queryKey" | "queryFn"
-  >,
+  options?: Omit<UseQueryOptions<Todo, TError, TData>, "queryKey" | "queryFn">,
 ) {
   return queryOptions({
     ...options,

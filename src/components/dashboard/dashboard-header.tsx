@@ -1,14 +1,23 @@
 "use client";
 
-import { Pencil } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { Pencil } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
+import { useState } from "react";
 
 import { RenameConversationDialog } from "@/components/ai/rename-conversation-dialog";
 import { ModeToggle } from "@/components/mode-toggle";
+import { useTaskSheet } from "@/components/task-sheet";
+import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Kbd, KbdGroup } from "@/components/ui/kbd";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { IconListCheck } from "@tabler/icons-react";
 
 type DashboardHeaderProps = React.HTMLAttributes<HTMLElement> & {
   fixed?: boolean;
@@ -26,6 +35,7 @@ export function DashboardHeader({
   const params = useParams();
   const convId = params?.convId as string | undefined;
   const isAiChat = pathname?.startsWith("/dashboard/ai/") && convId;
+  const { toggle: toggleTaskSheet } = useTaskSheet();
 
   const queryClient = useQueryClient();
   const conversations = queryClient.getQueryData<{
@@ -61,6 +71,27 @@ export function DashboardHeader({
           </button>
         ) : null}
         <div className="flex items-center gap-2 ml-auto">
+          {!isAiChat && (
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={toggleTaskSheet}
+                  >
+                    <IconListCheck className="size-4" />
+                  </Button>
+                }
+              />
+              <TooltipContent>
+                <KbdGroup>
+                  <Kbd>Ctrl</Kbd>
+                  <Kbd>K</Kbd>
+                </KbdGroup>
+              </TooltipContent>
+            </Tooltip>
+          )}
           <ModeToggle />
           {children}
         </div>

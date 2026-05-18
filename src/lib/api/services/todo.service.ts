@@ -62,7 +62,10 @@ export const todoService = {
   },
 
   updateTodo: async (id: string, payload: UpdateTodoInput) => {
-    const response = await apiClient.patch<Todo>(`/api/v1/todos/${id}`, payload);
+    const response = await apiClient.patch<Todo>(
+      `/api/v1/todos/${id}`,
+      payload,
+    );
     return response.data;
   },
 
