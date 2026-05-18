@@ -27,7 +27,6 @@ export function useCreateTodo() {
     mutationFn: (data: CreateTodoInput) => todoService.createTodo(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
-      toast.success("Todo created successfully");
     },
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;

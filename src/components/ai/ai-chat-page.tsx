@@ -17,6 +17,12 @@ import { useAiChat } from "@/hooks/use-ai-chat";
 import { useAiConversation } from "@/hooks/use-ai-conversation";
 import { AiConversation } from "@/lib/api/services/ai.service";
 import { ScrollArea } from "../ui/scroll-area";
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "@/components/ui/resizable";
+import { TaskPanel } from "./task-panel";
 
 interface AiChatPageProps {
   convId: string;
@@ -169,60 +175,71 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
   };
 
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
-      <ScrollArea ref={scrollAreaRef} className="h-[calc(100vh-64px)]">
-        <div className="relative min-h-0 flex-1">
-          <ChatContainerRoot className="min-h-0 flex-1 pb-28">
-            <ChatContainerContent className="px-4 py-12">
-              {conversationQuery.isLoading ? (
-                <div className="flex min-h-[40vh] items-center justify-center px-4 text-center">
-                  <Loader variant="bars" />
-                </div>
-              ) : displayMessages.length === 0 ? (
-                <div className="flex min-h-[40vh] items-center justify-center px-4 text-center">
-                  <p className="text-muted-foreground">
-                    Start typing to continue your conversation.
-                  </p>
-                </div>
-              ) : (
-                <AiMessageList
-                  activeTools={activeTools}
-                  error={displayError}
-                  isStreaming={isStreaming}
-                  messages={displayMessages}
-                  onRetry={retry}
-                  streamingContent={streamingContent}
-                  streamingReasoning={streamingReasoning}
-                />
-              )}
-              <ChatContainerScrollAnchor
-                ref={scrollAnchorRef}
-                className="mb-4"
-              />
-            </ChatContainerContent>
-          </ChatContainerRoot>
-        </div>
-      </ScrollArea>
+    <ResizablePanelGroup
+      orientation="horizontal"
+      className="h-[calc(100vh-64px)] w-full bg-background"
+    >
+      <ResizablePanel defaultSize={80} minSize={50}>
+        <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
+          <ScrollArea ref={scrollAreaRef} className="h-[calc(100vh-64px)]">
+            <div className="relative min-h-0 flex-1">
+              <ChatContainerRoot className="min-h-0 flex-1 pb-28">
+                <ChatContainerContent className="px-4 py-12">
+                  {conversationQuery.isLoading ? (
+                    <div className="flex min-h-[40vh] items-center justify-center px-4 text-center">
+                      <Loader variant="bars" />
+                    </div>
+                  ) : displayMessages.length === 0 ? (
+                    <div className="flex min-h-[40vh] items-center justify-center px-4 text-center">
+                      <p className="text-muted-foreground">
+                        Start typing to continue your conversation.
+                      </p>
+                    </div>
+                  ) : (
+                    <AiMessageList
+                      activeTools={activeTools}
+                      error={displayError}
+                      isStreaming={isStreaming}
+                      messages={displayMessages}
+                      onRetry={retry}
+                      streamingContent={streamingContent}
+                      streamingReasoning={streamingReasoning}
+                    />
+                  )}
+                  <ChatContainerScrollAnchor
+                    ref={scrollAnchorRef}
+                    className="mb-4"
+                  />
+                </ChatContainerContent>
+              </ChatContainerRoot>
+            </div>
+          </ScrollArea>
 
-      <div className="pointer-events-none absolute left-1/2 bottom-5 z-10 w-full max-w-200 -translate-x-1/2 px-3 md:px-5">
-        <div className="relative">
-          <div className="pointer-events-auto absolute -top-12 left-0 flex w-full justify-end pr-2">
-            <ScrollButton
-              className="shadow-sm"
-              isNearBottom={isNearBottom}
-              onScrollToBottom={scrollToBottom}
-            />
-          </div>
-          <div className="pointer-events-auto">
-            <AiInputBar
-              isRetrying={isRetrying}
-              isStreaming={isStreaming}
-              onSend={handleSend}
-              onStop={abort}
-            />
+          <div className="pointer-events-none absolute left-1/2 bottom-5 z-10 w-full max-w-200 -translate-x-1/2 px-3 md:px-5">
+            <div className="relative">
+              <div className="pointer-events-auto absolute -top-12 left-0 flex w-full justify-end pr-2">
+                <ScrollButton
+                  className="shadow-sm"
+                  isNearBottom={isNearBottom}
+                  onScrollToBottom={scrollToBottom}
+                />
+              </div>
+              <div className="pointer-events-auto">
+                <AiInputBar
+                  isRetrying={isRetrying}
+                  isStreaming={isStreaming}
+                  onSend={handleSend}
+                  onStop={abort}
+                />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </ResizablePanel>
+      <ResizableHandle withHandle />
+      <ResizablePanel defaultSize={20} minSize={20}>
+        <TaskPanel />
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 }
