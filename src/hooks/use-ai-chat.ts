@@ -13,6 +13,7 @@ import {
 interface UseAiChatOptions {
   conversationId: string;
   onTitleUpdate?: (conversation: AiConversation) => void;
+  onTaskToolEnd?: (toolName: string) => void;
 }
 
 interface AiChatState {
@@ -34,6 +35,8 @@ type ToolIndicator = {
 const TOOL_RUNNING_MIN_MS = 450;
 const TOOL_FINISH_MIN_MS = 700;
 
+const TASK_MUTATION_TOOLS = new Set(["create_task", "update_task", "delete_task"]);
+
 const initialState: AiChatState = {
   messages: [],
   streamingContent: "",
@@ -44,7 +47,7 @@ const initialState: AiChatState = {
   lastError: null,
 };
 
-export function useAiChat({ conversationId, onTitleUpdate }: UseAiChatOptions) {
+export function useAiChat({ conversationId, onTitleUpdate, onTaskToolEnd }: UseAiChatOptions) {
   const queryClient = useQueryClient();
   const abortRef = useRef<AbortController | null>(null);
   const flushFrameRef = useRef<number | null>(null);
@@ -268,6 +271,9 @@ export function useAiChat({ conversationId, onTitleUpdate }: UseAiChatOptions) {
                 upsertToolIndicator(event.payload.name, "running");
               } else {
                 upsertToolIndicator(event.payload.name, "finishing");
+                if (TASK_MUTATION_TOOLS.has(event.payload.name)) {
+                  onTaskToolEnd?.(event.payload.name);
+                }
               }
               break;
 
@@ -356,6 +362,7 @@ export function useAiChat({ conversationId, onTitleUpdate }: UseAiChatOptions) {
       conversationId,
       flushPendingContent,
       flushPendingReasoning,
+      onTaskToolEnd,
       onTitleUpdate,
       queueContentFlush,
       queryClient,
@@ -434,6 +441,9 @@ export function useAiChat({ conversationId, onTitleUpdate }: UseAiChatOptions) {
               upsertToolIndicator(event.payload.name, "running");
             } else {
               upsertToolIndicator(event.payload.name, "finishing");
+              if (TASK_MUTATION_TOOLS.has(event.payload.name)) {
+                onTaskToolEnd?.(event.payload.name);
+              }
             }
             break;
 
@@ -523,6 +533,7 @@ export function useAiChat({ conversationId, onTitleUpdate }: UseAiChatOptions) {
     conversationId,
     flushPendingContent,
     flushPendingReasoning,
+    onTaskToolEnd,
     onTitleUpdate,
     queueContentFlush,
     queryClient,

@@ -55,6 +55,10 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
     [queryClient],
   );
 
+  const handleTaskToolEnd = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ["todos"] });
+  }, [queryClient]);
+
   const {
     messages: streamingMessages,
     streamingContent,
@@ -67,7 +71,7 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
     retry,
     abort,
     resetConversation,
-  } = useAiChat({ conversationId: convId, onTitleUpdate: handleTitleUpdate });
+  } = useAiChat({ conversationId: convId, onTitleUpdate: handleTitleUpdate, onTaskToolEnd: handleTaskToolEnd });
 
   const conversationQuery = useAiConversation(convId);
 

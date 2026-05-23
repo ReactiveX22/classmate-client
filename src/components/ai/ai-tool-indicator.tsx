@@ -48,6 +48,26 @@ function getToolLabel(name: string) {
       running: "Grading submission...",
       finished: "Submission graded",
     },
+    list_tasks: {
+      running: "Fetching tasks...",
+      finished: "Fetched tasks",
+    },
+    create_task: {
+      running: "Creating task...",
+      finished: "Task created",
+    },
+    update_task: {
+      running: "Updating task...",
+      finished: "Task updated",
+    },
+    delete_task: {
+      running: "Deleting task...",
+      finished: "Task deleted",
+    },
+    manage_tasks: {
+      running: "Managing tasks...",
+      finished: "Tasks managed",
+    },
   };
 
   if (toolMappings[normalized]) {
