@@ -42,6 +42,30 @@ export function useSignup() {
   });
 }
 
+export function useRequestPasswordReset() {
+  return useMutation({
+    mutationFn: (email: string) => authService.requestPasswordReset(email),
+    onError: (error: Error) => {
+      console.error("Password reset request failed:", error.message);
+    },
+  });
+}
+
+export function useResetPassword() {
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: ({ newPassword, token }: { newPassword: string; token: string }) =>
+      authService.resetPassword(newPassword, token),
+    onSuccess: () => {
+      router.push("/login");
+    },
+    onError: (error: Error) => {
+      console.error("Password reset failed:", error.message);
+    },
+  });
+}
+
 export function useLogout() {
   const router = useRouter();
   const queryClient = useQueryClient();

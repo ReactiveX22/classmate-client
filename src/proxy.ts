@@ -4,7 +4,7 @@ import { authClient } from "./lib/auth-client";
 
 const protectedRoutes = ["/dashboard"];
 
-const authRoutes = ["/login"];
+const authRoutes = ["/login", "/forgot-password", "/reset-password"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

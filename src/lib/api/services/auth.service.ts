@@ -39,6 +39,31 @@ export const authService = {
     return response.data;
   },
 
+  async requestPasswordReset(email: string) {
+    const response = await authClient.requestPasswordReset({
+      email,
+    });
+
+    if (response.error) {
+      throw new Error(response.error.message || "Request failed");
+    }
+
+    return response.data;
+  },
+
+  async resetPassword(newPassword: string, token: string) {
+    const response = await authClient.resetPassword({
+      newPassword,
+      token,
+    });
+
+    if (response.error) {
+      throw new Error(response.error.message || "Password reset failed");
+    }
+
+    return response.data;
+  },
+
   async logout() {
     try {
       await authClient.signOut();
