@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,13 +12,11 @@ import { useRemoveStudentsFromClassroom } from "@/hooks/use-classrooms";
 import { getInitials } from "@/lib/utils";
 import {
   IconLoader2,
-  IconMessage,
   IconUserPlus,
   IconUsers,
   IconUserX,
 } from "@tabler/icons-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { RoleGuard } from "@/components/common/role-guard";
 import { Role } from "@/types/auth";
@@ -26,11 +24,13 @@ import { Role } from "@/types/auth";
 interface Teacher {
   name: string;
   email: string;
+  image?: string;
 }
 
 interface Student {
   name: string;
   email: string;
+  image?: string;
 }
 
 interface ClassroomMember {
@@ -72,22 +72,20 @@ export function PeopleTab({
     }
   };
 
-  const handleSendMessage = (name: string) => {
-    toast.info(`Messaging feature coming soon!`, {
-      description: `This is a demo button for sending a message to ${name}.`,
-    });
-  };
-
   return (
     <div className="max-w-3xl mx-auto space-y-6 mt-6">
       {/* Teacher Section */}
       <Card>
         <CardHeader>
           <CardTitle>Instructor</CardTitle>
+          <CardDescription>
+            The educator who leads this classroom
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4 p-3">
             <Avatar>
+              <AvatarImage src={teacher.image || ""} alt={teacher.name} />
               <AvatarFallback>{getInitials(teacher.name)}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
@@ -96,14 +94,6 @@ export function PeopleTab({
                 {teacher.email}
               </p>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-muted-foreground hover:text-primary hover:bg-primary/10 size-8"
-              onClick={() => handleSendMessage(teacher.name)}
-            >
-              <IconMessage className="size-4" />
-            </Button>
           </div>
         </CardContent>
       </Card>
@@ -133,6 +123,7 @@ export function PeopleTab({
                   className="flex items-center gap-4 p-3 rounded-lg hover:bg-accent/50 transition-colors"
                 >
                   <Avatar>
+                    <AvatarImage src={member.student.image || ""} alt={member.student.name} />
                     <AvatarFallback>
                       {getInitials(member.student.name)}
                     </AvatarFallback>
@@ -144,14 +135,6 @@ export function PeopleTab({
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-muted-foreground hover:text-primary hover:bg-primary/10 size-8"
-                      onClick={() => handleSendMessage(member.student.name)}
-                    >
-                      <IconMessage className="size-4" />
-                    </Button>
                     <RoleGuard allowedRoles={[Role.Instructor]}>
                       <Button
                         variant="ghost"
