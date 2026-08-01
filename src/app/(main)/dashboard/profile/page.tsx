@@ -342,15 +342,17 @@ export default function ProfilePage() {
                   <Badge
                     key={skill}
                     variant="secondary"
-                    className="flex text-sm items-center gap-2 cursor-pointer group"
+                    className="flex items-center gap-1 cursor-pointer group"
                   >
                     {skill}
-                    <span onClick={() => handleRemoveSkill(skill)}>
-                      <X
-                        size={14}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity text-destructive"
-                      />
-                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSkill(skill)}
+                      className="rounded-full p-0.5 -mr-1 text-destructive hover:bg-destructive/10 cursor-pointer"
+                      aria-label={`Remove ${skill} skill`}
+                    >
+                      <X className="size-3.5" />
+                    </button>
                   </Badge>
                 ))}
               </div>
