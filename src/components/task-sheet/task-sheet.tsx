@@ -20,7 +20,7 @@ export function TaskSheet() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent
         side="right"
-        className="w-[28rem] sm:max-w-md p-0 gap-0"
+        className="w-[42rem] sm:max-w-2xl p-0 gap-0"
         showCloseButton={false}
       >
         <SheetHeader className="flex flex-row items-center justify-between px-4 pt-4 pb-2 border-b">

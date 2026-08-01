@@ -276,12 +276,72 @@ function EditTaskPopover({
   );
 }
 
+function ClampedDescription({ todo }: { todo: Todo }) {
+  const [expanded, setExpanded] = useState(false);
+  const [overflows, setOverflows] = useState(false);
+  const clampRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = clampRef.current;
+    if (!el) return;
+    const check = () => {
+      if (!el.isConnected) return;
+      if (el.scrollHeight > el.clientHeight + 1) setOverflows(true);
+    };
+    check();
+    const observer = new ResizeObserver(check);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [todo.description, expanded]);
+
+  if (!todo.description) return null;
+
+  const text = stripMarkdown(todo.description);
+
+  return (
+    <div className="ml-5 flex items-start gap-2">
+      <div className="min-w-0 flex-1">
+        {expanded ? (
+          <div className="chat-markdown text-xs min-w-0">
+            <Markdown>{todo.description}</Markdown>
+          </div>
+        ) : (
+          <div
+            ref={clampRef}
+            className="line-clamp-2 text-xs text-muted-foreground"
+          >
+            {text}
+          </div>
+        )}
+      </div>
+      {overflows && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          aria-expanded={expanded}
+          className="mt-0.5 flex shrink-0 items-center gap-0.5 text-[11px] font-medium text-muted-foreground hover:text-primary cursor-pointer"
+        >
+          {expanded ? (
+            <>
+              <IconChevronsUp className="size-3" />
+              Less
+            </>
+          ) : (
+            <>
+              <IconChevronsDown className="size-3" />
+              More
+            </>
+          )}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function TaskItem({ todo }: { todo: Todo }) {
   const updateTodo = useUpdateTodo();
   const deleteTodo = useDeleteTodo();
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [titleValue, setTitleValue] = useState(todo.title);
-  const [descExpanded, setDescExpanded] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -320,10 +380,6 @@ function TaskItem({ todo }: { todo: Todo }) {
       setIsEditingTitle(false);
     }
   };
-
-  const descriptionPreview = todo.description
-    ? stripMarkdown(todo.description)
-    : null;
 
   return (
     <div className="group flex flex-col gap-1 rounded-md p-2 hover:bg-muted/50">
@@ -369,29 +425,7 @@ function TaskItem({ todo }: { todo: Todo }) {
           </Button>
         </div>
       </div>
-      {descriptionPreview && (
-        <div className="ml-5 relative">
-          {descExpanded ? (
-            <div className="chat-markdown text-xs min-w-0">
-              <Markdown>{todo.description!}</Markdown>
-            </div>
-          ) : (
-            <span className="line-clamp-2 text-xs text-muted-foreground">
-              {descriptionPreview}
-            </span>
-          )}
-          <button
-            onClick={() => setDescExpanded(!descExpanded)}
-            className="absolute top-0 right-0 shrink-0 text-muted-foreground hover:text-foreground cursor-pointer"
-          >
-            {descExpanded ? (
-              <IconChevronsUp className="size-3" />
-            ) : (
-              <IconChevronsDown className="size-3" />
-            )}
-          </button>
-        </div>
-      )}
+      <ClampedDescription todo={todo} />
       <div className="ml-5 flex items-center gap-1">
         <Badge
           variant="ghost"
