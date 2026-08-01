@@ -94,6 +94,7 @@ export function useClassroomTabs({
             teacher={teacher}
             classroomMembers={classroomMembers}
             enrolledCount={enrolledCount}
+            currentUserId={user?.id}
             onAddStudents={onAddStudents}
           />
         ),
@@ -107,5 +108,6 @@ export function useClassroomTabs({
     enrolledCount,
     onAddStudents,
     isTeacher,
+    user?.id,
   ]);
 }

@@ -1,9 +1,20 @@
 import api from "@/lib/api";
-import { UpdateProfileInput, UserProfileResponse } from "@/types/user-profile";
+import {
+  PublicUserProfile,
+  UpdateProfileInput,
+  UserProfileResponse,
+} from "@/types/user-profile";
 
 export const userService = {
   getProfile: async () => {
     const { data } = await api.get<UserProfileResponse>("/api/v1/users/me");
+    return data;
+  },
+
+  getUserProfileById: async (id: string) => {
+    const { data } = await api.get<PublicUserProfile>(
+      `/api/v1/users/${id}/profile`,
+    );
     return data;
   },
 

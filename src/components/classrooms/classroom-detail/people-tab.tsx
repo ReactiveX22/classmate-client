@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardAction,
@@ -9,25 +9,29 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useRemoveStudentsFromClassroom } from "@/hooks/use-classrooms";
-import { getInitials } from "@/lib/utils";
+import { cn, getInitials } from "@/lib/utils";
 import {
   IconLoader2,
+  IconUserCircle,
   IconUserPlus,
   IconUsers,
   IconUserX,
 } from "@tabler/icons-react";
+import Link from "next/link";
 import { useState } from "react";
 import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { RoleGuard } from "@/components/common/role-guard";
 import { Role } from "@/types/auth";
 
 interface Teacher {
+  id: string;
   name: string;
   email: string;
   image?: string;
 }
 
 interface Student {
+  id: string;
   name: string;
   email: string;
   image?: string;
@@ -44,6 +48,7 @@ interface PeopleTabProps {
   teacher: Teacher;
   classroomMembers: ClassroomMember[];
   enrolledCount: number;
+  currentUserId?: string;
   onAddStudents: () => void;
 }
 
@@ -52,6 +57,7 @@ export function PeopleTab({
   teacher,
   classroomMembers,
   enrolledCount,
+  currentUserId,
   onAddStudents,
 }: PeopleTabProps) {
   const removeStudentsMutation = useRemoveStudentsFromClassroom();
@@ -94,6 +100,18 @@ export function PeopleTab({
                 {teacher.email}
               </p>
             </div>
+            {currentUserId !== teacher.id && (
+              <Link
+                href={`/dashboard/profile/${teacher.id}`}
+                aria-label={`View ${teacher.name}'s profile`}
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "icon" }),
+                  "text-muted-foreground hover:text-primary hover:bg-primary/10 size-8",
+                )}
+              >
+                <IconUserCircle className="size-4" />
+              </Link>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -135,6 +153,18 @@ export function PeopleTab({
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
+                    {currentUserId !== member.student.id && (
+                      <Link
+                        href={`/dashboard/profile/${member.student.id}`}
+                        aria-label={`View ${member.student.name}'s profile`}
+                        className={cn(
+                          buttonVariants({ variant: "ghost", size: "icon" }),
+                          "text-muted-foreground hover:text-primary hover:bg-primary/10 size-8",
+                        )}
+                      >
+                        <IconUserCircle className="size-4" />
+                      </Link>
+                    )}
                     <RoleGuard allowedRoles={[Role.Instructor]}>
                       <Button
                         variant="ghost"

@@ -41,6 +41,28 @@ export interface UserProfileResponse {
   student: StudentProfile | null;
 }
 
+export interface PublicUserProfile {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    image: string | null;
+    role: string | null;
+  };
+  profile: {
+    bio: string | null;
+    skills: string[];
+    achievements: Achievement[];
+  } | null;
+  teacher: {
+    title: string | null;
+    joinDate: string | null;
+  } | null;
+  student: {
+    studentId: string | null;
+  } | null;
+}
+
 export interface UpdateProfileInput {
   image?: File | string;
   phone?: string;

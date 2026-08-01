@@ -9,3 +9,12 @@ export const getUserProfileQueryOptions = () => {
     gcTime: 5 * 60 * 1000,
   });
 };
+
+export const getUserProfileByIdQueryOptions = (id: string) => {
+  return queryOptions({
+    queryKey: ["user-profile", id],
+    queryFn: () => userService.getUserProfileById(id),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+  });
+};
