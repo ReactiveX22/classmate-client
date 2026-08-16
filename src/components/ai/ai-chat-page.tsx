@@ -71,7 +71,11 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
     retry,
     abort,
     resetConversation,
-  } = useAiChat({ conversationId: convId, onTitleUpdate: handleTitleUpdate, onTaskToolEnd: handleTaskToolEnd });
+  } = useAiChat({
+    conversationId: convId,
+    onTitleUpdate: handleTitleUpdate,
+    onTaskToolEnd: handleTaskToolEnd,
+  });
 
   const conversationQuery = useAiConversation(convId);
 

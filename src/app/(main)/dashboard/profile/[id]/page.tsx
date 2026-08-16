@@ -15,12 +15,7 @@ import { useUser } from "@/hooks/useAuth";
 import { useUserProfileById } from "@/hooks/use-user-profile";
 import { getInitials } from "@/lib/utils";
 import { format } from "date-fns";
-import {
-  BriefcaseBusiness,
-  IdCard,
-  Trophy,
-  UserRound,
-} from "lucide-react";
+import { BriefcaseBusiness, IdCard, Trophy, UserRound } from "lucide-react";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { use, useEffect } from "react";
@@ -118,7 +113,10 @@ export default function UserProfilePage({ params }: ProfilePageProps) {
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               {profileUser.email}
             </div>
-            <Badge variant="secondary" className="w-fit text-[10px] mt-1 capitalize">
+            <Badge
+              variant="secondary"
+              className="w-fit text-[10px] mt-1 capitalize"
+            >
               {roleBadge}
             </Badge>
           </div>
@@ -144,8 +142,7 @@ export default function UserProfilePage({ params }: ProfilePageProps) {
               )}
               {teacher.joinDate && (
                 <div className="flex items-center gap-2 text-xs text-muted-foreground pl-6">
-                  Joined at{" "}
-                  {format(new Date(teacher.joinDate), "MMMM d, yyyy")}
+                  Joined at {format(new Date(teacher.joinDate), "MMMM d, yyyy")}
                 </div>
               )}
             </div>

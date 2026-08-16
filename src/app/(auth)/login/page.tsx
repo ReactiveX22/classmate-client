@@ -150,31 +150,31 @@ export default function LoginPage() {
               </div>
             )}
 
-              <form.Subscribe
-                selector={(state) => [state.canSubmit, state.isSubmitting]}
-              >
-                {([canSubmit, isSubmitting]) => (
-                  <Button
-                    type="submit"
-                    className="w-full mt-4"
-                    disabled={!canSubmit || loginMutation.isPending}
-                  >
-                    {loginMutation.isPending || isSubmitting
-                      ? "Signing in..."
-                      : "Sign in"}
-                  </Button>
-                )}
-              </form.Subscribe>
-
-              <div className="flex justify-end text-sm">
-                <Link
-                  href="/forgot-password"
-                  className="font-medium text-primary underline-offset-4 hover:underline"
+            <form.Subscribe
+              selector={(state) => [state.canSubmit, state.isSubmitting]}
+            >
+              {([canSubmit, isSubmitting]) => (
+                <Button
+                  type="submit"
+                  className="w-full mt-4"
+                  disabled={!canSubmit || loginMutation.isPending}
                 >
-                  Forgot password?
-                </Link>
-              </div>
-            </form>
+                  {loginMutation.isPending || isSubmitting
+                    ? "Signing in..."
+                    : "Sign in"}
+                </Button>
+              )}
+            </form.Subscribe>
+
+            <div className="flex justify-end text-sm">
+              <Link
+                href="/forgot-password"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
+          </form>
         </CardContent>
         <CardFooter className="flex justify-center border-t p-4 bg-muted/20">
           <div className="text-sm text-muted-foreground">

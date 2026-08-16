@@ -32,7 +32,9 @@ export function RecentNotices({
             <Bell size={20} />
           </div>
           <div className="space-y-0.5">
-            <h2 className="text-lg font-bold tracking-tight">Latest Notices</h2>
+            <h2 className="text-lg font-semibold tracking-tight">
+              Latest Notices
+            </h2>
             <p className="text-xs text-muted-foreground">
               Stay updated with important announcements
             </p>

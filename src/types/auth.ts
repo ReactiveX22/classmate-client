@@ -62,9 +62,7 @@ export enum UserStatus {
 }
 
 export enum Role {
-  SuperAdmin = "super-admin",
   Admin = "admin",
   Instructor = "instructor",
   Student = "student",
-  Staff = "staff",
 }

@@ -141,7 +141,10 @@ export function PeopleTab({
                   className="flex items-center gap-4 p-3 rounded-lg hover:bg-accent/50 transition-colors"
                 >
                   <Avatar>
-                    <AvatarImage src={member.student.image || ""} alt={member.student.name} />
+                    <AvatarImage
+                      src={member.student.image || ""}
+                      alt={member.student.name}
+                    />
                     <AvatarFallback>
                       {getInitials(member.student.name)}
                     </AvatarFallback>

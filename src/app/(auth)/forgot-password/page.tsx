@@ -116,8 +116,7 @@ export default function ForgotPasswordPage() {
                 <form.Field name="email">
                   {(field) => {
                     const isInvalid =
-                      field.state.meta.isTouched &&
-                      !field.state.meta.isValid;
+                      field.state.meta.isTouched && !field.state.meta.isValid;
                     return (
                       <Field data-invalid={isInvalid}>
                         <FieldLabel htmlFor={field.name}>Email</FieldLabel>

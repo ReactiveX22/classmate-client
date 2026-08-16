@@ -55,8 +55,13 @@ export function useResetPassword() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: ({ newPassword, token }: { newPassword: string; token: string }) =>
-      authService.resetPassword(newPassword, token),
+    mutationFn: ({
+      newPassword,
+      token,
+    }: {
+      newPassword: string;
+      token: string;
+    }) => authService.resetPassword(newPassword, token),
     onSuccess: () => {
       router.push("/login");
     },

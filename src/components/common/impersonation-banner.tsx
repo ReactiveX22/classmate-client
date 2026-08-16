@@ -46,7 +46,7 @@ export function ImpersonationBanner() {
   };
 
   return (
-    <div className="sticky top-0 z-[100] flex w-full items-center justify-center gap-4 bg-rose-500/85 px-4 py-2 text-sm font-medium text-white shadow-md">
+    <div className="sticky top-0 z-100 flex w-full items-center justify-center gap-4 bg-rose-500/85 px-4 py-2 text-sm font-medium text-white shadow-md rounded-b-md">
       <span className="flex items-center gap-2">
         Logged in as
         <span className="flex items-center gap-2">
@@ -59,7 +59,7 @@ export function ImpersonationBanner() {
       </span>
       <Button
         variant="secondary"
-        size="sm"
+        size="xs"
         onClick={handleExit}
         disabled={isLoading}
       >

@@ -35,7 +35,11 @@ type ToolIndicator = {
 const TOOL_RUNNING_MIN_MS = 450;
 const TOOL_FINISH_MIN_MS = 700;
 
-const TASK_MUTATION_TOOLS = new Set(["create_task", "update_task", "delete_task"]);
+const TASK_MUTATION_TOOLS = new Set([
+  "create_task",
+  "update_task",
+  "delete_task",
+]);
 
 const initialState: AiChatState = {
   messages: [],
@@ -47,7 +51,11 @@ const initialState: AiChatState = {
   lastError: null,
 };
 
-export function useAiChat({ conversationId, onTitleUpdate, onTaskToolEnd }: UseAiChatOptions) {
+export function useAiChat({
+  conversationId,
+  onTitleUpdate,
+  onTaskToolEnd,
+}: UseAiChatOptions) {
   const queryClient = useQueryClient();
   const abortRef = useRef<AbortController | null>(null);
   const flushFrameRef = useRef<number | null>(null);

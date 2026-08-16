@@ -14,6 +14,7 @@ export interface Submission {
   status: SubmissionStatus;
   grade?: number;
   feedback?: string;
+  isLate?: boolean;
   submittedAt: string;
   createdAt: string;
   updatedAt: string;

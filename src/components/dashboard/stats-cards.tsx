@@ -39,7 +39,7 @@ function StatItem({
           <div
             className={`p-2 rounded-xl ${bgColor} bg-opacity-10 transition-transform duration-300 group-hover:scale-110`}
           >
-            <Icon className={`size-5`} stroke={1.5} />
+            <Icon className={`size-5 text-white`} stroke={1.5} />
           </div>
         </CardHeader>
         <CardContent>

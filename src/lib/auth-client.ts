@@ -1,6 +1,6 @@
 import { UserStatus } from "@/types/auth";
-import { adminClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
+import { inferAdditionalFields } from "better-auth/client/plugins";
 
 export const authClient = createAuthClient({
   baseURL:
@@ -16,7 +16,7 @@ export const authClient = createAuthClient({
       },
       status: {
         type: "string",
-        defaultValue: UserStatus.Pending,
+        defaultValue: UserStatus.Active,
         input: false,
       },
       organizationId: {
@@ -40,7 +40,20 @@ export const authClient = createAuthClient({
     },
   },
   plugins: [
-    adminClient(),
+    inferAdditionalFields({
+      user: {
+        role: { type: "string" },
+        status: { type: "string" },
+        organizationId: { type: "string", required: false },
+        organizationName: { type: "string", required: false },
+        banned: { type: "boolean" },
+        banReason: { type: "string", required: false },
+        banExpires: { type: "date", required: false },
+      },
+      session: {
+        impersonatedBy: { type: "string", required: false },
+      },
+    }),
     {
       id: "next-cookies-request",
       fetchPlugins: [

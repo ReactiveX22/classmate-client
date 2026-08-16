@@ -19,7 +19,7 @@ export const useCreateSubmission = () => {
       postId: string;
       data: CreateSubmissionDto;
     }) => submissionService.createSubmission(classroomId, postId, data),
-    onSuccess: (_, variables) => {
+    onSuccess: (data, variables) => {
       // Invalidate submission query to refetch
       queryClient.invalidateQueries({
         queryKey: ["submission", variables.classroomId, variables.postId],
@@ -32,7 +32,13 @@ export const useCreateSubmission = () => {
         refetchType: "all",
       });
 
-      toast.success("Assignment submitted successfully!");
+      if (data?.isLate) {
+        toast.warning(
+          "Submitted after the due date — your instructor allows late submissions",
+        );
+      } else {
+        toast.success("Assignment submitted successfully!");
+      }
     },
     onError: (error) => {
       const errorMessage = handleApiError(error);
