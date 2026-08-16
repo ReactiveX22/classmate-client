@@ -126,9 +126,13 @@ export function useJoinClassroom() {
   return useMutation({
     mutationFn: (classCode: string) =>
       classroomService.joinClassroom(classCode),
-    onSuccess: () => {
+    onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["classrooms"] });
-      toast.success("Joined classroom successfully");
+      toast.success(
+        result.alreadyMember
+          ? "You are already a member of this classroom"
+          : "Joined classroom successfully",
+      );
     },
     onError: (error: AxiosError<ApiError>) => {
       const apiError = error.response?.data;
@@ -144,6 +148,15 @@ export function useJoinClassroom() {
         description: apiError?.message || "An unexpected error occurred.",
       });
     },
+  });
+}
+
+export function useClassroomJoinPreview(classCode: string, enabled?: boolean) {
+  return useQuery({
+    queryKey: ["classrooms", "join-preview", classCode],
+    queryFn: () => classroomService.getClassroomJoinPreview(classCode),
+    enabled: !!classCode && (enabled ?? true),
+    retry: false,
   });
 }
 

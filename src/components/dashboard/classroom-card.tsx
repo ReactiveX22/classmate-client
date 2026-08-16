@@ -1,36 +1,23 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  ClassroomCardArt,
+  colorPatterns,
+} from "@/components/classrooms/classroom-card-art";
 import { ClassroomWithCourse } from "@/lib/api/services/classroom.service";
 import { IconCalendarEvent, IconUsers } from "@tabler/icons-react";
 import Link from "next/link";
 
 interface ClassroomCardProps {
   data: ClassroomWithCourse;
+  index: number;
 }
 
-const colorPatterns = [
-  "from-indigo-500 via-purple-500 to-pink-500",
-  "from-blue-500 via-cyan-500 to-teal-500",
-  "from-emerald-500 via-teal-500 to-cyan-500",
-  "from-orange-500 via-amber-500 to-yellow-500",
-  "from-rose-500 via-pink-500 to-fuchsia-500",
-  "from-violet-500 via-purple-500 to-indigo-500",
-];
-
-const getPattern = (id: string) => {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = id.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return colorPatterns[Math.abs(hash) % colorPatterns.length];
-};
-
-export function ClassroomCard({ data }: ClassroomCardProps) {
+export function ClassroomCard({ data, index }: ClassroomCardProps) {
   const { classroom, course, studentCount, teacher, upcoming } = data;
-  const pattern = getPattern(classroom.id);
+  const pattern = colorPatterns[index % colorPatterns.length];
 
   return (
     <Link
@@ -38,12 +25,7 @@ export function ClassroomCard({ data }: ClassroomCardProps) {
       className="group block h-full"
     >
       <Card className="pt-0 overflow-hidden border-none shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col group/card">
-        <div className={`relative h-20 bg-gradient-to-br ${pattern}`}>
-          <div className="absolute inset-0 bg-black/10" />
-          <Badge className="absolute top-3 right-3 bg-black/30 border-none text-white font-medium">
-            {course.code}
-          </Badge>
-        </div>
+        <ClassroomCardArt pattern={pattern} code={course.code} />
 
         <CardContent className="flex-1 flex flex-col gap-3 px-4">
           <div className="space-y-1">

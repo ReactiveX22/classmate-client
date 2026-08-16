@@ -21,7 +21,7 @@ import Link from "next/link";
 type SessionUser = NonNullable<Session>["user"];
 
 interface ProfileDropdownProps {
-  trigger?: (user: SessionUser) => React.ReactNode;
+  trigger?: (user: SessionUser) => React.ReactElement;
   side?: React.ComponentProps<typeof DropdownMenuContent>["side"];
 }
 

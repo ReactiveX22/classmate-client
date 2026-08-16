@@ -5,6 +5,7 @@ import { AdminClassroomView } from "@/components/classrooms/classroom-detail/adm
 import { ClassroomDetails } from "@/components/classrooms/classroom-detail/classroom-details-sheet";
 import { ClassroomHeader } from "@/components/classrooms/classroom-detail/classroom-header";
 import { UpdateClassroomDialog } from "@/components/classrooms/classroom-detail/settings/update-classroom-dialog";
+import { ShareClassroomDialog } from "@/components/classrooms/share-classroom-dialog";
 import { RoleGuard } from "@/components/common/role-guard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -35,6 +36,7 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
   const [addStudentsOpen, setAddStudentsOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isDetailsSheetOpen, setIsDetailsSheetOpen] = useState(false);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
 
   const isTeacher = user?.id === data?.teacherId;
   const isAdmin = user?.role === Role.Admin;
@@ -114,6 +116,7 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
         onCopyClassCode={copyClassCode}
         onEditClick={() => setIsUpdateDialogOpen(true)}
         onDetailsClick={() => setIsDetailsSheetOpen(true)}
+        onShareClick={() => setIsShareDialogOpen(true)}
       />
 
       {/* Tabbed Content */}
@@ -165,6 +168,7 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
               classroom={data}
               course={data.course}
               onCopyClassCode={copyClassCode}
+              onShareClick={() => setIsShareDialogOpen(true)}
             />
           </ScrollArea>
         </SheetContent>
@@ -180,6 +184,13 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
           existingStudentIds={classroomMembers.map((m) => m.studentId)}
         />
       </RoleGuard>
+
+      {/* Share Class Link Dialog */}
+      <ShareClassroomDialog
+        open={isShareDialogOpen}
+        onOpenChange={setIsShareDialogOpen}
+        classroom={data}
+      />
     </div>
   );
 }

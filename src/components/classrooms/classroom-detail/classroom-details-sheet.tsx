@@ -2,18 +2,20 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ClassroomDetail, Course } from "@/lib/api/services/classroom.service";
-import { IconCopy } from "@tabler/icons-react";
+import { IconCopy, IconShare } from "@tabler/icons-react";
 
 interface ClassroomDetailsProps {
   classroom: ClassroomDetail;
   course?: Course;
   onCopyClassCode: (code: string) => void;
+  onShareClick?: () => void;
 }
 
 export function ClassroomDetails({
   classroom,
   course,
   onCopyClassCode,
+  onShareClick,
 }: ClassroomDetailsProps) {
   return (
     <div className="flex flex-col gap-4">
@@ -46,6 +48,18 @@ export function ClassroomDetails({
               </Button>
             </div>
           </div>
+
+          {onShareClick && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full"
+              onClick={onShareClick}
+            >
+              <IconShare size={16} className="mr-2" />
+              Share class link
+            </Button>
+          )}
         </div>
 
         {classroom.description && (

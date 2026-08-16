@@ -153,6 +153,20 @@ export interface AttendanceChecklistItem {
   remarks: string | null;
 }
 
+export interface ClassroomJoinPreview {
+  id: string;
+  name: string;
+  section: string | null;
+  teacherName: string | null;
+  status: string;
+  isMember: boolean;
+}
+
+export interface JoinClassroomResult {
+  classroomId: string;
+  alreadyMember: boolean;
+}
+
 export interface BulkCreateAttendanceInput {
   date: string;
   records: {
@@ -225,10 +239,23 @@ export const classroomService = {
     });
   },
 
-  joinClassroom: async (classCode: string): Promise<void> => {
-    await apiClient.post("/api/v1/classrooms/join", {
-      classCode,
-    });
+  joinClassroom: async (classCode: string): Promise<JoinClassroomResult> => {
+    const response = await apiClient.post<JoinClassroomResult>(
+      "/api/v1/classrooms/join",
+      {
+        classCode,
+      },
+    );
+    return response.data;
+  },
+
+  getClassroomJoinPreview: async (
+    classCode: string,
+  ): Promise<ClassroomJoinPreview> => {
+    const response = await apiClient.get<ClassroomJoinPreview>(
+      `/api/v1/classrooms/join/${classCode}`,
+    );
+    return response.data;
   },
 
   getStudentGradeStats: async (

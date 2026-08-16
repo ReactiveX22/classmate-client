@@ -4,6 +4,7 @@ import {
   IconPencil,
   IconInfoCircle,
   IconLogout,
+  IconShare,
 } from "@tabler/icons-react";
 import {
   DropdownMenu,
@@ -36,6 +37,7 @@ interface ClassroomHeaderProps {
   onCopyClassCode?: (code: string) => void;
   onEditClick?: () => void;
   onDetailsClick?: () => void;
+  onShareClick?: () => void;
 }
 
 export function ClassroomHeader({
@@ -44,6 +46,7 @@ export function ClassroomHeader({
   isTeacher,
   onEditClick,
   onDetailsClick,
+  onShareClick,
 }: ClassroomHeaderProps) {
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -83,18 +86,31 @@ export function ClassroomHeader({
           </div>
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-muted-foreground"
-              >
-                <IconDotsVertical size={20} />
-              </Button>
-            }
-          />
+        <div className="flex items-center gap-1">
+          {onShareClick && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground"
+              onClick={onShareClick}
+              title="Share class link"
+            >
+              <IconShare size={20} />
+            </Button>
+          )}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground"
+                >
+                  <IconDotsVertical size={20} />
+                </Button>
+              }
+            />
           <DropdownMenuContent align="end" className="w-48">
             {isTeacher && (
               <>
@@ -178,6 +194,7 @@ export function ClassroomHeader({
         onConfirm={handleLeave}
         isLoading={leaveClassroomMutation.isPending}
       />
+    </div>
     </div>
   );
 }

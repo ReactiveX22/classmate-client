@@ -20,7 +20,8 @@ import { useLogin } from "@/hooks/useAuth";
 import { IconSchool } from "@tabler/icons-react";
 import { useForm } from "@tanstack/react-form";
 import Link from "next/link";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { z } from "zod";
 
 const loginSchema = z.object({
@@ -29,7 +30,23 @@ const loginSchema = z.object({
 });
 
 export default function LoginPage() {
-  const loginMutation = useLogin();
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <span className="text-muted-foreground">Loading...</span>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
+  const loginMutation = useLogin(redirect ?? undefined);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const form = useForm({

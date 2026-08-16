@@ -9,6 +9,7 @@ import { CreateClassroomDialog } from "@/components/classrooms/create-classroom-
 import { JoinClassroomDialog } from "@/components/classrooms/join-classroom-dialog";
 import { RoleGuard } from "@/components/common/role-guard";
 import { Role } from "@/types/auth";
+import { H3, Muted } from "@/components/ui/typography";
 
 export default function ClassroomsPage() {
   const {
@@ -24,6 +25,7 @@ export default function ClassroomsPage() {
   return (
     <div className="flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 mx-auto w-full">
       <PageHeader
+        icon={IconBook}
         title="My Classrooms"
         description="Manage and view all your assigned classrooms"
       >
@@ -43,11 +45,11 @@ export default function ClassroomsPage() {
             <div className="bg-destructive/10 size-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <IconBook className="text-destructive size-8" />
             </div>
-            <h3 className="text-xl font-bold mb-2">Error loading classrooms</h3>
-            <p className="text-muted-foreground">
+            <H3 className="mb-2 text-xl">Error loading classrooms</H3>
+            <Muted>
               We couldn&apos;t fetch your classrooms. Please try refreshing the
               page or contact support.
-            </p>
+            </Muted>
           </div>
         </div>
       ) : classrooms.length === 0 ? (
@@ -56,7 +58,7 @@ export default function ClassroomsPage() {
             <div className="bg-primary/10 size-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <IconBook className="text-primary size-8" />
             </div>
-            <h3 className="text-xl font-bold mb-2">No classrooms found</h3>
+            <H3 className="mb-2 text-xl">No classrooms found</H3>
             <div className="text-muted-foreground mb-6">
               <RoleGuard
                 allowedRoles={[Role.Student]}
@@ -80,8 +82,8 @@ export default function ClassroomsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {classrooms.map((item) => (
-            <ClassroomCard key={item.classroom.id} data={item} />
+          {classrooms.map((item, index) => (
+            <ClassroomCard key={item.classroom.id} data={item} index={index} />
           ))}
         </div>
       )}

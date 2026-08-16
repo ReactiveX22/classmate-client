@@ -6,7 +6,7 @@ import type { LoginCredentials, SignupCredentials, User } from "@/types/auth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
-export function useLogin() {
+export function useLogin(redirectTo?: string) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -16,7 +16,9 @@ export function useLogin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["session"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
-      router.push("/dashboard");
+      const target =
+        redirectTo && redirectTo.startsWith("/") ? redirectTo : "/dashboard";
+      router.push(target);
     },
     onError: (error: Error) => {
       console.error("Login failed:", error.message);
