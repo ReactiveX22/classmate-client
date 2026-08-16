@@ -4,6 +4,7 @@ import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { AddTeacherDialog } from "@/components/teachers/add-teacher-dialog";
 import { TeachersTableActionBar } from "@/components/teachers/teachers-table-action-bar";
+import { ImportButton } from "@/components/import/import-button";
 import { useDataTable } from "@/hooks/use-data-table";
 import { useTableQueryState } from "@/hooks/use-table-query";
 import { useTeachers } from "@/hooks/use-teachers";
@@ -81,6 +82,7 @@ export default function TeachersPage() {
         title="Teachers"
         description="Manage your school's instructors."
       >
+        <ImportButton type="teacher" />
         <AddTeacherDialog />
       </PageHeader>
 

@@ -7,6 +7,7 @@ import { useStudents } from "@/hooks/use-students";
 import { useTableQueryState } from "@/hooks/use-table-query";
 import { AddStudentDialog } from "@/components/students/add-student-dialog";
 import { StudentsTableActionBar } from "@/components/students/students-table-action-bar";
+import { ImportButton } from "@/components/import/import-button";
 import { columns } from "./columns";
 import { StudentData } from "@/lib/api/services/student.service";
 import { ExtendedColumnSort } from "@/types/data-table";
@@ -81,6 +82,7 @@ export default function StudentsPage() {
         title="Students"
         description="Manage all students in your organization."
       >
+        <ImportButton type="student" />
         <AddStudentDialog />
       </PageHeader>
 
