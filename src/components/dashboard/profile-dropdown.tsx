@@ -14,11 +14,18 @@ import { IconLogout, IconSettings, IconUser } from "@tabler/icons-react";
 import { User } from "lucide-react";
 
 import { useLogout } from "@/hooks/useAuth";
-import { useSession } from "@/lib/auth-client";
+import { useSession, type Session } from "@/lib/auth-client";
 
 import Link from "next/link";
 
-export function ProfileDropdown() {
+type SessionUser = NonNullable<Session>["user"];
+
+interface ProfileDropdownProps {
+  trigger?: (user: SessionUser) => React.ReactNode;
+  side?: React.ComponentProps<typeof DropdownMenuContent>["side"];
+}
+
+export function ProfileDropdown({ trigger, side }: ProfileDropdownProps) {
   const { data: session, isPending } = useSession();
   const logoutMutation = useLogout();
 
@@ -50,20 +57,24 @@ export function ProfileDropdown() {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger
         render={
-          <Button
-            variant="ghost"
-            className="relative h-8 w-8 rounded-full cursor-pointer"
-          >
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={user.image || ""} alt={user.name || "User"} />
-              <AvatarFallback>
-                <User className="size-4" />
-              </AvatarFallback>
-            </Avatar>
-          </Button>
+          trigger ? (
+            trigger(user)
+          ) : (
+            <Button
+              variant="ghost"
+              className="relative h-8 w-8 rounded-full cursor-pointer"
+            >
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user.image || ""} alt={user.name || "User"} />
+                <AvatarFallback>
+                  <User className="size-4" />
+                </AvatarFallback>
+              </Avatar>
+            </Button>
+          )
         }
       />
-      <DropdownMenuContent className="w-56" align="end">
+      <DropdownMenuContent className="w-56" align="end" side={side}>
         <DropdownMenuGroup>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col gap-1.5 text-foreground">
