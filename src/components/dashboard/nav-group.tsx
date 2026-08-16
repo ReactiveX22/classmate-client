@@ -32,20 +32,26 @@ import {
   NavItem,
   NavLink,
 } from "@/types/sidebar-types";
+import { cn } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
-export function NavGroup({ title, items, action }: NavGroupProps) {
+export function NavGroup({
+  title,
+  items,
+  action,
+  className,
+}: NavGroupProps & { className?: string }) {
   const { state, isMobile } = useSidebar();
   const pathname = usePathname();
 
   return (
-    <SidebarGroup>
-      <SidebarGroupLabel className="flex items-center justify-between gap-2">
-        <span>{title}</span>
+    <SidebarGroup className={className}>
+      <SidebarGroupLabel className="h-6 px-2 text-xs font-medium text-muted-foreground">
+        <span className="truncate">{title}</span>
         {action as ReactNode}
       </SidebarGroupLabel>
       <SidebarMenu>
@@ -81,12 +87,14 @@ function SidebarMenuLink({ item, href }: { item: NavLink; href: string }) {
   const { setOpenMobile } = useSidebar();
   const { state, isMobile } = useSidebar();
   const showActions = state === "expanded" || isMobile;
+  const isActive = checkIsActive(href, item);
 
   return (
-    <SidebarMenuItem className="group/item">
+    <SidebarMenuItem>
       <SidebarMenuButton
-        isActive={checkIsActive(href, item)}
+        isActive={isActive}
         tooltip={item.title}
+        className={cn(isActive && "text-sidebar-accent-foreground")}
         render={
           <Link
             href={item.url}
@@ -94,7 +102,14 @@ function SidebarMenuLink({ item, href }: { item: NavLink; href: string }) {
             className="flex w-full items-center justify-between"
           >
             <div className="flex items-center gap-2 truncate">
-              {item.icon && <item.icon />}
+              {item.icon && (
+                <item.icon
+                  className={cn(
+                    "shrink-0",
+                    isActive && "text-primary transition-colors",
+                  )}
+                />
+              )}
               <span className="w-full pr-4 truncate">{item.title}</span>
               {item.badge && <NavBadge>{item.badge}</NavBadge>}
             </div>
@@ -119,6 +134,7 @@ function SidebarMenuCollapsible({
   const [isOpen, setIsOpen] = useState(
     checkIsActive(href, item, true) || !!item.open,
   );
+  const isActive = checkIsActive(href, item, true);
 
   useEffect(() => {
     if (checkIsActive(href, item, true)) {
@@ -135,8 +151,19 @@ function SidebarMenuCollapsible({
         <SidebarMenuItem>
           <CollapsibleTrigger
             render={
-              <SidebarMenuButton tooltip={item.title}>
-                {item.icon && <item.icon />}
+              <SidebarMenuButton
+                tooltip={item.title}
+                isActive={isActive}
+                className={cn(isActive && "text-sidebar-accent-foreground")}
+              >
+                {item.icon && (
+                  <item.icon
+                    className={cn(
+                      "shrink-0",
+                      isActive && "text-primary transition-colors",
+                    )}
+                  />
+                )}
                 <span>{item.title}</span>
                 {item.badge && <NavBadge>{item.badge}</NavBadge>}
                 <ChevronRight className="ms-auto transition-transform duration-200 group-data-open/collapsible:rotate-90 rtl:rotate-180" />

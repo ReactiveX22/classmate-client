@@ -3,10 +3,11 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { Pencil } from "lucide-react";
 import { useParams, usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { RenameConversationDialog } from "@/components/ai/rename-conversation-dialog";
 import { ModeToggle } from "@/components/mode-toggle";
+import { RoleBadge } from "@/components/dashboard/role-badge";
 import { useTaskSheet } from "@/components/task-sheet";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -31,11 +32,19 @@ export function DashboardHeader({
   ...props
 }: DashboardHeaderProps) {
   const [isRenameOpen, setIsRenameOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const params = useParams();
   const convId = params?.convId as string | undefined;
   const isAiChat = pathname?.startsWith("/dashboard/ai/") && convId;
   const { toggle: toggleTaskSheet } = useTaskSheet();
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const queryClient = useQueryClient();
   const conversations = queryClient.getQueryData<{
@@ -50,27 +59,29 @@ export function DashboardHeader({
     <>
       <header
         className={cn(
-          "shrink-0 flex h-14 items-center gap-2 bg-background px-4 rounded-md border-b",
+          "relative flex h-14 shrink-0 items-center gap-1.5 border-b border-border/80 bg-background/85 px-4 backdrop-blur-md transition-[background-color,box-shadow]",
           fixed && "sticky top-0 z-50",
+          isScrolled && "bg-background/95 shadow-[0_1px_3px_rgba(0,0,0,0.05)]",
           className,
         )}
         {...props}
       >
-        <SidebarTrigger className="-ml-1" />
+        <SidebarTrigger />
         {chatTitle && convId ? (
           <button
             type="button"
             onClick={() => setIsRenameOpen(true)}
-            className="group absolute left-1/2 -translate-x-1/2 flex items-center gap-2 text-base text-foreground max-w-[300px] focus:outline-none font-medium cursor-pointer"
+            className="group absolute left-1/2 flex max-w-[300px] -translate-x-1/2 cursor-pointer items-center gap-2 text-base font-medium text-foreground focus:outline-none"
           >
             <span className="truncate">{chatTitle}</span>
             <Pencil
               size={14}
-              className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+              className="shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
             />
           </button>
         ) : null}
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="ml-auto flex items-center gap-1.5">
+          <RoleBadge />
           {!isAiChat && (
             <Tooltip>
               <TooltipTrigger

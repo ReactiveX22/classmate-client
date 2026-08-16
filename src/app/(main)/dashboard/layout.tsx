@@ -48,9 +48,9 @@ export default function DashboardLayout({
   return (
     <ProtectedRoute>
       <TaskSheetProvider>
-        <SidebarProvider>
+        <SidebarProvider className="bg-[radial-gradient(56rem_32rem_at_90%_-10rem,color-mix(in_oklab,var(--primary)_7%,transparent),transparent_60%),var(--background)]">
           {getSidebar()}
-          <SidebarInset>
+          <SidebarInset className="bg-transparent">
             <ImpersonationBanner />
             <DashboardHeader>
               <NotificationPopover />

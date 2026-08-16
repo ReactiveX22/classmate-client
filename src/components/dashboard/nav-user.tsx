@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-  User,
-} from "lucide-react";
+import { ChevronsUpDown, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -27,6 +19,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useLogout, useUser } from "@/hooks/useAuth";
+import { IconSettings, IconUser, IconLogout } from "@tabler/icons-react";
+import Link from "next/link";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -53,19 +47,23 @@ export function NavUser() {
             render={
               <SidebarMenuButton
                 size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                className="py-2 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
-                <Avatar className="h-8 w-8 rounded-lg">
+                <Avatar className="h-8 w-8">
                   <AvatarImage src={user.image || ""} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">
+                  <AvatarFallback>
                     <User className="size-4" />
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold text-sidebar-foreground">
+                    {user.name}
+                  </span>
+                  <span className="truncate text-xs text-sidebar-foreground/60">
+                    {user.email}
+                  </span>
                 </div>
-                <ChevronsUpDown className="ml-auto size-4" />
+                <ChevronsUpDown className="ml-auto size-4 text-sidebar-foreground/60" />
               </SidebarMenuButton>
             }
           />
@@ -86,40 +84,40 @@ export function NavUser() {
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">{user.name}</span>
-                    <span className="truncate text-xs">{user.email}</span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      {user.email}
+                    </span>
                   </div>
                 </div>
               </DropdownMenuLabel>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
+              <DropdownMenuItem
+                render={
+                  <Link href="/dashboard/profile">
+                    <IconUser size={16} />
+                    Profile
+                  </Link>
+                }
+              />
+              <DropdownMenuItem
+                render={
+                  <Link href="/dashboard/settings">
+                    <IconSettings size={16} />
+                    Settings
+                  </Link>
+                }
+              />
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              variant="destructive"
               onClick={handleLogout}
               disabled={logoutMutation.isPending}
             >
-              <LogOut />
-              {logoutMutation.isPending ? "Logging out..." : "Log out"}
+              <IconLogout size={16} />
+              {logoutMutation.isPending ? "Signing out..." : "Sign out"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
