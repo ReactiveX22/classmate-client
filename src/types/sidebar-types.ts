@@ -5,6 +5,7 @@ export type BaseNavItem = {
   title: string;
   badge?: string;
   icon?: LucideIcon | React.ElementType;
+  collapsedOnly?: boolean;
 };
 
 export type NavLink = BaseNavItem & {

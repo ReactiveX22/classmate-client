@@ -47,15 +47,21 @@ export function NavGroup({
 }: NavGroupProps & { className?: string }) {
   const { state, isMobile } = useSidebar();
   const pathname = usePathname();
+  const isCollapsed = state === "collapsed" && !isMobile;
+  const visibleItems = items.filter((item) => !item.collapsedOnly || isCollapsed);
 
   return (
     <SidebarGroup className={className}>
       <SidebarGroupLabel className="h-6 px-2 text-xs font-medium text-muted-foreground">
-        <span className="truncate">{title}</span>
-        {action as ReactNode}
+        <span className="min-w-0 truncate">{title}</span>
+        {action && !isCollapsed ? (
+          <span className="ml-auto flex shrink-0 items-center">
+            {action as ReactNode}
+          </span>
+        ) : null}
       </SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => {
+        {visibleItems.map((item) => {
           const key = `${item.title}-${item.url || "collapsible"}`;
 
           if (!item.items)
@@ -88,6 +94,8 @@ function SidebarMenuLink({ item, href }: { item: NavLink; href: string }) {
   const { state, isMobile } = useSidebar();
   const showActions = state === "expanded" || isMobile;
   const isActive = checkIsActive(href, item);
+
+  if (state === "collapsed" && !isMobile && !item.icon) return null;
 
   return (
     <SidebarMenuItem>

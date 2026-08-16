@@ -2,6 +2,7 @@
 
 import { RenameConversationDialog } from "@/components/ai/rename-conversation-dialog";
 import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
+import { ClassmateAiAction } from "@/components/dashboard/classmate-ai-action";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +25,6 @@ import {
   Trash2,
   User,
 } from "lucide-react";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AppSidebar } from "./app-sidebar";
 
@@ -183,17 +183,16 @@ export function TeacherSidebar({
         },
         {
           title: "ClassMate AI",
-          action: (
-            <Link
-              className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground inline-flex size-7 items-center justify-center rounded-md transition-colors"
-              href="/dashboard/ai"
-              aria-label="New chat"
-              title="New chat"
-            >
-              <Plus className="size-4" />
-            </Link>
-          ),
-          items: conversationsNavItems,
+          action: <ClassmateAiAction />,
+          items: [
+            {
+              title: "New chat",
+              url: "/dashboard/ai",
+              icon: Plus,
+              collapsedOnly: true,
+            },
+            ...conversationsNavItems,
+          ],
         },
         {
           title: "Account",
