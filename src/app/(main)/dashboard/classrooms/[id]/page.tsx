@@ -1,6 +1,7 @@
 "use client";
 
 import { AddStudentsToClassroomDialog } from "@/components/classrooms/add-students-to-classroom-dialog";
+import { AdminClassroomView } from "@/components/classrooms/classroom-detail/admin-classroom-view";
 import { ClassroomDetails } from "@/components/classrooms/classroom-detail/classroom-details-sheet";
 import { ClassroomHeader } from "@/components/classrooms/classroom-detail/classroom-header";
 import { UpdateClassroomDialog } from "@/components/classrooms/classroom-detail/settings/update-classroom-dialog";
@@ -36,6 +37,7 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
   const [isDetailsSheetOpen, setIsDetailsSheetOpen] = useState(false);
 
   const isTeacher = user?.id === data?.teacherId;
+  const isAdmin = user?.role === Role.Admin;
 
   const [tab, setTab] = useQueryState(
     "tab",
@@ -95,6 +97,10 @@ export default function ClassroomPage({ params }: ClassroomPageProps) {
         </div>
       </div>
     );
+  }
+
+  if (isAdmin) {
+    return <AdminClassroomView classroom={data} />;
   }
 
   return (

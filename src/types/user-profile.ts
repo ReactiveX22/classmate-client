@@ -48,6 +48,10 @@ export interface PublicUserProfile {
     email: string;
     image: string | null;
     role: string | null;
+    status?: string;
+    banned?: boolean;
+    banReason?: string | null;
+    createdAt?: string;
   };
   profile: {
     bio: string | null;
@@ -61,6 +65,19 @@ export interface PublicUserProfile {
   student: {
     studentId: string | null;
   } | null;
+  courses?: Array<{
+    id: string;
+    code: string;
+    title: string;
+    status: string;
+  }>;
+  classrooms?: Array<{
+    id: string;
+    name: string;
+    section: string | null;
+    status: string;
+    course: { id: string; code: string; title: string } | null;
+  }>;
 }
 
 export interface UpdateProfileInput {

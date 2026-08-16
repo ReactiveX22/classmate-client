@@ -13,10 +13,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useImpersonate } from "@/hooks/useAuth";
 import { TeacherData } from "@/lib/api/services/teacher.service";
-import { IconEdit, IconTrash, IconUserShare } from "@tabler/icons-react";
+import { IconEdit, IconEye, IconTrash, IconUserShare } from "@tabler/icons-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -58,9 +59,15 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
       variant: "text",
     },
     cell: ({ row }) => {
-      const name = row.original.user.name;
-
-      return <div className="font-medium">{name}</div>;
+      const teacher = row.original;
+      return (
+        <Link
+          href={`/dashboard/users/${teacher.user.id}`}
+          className="font-medium hover:underline underline-offset-4 decoration-primary/30"
+        >
+          {teacher.user.name}
+        </Link>
+      );
     },
   },
   {
@@ -176,7 +183,12 @@ const ActionCell = ({ teacher }: { teacher: TeacherData }) => {
             </Button>
           }
         ></DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40">
+        <DropdownMenuContent align="end" className="w-44">
+          <DropdownMenuItem
+            render={<Link href={`/dashboard/users/${teacher.user.id}`} />}
+          >
+            <IconEye /> View Details
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
             <IconEdit /> Edit
           </DropdownMenuItem>

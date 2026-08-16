@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ClassroomWithCourse } from "@/lib/api/services/classroom.service";
-import { IconUsers, IconCalendarEvent } from "@tabler/icons-react";
+import { IconCalendarEvent, IconUsers } from "@tabler/icons-react";
 import Link from "next/link";
 
 interface ClassroomCardProps {
@@ -38,44 +38,39 @@ export function ClassroomCard({ data }: ClassroomCardProps) {
       className="group block h-full"
     >
       <Card className="pt-0 overflow-hidden border-none shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col group/card">
-        <div className={`h-24 bg-gradient-to-br ${pattern} relative`}>
+        <div className={`relative h-20 bg-gradient-to-br ${pattern}`}>
           <div className="absolute inset-0 bg-black/10" />
-          <div className="absolute top-3 right-3">
-            <Badge
-              variant="secondary"
-              className="bg-white/20 backdrop-blur-md border-none text-white font-medium"
-            >
-              {course.code}
-            </Badge>
-          </div>
+          <Badge className="absolute top-3 right-3 bg-black/30 border-none text-white font-medium">
+            {course.code}
+          </Badge>
         </div>
 
-        <CardContent className="flex-1 flex flex-col gap-4 relative bg-card px-4 md:px-4">
-          <div className="space-y-1.5">
-            <h3 className="font-bold text-lg leading-tight line-clamp-1 group-hover/card:text-primary transition-colors">
+        <CardContent className="flex-1 flex flex-col gap-3 px-4">
+          <div className="space-y-1">
+            <h3 className="text-base font-semibold leading-tight line-clamp-1 group-hover/card:text-primary transition-colors">
               {classroom.name}
             </h3>
-            <p className="text-xs text-muted-foreground font-medium">
+            <p className="text-xs text-muted-foreground">
               Section {classroom.section} • {course.credits} Credits
             </p>
           </div>
 
-          <div className="mt-auto pt-4 border-t flex items-center justify-between gap-4">
+          <div className="mt-auto pt-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-2 min-w-0">
-              <Avatar size="sm" className="border-2 border-background">
+              <Avatar>
                 <AvatarImage
                   src={teacher.image || undefined}
                   alt={teacher.name}
                 />
-                <AvatarFallback className="text-[10px] bg-primary/10 text-primary font-bold">
+                <AvatarFallback className="bg-primary/10 text-primary font-semibold leading-none">
                   {teacher.name.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col min-w-0">
-                <span className="text-xs font-semibold truncate">
+                <span className="text-[13px] font-medium truncate">
                   {teacher.name}
                 </span>
-                <span className="text-[10px] text-muted-foreground">
+                <span className="text-xs text-muted-foreground">
                   Instructor
                 </span>
               </div>
@@ -87,7 +82,9 @@ export function ClassroomCard({ data }: ClassroomCardProps) {
                 title="Students"
               >
                 <IconUsers size={14} />
-                <span className="text-xs font-medium">{studentCount}</span>
+                <span className="text-[13px] font-medium tabular-nums leading-none">
+                  {studentCount}
+                </span>
               </div>
               {upcoming && upcoming.length > 0 && (
                 <div
@@ -95,7 +92,7 @@ export function ClassroomCard({ data }: ClassroomCardProps) {
                   title="Upcoming Tasks"
                 >
                   <IconCalendarEvent size={14} />
-                  <span className="text-xs font-semibold">
+                  <span className="text-[13px] font-medium tabular-nums leading-none">
                     {upcoming.length}
                   </span>
                 </div>

@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { TagBadge } from "../notices/tag-badge";
+import { H2 } from "@/components/ui/typography";
 
 interface RecentNoticesProps {
   limit?: number;
@@ -31,23 +32,17 @@ export function RecentNotices({
           <div className="p-2 rounded-xl bg-primary/10 text-primary">
             <Bell size={20} />
           </div>
-          <div className="space-y-0.5">
-            <h2 className="text-lg font-semibold tracking-tight">
-              Latest Notices
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              Stay updated with important announcements
-            </p>
-          </div>
+          <H2>Latest Notices</H2>
         </div>
         <Button
           variant="ghost"
           size="sm"
-          className="h-8"
+          className="h-8 px-2 sm:px-2.5"
           nativeButton={false}
           render={<Link href="/dashboard/notices" />}
         >
-          View All <ChevronRight className="ml-1 h-3 w-3" />
+          <span className="hidden sm:inline">View All</span>
+          <ChevronRight className="h-3 w-3 sm:ml-1" />
         </Button>
       </div>
 
