@@ -97,7 +97,7 @@ export const teacherColumns: ColumnDef<TeacherData>[] = [
       variant: "text",
     },
     cell: ({ row }) => {
-      const phone = row.original.userProfile?.phone;
+      const phone = row.original.user_profile?.phone;
       return <div className="truncate">{phone || "-"}</div>;
     },
   },

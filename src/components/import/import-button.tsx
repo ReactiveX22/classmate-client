@@ -19,7 +19,6 @@ export function ImportButton({ type }: ImportButtonProps) {
   const completedRef = useRef(false);
 
   const isRunning = Boolean(flow.job && !flow.isTerminal);
-  const justCompleted = flow.isTerminal && !completedRef.current;
 
   const imported = flow.job?.imported;
   const jobStatus = flow.job?.status;
@@ -32,10 +31,13 @@ export function ImportButton({ type }: ImportButtonProps) {
     if (!completedRef.current) {
       completedRef.current = true;
       const noun = type === "student" ? "students" : "teachers";
-      if (jobStatus === "completed") {
-        toast.success(`Import complete`, {
-          description: `${imported} ${noun} added.`,
-        });
+      if (jobStatus === "completed" || jobStatus === "partial") {
+        toast.success(
+          `Import ${jobStatus === "partial" ? "finished" : "complete"}`,
+          {
+            description: `${imported} ${noun} added.`,
+          },
+        );
       } else {
         toast.error("Import failed", {
           description: "No rows were imported. Check the error report.",
@@ -49,7 +51,7 @@ export function ImportButton({ type }: ImportButtonProps) {
       <Button
         variant="outline"
         onClick={() => {
-          if (justCompleted) flow.reset();
+          if (flow.isTerminal) flow.reset();
           setOpen(true);
         }}
       >

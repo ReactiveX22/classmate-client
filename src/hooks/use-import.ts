@@ -43,13 +43,21 @@ export function useImportFlow(type: ImportType) {
     enabled: Boolean(jobId),
     refetchInterval: (query) => {
       const status = query.state.data?.status;
-      if (status === "completed" || status === "failed") return false;
+      if (
+        status === "completed" ||
+        status === "partial" ||
+        status === "failed"
+      ) {
+        return false;
+      }
       return 1500;
     },
   });
 
   const isTerminal =
-    jobQuery.data?.status === "completed" || jobQuery.data?.status === "failed";
+    jobQuery.data?.status === "completed" ||
+    jobQuery.data?.status === "partial" ||
+    jobQuery.data?.status === "failed";
 
   useEffect(() => {
     if (!isTerminal) return;
@@ -59,7 +67,15 @@ export function useImportFlow(type: ImportType) {
   }, [isTerminal, type, queryClient]);
 
   const reset = () => {
+    if (jobId) {
+      queryClient.removeQueries({ queryKey: ["import-job", type, jobId] });
+    }
     setJobId(null);
+    previewMutation.reset();
+    confirmMutation.reset();
+  };
+
+  const clearPreview = () => {
     previewMutation.reset();
     confirmMutation.reset();
   };
@@ -71,6 +87,7 @@ export function useImportFlow(type: ImportType) {
     isRunning: Boolean(
       jobQuery.data?.status &&
       jobQuery.data.status !== "completed" &&
+      jobQuery.data.status !== "partial" &&
       jobQuery.data.status !== "failed",
     ),
     isTerminal,
@@ -80,5 +97,6 @@ export function useImportFlow(type: ImportType) {
     previewFile: previewMutation.mutateAsync,
     confirm: confirmMutation.mutateAsync,
     reset,
+    clearPreview,
   };
 }

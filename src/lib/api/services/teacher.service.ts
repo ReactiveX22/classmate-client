@@ -36,7 +36,7 @@ export interface CreateTeacherResponse {
 
 export interface TeacherData {
   teacher: Teacher;
-  userProfile: UserProfile;
+  user_profile: UserProfile;
   user: User;
 }
 

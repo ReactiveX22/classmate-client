@@ -43,24 +43,22 @@ const iconBgClasses: Record<StatCardProps["tone"], string> = {
 
 function StatCard({ icon: Icon, label, value, tone, hint }: StatCardProps) {
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3.5">
-      <div className="flex items-center gap-2.5">
+    <div className="flex flex-col rounded-xl border border-border bg-card p-3.5">
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium leading-none">{label}</span>
         <div
           className={cn(
-            "flex h-8 w-8 items-center justify-center rounded-lg",
+            "flex h-7 w-7 items-center justify-center rounded-lg",
             iconBgClasses[tone],
           )}
         >
-          <Icon size={16} className={toneClasses[tone]} />
+          <Icon size={14} className={toneClasses[tone]} />
         </div>
-        <span className="text-2xl font-semibold tabular-nums tracking-tight">
-          {value}
-        </span>
       </div>
-      <div className="flex flex-col gap-0.5">
-        <span className="text-sm font-medium">{label}</span>
-        <span className="text-xs text-muted-foreground">{hint}</span>
+      <div className="mt-2 text-2xl font-semibold leading-none tabular-nums tracking-tight">
+        {value}
       </div>
+      <div className="mt-1 text-xs text-muted-foreground">{hint}</div>
     </div>
   );
 }

@@ -31,7 +31,7 @@ export function EditStudentForm({ student, onSuccess }: EditStudentFormProps) {
     defaultValues: {
       name: student.user.name || "",
       studentId: student.student?.studentId || "",
-      phone: student.userProfile?.phone || "",
+      phone: student.user_profile?.phone || "",
     } as EditStudentFormValues,
     validators: {
       onSubmit: editStudentSchema,

@@ -16,7 +16,9 @@ export interface ImportRowIssue {
 export type ImportJobStatus =
   | "draft"
   | "pending"
+  | "validating"
   | "processing"
+  | "partial"
   | "completed"
   | "failed";
 
@@ -82,6 +84,9 @@ export const importService = {
     const response = await apiClient.post<ImportPreviewResponse>(
       `/api/v1/imports/${type}/preview`,
       formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      },
     );
     return response.data;
   },

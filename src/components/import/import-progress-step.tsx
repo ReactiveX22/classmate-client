@@ -42,7 +42,9 @@ function Counter({ label, value, className }: CounterProps) {
 }
 
 const isTerminal = (job: ImportJobStatusResponse) =>
-  job.status === "completed" || job.status === "failed";
+  job.status === "completed" ||
+  job.status === "partial" ||
+  job.status === "failed";
 
 export function ImportProgressStep({
   type,
@@ -52,11 +54,12 @@ export function ImportProgressStep({
 }: ImportProgressStepProps) {
   const noun = type === "student" ? "students" : "teachers";
   const finished = isTerminal(job);
-  const succeeded = job.status === "completed";
+  const succeeded = job.status === "completed" || job.status === "partial";
+  const hasProgress = job.progress > 0;
   const [width, setWidth] = useState(0);
 
   useEffect(() => {
-    const next = finished ? 100 : Math.max(4, job.progress);
+    const next = finished ? 100 : Math.max(0, job.progress);
     const timer = requestAnimationFrame(() => setWidth(next));
     return () => cancelAnimationFrame(timer);
   }, [job.progress, finished]);
@@ -68,7 +71,9 @@ export function ImportProgressStep({
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-500">
             <IconCheck size={24} />
           </div>
-          <p className="text-sm font-semibold">Import complete</p>
+          <p className="text-sm font-semibold">
+            {job.status === "partial" ? "Import finished" : "Import complete"}
+          </p>
           <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
             {job.imported} {noun} were added from{" "}
             <span className="font-medium text-foreground">{job.fileName}</span>.
@@ -83,7 +88,7 @@ export function ImportProgressStep({
           <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">
             We couldn&apos;t finish importing{" "}
             <span className="font-medium text-foreground">{job.fileName}</span>.
-            No partial rows were kept.
+            The import stopped before it could complete.
           </p>
         </div>
       ) : (
@@ -105,10 +110,22 @@ export function ImportProgressStep({
       {!finished && (
         <div className="flex flex-col gap-3">
           <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-            <div
-              className="h-full rounded-full bg-primary transition-all duration-700 ease-out"
-              style={{ width: `${width}%` }}
-            />
+            {hasProgress ? (
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-700 ease-out"
+                style={{ width: `${width}%` }}
+              />
+            ) : (
+              <motion.div
+                className="h-full w-1/3 rounded-full bg-primary"
+                animate={{ x: ["-100%", "400%"] }}
+                transition={{
+                  duration: 1.4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            )}
           </div>
           <div className="grid grid-cols-3 gap-3">
             <Counter
@@ -156,7 +173,7 @@ export function ImportProgressStep({
         </div>
       )}
 
-      {job.errorFileUrl && (
+      {finished && job.errorFileUrl && (
         <Button variant="outline" onClick={onDownloadErrors}>
           <IconFileDownload />
           Download error report

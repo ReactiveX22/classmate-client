@@ -15,8 +15,13 @@ import {
   type ImportType,
 } from "@/lib/api/services/import.service";
 import { cn } from "@/lib/utils";
-import { IconUsers, IconUpload, IconChartBar } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import {
+  IconUsers,
+  IconUpload,
+  IconChartBar,
+  IconLoader,
+} from "@tabler/icons-react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { useImportFlow } from "@/hooks/use-import";
 
@@ -44,27 +49,48 @@ export function ImportDialog({
   const [stage, setStage] = useState<Stage>("upload");
 
   const { job, preview, isPreviewing, isConfirming } = flow;
+  const wasOpen = useRef(false);
 
   useEffect(() => {
     if (!open) return;
-    if (job) {
-      setStage("progress");
-    } else if (preview) {
-      setStage("preview");
-    } else {
-      setStage("upload");
+    if (!wasOpen.current) {
+      if (flow.jobId) {
+        setStage("progress");
+      } else if (preview) {
+        setStage("preview");
+      } else {
+        setStage("upload");
+      }
     }
-  }, [open, job, preview]);
+    wasOpen.current = true;
+  }, [open, flow.jobId, preview]);
+
+  useEffect(() => {
+    if (!open) wasOpen.current = false;
+  }, [open]);
 
   const handlePreview = async (file: File) => {
-    await flow.previewFile(file);
-    setStage("preview");
+    try {
+      await flow.previewFile(file);
+      setStage("preview");
+    } catch {
+      // toast handled in the mutation onError
+    }
   };
 
   const handleConfirm = async () => {
     if (!preview) return;
-    await flow.confirm(preview.previewId);
-    setStage("progress");
+    try {
+      await flow.confirm(preview.previewId);
+      setStage("progress");
+    } catch {
+      // toast handled in the mutation onError
+    }
+  };
+
+  const handleBack = () => {
+    flow.clearPreview();
+    setStage("upload");
   };
 
   const handleDownloadTemplate = () => {
@@ -147,18 +173,28 @@ export function ImportDialog({
             preview={preview}
             isConfirming={isConfirming}
             onConfirm={handleConfirm}
-            onBack={() => setStage("upload")}
+            onBack={handleBack}
           />
         )}
 
-        {stage === "progress" && job && (
-          <ImportProgressStep
-            type={type}
-            job={job}
-            onClose={handleClose}
-            onDownloadErrors={handleDownloadErrors}
-          />
-        )}
+        {stage === "progress" &&
+          (job ? (
+            <ImportProgressStep
+              type={type}
+              job={job}
+              onClose={handleClose}
+              onDownloadErrors={handleDownloadErrors}
+            />
+          ) : (
+            <div className="flex flex-col items-center gap-3 py-8">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <IconLoader className="animate-spin" size={20} />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Starting import...
+              </p>
+            </div>
+          ))}
       </DialogContent>
     </Dialog>
   );

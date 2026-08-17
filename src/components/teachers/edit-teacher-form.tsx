@@ -44,7 +44,7 @@ export function EditTeacherForm({ teacher, onSuccess }: EditTeacherFormProps) {
       joinDate: teacher.teacher.joinDate
         ? new Date(teacher.teacher.joinDate).toISOString().split("T")[0]
         : "",
-      phone: teacher.userProfile?.phone || "",
+      phone: teacher.user_profile?.phone || "",
     },
     validators: {
       onChange: editTeacherSchema,

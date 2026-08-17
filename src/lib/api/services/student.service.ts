@@ -33,7 +33,7 @@ export interface CreateStudentResponse {
 
 export interface StudentData {
   student: Student | null;
-  userProfile: UserProfile;
+  user_profile: UserProfile;
   user: {
     id: string;
     name: string;
