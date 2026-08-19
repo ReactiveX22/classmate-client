@@ -7,10 +7,11 @@ import {
   IconDownload,
   IconInfoCircle,
 } from "@tabler/icons-react";
-import { useState } from "react";
 
 interface ImportUploadStepProps {
   type: "student" | "teacher";
+  file: File | null;
+  onFileChange: (file: File | null) => void;
   isPreviewing: boolean;
   onPreview: (file: File) => void;
   onDownloadTemplate: () => void;
@@ -18,16 +19,17 @@ interface ImportUploadStepProps {
 
 export function ImportUploadStep({
   type,
+  file,
+  onFileChange,
   isPreviewing,
   onPreview,
   onDownloadTemplate,
 }: ImportUploadStepProps) {
-  const [file, setFile] = useState<File | null>(null);
-
   return (
     <div className="flex flex-col gap-4">
       <ImportDropzone
-        onFile={(next) => setFile(next)}
+        file={file}
+        onFile={onFileChange}
         disabled={isPreviewing}
       />
 
@@ -38,8 +40,8 @@ export function ImportUploadStep({
         />
         <p className="text-xs leading-relaxed text-muted-foreground">
           Each row creates a new {type === "student" ? "student" : "teacher"}
-          account. Rows whose email or ID already exist are skipped. Importing
-          is a bulk action — duplicates are never re-created.
+          account. Rows whose email or ID already exist are skipped. Duplicates
+          are never re-created.
         </p>
       </div>
 

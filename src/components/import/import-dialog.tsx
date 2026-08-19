@@ -47,6 +47,7 @@ export function ImportDialog({
   flow,
 }: ImportDialogProps) {
   const [stage, setStage] = useState<Stage>("upload");
+  const [file, setFile] = useState<File | null>(null);
 
   const { job, preview, isPreviewing, isConfirming } = flow;
   const wasOpen = useRef(false);
@@ -114,7 +115,7 @@ export function ImportDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-lg">
+      <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>
             Import {type === "student" ? "Students" : "Teachers"}
@@ -124,14 +125,17 @@ export function ImportDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <ol className="flex items-center gap-2" aria-label="Import steps">
+        <ol
+          className="flex items-center"
+          aria-label="Import steps"
+        >
           {STEPS.map((step, index) => {
             const Icon = step.icon;
             const active = stage === step.id;
             const stepIndex = STEPS.findIndex((s) => s.id === stage);
             const done = index < stepIndex;
             return (
-              <li key={step.id} className="flex flex-1 items-center gap-2">
+              <li key={step.id} className="contents">
                 <div
                   className={cn(
                     "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors",
@@ -148,7 +152,7 @@ export function ImportDialog({
                 {index < STEPS.length - 1 && (
                   <div
                     className={cn(
-                      "h-px flex-1",
+                      "h-px flex-1 mx-1.5",
                       index < stepIndex ? "bg-primary/40" : "bg-border",
                     )}
                   />
@@ -161,6 +165,8 @@ export function ImportDialog({
         {stage === "upload" && (
           <ImportUploadStep
             type={type}
+            file={file}
+            onFileChange={setFile}
             isPreviewing={isPreviewing}
             onPreview={handlePreview}
             onDownloadTemplate={handleDownloadTemplate}

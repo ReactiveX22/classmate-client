@@ -184,7 +184,7 @@ export function ImportProgressStep({
         <div className="flex justify-end">
           <Button onClick={onClose}>
             {succeeded ? "Done" : "Close"}
-            <IconX />
+            {succeeded ? <IconCheck /> : <IconX />}
           </Button>
         </div>
       )}

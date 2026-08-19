@@ -1,8 +1,13 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { IconFileSpreadsheet, IconX } from "@tabler/icons-react";
+import { IconUpload, IconX } from "@tabler/icons-react";
+import {
+  FileIconCsv,
+  FileIconXlsx,
+} from "@/components/classrooms/classroom-detail/posts/post-types/attachment-icons";
 import { useCallback, useRef, useState } from "react";
 
 const ACCEPTED_EXTENSIONS = [".csv", ".xlsx"];
@@ -14,13 +19,29 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+function getFileExtension(name: string): string {
+  return name.toLowerCase().match(/\.[^.]*$/)?.[0] ?? "";
+}
+
+function FileIcon({ fileName }: { fileName: string }) {
+  const ext = getFileExtension(fileName);
+  if (ext === ".csv") return <FileIconCsv size={24} />;
+  return <FileIconXlsx size={24} />;
+}
+
+function getFileLabel(name: string): string {
+  const ext = getFileExtension(name);
+  if (ext === ".csv") return "CSV";
+  return "Excel";
+}
+
 interface ImportDropzoneProps {
-  onFile: (file: File) => void;
+  file: File | null;
+  onFile: (file: File | null) => void;
   disabled?: boolean;
 }
 
-export function ImportDropzone({ onFile, disabled }: ImportDropzoneProps) {
-  const [file, setFile] = useState<File | null>(null);
+export function ImportDropzone({ file, onFile, disabled }: ImportDropzoneProps) {
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -37,7 +58,6 @@ export function ImportDropzone({ onFile, disabled }: ImportDropzoneProps) {
         return;
       }
       setError(null);
-      setFile(candidate);
       onFile(candidate);
     },
     [onFile],
@@ -83,9 +103,11 @@ export function ImportDropzone({ onFile, disabled }: ImportDropzoneProps) {
           disabled && "pointer-events-none opacity-60",
         )}
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          <IconFileSpreadsheet size={20} />
-        </div>
+        {file ? (
+          <FileIcon fileName={file.name} />
+        ) : (
+          <IconUpload size={24} className="text-muted-foreground" />
+        )}
         <div className="flex flex-col items-center gap-0.5">
           <span className="text-sm font-medium text-foreground">
             {file ? file.name : "Drop your file here or click to browse"}
@@ -105,13 +127,18 @@ export function ImportDropzone({ onFile, disabled }: ImportDropzoneProps) {
       )}
 
       {file && !error && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 py-2.5">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <IconFileSpreadsheet size={16} className="shrink-0 text-primary" />
-            <span className="truncate text-sm font-medium">{file.name}</span>
-            <span className="shrink-0 text-xs text-muted-foreground">
-              {formatBytes(file.size)}
-            </span>
+        <div className="flex items-center gap-3 rounded-lg border border-border px-2.5 py-2">
+          <FileIcon fileName={file.name} />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate">{file.name}</p>
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="text-xs text-muted-foreground">
+                {formatBytes(file.size)}
+              </span>
+              <Badge variant="secondary" className="text-[10px]">
+                {getFileLabel(file.name)}
+              </Badge>
+            </div>
           </div>
           <Button
             type="button"
@@ -119,7 +146,7 @@ export function ImportDropzone({ onFile, disabled }: ImportDropzoneProps) {
             size="icon-sm"
             className="shrink-0"
             onClick={() => {
-              setFile(null);
+              onFile(null);
               setError(null);
             }}
             aria-label="Remove file"

@@ -4,20 +4,22 @@ import { Progress } from "@/components/ui/progress";
 import { UploadResult } from "@/hooks/use-upload-attachment";
 import { cn } from "@/lib/utils";
 import {
-  IconFile,
-  IconFileDescription,
-  IconFileSpreadsheet,
-  IconFileText,
-  IconFileZip,
   IconLink,
   IconPaperclip,
-  IconPhoto,
-  IconPresentation,
   IconTrash,
-  IconVideo,
   IconX,
 } from "@tabler/icons-react";
-import { FileIcon } from "lucide-react";
+import {
+  FileIconDocx,
+  FileIconImage,
+  FileIconPdf,
+  FileIconPptx,
+  FileIconTxt,
+  FileIconVideo,
+  FileIconXlsx,
+  FileIconZip,
+  FileIconGeneric,
+} from "@/components/classrooms/classroom-detail/posts/post-types/attachment-icons";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
@@ -258,53 +260,16 @@ export function AttachmentUpload({
     const isZip = mimeType.includes("zip") || mimeType.includes("compressed");
     const isText = mimeType.includes("text/plain") || mimeType.includes("txt");
 
-    let Icon = IconFile;
-    let bg = "bg-muted";
-    let text = "text-muted-foreground";
-
-    if (isImage) {
-      Icon = IconPhoto;
-      bg = "bg-purple-100 dark:bg-purple-950";
-      text = "text-purple-600 dark:text-purple-400";
-    } else if (isVideo) {
-      Icon = IconVideo;
-      bg = "bg-pink-100 dark:bg-pink-950";
-      text = "text-pink-600 dark:text-pink-400";
-    } else if (isLink) {
-      Icon = IconLink;
-      bg = "bg-blue-100 dark:bg-blue-950";
-      text = "text-blue-600 dark:text-blue-400";
-    } else if (isPdf) {
-      Icon = IconFileText;
-      bg = "bg-red-100 dark:bg-red-950";
-      text = "text-red-600 dark:text-red-400";
-    } else if (isWord) {
-      Icon = IconFileDescription;
-      bg = "bg-indigo-100 dark:bg-indigo-950";
-      text = "text-indigo-600 dark:text-indigo-400";
-    } else if (isExcel) {
-      Icon = IconFileSpreadsheet;
-      bg = "bg-emerald-100 dark:bg-emerald-950";
-      text = "text-emerald-600 dark:text-emerald-400";
-    } else if (isPpt) {
-      Icon = IconPresentation;
-      bg = "bg-orange-100 dark:bg-orange-950";
-      text = "text-orange-600 dark:text-orange-400";
-    } else if (isZip) {
-      Icon = IconFileZip;
-      bg = "bg-amber-100 dark:bg-amber-950";
-      text = "text-amber-600 dark:text-amber-400";
-    } else if (isText) {
-      Icon = IconFileText;
-      bg = "bg-gray-100 dark:bg-gray-950";
-      text = "text-gray-600 dark:text-gray-400";
-    }
-
-    return (
-      <div className={cn("p-2 rounded-md transition-transform", bg)}>
-        <Icon size={18} className={text} />
-      </div>
-    );
+    if (isImage) return <FileIconImage size={24} />;
+    if (isVideo) return <FileIconVideo size={24} />;
+    if (isLink) return <IconLink size={24} />;
+    if (isPdf) return <FileIconPdf size={24} />;
+    if (isWord) return <FileIconDocx size={24} />;
+    if (isExcel) return <FileIconXlsx size={24} />;
+    if (isPpt) return <FileIconPptx size={24} />;
+    if (isZip) return <FileIconZip size={24} />;
+    if (isText) return <FileIconTxt size={24} />;
+    return <FileIconGeneric size={24} />;
   };
 
   const formatFileSize = (bytes: number) => {
@@ -366,7 +331,7 @@ export function AttachmentUpload({
               size="sm"
               onClick={() => document.getElementById("file-input")?.click()}
             >
-              <FileIcon className="mr-2" />
+              <IconPaperclip className="mr-2" />
               Browse Files
             </Button>
             <Button
