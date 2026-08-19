@@ -9,6 +9,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { ModeToggle } from "@/components/mode-toggle";
+import { useSession } from "@/lib/auth-client";
 import { IconMenu2, IconSchool } from "@tabler/icons-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -21,6 +22,8 @@ const navLinks = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const { data: session, isPending } = useSession();
+  const isAuthenticated = !!session?.user;
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass border-b border-border/10">
@@ -36,32 +39,45 @@ export default function Header() {
         {/* Desktop Nav - Centered */}
         <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
           {navLinks.map((link) => (
-            <Link
-              key={link.title}
-              href={link.href}
-              className="relative py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground group"
-            >
-              {link.title}
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
-            </Link>
-          ))}
+              <Link
+                key={link.title}
+                href={link.href}
+                className="relative py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground group"
+              >
+                {link.title}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+              </Link>
+            ))}
         </nav>
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-4">
           <ModeToggle />
-          <Link
-            href="/login"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Login
-          </Link>
-          <Button
-            size="sm"
-            nativeButton={false}
-            className="rounded-xl px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95"
-            render={<Link href="/signup">Get Started</Link>}
-          />
+          {isPending ? (
+            <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
+          ) : isAuthenticated ? (
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Dashboard
+              </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Login
+              </Link>
+              <Button
+                size="sm"
+                nativeButton={false}
+                className="rounded-xl px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95"
+                render={<Link href="/signup">Get Started</Link>}
+              />
+            </>
+          )}
         </div>
 
         {/* Mobile Nav */}
@@ -87,28 +103,47 @@ export default function Header() {
               </SheetHeader>
               <nav className="flex flex-col gap-1 mt-8">
                 {navLinks.map((link) => (
-                  <Link
-                    key={link.title}
-                    href={link.href}
-                    onClick={() => setOpen(false)}
-                    className="px-4 py-3 rounded-xl text-lg font-medium text-muted-foreground transition-all hover:text-foreground hover:bg-primary/5"
-                  >
-                    {link.title}
-                  </Link>
-                ))}
+                    <Link
+                      key={link.title}
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                      className="px-4 py-3 rounded-xl text-lg font-medium text-muted-foreground transition-all hover:text-foreground hover:bg-primary/5"
+                    >
+                      {link.title}
+                    </Link>
+                  ))}
                 <div className="border-t border-border/10 my-4" />
                 <div className="flex flex-col gap-3 px-4">
-                  <Button
-                    variant="outline"
-                    className="rounded-xl h-12"
-                    nativeButton={false}
-                    render={<Link href="/login">Login</Link>}
-                  />
-                  <Button
-                    className="rounded-xl h-12 bg-primary"
-                    nativeButton={false}
-                    render={<Link href="/signup">Get Started</Link>}
-                  />
+                  {isPending ? (
+                    <div className="h-12 rounded-xl bg-muted animate-pulse" />
+                  ) : isAuthenticated ? (
+                    <Button
+                      className="rounded-xl h-12 bg-primary"
+                      nativeButton={false}
+                      render={
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setOpen(false)}
+                        >
+                          Dashboard
+                        </Link>
+                      }
+                    />
+                  ) : (
+                    <>
+                      <Button
+                        variant="outline"
+                        className="rounded-xl h-12"
+                        nativeButton={false}
+                        render={<Link href="/login">Login</Link>}
+                      />
+                      <Button
+                        className="rounded-xl h-12 bg-primary"
+                        nativeButton={false}
+                        render={<Link href="/signup">Get Started</Link>}
+                      />
+                    </>
+                  )}
                 </div>
               </nav>
             </SheetContent>
