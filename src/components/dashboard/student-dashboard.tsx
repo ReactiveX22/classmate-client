@@ -23,7 +23,7 @@ export function StudentDashboard() {
                 You aren&apos;t enrolled in any classes yet.
               </p>
               <Button
-                render={<Link href="/dashboard/classrooms/join">Join Class</Link>}
+                render={<Link href="/dashboard/classrooms">Join Class</Link>}
                 nativeButton={false}
               />
             </CardContent>
