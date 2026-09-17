@@ -30,7 +30,6 @@ import {
   SortableItem,
   SortableItemHandle,
 } from "@/components/ui/sortable";
-import { Textarea } from "@/components/ui/textarea";
 import { useFormErrorHandler } from "@/hooks/use-form-handler";
 import {
   UploadResult,
@@ -46,11 +45,12 @@ import {
 } from "@/lib/api/services/post.service";
 import { cn } from "@/lib/utils";
 import { IconCalendar } from "@tabler/icons-react";
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import { format } from "date-fns";
 import { GripVertical, Plus, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
+import { PostContentEditor, stripPostHtml } from "./post-content-editor";
 
 // Zod Schemas
 const baseSchema = z.object({
@@ -162,6 +162,7 @@ interface PostFormProps {
   lockQuestionPollStructure?: boolean;
   id?: string;
   showFooter?: boolean;
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
 export function PostForm({
@@ -176,6 +177,7 @@ export function PostForm({
   lockQuestionPollStructure = false,
   id,
   showFooter = true,
+  onDirtyChange,
 }: PostFormProps) {
   const { fieldErrors, globalErrors, handleError } = useFormErrorHandler();
   const [attachments, setAttachments] =
@@ -201,7 +203,13 @@ export function PostForm({
   const form = useForm({
     defaultValues,
     validators: {
-      onSubmit: postSchema,
+      onSubmit: postSchema.refine(
+        (data) => stripPostHtml(data.content).length > 0,
+        {
+          message: "Content is required",
+          path: ["content"],
+        },
+      ),
     },
     onSubmit: async ({ value }) => {
       try {
@@ -247,6 +255,19 @@ export function PostForm({
       }
     },
   });
+
+  // Unsaved-changes signal for discard guards (form fields + attachments,
+  // which live outside the form). Tiptap only reports on real edits, so
+  // opening an edit dialog never starts out dirty.
+  const formIsDirty = useStore(form.store, (state) => state.isDirty);
+  const attachmentsChanged =
+    initialAttachments.map((a) => a.id).join(",") !==
+    attachments.map((a) => a.id).join(",");
+  const hasUnsavedChanges = formIsDirty || attachmentsChanged;
+
+  useEffect(() => {
+    onDirtyChange?.(hasUnsavedChanges);
+  }, [hasUnsavedChanges, onDirtyChange]);
 
   const getFieldError = (
     fieldName: string,
@@ -559,15 +580,15 @@ export function PostForm({
                 <FieldLabel htmlFor={field.name}>
                   Content <span className="text-destructive">*</span>
                 </FieldLabel>
-                <Textarea
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value || ""}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  className="min-h-[100px]"
-                  placeholder="Share with your class..."
-                />
+                <div
+                  className="rounded-lg border border-input overflow-hidden"
+                  aria-invalid={isInvalid}
+                >
+                  <PostContentEditor
+                    value={field.state.value || ""}
+                    onChange={(val) => field.handleChange(val)}
+                  />
+                </div>
                 {isInvalid && <FieldError errors={errors} />}
               </Field>
             );

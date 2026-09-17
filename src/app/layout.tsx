@@ -3,6 +3,9 @@ import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import "@/components/editor/style.css";
+import "@/components/block-editor/style.css";
+import "@/components/static-renderer/style.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 

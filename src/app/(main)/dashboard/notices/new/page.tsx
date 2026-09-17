@@ -30,7 +30,7 @@ export default function NewNoticePage() {
         description="Create a new notice for your organization."
         backLink="/dashboard/notices"
       />
-      <div className="flex-1 max-w-6xl p-6">
+      <div className="flex-1 max-w-4xl mx-auto w-full p-6">
         <NoticeForm
           onSubmit={onSubmit}
           isSubmitting={isPending}

@@ -7,6 +7,7 @@ export interface Attachment {
   url: string;
   type: string;
   size: number;
+  mimeType?: string;
 }
 
 export interface Notice {

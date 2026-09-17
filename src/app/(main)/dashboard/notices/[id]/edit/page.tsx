@@ -54,7 +54,7 @@ export default function EditNoticePage() {
         description="Make changes to the notice."
         backLink="/dashboard/notices"
       />
-      <div className="flex-1 max-w-6xl p-6">
+      <div className="flex-1 max-w-4xl mx-auto w-full p-6">
         <NoticeForm
           initialData={data}
           onSubmit={onSubmit}

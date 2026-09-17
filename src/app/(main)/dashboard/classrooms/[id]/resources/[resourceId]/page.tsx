@@ -7,7 +7,7 @@ import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Markdown } from "@/components/ui/chat/markdown";
+import { PostContent } from "@/components/classrooms/classroom-detail/posts/post-content";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -192,7 +192,7 @@ export default function ResourceDetailPage({
         <Card>
           <CardContent>
             {post.content ? (
-              <Markdown className="chat-markdown">{post.content}</Markdown>
+              <PostContent content={post.content} />
             ) : (
               <p className="text-sm text-muted-foreground">
                 No description provided.

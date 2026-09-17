@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { StaticRenderer } from "@/components/static-renderer";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDeleteNotice } from "@/hooks/use-notices";
 import { NoticeData } from "@/lib/api/services/notice.service";
@@ -142,10 +143,12 @@ export function NoticeDetail({ data, onBack, onDeleted }: NoticeDetailProps) {
       </div>
 
       <ScrollArea className="flex-1 min-h-0 p-4">
-        <div className="text-sm leading-relaxed max-w-4xl mx-auto space-y-6">
-          <div className="whitespace-pre-wrap font-sans text-base">
-            {notice.content || "No content provided."}
-          </div>
+        <div className="text-sm leading-relaxed space-y-6">
+          {notice.content ? (
+            <StaticRenderer content={notice.content} />
+          ) : (
+            <p className="text-muted-foreground">No content provided.</p>
+          )}
 
           {/* Placeholder for attachments if needed later */}
           {notice.attachments && notice.attachments.length > 0 && (

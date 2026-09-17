@@ -10,9 +10,12 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { useEditPost } from "@/hooks/use-edit-post";
 import { Post, SubmissionType } from "@/lib/api/services/post.service";
 import { PostForm, PostFormData } from "./post-form";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface EditPostDialogProps {
   post: Post;
@@ -20,12 +23,51 @@ interface EditPostDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const EDIT_COPY: Record<Post["type"], { title: string; description: string }> =
+  {
+    announcement: {
+      title: "Edit Announcement",
+      description: "Update the announcement details below.",
+    },
+    assignment: {
+      title: "Edit Assignment",
+      description: "Update the assignment details below.",
+    },
+    material: {
+      title: "Edit Material",
+      description: "Update the learning material below.",
+    },
+    question: {
+      title: "Edit Question",
+      description: "Update the question details below.",
+    },
+  };
+
 export function EditPostDialog({
   post,
   open,
   onOpenChange,
 }: EditPostDialogProps) {
   const { mutateAsync: updatePost, isPending } = useEditPost();
+  const [isDirty, setIsDirty] = useState(false);
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
+  const [formKey, setFormKey] = useState(0);
+
+  const closeAndReset = () => {
+    setShowDiscardConfirm(false);
+    setIsDirty(false);
+    setFormKey((k) => k + 1);
+    onOpenChange(false);
+  };
+
+  const handleOpenChange = (next: boolean) => {
+    // X / overlay / Escape with unsaved work -> confirm first.
+    if (!next && isDirty && !isPending) {
+      setShowDiscardConfirm(true);
+      return;
+    }
+    onOpenChange(next);
+  };
 
   const initialValues: PostFormData = {
     type: post.type,
@@ -66,14 +108,22 @@ export function EditPostDialog({
   } as PostFormData;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent
+        className={cn(
+          "sm:max-w-[700px] transition-[filter] duration-100",
+          showDiscardConfirm && "brightness-[0.7]",
+        )}
+      >
         <DialogHeader>
-          <DialogTitle>Edit Post</DialogTitle>
-          <DialogDescription>Edit the post details below.</DialogDescription>
+          <DialogTitle>{EDIT_COPY[post.type].title}</DialogTitle>
+          <DialogDescription>
+            {EDIT_COPY[post.type].description}
+          </DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[75vh] pr-4">
           <PostForm
+            key={formKey}
             id="edit-post-form"
             showFooter={false}
             classroomId={post.classroomId}
@@ -97,10 +147,11 @@ export function EditPostDialog({
                 postId: post.id,
                 data,
               });
-              onOpenChange(false);
+              closeAndReset();
             }}
             isSubmitting={isPending}
             submitLabel="Save Changes"
+            onDirtyChange={setIsDirty}
           />
         </ScrollArea>
         <DialogFooter>
@@ -109,6 +160,17 @@ export function EditPostDialog({
           </Button>
         </DialogFooter>
       </DialogContent>
+
+      <DeleteConfirmDialog
+        open={showDiscardConfirm}
+        onOpenChange={setShowDiscardConfirm}
+        title="Discard changes?"
+        description="You have unsaved changes. Are you sure you want to discard them?"
+        confirmText="Discard"
+        cancelText="Keep editing"
+        variant="default"
+        onConfirm={closeAndReset}
+      />
     </Dialog>
   );
 }

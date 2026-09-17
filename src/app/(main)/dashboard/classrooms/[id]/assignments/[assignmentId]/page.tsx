@@ -32,7 +32,7 @@ import { use, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StudentWorkTab } from "@/components/classrooms/classroom-detail/assignments/student-work-tab";
 import { Post } from "@/lib/api/services/post.service";
-import { Markdown } from "@/components/ui/chat/markdown";
+import { PostContent } from "@/components/classrooms/classroom-detail/posts/post-content";
 
 interface AssignmentPageProps {
   params: Promise<{ id: string; assignmentId: string }>;
@@ -274,7 +274,7 @@ function AssignmentContent({
         {/* Left Column - Assignment Details */}
         <div className="lg:col-span-2 space-y-6">
           <div className="prose prose-zinc dark:prose-invert max-w-none">
-            <Markdown className="chat-markdown">{post.content}</Markdown>
+            <PostContent content={post.content} />
           </div>
 
           {post.attachments && post.attachments.length > 0 && (

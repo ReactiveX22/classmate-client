@@ -13,6 +13,7 @@ interface CreatePostFormProps {
   id?: string;
   showFooter?: boolean;
   onPendingChange?: (isPending: boolean) => void;
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
 export function CreatePostForm({
@@ -23,6 +24,7 @@ export function CreatePostForm({
   id,
   showFooter,
   onPendingChange,
+  onDirtyChange,
 }: CreatePostFormProps) {
   const { mutateAsync: createPost, isPending } = useCreatePost();
 
@@ -43,6 +45,7 @@ export function CreatePostForm({
       submitLabel="Post"
       id={id}
       showFooter={showFooter}
+      onDirtyChange={onDirtyChange}
     />
   );
 }

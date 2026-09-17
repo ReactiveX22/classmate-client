@@ -282,6 +282,11 @@
   .chat-markdown a {
     @apply font-medium text-primary underline underline-offset-4;
   }
+
+  .rte-content .ProseMirror {
+    padding: 0.75rem !important;
+    font-size: 0.875rem !important;
+  }
 }
 
 @keyframes typing {
