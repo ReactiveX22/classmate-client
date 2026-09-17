@@ -27,6 +27,7 @@ import {
   useDeleteComment,
   useUpdateComment,
 } from "@/hooks/use-comments";
+import type { Comment } from "@/lib/api/services/comment.service";
 
 interface CommentSectionProps {
   postId: string;
@@ -78,7 +79,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
     );
   };
 
-  const startEditing = (comment: any) => {
+  const startEditing = (comment: Comment) => {
     setEditingCommentId(comment.id);
     setEditContent(comment.content);
   };
@@ -88,13 +89,13 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
     setEditContent("");
   };
 
-  const getCommentAuthorName = (comment: any) => {
+  const getCommentAuthorName = (comment: Comment) => {
     if (comment.author?.name) return comment.author.name;
     if (comment.authorName) return comment.authorName;
     return "Unknown User";
   };
 
-  const getCommentAuthorImage = (comment: any) => {
+  const getCommentAuthorImage = (comment: Comment) => {
     if (comment.author?.image) return comment.author.image;
     if (comment.authorImage) return comment.authorImage;
     return undefined;
@@ -129,7 +130,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
           {!isLoadingComments && comments.length > 0 && (
             <div className="space-y-0.5">
               {(showAllComments ? comments : comments.slice(0, 2)).map(
-                (comment: any) => (
+                (comment) => (
                   <div
                     key={comment.id}
                     className="group flex gap-2.5 items-start rounded-xl py-1 hover:bg-muted/40 transition-colors"

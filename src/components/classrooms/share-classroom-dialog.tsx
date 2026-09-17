@@ -104,10 +104,7 @@ export function ShareClassroomDialog({
         </DialogHeader>
 
         <div className="flex flex-col items-center gap-3">
-          <div
-            ref={qrRef}
-            className="rounded-xl border bg-white p-4 shadow-sm"
-          >
+          <div ref={qrRef} className="rounded-xl border bg-white p-4 shadow-sm">
             <QRCode
               value={joinLink}
               size={180}

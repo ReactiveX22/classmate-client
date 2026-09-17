@@ -18,6 +18,9 @@ export default function AiConversationPage({
     if (pendingMessage) {
       setPendingMessage(null);
     }
+    // Intentional one-shot on conversation change: adding pendingMessage
+    // to deps would clear freshly-set messages on arrival.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [convId]);
 
   return <AiChatPage convId={convId} autoMessage={pendingMessage} />;

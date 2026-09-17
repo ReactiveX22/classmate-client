@@ -34,7 +34,7 @@ export function useTableQueryState<
     setPerPage,
     sorting,
     setSorting,
-    filters: filters as { [K in keyof TFilters]: any },
+    filters,
     setFilters,
     resetPagination: () => setPage(1),
   };

@@ -14,7 +14,13 @@ import type { ClassroomDetail } from "@/lib/api/services/classroom.service";
 import { cn, getInitials } from "@/lib/utils";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { format } from "date-fns";
-import { BookOpen, CalendarDays, GraduationCap, IdCard, Users } from "lucide-react";
+import {
+  BookOpen,
+  CalendarDays,
+  GraduationCap,
+  IdCard,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -45,8 +51,7 @@ export function AdminClassroomView({ classroom }: AdminClassroomViewProps) {
               <div className="space-y-1">
                 <CardTitle className="text-lg">{classroom.name}</CardTitle>
                 <CardDescription>
-                  {course ? `${course.code} • ` : ""}Section{" "}
-                  {classroom.section}
+                  {course ? `${course.code} • ` : ""}Section {classroom.section}
                 </CardDescription>
               </div>
               <Badge
@@ -91,7 +96,8 @@ export function AdminClassroomView({ classroom }: AdminClassroomViewProps) {
             <div className="flex items-center gap-2 text-muted-foreground">
               <IdCard size={16} />
               <span>
-                Class code <code className="font-mono">{classroom.classCode}</code>
+                Class code{" "}
+                <code className="font-mono">{classroom.classCode}</code>
               </span>
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">

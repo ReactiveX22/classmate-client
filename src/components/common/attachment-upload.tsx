@@ -3,12 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { UploadResult } from "@/hooks/use-upload-attachment";
 import { cn } from "@/lib/utils";
-import {
-  IconLink,
-  IconPaperclip,
-  IconTrash,
-  IconX,
-} from "@tabler/icons-react";
+import { IconLink, IconPaperclip, IconTrash, IconX } from "@tabler/icons-react";
 import {
   FileIconDocx,
   FileIconImage,

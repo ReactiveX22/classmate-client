@@ -48,7 +48,9 @@ export function NavGroup({
   const { state, isMobile } = useSidebar();
   const pathname = usePathname();
   const isCollapsed = state === "collapsed" && !isMobile;
-  const visibleItems = items.filter((item) => !item.collapsedOnly || isCollapsed);
+  const visibleItems = items.filter(
+    (item) => !item.collapsedOnly || isCollapsed,
+  );
 
   return (
     <SidebarGroup className={className}>

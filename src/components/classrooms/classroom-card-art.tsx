@@ -36,7 +36,8 @@ export const colorPatterns: ClassroomPattern[] = [
     bg: "bg-emerald-100 dark:bg-emerald-500/15",
     shape: "bg-emerald-300/80 dark:bg-emerald-400/25",
     shapeSoft: "bg-emerald-200/70 dark:bg-emerald-400/15",
-    badge: "bg-white/70 text-emerald-800 dark:bg-white/10 dark:text-emerald-200",
+    badge:
+      "bg-white/70 text-emerald-800 dark:bg-white/10 dark:text-emerald-200",
   },
   {
     bg: "bg-violet-100 dark:bg-violet-500/15",

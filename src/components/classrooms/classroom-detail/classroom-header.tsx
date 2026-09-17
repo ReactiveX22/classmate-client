@@ -111,49 +111,49 @@ export function ClassroomHeader({
                 </Button>
               }
             />
-          <DropdownMenuContent align="end" className="w-48">
-            {isTeacher && (
-              <>
-                <DropdownMenuItem onClick={onEditClick}>
-                  <IconPencil size={18} className="mr-2" />
-                  Edit Classroom
-                </DropdownMenuItem>
+            <DropdownMenuContent align="end" className="w-48">
+              {isTeacher && (
+                <>
+                  <DropdownMenuItem onClick={onEditClick}>
+                    <IconPencil size={18} className="mr-2" />
+                    Edit Classroom
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setDeleteDialogOpen(true);
+                    }}
+                  >
+                    <Trash size={18} className="mr-2" />
+                    Delete Classroom
+                  </DropdownMenuItem>
+                </>
+              )}
+
+              <RoleGuard allowedRoles={[Role.Student]}>
                 <DropdownMenuItem
                   variant="destructive"
                   onClick={(e) => {
                     e.preventDefault();
-                    setDeleteDialogOpen(true);
+                    setLeaveDialogOpen(true);
                   }}
                 >
-                  <Trash size={18} className="mr-2" />
-                  Delete Classroom
+                  <IconLogout size={18} className="mr-2" />
+                  Leave Classroom
                 </DropdownMenuItem>
-              </>
-            )}
+              </RoleGuard>
 
-            <RoleGuard allowedRoles={[Role.Student]}>
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setLeaveDialogOpen(true);
-                }}
-              >
-                <IconLogout size={18} className="mr-2" />
-                Leave Classroom
+              <DropdownMenuItem onClick={onDetailsClick}>
+                <IconInfoCircle size={18} className="mr-2" />
+                Class Details
               </DropdownMenuItem>
-            </RoleGuard>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
 
-            <DropdownMenuItem onClick={onDetailsClick}>
-              <IconInfoCircle size={18} className="mr-2" />
-              Class Details
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Quick Stats */}
-      {/* <div className='flex items-center gap-6 text-sm'>
+        {/* Quick Stats */}
+        {/* <div className='flex items-center gap-6 text-sm'>
         <div className='flex items-center gap-2'>
           <IconUsers size={16} className='text-muted-foreground' />
           <span>
@@ -176,25 +176,25 @@ export function ClassroomHeader({
           </Button>
         </div>
       </div> */}
-      <DeleteConfirmDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        title="Delete Classroom"
-        description="Are you sure you want to delete this classroom? This action cannot be undone and will remove all students, assignments, and grades associated with it."
-        onConfirm={handleDelete}
-        isLoading={deleteClassroomMutation.isPending}
-      />
+        <DeleteConfirmDialog
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          title="Delete Classroom"
+          description="Are you sure you want to delete this classroom? This action cannot be undone and will remove all students, assignments, and grades associated with it."
+          onConfirm={handleDelete}
+          isLoading={deleteClassroomMutation.isPending}
+        />
 
-      <DeleteConfirmDialog
-        open={leaveDialogOpen}
-        onOpenChange={setLeaveDialogOpen}
-        title="Leave Classroom"
-        description="Are you sure you want to leave this classroom? You will no longer have access to the materials, assignments, or grades."
-        confirmText="Leave"
-        onConfirm={handleLeave}
-        isLoading={leaveClassroomMutation.isPending}
-      />
-    </div>
+        <DeleteConfirmDialog
+          open={leaveDialogOpen}
+          onOpenChange={setLeaveDialogOpen}
+          title="Leave Classroom"
+          description="Are you sure you want to leave this classroom? You will no longer have access to the materials, assignments, or grades."
+          confirmText="Leave"
+          onConfirm={handleLeave}
+          isLoading={leaveClassroomMutation.isPending}
+        />
+      </div>
     </div>
   );
 }

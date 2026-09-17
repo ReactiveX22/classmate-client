@@ -55,7 +55,10 @@ export function AddSemesterForm({ onSuccess }: AddSemesterFormProps) {
         if (typeof err === "string") {
           errors.push({ message: err });
         } else if (err && typeof err === "object" && "message" in err) {
-          errors.push({ message: (err as any).message });
+          const message: unknown = err.message;
+          errors.push({
+            message: typeof message === "string" ? message : String(message),
+          });
         } else {
           errors.push({ message: String(err) });
         }

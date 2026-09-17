@@ -125,10 +125,7 @@ export function ImportDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <ol
-          className="flex items-center"
-          aria-label="Import steps"
-        >
+        <ol className="flex items-center" aria-label="Import steps">
           {STEPS.map((step, index) => {
             const Icon = step.icon;
             const active = stage === step.id;

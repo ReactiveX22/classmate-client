@@ -65,7 +65,11 @@ export function ClassesOverview({
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               {classrooms.map((item, index) => (
-                <ClassroomCard key={item.classroom.id} data={item} index={index} />
+                <ClassroomCard
+                  key={item.classroom.id}
+                  data={item}
+                  index={index}
+                />
               ))}
             </div>
           )}

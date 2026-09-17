@@ -84,8 +84,14 @@ export function UserProfileView({
     );
   }
 
-  const { user: profileUser, profile, teacher, student, courses, classrooms } =
-    data;
+  const {
+    user: profileUser,
+    profile,
+    teacher,
+    student,
+    courses,
+    classrooms,
+  } = data;
   const roleBadge = profileUser.role?.replace("-", " ") ?? "Member";
   const isInstructor = profileUser.role === "instructor";
   const isAdminView = profileUser.status !== undefined;

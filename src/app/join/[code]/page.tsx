@@ -9,7 +9,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useClassroomJoinPreview, useJoinClassroom } from "@/hooks/use-classrooms";
+import {
+  useClassroomJoinPreview,
+  useJoinClassroom,
+} from "@/hooks/use-classrooms";
 import { useIsAuthenticated, useUser } from "@/hooks/useAuth";
 import { Role } from "@/types/auth";
 import { ApiError } from "@/types/errors";
@@ -135,9 +138,7 @@ export default function JoinClassroomPage() {
               <SuccessView
                 title="You're already in this class"
                 description={`${classroom.name}${
-                  classroom.section
-                    ? ` • Section ${classroom.section}`
-                    : ""
+                  classroom.section ? ` • Section ${classroom.section}` : ""
                 }`}
                 classroomLink={`/dashboard/classrooms/${classroom.id}`}
                 onDashboard={() => router.push("/dashboard")}

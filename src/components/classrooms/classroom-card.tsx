@@ -1,9 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { ClassroomWithCourse } from "@/lib/api/services/classroom.service";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
@@ -74,9 +70,7 @@ export function ClassroomCard({ data, index = 0 }: ClassroomCardProps) {
                 }
               />
               <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() => setShareDialogOpen(true)}
-                >
+                <DropdownMenuItem onClick={() => setShareDialogOpen(true)}>
                   <IconShare size={16} className="mr-2" />
                   Share
                 </DropdownMenuItem>

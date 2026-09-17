@@ -41,7 +41,11 @@ interface ImportDropzoneProps {
   disabled?: boolean;
 }
 
-export function ImportDropzone({ file, onFile, disabled }: ImportDropzoneProps) {
+export function ImportDropzone({
+  file,
+  onFile,
+  disabled,
+}: ImportDropzoneProps) {
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);

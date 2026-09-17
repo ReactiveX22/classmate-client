@@ -39,15 +39,15 @@ export default function Header() {
         {/* Desktop Nav - Centered */}
         <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
           {navLinks.map((link) => (
-              <Link
-                key={link.title}
-                href={link.href}
-                className="relative py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground group"
-              >
-                {link.title}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
-              </Link>
-            ))}
+            <Link
+              key={link.title}
+              href={link.href}
+              className="relative py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground group"
+            >
+              {link.title}
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+            </Link>
+          ))}
         </nav>
 
         {/* Desktop Actions */}
@@ -56,12 +56,12 @@ export default function Header() {
           {isPending ? (
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
           ) : isAuthenticated ? (
-              <Link
-                href="/dashboard"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Dashboard
-              </Link>
+            <Link
+              href="/dashboard"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Dashboard
+            </Link>
           ) : (
             <>
               <Link
@@ -103,15 +103,15 @@ export default function Header() {
               </SheetHeader>
               <nav className="flex flex-col gap-1 mt-8">
                 {navLinks.map((link) => (
-                    <Link
-                      key={link.title}
-                      href={link.href}
-                      onClick={() => setOpen(false)}
-                      className="px-4 py-3 rounded-xl text-lg font-medium text-muted-foreground transition-all hover:text-foreground hover:bg-primary/5"
-                    >
-                      {link.title}
-                    </Link>
-                  ))}
+                  <Link
+                    key={link.title}
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className="px-4 py-3 rounded-xl text-lg font-medium text-muted-foreground transition-all hover:text-foreground hover:bg-primary/5"
+                  >
+                    {link.title}
+                  </Link>
+                ))}
                 <div className="border-t border-border/10 my-4" />
                 <div className="flex flex-col gap-3 px-4">
                   {isPending ? (
@@ -121,10 +121,7 @@ export default function Header() {
                       className="rounded-xl h-12 bg-primary"
                       nativeButton={false}
                       render={
-                        <Link
-                          href="/dashboard"
-                          onClick={() => setOpen(false)}
-                        >
+                        <Link href="/dashboard" onClick={() => setOpen(false)}>
                           Dashboard
                         </Link>
                       }

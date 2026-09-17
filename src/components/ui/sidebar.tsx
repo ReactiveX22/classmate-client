@@ -510,6 +510,11 @@ function SidebarMenuButton({
     tooltip?: string | React.ComponentProps<typeof TooltipContent>;
   } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const { isMobile, state } = useSidebar();
+  // Annotated (not a fresh literal) so excess-property checks don't apply;
+  // base-ui reads `render` at runtime when merging.
+  const conditionalRenderProps: React.ComponentProps<"button"> & {
+    render?: typeof render;
+  } = tooltip ? { render } : {};
   const comp = useRender({
     defaultTagName: "button",
     props: mergeProps<"button">(
@@ -517,7 +522,7 @@ function SidebarMenuButton({
         className: cn(sidebarMenuButtonVariants({ variant, size }), className),
       },
       props,
-      (tooltip ? { render } : {}) as any,
+      conditionalRenderProps,
     ),
     render: !tooltip ? render : TooltipTrigger,
     state: {

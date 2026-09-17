@@ -13,7 +13,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useImpersonate } from "@/hooks/useAuth";
 import { TeacherData } from "@/lib/api/services/teacher.service";
-import { IconEdit, IconEye, IconTrash, IconUserShare } from "@tabler/icons-react";
+import {
+  IconEdit,
+  IconEye,
+  IconTrash,
+  IconUserShare,
+} from "@tabler/icons-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { MoreHorizontal } from "lucide-react";

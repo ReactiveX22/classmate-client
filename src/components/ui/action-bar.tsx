@@ -29,6 +29,12 @@ type RootElement = HTMLDivElement;
 type ItemElement = HTMLButtonElement;
 type CloseElement = HTMLButtonElement;
 
+// The item passes plain React synthetic events to props typed for base-ui's
+// augmented events; the events flow through unchanged at runtime.
+type BaseUIHandlerEvent<T extends React.SyntheticEvent> = T & {
+  preventBaseUIHandler: () => void;
+};
+
 function focusFirst(
   candidates: React.RefObject<HTMLElement | null>[],
   preventScroll = false,
@@ -484,7 +490,9 @@ function ActionBarItem(props: ActionBarItemProps) {
 
   const onClick = React.useCallback(
     (event: React.MouseEvent<ItemElement>) => {
-      onClickProp?.(event as any);
+      onClickProp?.(
+        event as BaseUIHandlerEvent<React.MouseEvent<ItemElement>>,
+      );
       if (event.defaultPrevented) return;
 
       const item = itemRef.current;
@@ -510,7 +518,9 @@ function ActionBarItem(props: ActionBarItemProps) {
 
   const onFocus = React.useCallback(
     (event: React.FocusEvent<ItemElement>) => {
-      onFocusProp?.(event as any);
+      onFocusProp?.(
+        event as BaseUIHandlerEvent<React.FocusEvent<ItemElement>>,
+      );
       if (event.defaultPrevented) return;
 
       focusContext.onItemFocus(itemId);
@@ -521,7 +531,9 @@ function ActionBarItem(props: ActionBarItemProps) {
 
   const onKeyDown = React.useCallback(
     (event: React.KeyboardEvent<ItemElement>) => {
-      onKeyDownProp?.(event as any);
+      onKeyDownProp?.(
+        event as BaseUIHandlerEvent<React.KeyboardEvent<ItemElement>>,
+      );
       if (event.defaultPrevented) return;
 
       if (event.key === "Tab" && event.shiftKey) {
@@ -574,7 +586,9 @@ function ActionBarItem(props: ActionBarItemProps) {
 
   const onMouseDown = React.useCallback(
     (event: React.MouseEvent<ItemElement>) => {
-      onMouseDownProp?.(event as any);
+      onMouseDownProp?.(
+        event as BaseUIHandlerEvent<React.MouseEvent<ItemElement>>,
+      );
       if (event.defaultPrevented) return;
 
       isMouseClickRef.current = true;

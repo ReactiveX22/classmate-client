@@ -4,27 +4,24 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
-const typographyVariants = cva(
-  "text-foreground antialiased",
-  {
-    variants: {
-      variant: {
-        h1: "text-2xl font-semibold tracking-tight leading-tight",
-        h2: "text-lg font-semibold tracking-tight leading-tight",
-        h3: "text-base font-semibold tracking-tight leading-tight",
-        h4: "text-sm font-semibold tracking-tight leading-snug",
-        p: "text-sm leading-6",
-        lead: "text-lg font-medium text-muted-foreground",
-        large: "text-base font-semibold",
-        small: "text-[13px] font-medium leading-snug",
-        muted: "text-sm text-muted-foreground",
-      },
-    },
-    defaultVariants: {
-      variant: "p",
+const typographyVariants = cva("text-foreground antialiased", {
+  variants: {
+    variant: {
+      h1: "text-2xl font-semibold tracking-tight leading-tight",
+      h2: "text-lg font-semibold tracking-tight leading-tight",
+      h3: "text-base font-semibold tracking-tight leading-tight",
+      h4: "text-sm font-semibold tracking-tight leading-snug",
+      p: "text-sm leading-6",
+      lead: "text-lg font-medium text-muted-foreground",
+      large: "text-base font-semibold",
+      small: "text-[13px] font-medium leading-snug",
+      muted: "text-sm text-muted-foreground",
     },
   },
-);
+  defaultVariants: {
+    variant: "p",
+  },
+});
 
 const defaultTags: Record<
   Exclude<VariantProps<typeof typographyVariants>["variant"], null | undefined>,
