@@ -48,7 +48,7 @@ const plans = [
       "SLA uptime guarantee",
     ],
     highlighted: true,
-    badge: "Most Popular",
+    badge: "On the Roadmap",
   },
   {
     name: "Enterprise",
@@ -75,11 +75,9 @@ const plans = [
 export function Pricing() {
   return (
     <section id="pricing" className="relative py-24 md:py-32 px-4 sm:px-6">
-      {/* Background glow */}
       <div className="absolute inset-0 hero-radial opacity-40 pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto">
-        {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16 md:mb-20">
           <motion.div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 mb-6"
@@ -89,7 +87,7 @@ export function Pricing() {
             transition={{ duration: 0.5 }}
           >
             <span className="text-xs font-medium text-primary">
-              💰 Simple Pricing
+              No hidden costs
             </span>
           </motion.div>
           <motion.h2
@@ -99,7 +97,8 @@ export function Pricing() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            Start free, <span className="text-gradient">scale as you grow</span>
+            Free to use,{" "}
+            <span className="text-gradient">pay if you need managed</span>
           </motion.h2>
           <motion.p
             className="text-lg text-muted-foreground leading-relaxed"
@@ -108,12 +107,11 @@ export function Pricing() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Classmate is open source and free to self-host. Managed cloud and
-            enterprise options are on the roadmap.
+            ClassMate is open source. Run it yourself for free, or wait for our
+            managed cloud option if self-hosting isn't your thing.
           </motion.p>
         </div>
 
-        {/* Pricing Cards */}
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
           {plans.map((plan, i) => (
             <motion.div
@@ -128,7 +126,6 @@ export function Pricing() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
             >
-              {/* Highlighted glow overlay */}
               {plan.highlighted && (
                 <>
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
@@ -138,13 +135,11 @@ export function Pricing() {
                 </>
               )}
 
-              {/* Plan Info */}
               <div className="mb-6">
                 <h3 className="text-lg font-bold mb-1">{plan.name}</h3>
                 <p className="text-sm text-muted-foreground">{plan.tagline}</p>
               </div>
 
-              {/* Price */}
               <div className="mb-8">
                 <div className="flex items-end gap-1">
                   <span
@@ -160,7 +155,6 @@ export function Pricing() {
                 </div>
               </div>
 
-              {/* Features */}
               <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map((f) => (
                   <li
@@ -180,7 +174,6 @@ export function Pricing() {
                 ))}
               </ul>
 
-              {/* CTA Button */}
               <Link
                 href={plan.ctaHref}
                 target={plan.ctaHref.startsWith("http") ? "_blank" : undefined}
@@ -198,7 +191,6 @@ export function Pricing() {
           ))}
         </div>
 
-        {/* Footer note */}
         <motion.p
           className="text-center text-sm text-muted-foreground mt-10"
           initial={{ opacity: 0 }}
@@ -206,7 +198,6 @@ export function Pricing() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          ⭐{" "}
           <Link
             href="https://github.com/ReactiveX22/classmate-client"
             target="_blank"
@@ -215,7 +206,7 @@ export function Pricing() {
           >
             Star us on GitHub
           </Link>{" "}
-          to support the project!
+          if you want to support the project.
         </motion.p>
       </div>
     </section>

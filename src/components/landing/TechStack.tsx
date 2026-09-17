@@ -133,7 +133,7 @@ export function TechStack() {
     <section className="relative py-16 border-y border-border/20">
       <div className="max-w-7xl mx-auto px-6">
         <motion.p
-          className="text-center text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-10"
+          className="text-center text-xs font-semibold text-muted-foreground capitalize tracking-widest mb-10"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}

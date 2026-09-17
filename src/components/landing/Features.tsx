@@ -18,63 +18,63 @@ const features = [
     icon: IconChalkboard,
     title: "Virtual Classrooms",
     description:
-      "Create and manage course spaces with assignments, materials, and student streams — all centralized for effortless teaching.",
+      "Create course spaces with assignments, materials, and student enrollment - everything in one place instead of scattered across Google Drive and email.",
     color: "text-primary bg-primary/10 group-hover:bg-primary/15",
   },
   {
     icon: IconBell,
     title: "Campus-Wide Notices",
     description:
-      "Broadcast urgent announcements, events, and updates to the entire institution instantly. No more missed emails or outdated boards.",
+      "Post announcements that actually get seen. Urgent alerts, events, and updates reach students and faculty in real time - no more relying on email threads.",
     color: "text-amber-500 bg-amber-500/10 group-hover:bg-amber-500/15",
   },
   {
     icon: IconUsers,
     title: "Faculty & Student Management",
     description:
-      "Onboard instructors, enroll students, and assign roles with precision. A clear academic hierarchy built for institutions.",
+      "Onboard instructors, enroll students, and assign roles. A clean directory so you always know who teaches what and who's in which class.",
     color: "text-chart-2 bg-chart-2/10 group-hover:bg-chart-2/15",
   },
   {
     icon: IconUserCheck,
     title: "Attendance Tracking",
     description:
-      "Track presence with one click. Automated records give faculty real-time attendance insights with zero administrative overhead.",
+      "One-click attendance that gives teachers a quick overview of who showed up and who didn't. No paper sheets, no spreadsheets.",
     color: "text-emerald-500 bg-emerald-500/10 group-hover:bg-emerald-500/15",
   },
   {
     icon: IconClipboardList,
     title: "Assignment & Grading",
     description:
-      "Seamless submission flow for students and powerful inline grading tools for teachers — from draft to final grade in one place.",
+      "Students submit work, teachers grade it inline. Deadlines, submissions, and grades - all visible in one classroom view.",
     color: "text-rose-500 bg-rose-500/10 group-hover:bg-rose-500/15",
   },
   {
     icon: IconChartBar,
     title: "Academic Analytics",
     description:
-      "Institutional dashboards track enrollment, course completion, and faculty performance. Make data-driven decisions with confidence.",
+      "Dashboards for enrollment numbers, course completion rates, and faculty workload. Numbers you can actually use, not just decoration.",
     color: "text-violet-500 bg-violet-500/10 group-hover:bg-violet-500/15",
   },
   {
     icon: IconMessage,
-    title: "Real-time Collaboration",
+    title: "Real-time Notifications",
     description:
-      "Live notifications, classroom discussions, and instant alerts keep every stakeholder connected and informed across the campus.",
+      "Live updates via WebSockets. When a notice goes out or an assignment is posted, everyone sees it immediately.",
     color: "text-blue-500 bg-blue-500/10 group-hover:bg-blue-500/15",
   },
   {
     icon: IconFileStack,
     title: "Resource Sharing",
     description:
-      "Upload lecture notes, syllabi, and course materials directly into classrooms. Students access everything they need, in one hub.",
+      "Upload lecture notes, PDFs, and links directly into a classroom. Students find everything they need without digging through chat history.",
     color: "text-cyan-500 bg-cyan-500/10 group-hover:bg-cyan-500/15",
   },
   {
     icon: IconLock,
-    title: "Role-Based Security",
+    title: "Role-Based Access",
     description:
-      "Enterprise-grade access control for Admins, Instructors, and Students. Each role sees exactly what they need — nothing more.",
+      "Admins, instructors, and students each see only what they need. No accidentally deleting someone else's course.",
     color: "text-slate-400 bg-slate-500/10 group-hover:bg-slate-500/15",
   },
 ];
@@ -83,7 +83,6 @@ export function Features() {
   return (
     <section id="features" className="relative py-24 md:py-32 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16 md:mb-20">
           <motion.div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 mb-6"
@@ -93,7 +92,7 @@ export function Features() {
             transition={{ duration: 0.5 }}
           >
             <span className="text-xs font-medium text-primary">
-              ✦ Feature-Rich Platform
+              What ClassMate gives you
             </span>
           </motion.div>
           <motion.h2
@@ -103,8 +102,8 @@ export function Features() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            Everything you need to{" "}
-            <span className="text-gradient">run your campus</span>
+            Built for how campuses{" "}
+            <span className="text-gradient">actually work</span>
           </motion.h2>
           <motion.p
             className="text-lg text-muted-foreground leading-relaxed"
@@ -113,12 +112,12 @@ export function Features() {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Powerful tools designed for every role in the modern university
-            ecosystem — from administration to the last row of the classroom.
+            Not another bloated LMS. ClassMate covers the essentials -
+            classrooms, notices, assignments, and attendance - without the
+            bloatware.
           </motion.p>
         </div>
 
-        {/* Features Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map((feature, index) => (
             <motion.div
@@ -129,7 +128,6 @@ export function Features() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: (index % 3) * 0.1 }}
             >
-              {/* Gradient border on hover via pseudo-element trick */}
               <div
                 className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                 style={{

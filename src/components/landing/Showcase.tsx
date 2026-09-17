@@ -441,7 +441,7 @@ export function Showcase() {
     <>
       {/* 1. Faculty Management */}
       <ShowcaseSection
-        pill="🏛 Institutional Control"
+        pill="Institutional Control"
         pillColor="border-primary/20 bg-primary/5 text-primary"
         title={
           <>
@@ -472,16 +472,16 @@ export function Showcase() {
 
       {/* 2. Interactive Classrooms */}
       <ShowcaseSection
-        pill="📚 Academic Tools"
+        pill="Academic Tools"
         pillColor="border-emerald-500/20 bg-emerald-500/5 text-emerald-600 dark:text-emerald-400"
         title={
           <>
-            Classrooms that actually
+            Classrooms with everything
             <br />
-            <span className="text-gradient">feel alive.</span>
+            <span className="text-gradient">in one place.</span>
           </>
         }
-        description="Teachers create rich course spaces where they can post assignments, manage enrolled students, and keep everything organized — with zero friction."
+        description="Teachers create course spaces where they can post assignments, manage enrolled students, and share resources - without switching between five different apps."
         bullets={[
           {
             label: "Instant classroom creation",
@@ -504,13 +504,13 @@ export function Showcase() {
 
       {/* 3. Campus Notices */}
       <ShowcaseSection
-        pill="📢 Campus Communication"
+        pill="Campus Communication"
         pillColor="border-blue-500/20 bg-blue-500/5 text-blue-600 dark:text-blue-400"
         title={
           <>
-            Reach every corner of
+            Announcements that
             <br />
-            <span className="text-gradient">your campus instantly.</span>
+            <span className="text-gradient">actually get read.</span>
           </>
         }
         description="Broadcast urgent alerts, events, and general announcements to the entire institution in real-time. No more email chains or outdated bulletin boards."
@@ -521,7 +521,7 @@ export function Showcase() {
           },
           {
             label: "Real-time delivery",
-            sub: "Built on WebSockets — notices appear instantly for all active users",
+            sub: "Built on WebSockets - notices appear instantly for all active users",
           },
           {
             label: "Role-targeted publishing",
@@ -535,16 +535,16 @@ export function Showcase() {
 
       {/* 4. Resource Sharing */}
       <ShowcaseSection
-        pill="📁 Resource Hub"
+        pill="Resource Hub"
         pillColor="border-violet-500/20 bg-violet-500/5 text-violet-600 dark:text-violet-400"
         title={
           <>
-            All course materials,
+            Course materials,
             <br />
-            <span className="text-gradient">always in reach.</span>
+            <span className="text-gradient">shared properly.</span>
           </>
         }
-        description="Teachers upload lecture notes, assignments, and reference links directly into their classroom. Students get instant access — organized, versioned, and searchable."
+        description="Teachers upload lecture notes, assignments, and reference links directly into their classroom. Students get instant access - organized and in one place."
         bullets={[
           {
             label: "Multi-format support",
@@ -552,7 +552,7 @@ export function Showcase() {
           },
           {
             label: "Classroom-scoped sharing",
-            sub: "Resources are tied to specific courses — no information leakage",
+            sub: "Resources are tied to specific courses - no information leakage",
           },
           {
             label: "Instant student notification",

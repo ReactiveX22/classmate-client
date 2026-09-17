@@ -9,24 +9,12 @@ import { DashboardMockup } from "./DashboardMockup";
 export function Hero() {
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
-      {/* Background Grid */}
       <div className="absolute inset-0 hero-grid opacity-60" />
-      {/* Background Radial Glow */}
       <div className="absolute inset-0 hero-radial" />
-
-      {/* Floating Particles */}
-      <div className="absolute top-[15%] left-[10%] w-1.5 h-1.5 rounded-full bg-primary/40 animate-[float_4s_ease-in-out_infinite,pulse-glow_2s_ease-in-out_infinite]" />
-      <div className="absolute top-[25%] right-[15%] w-2 h-2 rounded-full bg-chart-2/30 animate-[float_4s_ease-in-out_infinite,pulse-glow_2s_ease-in-out_infinite] [animation-delay:1s]" />
-      <div className="absolute top-[60%] left-[5%] w-1.5 h-1.5 rounded-full bg-primary/40 animate-[float_4s_ease-in-out_infinite,pulse-glow_2s_ease-in-out_infinite] [animation-delay:2s]" />
-      <div className="absolute top-[70%] right-[10%] w-2 h-2 rounded-full bg-primary/30 animate-[float_4s_ease-in-out_infinite,pulse-glow_2s_ease-in-out_infinite] [animation-delay:0.5s]" />
-      <div className="absolute top-[40%] left-[50%] w-1 h-1 rounded-full bg-chart-2/40 animate-[float_4s_ease-in-out_infinite,pulse-glow_2s_ease-in-out_infinite] [animation-delay:1.5s]" />
-      <div className="absolute top-[80%] left-[30%] w-1.5 h-1.5 rounded-full bg-primary/30 animate-[float_4s_ease-in-out_infinite,pulse-glow_2s_ease-in-out_infinite] [animation-delay:3s]" />
 
       <div className="relative max-w-7xl mx-auto px-6 w-full py-12">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-          {/* Left Column: Content */}
           <div className="max-w-xl">
-            {/* Pill Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -39,30 +27,27 @@ export function Hero() {
               </span>
             </motion.div>
 
-            {/* Heading */}
             <motion.h1
               className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-foreground mb-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              The Operating System for{" "}
-              <span className="text-gradient">Modern Campuses.</span>
+              Manage your campus,{" "}
+              <span className="text-gradient">without the chaos.</span>
             </motion.h1>
 
-            {/* Subtext */}
             <motion.p
               className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-md"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              A unified platform for administrators, faculty, and students,
-              manage classrooms, broadcast notices, and track academic progress.
-              All in one beautiful place.
+              Classrooms, notices, assignments, and attendance - built for
+              admins, teachers, and students who are tired of juggling five
+              different tools.
             </motion.p>
 
-            {/* CTAs */}
             <motion.div
               className="flex flex-wrap gap-4 mb-12"
               initial={{ opacity: 0, y: 20 }}
@@ -72,10 +57,10 @@ export function Hero() {
               <Button
                 size="lg"
                 nativeButton={false}
-                className="btn-shine h-13 px-8 rounded-xl text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all group"
+                className="h-13 px-8 rounded-xl text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all group"
                 render={
                   <Link href="/signup">
-                    Launch Your Campus
+                    Get Started
                     <IconArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                   </Link>
                 }
@@ -97,32 +82,8 @@ export function Hero() {
                 }
               />
             </motion.div>
-
-            {/* Social proof */}
-            {/* <motion.div
-              className='flex items-center gap-4'
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              <div className='flex -space-x-2.5'>
-                {['Admin', 'Dean', 'Prof', 'Dept', '+'].map((label, i) => (
-                  <div
-                    key={i}
-                    className='w-9 h-9 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center text-[9px] font-bold text-primary'
-                  >
-                    {label}
-                  </div>
-                ))}
-              </div>
-              <div>
-                <p className='text-xs font-semibold text-foreground'>Trusted by universities</p>
-                <p className='text-xs text-muted-foreground'>Open-source & community-driven</p>
-              </div>
-            </motion.div> */}
           </div>
 
-          {/* Right Column: Dashboard Mockup */}
           <div className="hidden lg:block">
             <DashboardMockup />
           </div>
