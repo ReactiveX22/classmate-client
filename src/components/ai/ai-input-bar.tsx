@@ -60,6 +60,7 @@ export function AiInputBar({
         onValueChange={setMessage}
       >
         <PromptInputTextarea
+          autoFocus
           className="rounded-[28px] p-4 pr-10 md:text-base"
           disabled={isStreaming || isRetrying}
           placeholder="Ask anything"

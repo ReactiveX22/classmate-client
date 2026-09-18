@@ -1,6 +1,16 @@
 "use client";
 
-import { Wrench, ChevronDown } from "lucide-react";
+import {
+  Wrench,
+  ChevronDown,
+  Globe,
+  Search,
+  CheckSquare,
+  FileText,
+  GraduationCap,
+  ClipboardList,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 import {
   Collapsible,
@@ -18,6 +28,32 @@ export type ToolIndicator = {
 interface AiToolIndicatorProps {
   tools: ToolIndicator[];
   className?: string;
+}
+
+function getToolIcon(name: string): LucideIcon {
+  const normalized = name.toLowerCase();
+
+  if (normalized === "web_search") return Globe;
+  if (normalized.startsWith("search_") || normalized === "rag_search")
+    return Search;
+  if (normalized.includes("task") || normalized.includes("deadline"))
+    return CheckSquare;
+  if (
+    normalized.includes("notice") ||
+    normalized.includes("post") ||
+    normalized.includes("document")
+  )
+    return FileText;
+  if (
+    normalized.includes("class") ||
+    normalized.includes("grade") ||
+    normalized.includes("submission") ||
+    normalized.includes("attendance")
+  )
+    return GraduationCap;
+  if (normalized.includes("assignment")) return ClipboardList;
+
+  return Wrench;
 }
 
 function getToolLabel(name: string) {
@@ -41,8 +77,8 @@ function getToolLabel(name: string) {
       finished: "Materials retrieved",
     },
     web_search: {
-      running: "Searching the web...",
-      finished: "Search results ready",
+      running: "Searching the web for up-to-date info...",
+      finished: "Web search complete",
     },
     grade_assignment: {
       running: "Grading submission...",
@@ -102,7 +138,6 @@ function getToolLabel(name: string) {
     return toolMappings[normalized];
   }
 
-  // Fallback for unknown tools
   return {
     running: "Working...",
     finished: "Done",
@@ -111,15 +146,25 @@ function getToolLabel(name: string) {
 
 function ToolStatusText({ tool }: { tool: ToolIndicator }) {
   const labels = getToolLabel(tool.name);
+  const Icon = getToolIcon(tool.name);
+
   if (tool.status === "running") {
     return (
-      <span className="bg-[linear-gradient(to_right,var(--muted-foreground)_40%,var(--foreground)_60%,var(--muted-foreground)_80%)] bg-size-[200%_auto] bg-clip-text font-medium text-transparent animate-[shimmer_4s_infinite_linear]">
-        {labels.running}
-      </span>
+      <div className="flex items-start gap-2 text-sm text-muted-foreground">
+        <Icon className="mt-0.5 size-4 shrink-0 text-current" />
+        <span className="bg-[linear-gradient(to_right,var(--muted-foreground)_40%,var(--foreground)_60%,var(--muted-foreground)_80%)] bg-size-[200%_auto] bg-clip-text font-medium text-transparent animate-[shimmer_4s_infinite_linear]">
+          {labels.running}
+        </span>
+      </div>
     );
   }
 
-  return <span>{labels.finished}</span>;
+  return (
+    <div className="flex items-start gap-2 text-sm text-muted-foreground">
+      <Icon className="mt-0.5 size-4 shrink-0 text-current" />
+      <span>{labels.finished}</span>
+    </div>
+  );
 }
 
 export function AiToolIndicator({ tools, className }: AiToolIndicatorProps) {
@@ -131,11 +176,10 @@ export function AiToolIndicator({ tools, className }: AiToolIndicatorProps) {
     return (
       <div
         className={cn(
-          "flex items-start gap-2 text-sm text-muted-foreground",
+          "text-sm text-muted-foreground",
           className,
         )}
       >
-        <Wrench className="mt-0.5 size-4 shrink-0 text-current" />
         <ToolStatusText tool={tools[0]} />
       </div>
     );
@@ -151,7 +195,7 @@ export function AiToolIndicator({ tools, className }: AiToolIndicatorProps) {
       <CollapsibleContent className="mt-2 space-y-2 pl-5">
         {tools.map((tool) => (
           <div
-            className="flex items-start gap-2 rounded-xl px-0 py-1 text-sm text-muted-foreground"
+            className="rounded-xl px-0 py-1 text-sm text-muted-foreground"
             key={tool.id}
           >
             <ToolStatusText tool={tool} />

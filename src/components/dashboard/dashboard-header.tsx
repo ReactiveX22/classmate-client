@@ -47,13 +47,11 @@ export function DashboardHeader({
   }, []);
 
   const queryClient = useQueryClient();
-  const conversations = queryClient.getQueryData<{
-    conversations: { id: string; title: string | null }[];
-  }>(["ai", "conversations"]);
+  const conversationData = queryClient.getQueryData<{
+    conversation: { id: string; title: string | null };
+  }>(["ai", "conversations", convId]);
 
-  const chatTitle = isAiChat
-    ? conversations?.conversations?.find((c) => c.id === convId)?.title
-    : null;
+  const chatTitle = isAiChat ? conversationData?.conversation?.title ?? null : null;
 
   return (
     <>

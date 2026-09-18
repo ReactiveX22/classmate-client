@@ -28,6 +28,7 @@ interface AiChatPageProps {
 export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
   const queryClient = useQueryClient();
   const autoSentRef = useRef(false);
+  const { pendingWebSearch } = useAiAutoMessage();
 
   const handleTitleUpdate = useCallback(
     (conversation: AiConversation) => {
@@ -160,9 +161,9 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
   useEffect(() => {
     if (autoMessage && !autoSentRef.current && !isStreaming) {
       autoSentRef.current = true;
-      sendMessage(autoMessage);
+      sendMessage(autoMessage, { webSearch: pendingWebSearch });
     }
-  }, [autoMessage, isStreaming, sendMessage]);
+  }, [autoMessage, isStreaming, sendMessage, pendingWebSearch]);
 
   useEffect(() => {
     if (!conversationQuery.error) {
