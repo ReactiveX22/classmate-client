@@ -108,12 +108,12 @@ export function DashboardMockup() {
                         shape: "bg-indigo-300/80 dark:bg-indigo-400/25",
                       },
                       {
-                        name: "Algorithms",
-                        code: "CS401",
+                        name: "Machine Learning",
+                        code: "CS450",
                         section: "B",
                         students: 35,
-                        pattern: "bg-amber-100 dark:bg-amber-500/15",
-                        shape: "bg-amber-300/80 dark:bg-amber-400/25",
+                        pattern: "bg-rose-100 dark:bg-rose-500/15",
+                        shape: "bg-rose-300/80 dark:bg-rose-400/25",
                       },
                     ].map((c) => (
                       <div
@@ -217,9 +217,9 @@ export function DashboardMockup() {
                     },
                     {
                       title: "Quiz 2",
-                      classroom: "CS401 · 10:00 AM",
+                      classroom: "CS450 · 10:00 AM",
                       date: "Tomorrow",
-                      color: "bg-amber-500",
+                      color: "bg-rose-500",
                       today: false,
                     },
                     {
@@ -249,7 +249,7 @@ export function DashboardMockup() {
                         <span
                           className={`text-[8px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap ${
                             item.today
-                              ? "bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-500/10 dark:text-rose-400"
+                              ? "bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20"
                               : "bg-muted/50 text-muted-foreground"
                           }`}
                         >
