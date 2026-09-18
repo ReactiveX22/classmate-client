@@ -15,12 +15,12 @@ import Link from "next/link";
 import { useState } from "react";
 
 const navLinks = [
-  { title: "Features", href: "#features" },
-  { title: "How It Works", href: "#showcase" },
-  { title: "Pricing", href: "#pricing" },
+  { title: "Features", href: "/#features" },
+  { title: "How It Works", href: "/#showcase" },
+  { title: "Pricing", href: "/#pricing" },
 ];
 
-export default function Header() {
+export default function Header({ showNav = true }: { showNav?: boolean }) {
   const [open, setOpen] = useState(false);
   const { data: session, isPending } = useSession();
   const isAuthenticated = !!session?.user;
@@ -36,8 +36,9 @@ export default function Header() {
           <span className="text-xl font-bold tracking-tight">ClassMate</span>
         </Link>
 
-        {/* Desktop Nav - Centered */}
-        <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+        {/* Desktop Nav - Centered (hidden on pages like the 404) */}
+        {showNav && (
+          <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
           {navLinks.map((link) => (
             <Link
               key={link.title}
@@ -48,7 +49,8 @@ export default function Header() {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
             </Link>
           ))}
-        </nav>
+          </nav>
+        )}
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-4">
@@ -102,17 +104,21 @@ export default function Header() {
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-1 mt-8">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.title}
-                    href={link.href}
-                    onClick={() => setOpen(false)}
-                    className="px-4 py-3 rounded-xl text-lg font-medium text-muted-foreground transition-all hover:text-foreground hover:bg-primary/5"
-                  >
-                    {link.title}
-                  </Link>
-                ))}
-                <div className="border-t border-border/10 my-4" />
+                {showNav && (
+                  <>
+                    {navLinks.map((link) => (
+                      <Link
+                        key={link.title}
+                        href={link.href}
+                        onClick={() => setOpen(false)}
+                        className="px-4 py-3 rounded-xl text-lg font-medium text-muted-foreground transition-all hover:text-foreground hover:bg-primary/5"
+                      >
+                        {link.title}
+                      </Link>
+                    ))}
+                    <div className="border-t border-border/10 my-4" />
+                  </>
+                )}
                 <div className="flex flex-col gap-3 px-4">
                   {isPending ? (
                     <div className="h-12 rounded-xl bg-muted animate-pulse" />

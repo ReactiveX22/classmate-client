@@ -4,6 +4,7 @@ import { PostSkeleton } from "./post-skeleton";
 import { Button } from "@/components/ui/button";
 import { IconLoader2 } from "@tabler/icons-react";
 import { useEffect, useRef } from "react";
+import { ScrollToTopButton } from "../scroll-to-top-button";
 
 interface PostListProps {
   classroomId: string;
@@ -102,6 +103,8 @@ export function PostList({ classroomId, isTeacher }: PostListProps) {
           </p>
         </div>
       )}
+
+      <ScrollToTopButton />
     </div>
   );
 }

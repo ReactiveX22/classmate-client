@@ -384,3 +384,11 @@
 .markdown-table-wrapper {
   overflow-x: auto;
 }
+
+@layer utilities {
+  /* Shared glass surface (header, sheets, floating cards).
+     Lives here so every route gets it — not just the landing page. */
+  .glass {
+    @apply border border-border/50 bg-background/60 backdrop-blur-xl;
+  }
+}

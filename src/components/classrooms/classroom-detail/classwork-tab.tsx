@@ -9,6 +9,7 @@ import { IconClipboardList, IconLoader2, IconPlus } from "@tabler/icons-react";
 import { useMemo } from "react";
 import { CreatePostDialog } from "./posts/create-post-dialog";
 import { AssignmentCard } from "./posts/post-types/assignment-card";
+import { ScrollToTopButton } from "./scroll-to-top-button";
 
 interface ClassworkTabProps {
   classroomId: string;
@@ -93,6 +94,8 @@ export function ClassworkTab({ classroomId, isTeacher }: ClassworkTabProps) {
           )}
         </div>
       )}
+
+      <ScrollToTopButton />
     </div>
   );
 }

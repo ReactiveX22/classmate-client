@@ -60,7 +60,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
       {
         onSuccess: () => {
           setShowDeleteDialog(false);
-          router.push(`/dashboard/classrooms/${classroomId}`);
+          router.push(`/dashboard/classrooms/${classroomId}?tab=classwork`);
         },
       },
     );
@@ -88,7 +88,8 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh]">
         <h2 className="text-xl font-semibold mb-2">Assignment not found</h2>
-        <Button onClick={() => router.back()}>Go back</Button>
+
+        <Button onClick={() => router.push(`/dashboard/classrooms/${classroomId}?tab=classwork`)}>Go back</Button>
       </div>
     );
   }
@@ -98,7 +99,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
       <Button
         variant="ghost"
         className="mb-6 pl-0 hover:pl-2 transition-all gap-2 text-muted-foreground"
-        onClick={() => router.back()}
+        onClick={() => router.push(`/dashboard/classrooms/${classroomId}?tab=classwork`)}
       >
         <IconArrowLeft size={18} />
         Back to Classwork

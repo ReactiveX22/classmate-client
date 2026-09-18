@@ -17,6 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CreatePostDialog } from "./posts/create-post-dialog";
 import { MaterialCard } from "./posts/post-types/material-card";
 import { ResourceListItem } from "./resources/resource-list-item";
+import { ScrollToTopButton } from "./scroll-to-top-button";
 
 interface ResourcesTabProps {
   classroomId: string;
@@ -372,6 +373,8 @@ export function ResourcesTab({ classroomId }: ResourcesTabProps) {
           </Card>
         </aside>
       </div>
+
+      <ScrollToTopButton />
     </div>
   );
 }
