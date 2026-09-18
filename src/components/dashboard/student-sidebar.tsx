@@ -57,7 +57,7 @@ function ConversationAction({
               <MoreHorizontal className="size-4" />
             </button>
           }
-          className="opacity-0 transition-opacity group-hover/item:flex group-hover/item:opacity-100 data-popup-open:opacity-100 focus:outline-none"
+          className="data-popup-open:opacity-100 focus:outline-none"
         />
         <DropdownMenuContent side="right" align="start">
           <DropdownMenuItem

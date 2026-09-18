@@ -19,14 +19,14 @@ export default function AiDashboardPage() {
   const { data: user } = useUser();
   const [isCreating, setIsCreating] = useState(false);
 
-  const handleSend = async (message: string) => {
+  const handleSend = async (message: string, options?: { webSearch?: boolean }) => {
     if (isCreating) return;
 
     setIsCreating(true);
 
     try {
       const result = await aiService.createNewChat({});
-      setPendingMessage(message);
+      setPendingMessage(message, options?.webSearch);
       router.push(`/dashboard/ai/${result.conversationId}`);
     } catch {
       toast.error("Failed to start chat", {

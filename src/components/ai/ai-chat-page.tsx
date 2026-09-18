@@ -15,6 +15,7 @@ import { Loader } from "@/components/ui/chat/loader";
 import { ScrollButton } from "@/components/ui/chat/scroll-button";
 import { useAiChat } from "@/hooks/use-ai-chat";
 import { useAiConversation } from "@/hooks/use-ai-conversation";
+import { useAiAutoMessage } from "@/contexts/ai-auto-message-context";
 import { AiConversation } from "@/lib/api/services/ai.service";
 import { ScrollArea } from "../ui/scroll-area";
 import { TaskSidebar } from "./task-sidebar";
@@ -27,7 +28,6 @@ interface AiChatPageProps {
 export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
   const queryClient = useQueryClient();
   const autoSentRef = useRef(false);
-  const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(true);
 
   const handleTitleUpdate = useCallback(
     (conversation: AiConversation) => {
@@ -178,8 +178,6 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
     return sendMessage(message, options);
   };
 
-  const toggleTaskSidebar = () => setIsTaskSidebarOpen((prev) => !prev);
-
   return (
     <div className="flex h-[calc(100vh-64px)] w-full overflow-hidden bg-background">
       <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
@@ -238,7 +236,7 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
         </div>
       </div>
 
-      <TaskSidebar expanded={isTaskSidebarOpen} onToggle={toggleTaskSidebar} />
+      <TaskSidebar />
     </div>
   );
 }

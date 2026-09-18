@@ -4,7 +4,8 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 
 interface AiAutoMessageContextValue {
   pendingMessage: string | null;
-  setPendingMessage: (message: string | null) => void;
+  pendingWebSearch: boolean;
+  setPendingMessage: (message: string | null, webSearch?: boolean) => void;
 }
 
 const AiAutoMessageContext = createContext<AiAutoMessageContextValue | null>(
@@ -12,11 +13,22 @@ const AiAutoMessageContext = createContext<AiAutoMessageContextValue | null>(
 );
 
 export function AiAutoMessageProvider({ children }: { children: ReactNode }) {
-  const [pendingMessage, setPendingMessage] = useState<string | null>(null);
+  const [pending, setPending] = useState<{
+    message: string | null;
+    webSearch: boolean;
+  }>({ message: null, webSearch: false });
+
+  const setPendingMessage = (message: string | null, webSearch = false) => {
+    setPending({ message, webSearch });
+  };
 
   return (
     <AiAutoMessageContext.Provider
-      value={{ pendingMessage, setPendingMessage }}
+      value={{
+        pendingMessage: pending.message,
+        pendingWebSearch: pending.webSearch,
+        setPendingMessage,
+      }}
     >
       {children}
     </AiAutoMessageContext.Provider>

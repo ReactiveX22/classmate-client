@@ -7,7 +7,6 @@ import { StudentSidebar } from "@/components/dashboard/student-sidebar";
 import { TeacherSidebar } from "@/components/dashboard/teacher-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { TaskSheetProvider, TaskSheet } from "@/components/task-sheet";
-import { TaskSidebarProvider } from "@/components/ai/task-sidebar-context";
 
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { ImpersonationBanner } from "@/components/common/impersonation-banner";
@@ -57,9 +56,7 @@ export default function DashboardLayout({
               <NotificationPopover />
               <ProfileDropdown />
             </DashboardHeader>
-            <TaskSidebarProvider>
-              <div className="flex flex-1 flex-col gap-4">{children}</div>
-            </TaskSidebarProvider>
+            <div className="flex flex-1 flex-col gap-4">{children}</div>
           </SidebarInset>
         </SidebarProvider>
         <TaskSheet />

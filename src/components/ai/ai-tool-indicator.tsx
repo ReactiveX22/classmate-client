@@ -68,6 +68,34 @@ function getToolLabel(name: string) {
       running: "Managing tasks...",
       finished: "Tasks managed",
     },
+    get_organization_notices: {
+      running: "Fetching notices...",
+      finished: "Notices retrieved",
+    },
+    search_classroom_documents: {
+      running: "Searching course materials...",
+      finished: "Course materials found",
+    },
+    search_notice_documents: {
+      running: "Searching notice archives...",
+      finished: "Notice archives found",
+    },
+    get_classroom_post_by_id: {
+      running: "Loading post details...",
+      finished: "Post loaded",
+    },
+    get_assignment_submissions: {
+      running: "Fetching submissions...",
+      finished: "Submissions loaded",
+    },
+    get_attendances: {
+      running: "Loading attendance records...",
+      finished: "Attendance records loaded",
+    },
+    get_grades: {
+      running: "Fetching grades...",
+      finished: "Grades loaded",
+    },
   };
 
   if (toolMappings[normalized]) {
