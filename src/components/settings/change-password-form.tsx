@@ -88,9 +88,9 @@ export function ChangePasswordForm() {
   });
 
   return (
-    <Card className="w-full md:min-w-md">
+    <Card size="sm">
       <CardHeader>
-        <CardTitle className="text-xl">Change Password</CardTitle>
+        <CardTitle>Change Password</CardTitle>
         <CardDescription>
           Ensure your account is using a long, random password to stay secure.
         </CardDescription>
