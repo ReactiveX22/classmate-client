@@ -1,19 +1,24 @@
 "use client";
 
 import { ArrowUp, Square } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
   PromptInput,
   PromptInputAction,
+  PromptInputActions,
   PromptInputTextarea,
 } from "@/components/ui/chat/prompt-input";
+import { IconWorld } from "@tabler/icons-react";
 
 interface AiInputBarProps {
   isStreaming: boolean;
   isRetrying?: boolean;
-  onSend: (message: string) => void | Promise<void>;
+  onSend: (
+    message: string,
+    options?: { webSearch?: boolean },
+  ) => void | Promise<void>;
   onStop: () => void;
 }
 
@@ -24,6 +29,14 @@ export function AiInputBar({
   onStop,
 }: AiInputBarProps) {
   const [message, setMessage] = useState("");
+  const [webSearch, setWebSearch] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("ai-web-search") === "true";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("ai-web-search", String(webSearch));
+  }, [webSearch]);
 
   const canSend = message.trim().length > 0 && !isStreaming && !isRetrying;
 
@@ -34,7 +47,7 @@ export function AiInputBar({
 
     const nextMessage = message.trim();
     setMessage("");
-    await onSend(nextMessage);
+    await onSend(nextMessage, { webSearch });
   };
 
   return (
@@ -46,30 +59,50 @@ export function AiInputBar({
         value={message}
         onValueChange={setMessage}
       >
-        <div className="relative">
-          <PromptInputTextarea
-            autoFocus
-            className="rounded-[28px] p-4 pr-10 pl-5 md:text-base"
-            disabled={isStreaming || isRetrying}
-            placeholder="Ask anything"
-          />
+        <PromptInputTextarea
+          className="rounded-[28px] p-4 pr-10 md:text-base"
+          disabled={isStreaming || isRetrying}
+          placeholder="Ask anything"
+        />
 
-          <div className="absolute bottom-[12px] right-2">
-            <PromptInputAction
-              tooltip={isStreaming ? "Stop generation" : "Send message"}
+        <PromptInputActions className="px-3 pb-3">
+          <PromptInputAction
+            tooltip={webSearch ? "Web search on" : "Web search off"}
+          >
+            <Button
+              className="gap-1.5 rounded-full px-2.5"
+              disabled={isStreaming || isRetrying}
+              onClick={() => setWebSearch((prev) => !prev)}
+              size="sm"
+              type="button"
+              variant={webSearch ? "secondary" : "ghost"}
             >
-              <Button
-                className="size-8 rounded-full"
-                disabled={!canSend && !isStreaming}
-                onClick={isStreaming ? onStop : handleSubmit}
-                size="icon"
-                type="button"
-              >
-                {isStreaming ? <Square size={16} /> : <ArrowUp size={16} />}
-              </Button>
-            </PromptInputAction>
-          </div>
-        </div>
+              <IconWorld
+                size={14}
+                className={webSearch ? "text-primary" : "text-muted-foreground"}
+              />
+              <span className={`text-sm ${webSearch ? "text-primary" : "text-muted-foreground"}`}>
+                Web Search
+              </span>
+            </Button>
+          </PromptInputAction>
+
+          <div className="flex-1" />
+
+          <PromptInputAction
+            tooltip={isStreaming ? "Stop generation" : "Send message"}
+          >
+            <Button
+              className="size-8 rounded-full"
+              disabled={!canSend && !isStreaming}
+              onClick={isStreaming ? onStop : handleSubmit}
+              size="icon"
+              type="button"
+            >
+              {isStreaming ? <Square size={16} /> : <ArrowUp size={16} />}
+            </Button>
+          </PromptInputAction>
+        </PromptInputActions>
       </PromptInput>
 
       <p className="text-muted-foreground mt-2 text-center text-xs">

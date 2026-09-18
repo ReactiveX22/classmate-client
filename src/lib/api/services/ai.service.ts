@@ -36,6 +36,7 @@ export interface AiConversationResponse {
 export interface StreamChatInput {
   message: string;
   conversationId: string;
+  webSearch?: boolean;
 }
 
 export interface RetryChatInput {

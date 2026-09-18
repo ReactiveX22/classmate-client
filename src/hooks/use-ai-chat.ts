@@ -205,7 +205,7 @@ export function useAiChat({
   );
 
   const sendMessage = useCallback(
-    async (message: string) => {
+    async (message: string, options?: { webSearch?: boolean }) => {
       const trimmedMessage = message.trim();
 
       if (!trimmedMessage || isStreamingRef.current) {
@@ -239,6 +239,7 @@ export function useAiChat({
           {
             message: trimmedMessage,
             conversationId,
+            webSearch: options?.webSearch,
           },
           controller.signal,
         )) {

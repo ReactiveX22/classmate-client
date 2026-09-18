@@ -21,3 +21,27 @@ export function TaskPanel() {
     </div>
   );
 }
+
+export function TaskPanelRail({ onClick }: { onClick: () => void }) {
+  const { data } = useTodos({ limit: 50 });
+  const count = data?.data?.length ?? 0;
+
+  return (
+    <button
+      onClick={onClick}
+      className="flex h-full w-12 flex-col items-center border-l bg-background pt-3 transition-colors hover:bg-accent/50"
+    >
+      <span
+        className="select-none text-xs font-semibold text-muted-foreground"
+        style={{ writingMode: "vertical-rl" }}
+      >
+        Tasks
+      </span>
+      {count > 0 && (
+        <Badge variant="secondary" className="mt-2 h-4 text-[10px]">
+          {count}
+        </Badge>
+      )}
+    </button>
+  );
+}

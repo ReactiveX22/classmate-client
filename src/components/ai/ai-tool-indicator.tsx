@@ -76,8 +76,8 @@ function getToolLabel(name: string) {
 
   // Fallback for unknown tools
   return {
-    running: `Running ${name}...`,
-    finished: `Completed ${name}`,
+    running: "Working...",
+    finished: "Done",
   };
 }
 
