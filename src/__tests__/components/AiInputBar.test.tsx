@@ -45,7 +45,8 @@ describe("AiInputBar", () => {
     const onStop = vi.fn();
     render(<AiInputBar {...defaultProps} isStreaming={true} onStop={onStop} />);
 
-    const stopButton = screen.getByRole("button");
+    const buttons = screen.getAllByRole("button");
+    const stopButton = buttons[buttons.length - 1];
     fireEvent.click(stopButton);
 
     expect(onStop).toHaveBeenCalledTimes(1);
@@ -58,8 +59,9 @@ describe("AiInputBar", () => {
     const textarea = screen.getByPlaceholderText("Ask anything");
     fireEvent.change(textarea, { target: { value: "  " } });
 
-    const button = screen.getByRole("button");
-    fireEvent.click(button);
+    const buttons = screen.getAllByRole("button");
+    const sendButton = buttons[buttons.length - 1];
+    fireEvent.click(sendButton);
 
     expect(onSend).not.toHaveBeenCalled();
   });
