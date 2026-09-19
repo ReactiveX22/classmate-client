@@ -68,7 +68,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
 
   if (isLoading) {
     return (
-      <div className="container max-w-5xl py-8 space-y-8">
+      <div className="w-full p-4 md:p-6 space-y-8">
         <Skeleton className="h-8 w-32" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">
@@ -95,24 +95,24 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
   }
 
   return (
-    <div className="container max-w-6xl p-4 md:p-6 mx-auto">
+    <div className="w-full p-4 md:p-6">
       <Button
         variant="ghost"
-        className="mb-6 pl-0 hover:pl-2 transition-all gap-2 text-muted-foreground"
+        className="mb-4 pl-0 hover:pl-2 transition-all gap-2 text-muted-foreground"
         onClick={() => router.push(`/dashboard/classrooms/${classroomId}?tab=classwork`)}
       >
         <IconArrowLeft size={18} />
         Back to Classwork
       </Button>
 
-      <div className="flex items-start gap-3 sm:gap-5 mb-6">
-        <div className="p-2 sm:p-3.5 bg-primary/10 rounded-full text-primary mt-1 shrink-0">
-          <IconClipboard className="w-5 h-5 sm:w-6 sm:h-6" />
+      <div className="flex items-start gap-3 sm:gap-4 mb-4">
+        <div className="p-2 bg-primary/10 rounded-full text-primary mt-1 shrink-0">
+          <IconClipboard className="w-5 h-5" />
         </div>
         <div className="flex-1 min-w-0 space-y-2">
           <div className="flex items-start justify-between gap-2 sm:gap-4">
             <div className="flex-1 min-w-0">
-              <h1 className="text-xl sm:text-3xl font-semibold tracking-tight text-foreground">
+              <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-foreground">
                 {post.title}
               </h1>
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs md:text-sm text-muted-foreground mt-1 sm:mt-2">
@@ -199,7 +199,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
         </div>
       </div>
 
-      <Separator className="my-6" />
+      <Separator className="my-4" />
 
       {isAuthor ? (
         <Tabs defaultValue="instructions" className="w-full">
