@@ -16,7 +16,8 @@ import { ScrollButton } from "@/components/ui/chat/scroll-button";
 import { useAiChat } from "@/hooks/use-ai-chat";
 import { useAiConversation } from "@/hooks/use-ai-conversation";
 import { useAiAutoMessage } from "@/contexts/ai-auto-message-context";
-import { AiConversation } from "@/lib/api/services/ai.service";
+import { AiConversation, AiMessage } from "@/lib/api/services/ai.service";
+import { aiConversationQueryOptions } from "@/lib/queryOptions/aiQueryOptions";
 import { ScrollArea } from "../ui/scroll-area";
 import { TaskSidebar } from "./task-sidebar";
 
@@ -46,6 +47,17 @@ export function AiChatPage({ convId, autoMessage }: AiChatPageProps) {
                 )
               : [conversation, ...conversations],
           };
+        },
+      );
+      queryClient.setQueryData(
+        aiConversationQueryOptions(conversation.id).queryKey,
+        (
+          currentData:
+            | { conversation: AiConversation; messages: AiMessage[] }
+            | undefined,
+        ) => {
+          if (!currentData) return currentData;
+          return { ...currentData, conversation };
         },
       );
     },

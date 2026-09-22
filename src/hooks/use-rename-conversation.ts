@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { aiService } from "@/lib/api/services/ai.service";
+import { aiService, AiConversation, AiMessage } from "@/lib/api/services/ai.service";
+import { aiConversationQueryOptions } from "@/lib/queryOptions/aiQueryOptions";
 import { toast } from "sonner";
 import { handleApiError } from "@/lib/api";
 
@@ -26,6 +27,21 @@ export const useRenameConversation = () => {
             conversations: currentData.conversations.map((c) =>
               c.id === id ? { ...c, title } : c,
             ),
+          };
+        },
+      );
+
+      queryClient.setQueryData(
+        aiConversationQueryOptions(id).queryKey,
+        (
+          currentData:
+            | { conversation: AiConversation; messages: AiMessage[] }
+            | undefined,
+        ) => {
+          if (!currentData) return currentData;
+          return {
+            ...currentData,
+            conversation: { ...currentData.conversation, title },
           };
         },
       );
