@@ -1,14 +1,22 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   Wrench,
   ChevronDown,
   Globe,
   Search,
-  CheckSquare,
   FileText,
   GraduationCap,
-  ClipboardList,
+  CalendarClock,
+  Megaphone,
+  FileCheck,
+  CalendarCheck,
+  TrendingUp,
+  ListChecks,
+  LoaderCircle,
+  CheckCheck,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -30,128 +38,103 @@ interface AiToolIndicatorProps {
   className?: string;
 }
 
-function getToolIcon(name: string): LucideIcon {
-  const normalized = name.toLowerCase();
+type ToolLabel = {
+  running: string;
+  finished: string;
+  icon: LucideIcon;
+};
 
-  if (normalized === "web_search") return Globe;
-  if (normalized.startsWith("search_") || normalized === "rag_search")
-    return Search;
-  if (normalized.includes("task") || normalized.includes("deadline"))
-    return CheckSquare;
-  if (
-    normalized.includes("notice") ||
-    normalized.includes("post") ||
-    normalized.includes("document")
-  )
-    return FileText;
-  if (
-    normalized.includes("class") ||
-    normalized.includes("grade") ||
-    normalized.includes("submission") ||
-    normalized.includes("attendance")
-  )
-    return GraduationCap;
-  if (normalized.includes("assignment")) return ClipboardList;
+/**
+ * One entry per tool the main agent can actually stream
+ * (mirrors MainToolsRegistry in classmate-backend).
+ * running = honest in-flight operation, finished = result-neutral outcome.
+ * The client only knows a tool finished — never whether it found data —
+ * so finished copy never claims success ("found"/"ready").
+ * Icons: tasks use ListChecks (lucide cousin of the app's tabler
+ * IconListCheck), grades/attendance reuse TrendingUp/CalendarCheck
+ * already established elsewhere in the product.
+ */
+const toolMappings: Record<string, ToolLabel> = {
+  list_user_classrooms: {
+    running: "Looking up your classrooms...",
+    finished: "Classrooms loaded",
+    icon: GraduationCap,
+  },
+  get_classroom_posts: {
+    running: "Checking what's been posted...",
+    finished: "Posts loaded",
+    icon: FileText,
+  },
+  get_classroom_post_by_id: {
+    running: "Loading post details...",
+    finished: "Post details loaded",
+    icon: FileText,
+  },
+  get_upcoming_deadlines: {
+    running: "Checking what's coming up...",
+    finished: "Deadlines checked",
+    icon: CalendarClock,
+  },
+  get_organization_notices: {
+    running: "Checking for notices...",
+    finished: "Notices loaded",
+    icon: Megaphone,
+  },
+  get_assignment_submissions: {
+    running: "Checking submissions...",
+    finished: "Submissions loaded",
+    icon: FileCheck,
+  },
+  get_attendances: {
+    running: "Checking attendance records...",
+    finished: "Attendance loaded",
+    icon: CalendarCheck,
+  },
+  get_grades: {
+    running: "Fetching grades...",
+    finished: "Grades loaded",
+    icon: TrendingUp,
+  },
+  search_classroom_documents: {
+    running: "Searching your course materials...",
+    finished: "Searched course materials",
+    icon: Search,
+  },
+  search_notice_documents: {
+    running: "Searching notice attachments...",
+    finished: "Searched notice files",
+    icon: Search,
+  },
+  web_search: {
+    running: "Searching the web for up-to-date info...",
+    finished: "Web search complete",
+    icon: Globe,
+  },
+  manage_tasks: {
+    running: "Working on your tasks...",
+    finished: "Task request completed",
+    icon: ListChecks,
+  },
+};
 
-  return Wrench;
-}
-
-function getToolLabel(name: string) {
-  const normalized = name.toLowerCase();
-
-  const toolMappings: Record<string, { running: string; finished: string }> = {
-    get_classroom_posts: {
-      running: "Scanning classroom stream...",
-      finished: "Classroom stream updated",
-    },
-    list_user_classrooms: {
-      running: "Loading your classrooms...",
-      finished: "Classrooms synchronized",
-    },
-    get_upcoming_deadlines: {
-      running: "Checking upcoming deadlines...",
-      finished: "Deadlines updated",
-    },
-    rag_search: {
-      running: "Searching your course materials...",
-      finished: "Materials retrieved",
-    },
-    web_search: {
-      running: "Searching the web for up-to-date info...",
-      finished: "Web search complete",
-    },
-    grade_assignment: {
-      running: "Grading submission...",
-      finished: "Submission graded",
-    },
-    list_tasks: {
-      running: "Fetching tasks...",
-      finished: "Fetched tasks",
-    },
-    create_task: {
-      running: "Creating task...",
-      finished: "Task created",
-    },
-    update_task: {
-      running: "Updating task...",
-      finished: "Task updated",
-    },
-    delete_task: {
-      running: "Deleting task...",
-      finished: "Task deleted",
-    },
-    manage_tasks: {
-      running: "Managing tasks...",
-      finished: "Tasks managed",
-    },
-    get_organization_notices: {
-      running: "Fetching notices...",
-      finished: "Notices retrieved",
-    },
-    search_classroom_documents: {
-      running: "Searching course materials...",
-      finished: "Course materials found",
-    },
-    search_notice_documents: {
-      running: "Searching notice archives...",
-      finished: "Notice archives found",
-    },
-    get_classroom_post_by_id: {
-      running: "Loading post details...",
-      finished: "Post loaded",
-    },
-    get_assignment_submissions: {
-      running: "Fetching submissions...",
-      finished: "Submissions loaded",
-    },
-    get_attendances: {
-      running: "Loading attendance records...",
-      finished: "Attendance records loaded",
-    },
-    get_grades: {
-      running: "Fetching grades...",
-      finished: "Grades loaded",
-    },
-  };
-
-  if (toolMappings[normalized]) {
-    return toolMappings[normalized];
-  }
-
-  return {
-    running: "Working...",
-    finished: "Done",
-  };
+function getToolLabel(name: string): ToolLabel {
+  return (
+    toolMappings[name.toLowerCase()] ?? {
+      running: "Working...",
+      finished: "Done",
+      icon: Wrench,
+    }
+  );
 }
 
 function ToolStatusText({ tool }: { tool: ToolIndicator }) {
   const labels = getToolLabel(tool.name);
-  const Icon = getToolIcon(tool.name);
+  const Icon = labels.icon;
 
   if (tool.status === "running") {
     return (
       <div className="flex items-start gap-2 text-sm text-muted-foreground">
-        <Icon className="mt-0.5 size-4 shrink-0 text-current" />
+        <Icon className="mt-0.5 size-4 shrink-0 animate-pulse text-current motion-reduce:animate-none" />
         <span className="bg-[linear-gradient(to_right,var(--muted-foreground)_40%,var(--foreground)_60%,var(--muted-foreground)_80%)] bg-size-[200%_auto] bg-clip-text font-medium text-transparent animate-[shimmer_4s_infinite_linear]">
           {labels.running}
         </span>
@@ -185,19 +168,37 @@ export function AiToolIndicator({ tools, className }: AiToolIndicatorProps) {
     );
   }
 
+  return <MultiToolIndicator className={className} tools={tools} />;
+}
+
+function MultiToolIndicator({
+  tools,
+  className,
+}: AiToolIndicatorProps) {
+  const hasRunning = tools.some((tool) => tool.status === "running");
+  // Live: open by default so running rows are watchable.
+  // Settled: collapsed. A user toggle always wins over both.
+  const [userOpen, setUserOpen] = useState<boolean | null>(null);
+  const open = userOpen ?? hasRunning;
+
   return (
-    <Collapsible className={cn("px-0 py-0", className)}>
-      <CollapsibleTrigger className="flex w-fit items-center gap-1.5 text-left text-sm text-muted-foreground transition-colors hover:text-foreground">
-        <Wrench className="size-4 shrink-0 text-current" />
-        <span>{tools.length} tool calls</span>
+    <Collapsible
+      className={cn("px-0 py-0", className)}
+      open={open}
+      onOpenChange={(next) => setUserOpen(next)}
+    >
+      <CollapsibleTrigger className="flex w-fit cursor-pointer items-center gap-1.5 text-left text-sm text-muted-foreground transition-colors hover:text-foreground">
+        {hasRunning ? (
+          <LoaderCircle className="size-4 shrink-0 animate-spin text-current motion-reduce:animate-none" />
+        ) : (
+          <CheckCheck className="size-4 shrink-0 text-current" />
+        )}
+        <span>{tools.length} checks</span>
         <ChevronDown className="size-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-180" />
       </CollapsibleTrigger>
-      <CollapsibleContent className="mt-2 space-y-2 pl-5">
+      <CollapsibleContent className="mt-1.5 space-y-1.5 pl-5">
         {tools.map((tool) => (
-          <div
-            className="rounded-xl px-0 py-1 text-sm text-muted-foreground"
-            key={tool.id}
-          >
+          <div className="text-sm text-muted-foreground" key={tool.id}>
             <ToolStatusText tool={tool} />
           </div>
         ))}

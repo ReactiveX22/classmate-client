@@ -35,11 +35,10 @@ type ToolIndicator = {
 const TOOL_RUNNING_MIN_MS = 450;
 const TOOL_FINISH_MIN_MS = 700;
 
-const TASK_MUTATION_TOOLS = new Set([
-  "create_task",
-  "update_task",
-  "delete_task",
-]);
+// Sub-tool events (create/update/delete_task) never stream to the client —
+// only manage_tasks does. Invalidate task queries whenever it finishes
+// (covers reads too; a harmless extra refetch beats a stale sidebar).
+const TASK_MUTATION_TOOLS = new Set(["manage_tasks"]);
 
 const initialState: AiChatState = {
   messages: [],
