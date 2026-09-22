@@ -31,6 +31,7 @@ interface AiMessageListProps {
   isStreaming: boolean;
   error?: { message: string } | null;
   onRetry?: () => void;
+  onEdit?: (message: AiMessage) => void;
 }
 
 export function AiMessageList({
@@ -41,6 +42,7 @@ export function AiMessageList({
   isStreaming,
   error,
   onRetry,
+  onEdit,
 }: AiMessageListProps) {
   const tools = activeTools ?? [];
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
@@ -144,15 +146,19 @@ export function AiMessageList({
                     {message.content}
                   </MessageContent>
                   <MessageActions className="flex gap-0 opacity-0 transition-opacity duration-150 group-hover/message:opacity-100">
-                    <MessageAction tooltip="Edit" delayDuration={100}>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-full"
-                      >
-                        <Pencil />
-                      </Button>
-                    </MessageAction>
+                    {onEdit && (
+                      <MessageAction tooltip="Edit" delayDuration={100}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="rounded-full"
+                          onClick={() => onEdit(message)}
+                          aria-label="Edit message"
+                        >
+                          <Pencil />
+                        </Button>
+                      </MessageAction>
+                    )}
                     <MessageAction tooltip="Copy" delayDuration={100}>
                       <Button
                         variant="ghost"
