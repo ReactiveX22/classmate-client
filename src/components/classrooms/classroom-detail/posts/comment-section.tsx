@@ -184,7 +184,7 @@ export function CommentSection({ postId, classroomId }: CommentSectionProps) {
                         </div>
                       ) : (
                         <>
-                          <p className="text-xs text-foreground whitespace-pre-wrap leading-relaxed">
+                          <p className="text-[13px] text-foreground whitespace-pre-wrap leading-relaxed">
                             <span className="font-semibold">
                               {getCommentAuthorName(comment).split(" ")[0]}
                             </span>{" "}

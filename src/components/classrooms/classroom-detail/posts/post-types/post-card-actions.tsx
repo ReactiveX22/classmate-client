@@ -28,6 +28,8 @@ export function PostCardActions({
 
   const isAuthor = user && user.id === authorId;
 
+  if (!onViewDetails && !isAuthor) return null;
+
   return (
     <CardAction>
       <DropdownMenu>

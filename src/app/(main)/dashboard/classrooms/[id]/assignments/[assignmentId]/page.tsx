@@ -14,7 +14,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDeletePost } from "@/hooks/use-delete-post";
 import { usePost } from "@/hooks/use-post";
@@ -105,7 +104,7 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
         Back to Classwork
       </Button>
 
-      <div className="flex items-start gap-3 sm:gap-4 mb-4">
+      <div className="flex items-start gap-3 sm:gap-4 mb-6">
         <div className="p-2 bg-primary/10 rounded-full text-primary mt-1 shrink-0">
           <IconClipboard className="w-5 h-5" />
         </div>
@@ -199,8 +198,6 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
         </div>
       </div>
 
-      <Separator className="my-4" />
-
       {isAuthor ? (
         <Tabs defaultValue="instructions" className="w-full">
           <TabsList className="mb-6">
@@ -289,6 +286,24 @@ function AssignmentContent({
               />
             </div>
           )}
+
+          <Card className="gap-2">
+            <CardHeader>
+              <CardTitle>Discussion</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {post.commentsEnabled ? (
+                <CommentSection
+                  postId={assignmentId}
+                  classroomId={classroomId}
+                />
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Comments are disabled for this assignment.
+                </p>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* Right Column - Your Work (Students only) */}
@@ -303,21 +318,6 @@ function AssignmentContent({
           </div>
         )}
       </div>
-
-      <Card className="mt-6 gap-2">
-        <CardHeader>
-          <CardTitle>Discussion</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {post.commentsEnabled ? (
-            <CommentSection postId={assignmentId} classroomId={classroomId} />
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Comments are disabled for this assignment.
-            </p>
-          )}
-        </CardContent>
-      </Card>
     </div>
   );
 }
