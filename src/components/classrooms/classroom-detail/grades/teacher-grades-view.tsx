@@ -28,7 +28,7 @@ export function TeacherGradesView({ classroomId }: TeacherGradesViewProps) {
   }, [classroom?.classroomMembers, selectedStudentId]);
 
   return (
-    <div className="flex flex-col md:flex-row md:items-start h-auto md:h-[calc(100vh-12rem)] border rounded-lg bg-card overflow-hidden shadow-sm mt-6">
+    <div className="flex flex-col md:flex-row md:items-start h-auto md:h-[calc(100vh-14rem)] border rounded-lg bg-card overflow-hidden shadow-sm mt-6">
       <StudentList
         classroomId={classroomId}
         selectedStudentId={selectedStudentId}
