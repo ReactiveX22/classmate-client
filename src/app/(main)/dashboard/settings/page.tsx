@@ -80,7 +80,7 @@ export default function SettingsPage() {
                     </Button>
                   </div>
                 </CardContent>
-            </Card>
+              </Card>
             </RoleGuard>
           </div>
         </TabsContent>

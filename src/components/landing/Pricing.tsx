@@ -108,7 +108,7 @@ export function Pricing() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             ClassMate is open source. Run it yourself for free, or wait for our
-            managed cloud option if self-hosting isn't your thing.
+            managed cloud option if self-hosting isn&apos;t your thing.
           </motion.p>
         </div>
 

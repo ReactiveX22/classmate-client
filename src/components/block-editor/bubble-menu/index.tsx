@@ -23,7 +23,7 @@ export const BubbleMenu = ({ editor }: BubbleMenuProps) => {
     (ed) => ({
       isCodeBlock: ed.isActive("codeBlock"),
     }),
-    shallowEqual
+    shallowEqual,
   );
 
   const shouldShow = useCallback(
@@ -46,7 +46,7 @@ export const BubbleMenu = ({ editor }: BubbleMenuProps) => {
       }
       return true;
     },
-    []
+    [],
   );
 
   if (!editor) {
@@ -54,7 +54,7 @@ export const BubbleMenu = ({ editor }: BubbleMenuProps) => {
   }
 
   const hasTextAlign = editor.extensionManager.extensions.some(
-    (ext) => ext.name === "textAlign"
+    (ext) => ext.name === "textAlign",
   );
 
   const isCodeBlockActive = editorState.isCodeBlock;

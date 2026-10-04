@@ -61,6 +61,6 @@ export const StaticRenderer = ({
   return createElement(
     Tag,
     { ...props, className: cn("rte-static-renderer", className) },
-    children
+    children,
   );
 };

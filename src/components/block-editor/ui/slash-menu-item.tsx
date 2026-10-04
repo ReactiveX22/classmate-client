@@ -15,7 +15,7 @@ const SlashMenuItem = React.forwardRef<HTMLButtonElement, SlashMenuItemProps>(
       .join(" ");
 
     return <button ref={ref} type="button" className={cls} {...props} />;
-  }
+  },
 );
 SlashMenuItem.displayName = "SlashMenuItem";
 

@@ -82,7 +82,9 @@ export function AiInputBar({
                 size={14}
                 className={webSearch ? "text-primary" : "text-muted-foreground"}
               />
-              <span className={`text-sm ${webSearch ? "text-primary" : "text-muted-foreground"}`}>
+              <span
+                className={`text-sm ${webSearch ? "text-primary" : "text-muted-foreground"}`}
+              >
                 Web Search
               </span>
             </Button>

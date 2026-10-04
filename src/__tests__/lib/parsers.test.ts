@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { getSortingStateParser, getFiltersStateParser } from "@/lib/parsers";
+import type { ExtendedColumnFilter } from "@/types/data-table";
 
 describe("getSortingStateParser", () => {
   const parser = getSortingStateParser();
@@ -40,17 +41,13 @@ describe("getSortingStateParser", () => {
     it("allows valid keys when columnIds provided", () => {
       const strictParser = getSortingStateParser(["name", "date"]);
       const input = JSON.stringify([{ id: "name", desc: false }]);
-      expect(strictParser.parse(input)).toEqual([
-        { id: "name", desc: false },
-      ]);
+      expect(strictParser.parse(input)).toEqual([{ id: "name", desc: false }]);
     });
 
     it("accepts Set as columnIds", () => {
       const strictParser = getSortingStateParser(new Set(["name", "date"]));
       const input = JSON.stringify([{ id: "name", desc: false }]);
-      expect(strictParser.parse(input)).toEqual([
-        { id: "name", desc: false },
-      ]);
+      expect(strictParser.parse(input)).toEqual([{ id: "name", desc: false }]);
     });
   });
 
@@ -168,9 +165,7 @@ describe("getFiltersStateParser", () => {
     });
 
     it("returns null for missing required fields", () => {
-      expect(
-        parser.parse(JSON.stringify([{ id: "name" }])),
-      ).toBeNull();
+      expect(parser.parse(JSON.stringify([{ id: "name" }]))).toBeNull();
     });
 
     it("filters out invalid keys when columnIds provided", () => {
@@ -204,7 +199,7 @@ describe("getFiltersStateParser", () => {
 
   describe("serialize", () => {
     it("serializes filter state to JSON string", () => {
-      const value = [
+      const value: ExtendedColumnFilter<unknown>[] = [
         {
           id: "name",
           value: "test",

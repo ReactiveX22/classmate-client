@@ -53,7 +53,7 @@ const SuggestionList = forwardRef<SuggestionListHandle, SuggestionListProps>(
 
     const upHandler = () => {
       setSelectedIndex(
-        (selectedIndex + filteredItems.length - 1) % filteredItems.length
+        (selectedIndex + filteredItems.length - 1) % filteredItems.length,
       );
     };
 
@@ -170,13 +170,15 @@ const SuggestionList = forwardRef<SuggestionListHandle, SuggestionListProps>(
             ))
           ) : (
             <div className="block-editor-slash-menu-empty">
-              No results for "{searchQuery}"
+              No results for &quot;{searchQuery}&quot;
             </div>
           )}
         </SlashMenuList>
       </SlashMenu>
     );
-  }
+  },
 );
+
+SuggestionList.displayName = "SuggestionList";
 
 export default SuggestionList;

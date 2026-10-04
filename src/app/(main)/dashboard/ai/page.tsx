@@ -19,7 +19,10 @@ export default function AiDashboardPage() {
   const { data: user } = useUser();
   const [isCreating, setIsCreating] = useState(false);
 
-  const handleSend = async (message: string, options?: { webSearch?: boolean }) => {
+  const handleSend = async (
+    message: string,
+    options?: { webSearch?: boolean },
+  ) => {
     if (isCreating) return;
 
     setIsCreating(true);

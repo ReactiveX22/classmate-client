@@ -26,7 +26,7 @@ export const LanguageSelector = ({ editor }: { editor: Editor }) => {
     (ed) => ({
       currentLanguage: ed.getAttributes("codeBlock").language || "javascript",
     }),
-    shallowEqual
+    shallowEqual,
   );
 
   const langIcon =

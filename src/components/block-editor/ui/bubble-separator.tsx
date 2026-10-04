@@ -9,7 +9,7 @@ const BubbleSeparator = React.forwardRef<HTMLDivElement, BubbleSeparatorProps>(
       className={`block-editor-bubble-separator ${className}`.trim()}
       {...props}
     />
-  )
+  ),
 );
 BubbleSeparator.displayName = "BubbleSeparator";
 

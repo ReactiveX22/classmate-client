@@ -39,16 +39,16 @@ export default function Header({ showNav = true }: { showNav?: boolean }) {
         {/* Desktop Nav - Centered (hidden on pages like the 404) */}
         {showNav && (
           <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-          {navLinks.map((link) => (
-            <Link
-              key={link.title}
-              href={link.href}
-              className="relative py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground group"
-            >
-              {link.title}
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
-            </Link>
-          ))}
+            {navLinks.map((link) => (
+              <Link
+                key={link.title}
+                href={link.href}
+                className="relative py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground group"
+              >
+                {link.title}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+              </Link>
+            ))}
           </nav>
         )}
 

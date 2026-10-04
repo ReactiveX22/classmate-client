@@ -157,12 +157,7 @@ export function AiToolIndicator({ tools, className }: AiToolIndicatorProps) {
 
   if (tools.length === 1) {
     return (
-      <div
-        className={cn(
-          "text-sm text-muted-foreground",
-          className,
-        )}
-      >
+      <div className={cn("text-sm text-muted-foreground", className)}>
         <ToolStatusText tool={tools[0]} />
       </div>
     );
@@ -171,10 +166,7 @@ export function AiToolIndicator({ tools, className }: AiToolIndicatorProps) {
   return <MultiToolIndicator className={className} tools={tools} />;
 }
 
-function MultiToolIndicator({
-  tools,
-  className,
-}: AiToolIndicatorProps) {
+function MultiToolIndicator({ tools, className }: AiToolIndicatorProps) {
   const hasRunning = tools.some((tool) => tool.status === "running");
   // Live: open by default so running rows are watchable.
   // Settled: collapsed. A user toggle always wins over both.

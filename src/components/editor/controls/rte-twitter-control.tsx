@@ -37,10 +37,9 @@ const loadTwitterScript = (): Promise<void> => {
     return twitterScriptPromise;
   }
 
-  // eslint-disable-next-line promise/avoid-new
   twitterScriptPromise = new Promise<void>((resolve, reject) => {
     let script = document.querySelector<HTMLScriptElement>(
-      `script[src="${WIDGET_SCRIPT_URL}"]`
+      `script[src="${WIDGET_SCRIPT_URL}"]`,
     );
     const isNewScript = !script;
     if (!script) {
@@ -102,7 +101,7 @@ const loadTwitterScript = (): Promise<void> => {
           }
           // If widgets isn't attached yet, the poll above will pick it up.
         },
-        { once: true }
+        { once: true },
       );
     }
 
@@ -118,7 +117,7 @@ declare global {
       widgets?: {
         createTweet: (
           tweetId: string,
-          container: HTMLElement
+          container: HTMLElement,
         ) => Promise<unknown>;
       };
     };
@@ -184,7 +183,7 @@ const TwitterNodeView = (props: NodeViewProps) => {
         containerRef.current.innerHTML = "";
         const el = await twttr.widgets.createTweet(
           tweetId,
-          containerRef.current
+          containerRef.current,
         );
 
         if (
@@ -337,7 +336,7 @@ export const TwitterEmbed = Node.create({
 const extractTweetId = (input: string): string | null => {
   const clean = input.trim();
   const match = clean.match(
-    /(?:twitter\.com|x\.com)\/(?:\w+\/status\/|i\/web\/status\/)(\d+)/
+    /(?:twitter\.com|x\.com)\/(?:\w+\/status\/|i\/web\/status\/)(\d+)/,
   );
   if (match) {
     return match[1] ?? null;

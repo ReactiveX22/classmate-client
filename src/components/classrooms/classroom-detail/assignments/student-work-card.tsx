@@ -22,7 +22,12 @@ import {
   IconPlus,
 } from "@tabler/icons-react";
 import { format } from "date-fns";
-import { useEffect, useState, type ComponentProps, type ReactNode } from "react";
+import {
+  useEffect,
+  useState,
+  type ComponentProps,
+  type ReactNode,
+} from "react";
 
 interface StudentWorkCardProps {
   classroomId: string;
@@ -93,7 +98,13 @@ function WorkCardShell({
   );
 }
 
-function FieldBlock({ label, children }: { label: string; children: ReactNode }) {
+function FieldBlock({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) {
   return (
     <div className="space-y-2">
       <p className="text-sm font-medium text-muted-foreground">{label}</p>

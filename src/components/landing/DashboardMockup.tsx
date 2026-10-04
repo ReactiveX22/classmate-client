@@ -86,10 +86,7 @@ export function DashboardMockup() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-1.5">
                       <div className="p-1 rounded-lg bg-primary/10">
-                        <GraduationCap
-                          size={10}
-                          className="text-primary"
-                        />
+                        <GraduationCap size={10} className="text-primary" />
                       </div>
                       <span className="text-[10px] font-semibold">
                         Your Classes

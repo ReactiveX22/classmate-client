@@ -9,7 +9,7 @@ const SlashMenu = React.forwardRef<HTMLDivElement, SlashMenuProps>(
       className={`block-editor-slash-menu ${className}`.trim()}
       {...props}
     />
-  )
+  ),
 );
 SlashMenu.displayName = "SlashMenu";
 

@@ -490,9 +490,7 @@ function ActionBarItem(props: ActionBarItemProps) {
 
   const onClick = React.useCallback(
     (event: React.MouseEvent<ItemElement>) => {
-      onClickProp?.(
-        event as BaseUIHandlerEvent<React.MouseEvent<ItemElement>>,
-      );
+      onClickProp?.(event as BaseUIHandlerEvent<React.MouseEvent<ItemElement>>);
       if (event.defaultPrevented) return;
 
       const item = itemRef.current;
@@ -518,9 +516,7 @@ function ActionBarItem(props: ActionBarItemProps) {
 
   const onFocus = React.useCallback(
     (event: React.FocusEvent<ItemElement>) => {
-      onFocusProp?.(
-        event as BaseUIHandlerEvent<React.FocusEvent<ItemElement>>,
-      );
+      onFocusProp?.(event as BaseUIHandlerEvent<React.FocusEvent<ItemElement>>);
       if (event.defaultPrevented) return;
 
       focusContext.onItemFocus(itemId);

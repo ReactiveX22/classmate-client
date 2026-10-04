@@ -1,5 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { aiService, AiConversation, AiMessage } from "@/lib/api/services/ai.service";
+import {
+  aiService,
+  AiConversation,
+  AiMessage,
+} from "@/lib/api/services/ai.service";
 import { aiConversationQueryOptions } from "@/lib/queryOptions/aiQueryOptions";
 import { toast } from "sonner";
 import { handleApiError } from "@/lib/api";

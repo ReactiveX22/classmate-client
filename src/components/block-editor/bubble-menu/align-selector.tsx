@@ -63,7 +63,7 @@ export const TextAlignSelector = ({ editor }: { editor: Editor }) => {
         !ed.isActive({ textAlign: "right" }),
       isAlignRight: ed.isActive({ textAlign: "right" }),
     }),
-    shallowEqual
+    shallowEqual,
   );
 
   const activeItem = alignItems.find((i) => i.isActive(editorState));

@@ -9,7 +9,7 @@ const SlashMenuSearch = React.forwardRef<HTMLDivElement, SlashMenuSearchProps>(
       className={`block-editor-slash-menu-search ${className}`.trim()}
       {...props}
     />
-  )
+  ),
 );
 SlashMenuSearch.displayName = "SlashMenuSearch";
 

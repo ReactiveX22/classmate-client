@@ -196,8 +196,7 @@ export function NoticeForm({
         <form.Field name="title">
           {(field) => {
             const isInvalid =
-              field.state.meta.isTouched &&
-              field.state.meta.errors.length > 0;
+              field.state.meta.isTouched && field.state.meta.errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>Title *</FieldLabel>
@@ -210,9 +209,7 @@ export function NoticeForm({
                   placeholder="Enter notice title"
                   aria-invalid={isInvalid}
                 />
-                {isInvalid && (
-                  <FieldError errors={field.state.meta.errors} />
-                )}
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
           }}
@@ -223,8 +220,7 @@ export function NoticeForm({
         <form.Field name="content">
           {(field) => {
             const isInvalid =
-              field.state.meta.isTouched &&
-              field.state.meta.errors.length > 0;
+              field.state.meta.isTouched && field.state.meta.errors.length > 0;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel>Content *</FieldLabel>
@@ -237,9 +233,7 @@ export function NoticeForm({
                     onChange={(val) => field.handleChange(val)}
                   />
                 </div>
-                {isInvalid && (
-                  <FieldError errors={field.state.meta.errors} />
-                )}
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
           }}

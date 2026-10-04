@@ -84,7 +84,7 @@ export const Footer = ({
         "rte-footer",
         variant !== "default" && `rte-footer--${variant}`,
         sticky && "sticky z-10",
-        className
+        className,
       )}
       data-sticky={sticky ? "" : undefined}
       style={sticky ? { bottom: stickyOffset } : undefined}

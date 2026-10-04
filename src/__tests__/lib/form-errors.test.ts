@@ -1,13 +1,20 @@
 import { describe, it, expect } from "vitest";
-import { AxiosError, type AxiosResponse } from "axios";
+import {
+  AxiosError,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from "axios";
 import { mapServerErrors } from "@/lib/utils/form-errors";
 import { ErrorCode } from "@/types/errors";
 
-function createAxiosError(
-  message: string,
-  response?: Partial<AxiosResponse>,
-) {
-  const error = new AxiosError(message, undefined, {}, undefined, response);
+function createAxiosError(message: string, response?: Partial<AxiosResponse>) {
+  const error = new AxiosError(
+    message,
+    undefined,
+    {} as InternalAxiosRequestConfig,
+    undefined,
+    response as AxiosResponse | undefined,
+  );
   return error;
 }
 

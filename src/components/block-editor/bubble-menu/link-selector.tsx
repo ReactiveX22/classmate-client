@@ -56,7 +56,7 @@ export const LinkSelector = ({ editor }: { editor: Editor }) => {
         .run();
       setOpen(false);
     },
-    [editor]
+    [editor],
   );
 
   const handleUnlink = useCallback(() => {

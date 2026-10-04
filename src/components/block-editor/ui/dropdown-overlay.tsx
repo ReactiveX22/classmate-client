@@ -10,7 +10,7 @@ const DropdownOverlay = React.forwardRef<HTMLDivElement, DropdownOverlayProps>(
       className={`block-editor-bubble-overlay ${className}`.trim()}
       {...props}
     />
-  )
+  ),
 );
 DropdownOverlay.displayName = "DropdownOverlay";
 

@@ -135,7 +135,7 @@ export const NodeSelector = ({ editor }: { editor: Editor }) => {
       isParagraph: ed.isActive("paragraph"),
       isTaskList: ed.isActive("taskList"),
     }),
-    shallowEqual
+    shallowEqual,
   );
 
   const activeItems = nodeItems.filter((i) => i.isActive(editorState));

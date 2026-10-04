@@ -11,7 +11,7 @@ export interface BlockEditorChainedCommands {
   setLink: (attributes: { href: string }) => BlockEditorChainedCommands;
   setNode: (
     typeOrName: string,
-    attributes?: Record<string, unknown>
+    attributes?: Record<string, unknown>,
   ) => BlockEditorChainedCommands;
   setParagraph: () => BlockEditorChainedCommands;
   setTextAlign: (alignment: string) => BlockEditorChainedCommands;
@@ -29,7 +29,7 @@ export interface BlockEditorChainedCommands {
   toggleNode: (
     typeOrName: string,
     innerTypeOrName: string,
-    attributes?: Record<string, unknown>
+    attributes?: Record<string, unknown>,
   ) => BlockEditorChainedCommands;
   toggleOrderedList: () => BlockEditorChainedCommands;
   toggleStrike: () => BlockEditorChainedCommands;

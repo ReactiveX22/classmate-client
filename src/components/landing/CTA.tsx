@@ -14,7 +14,7 @@ export function CTA() {
 
       <div className="max-w-3xl mx-auto text-center space-y-8 relative z-10">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-balance leading-tight">
-          Give it a try - it's free
+          Give it a try - it&apos;s free
         </h2>
         <p className="text-lg sm:text-xl text-muted-foreground text-balance max-w-xl mx-auto">
           Self-host in minutes or sign up for the managed version when it

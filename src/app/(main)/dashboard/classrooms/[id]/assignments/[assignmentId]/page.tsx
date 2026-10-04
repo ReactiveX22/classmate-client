@@ -88,7 +88,13 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
       <div className="flex flex-col items-center justify-center min-h-[50vh]">
         <h2 className="text-xl font-semibold mb-2">Assignment not found</h2>
 
-        <Button onClick={() => router.push(`/dashboard/classrooms/${classroomId}?tab=classwork`)}>Go back</Button>
+        <Button
+          onClick={() =>
+            router.push(`/dashboard/classrooms/${classroomId}?tab=classwork`)
+          }
+        >
+          Go back
+        </Button>
       </div>
     );
   }
@@ -98,7 +104,9 @@ export default function AssignmentPage({ params }: AssignmentPageProps) {
       <Button
         variant="ghost"
         className="mb-4 pl-0 hover:pl-2 transition-all gap-2 text-muted-foreground"
-        onClick={() => router.push(`/dashboard/classrooms/${classroomId}?tab=classwork`)}
+        onClick={() =>
+          router.push(`/dashboard/classrooms/${classroomId}?tab=classwork`)
+        }
       >
         <IconArrowLeft size={18} />
         Back to Classwork

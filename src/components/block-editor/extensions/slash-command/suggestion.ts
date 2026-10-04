@@ -140,7 +140,7 @@ export const defaultSlashCommandItems: SlashCommandSuggestionItem[] = [
 
 const updatePosition = async (
   editor: Editor,
-  element: Element
+  element: Element,
 ): Promise<void> => {
   if (!(element instanceof HTMLElement)) {
     return;
@@ -151,7 +151,7 @@ const updatePosition = async (
       posToDOMRect(
         editor.view,
         editor.state.selection.from,
-        editor.state.selection.to
+        editor.state.selection.to,
       ),
   };
 
@@ -171,13 +171,13 @@ const updatePosition = async (
 };
 
 export const getSlashCommandSuggestion = (
-  customItems?: SlashCommandSuggestionItem[]
+  customItems?: SlashCommandSuggestionItem[],
 ): SuggestionType => {
   const items = customItems
     ? [
         ...customItems,
         ...defaultSlashCommandItems.filter(
-          (d) => !customItems.some((c) => c.id === d.id)
+          (d) => !customItems.some((c) => c.id === d.id),
         ),
       ]
     : defaultSlashCommandItems;
@@ -185,7 +185,7 @@ export const getSlashCommandSuggestion = (
   return {
     items: ({ query }) =>
       items.filter((item) =>
-        item.keywords.some((k) => k.startsWith(query.toLowerCase()))
+        item.keywords.some((k) => k.startsWith(query.toLowerCase())),
       ),
     render: () => {
       let component: ReactRenderer<SuggestionListHandle, SuggestionListProps>;
